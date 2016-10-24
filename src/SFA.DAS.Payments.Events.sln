@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Events.Api", "SFA.DAS.Payments.Events.Api\SFA.DAS.Payments.Events.Api.csproj", "{D1F5FBBB-3E25-44AA-9D4E-4F822EDFC767}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Events.Domain", "SFA.DAS.Payments.Events.Domain\SFA.DAS.Payments.Events.Domain.csproj", "{CFBF1C38-4E74-4DD7-AA90-FEAB37B85FD7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Events.Application", "SFA.DAS.Payments.Events.Application\SFA.DAS.Payments.Events.Application.csproj", "{5DF95FFE-D3ED-4EB9-9797-8056142E7591}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Events.Infrastructure", "SFA.DAS.Payments.Events.Infrastructure\SFA.DAS.Payments.Events.Infrastructure.csproj", "{960BB861-896A-4EEC-870C-BF03227848FD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6A018802-06F9-444D-8D38-B71E58F77766}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Events.Api.UnitTests", "SFA.DAS.Payments.Events.Api.UnitTests\SFA.DAS.Payments.Events.Api.UnitTests.csproj", "{728ABBE1-C547-49E0-8560-1DEC6C94EE96}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{DAFC5414-B8A0-433A-B50E-367087ABD671}"
+	ProjectSection(SolutionItems) = preProject
+		Build.fsx = Build.fsx
+		RunBuild.bat = RunBuild.bat
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D1F5FBBB-3E25-44AA-9D4E-4F822EDFC767}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1F5FBBB-3E25-44AA-9D4E-4F822EDFC767}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1F5FBBB-3E25-44AA-9D4E-4F822EDFC767}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1F5FBBB-3E25-44AA-9D4E-4F822EDFC767}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFBF1C38-4E74-4DD7-AA90-FEAB37B85FD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFBF1C38-4E74-4DD7-AA90-FEAB37B85FD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFBF1C38-4E74-4DD7-AA90-FEAB37B85FD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFBF1C38-4E74-4DD7-AA90-FEAB37B85FD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DF95FFE-D3ED-4EB9-9797-8056142E7591}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DF95FFE-D3ED-4EB9-9797-8056142E7591}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DF95FFE-D3ED-4EB9-9797-8056142E7591}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DF95FFE-D3ED-4EB9-9797-8056142E7591}.Release|Any CPU.Build.0 = Release|Any CPU
+		{960BB861-896A-4EEC-870C-BF03227848FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{960BB861-896A-4EEC-870C-BF03227848FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{960BB861-896A-4EEC-870C-BF03227848FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{960BB861-896A-4EEC-870C-BF03227848FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{728ABBE1-C547-49E0-8560-1DEC6C94EE96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{728ABBE1-C547-49E0-8560-1DEC6C94EE96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{728ABBE1-C547-49E0-8560-1DEC6C94EE96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{728ABBE1-C547-49E0-8560-1DEC6C94EE96}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{728ABBE1-C547-49E0-8560-1DEC6C94EE96} = {6A018802-06F9-444D-8D38-B71E58F77766}
+	EndGlobalSection
+EndGlobal
