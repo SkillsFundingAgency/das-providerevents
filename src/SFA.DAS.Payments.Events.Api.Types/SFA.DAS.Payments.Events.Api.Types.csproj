@@ -45,11 +45,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CalendarPeriod.cs" />
+    <Compile Include="FundingSource.cs" />
     <Compile Include="PageOfResults.cs" />
+    <Compile Include="Payment.cs" />
     <Compile Include="PeriodEnd.cs" />
     <Compile Include="PeriodEndLinks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceDataDetails.cs" />
+    <Compile Include="TransactionType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
