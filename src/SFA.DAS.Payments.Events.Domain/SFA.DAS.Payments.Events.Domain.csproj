@@ -47,6 +47,7 @@
     <Compile Include="Data\IPaymentRepository.cs" />
     <Compile Include="Data\IPeriodRepository.cs" />
     <Compile Include="FundingSource.cs" />
+    <Compile Include="Mapping\IMapper.cs" />
     <Compile Include="PageOfResults.cs" />
     <Compile Include="Payment.cs" />
     <Compile Include="Period.cs" />

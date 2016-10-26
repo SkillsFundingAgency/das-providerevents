@@ -7,6 +7,7 @@ using SFA.DAS.Payments.Events.Api.Types;
 using SFA.DAS.Payments.Events.Application.Payments.GetPaymentsForPeriodQuery;
 using SFA.DAS.Payments.Events.Application.Period.GetPeriodQuery;
 using SFA.DAS.Payments.Events.Application.Validation;
+using SFA.DAS.Payments.Events.Domain.Mapping;
 
 namespace SFA.DAS.Payments.Events.Api.Controllers
 {
@@ -14,10 +15,12 @@ namespace SFA.DAS.Payments.Events.Api.Controllers
     public class PaymentsController : ApiController
     {
         private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public PaymentsController(IMediator mediator)
+        public PaymentsController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
+            _mapper = mapper;
         }
 
         [Route("", Name = "PaymentsList")]
@@ -28,7 +31,11 @@ namespace SFA.DAS.Payments.Events.Api.Controllers
                 Domain.Period period = null;
                 if (!string.IsNullOrEmpty(periodId))
                 {
-                    var getPeriodResponse = await _mediator.SendAsync(new GetPeriodQueryRequest {PeriodId = periodId});
+                    var getPeriodResponse = await _mediator.SendAsync(new GetPeriodQueryRequest { PeriodId = periodId });
+                    if (!getPeriodResponse.IsValid)
+                    {
+                        throw getPeriodResponse.Exception;
+                    }
                     period = getPeriodResponse.Result;
                 }
 
@@ -39,38 +46,12 @@ namespace SFA.DAS.Payments.Events.Api.Controllers
                     PageNumber = page,
                     PageSize = pageSize
                 });
-
-                var result = new PageOfResults<Payment>
+                if (!paymentsResponse.IsValid)
                 {
-                    PageNumber = paymentsResponse.Result.PageNumber,
-                    TotalNumberOfPages = paymentsResponse.Result.TotalNumberOfPages,
-                    Items = paymentsResponse.Result.Items.Select(p => new Payment
-                    {
-                        Id = p.Id,
-                        Ukprn = p.Ukprn,
-                        Uln = p.Uln,
-                        EmployerAccountId = p.EmployerAccountId,
-                        ApprenticeshipId = p.ApprenticeshipId,
-                        CollectionPeriod = new NamedCalendarPeriod
-                        {
-                            Month = p.CollectionPeriod.Month,
-                            Year = p.CollectionPeriod.Year
-                        },
-                        DeliveryPeriod = new CalendarPeriod
-                        {
-                            Month = p.DeliveryPeriod.Month,
-                            Year = p.DeliveryPeriod.Year
-                        },
-                        EvidenceSubmittedOn = p.EvidenceSubmittedOn,
-                        EmployerAccountVersion = p.EmployerAccountVersion,
-                        ApprenticeshipVersion = p.ApprenticeshipVersion,
-                        FundingSource = (FundingSource) (int) p.FundingSource,
-                        TransactionType = (TransactionType) (int) p.TransactionType,
-                        Amount = p.Amount
-                    }).ToArray()
-                };
+                    throw paymentsResponse.Exception;
+                }
 
-                return Ok(result);
+                return Ok(_mapper.Map<PageOfResults<Payment>>(paymentsResponse.Result));
             }
             catch (ValidationException ex)
             {

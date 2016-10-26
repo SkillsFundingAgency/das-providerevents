@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Results;
 using MediatR;
@@ -7,6 +8,7 @@ using NUnit.Framework;
 using SFA.DAS.Payments.Events.Application.Payments.GetPaymentsForPeriodQuery;
 using SFA.DAS.Payments.Events.Application.Period.GetPeriodQuery;
 using SFA.DAS.Payments.Events.Application.Validation;
+using SFA.DAS.Payments.Events.Domain.Mapping;
 
 namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
 {
@@ -21,6 +23,7 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
         private Domain.Payment _payment1;
         private Domain.Period _period;
         private Mock<IMediator> _mediator;
+        private Mock<IMapper> _mapper;
         private Api.Controllers.PaymentsController _controller;
 
         [SetUp]
@@ -79,7 +82,42 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
                     }
                 }));
 
-            _controller = new Api.Controllers.PaymentsController(_mediator.Object);
+            _mapper = new Mock<IMapper>();
+            _mapper.Setup(m => m.Map<Types.PageOfResults<Types.Payment>>(It.IsAny<Domain.PageOfResults<Domain.Payment>>()))
+                .Returns((Domain.PageOfResults<Domain.Payment> source) =>
+                {
+                    return new Types.PageOfResults<Types.Payment>
+                    {
+                        PageNumber = source.PageNumber,
+                        TotalNumberOfPages = source.TotalNumberOfPages,
+                        Items = source.Items.Select(p => new Types.Payment
+                        {
+                            Id = p.Id,
+                            Ukprn = p.Ukprn,
+                            Uln = p.Uln,
+                            EmployerAccountId = p.EmployerAccountId,
+                            ApprenticeshipId = p.ApprenticeshipId,
+                            CollectionPeriod = new Types.NamedCalendarPeriod
+                            {
+                                Month = p.CollectionPeriod.Month,
+                                Year = p.CollectionPeriod.Year
+                            },
+                            DeliveryPeriod = new Types.CalendarPeriod
+                            {
+                                Month = p.DeliveryPeriod.Month,
+                                Year = p.DeliveryPeriod.Year
+                            },
+                            EvidenceSubmittedOn = p.EvidenceSubmittedOn,
+                            EmployerAccountVersion = p.EmployerAccountVersion,
+                            ApprenticeshipVersion = p.ApprenticeshipVersion,
+                            FundingSource = (Types.FundingSource)(int)p.FundingSource,
+                            TransactionType = (Types.TransactionType)(int)p.TransactionType,
+                            Amount = p.Amount
+                        }).ToArray()
+                    };
+                });
+
+            _controller = new Api.Controllers.PaymentsController(_mediator.Object, _mapper.Object);
         }
 
         [Test]
@@ -125,11 +163,15 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
         }
 
         [Test]
-        public async Task AndAValidationExceptionIsThrownThenItShouldReturnBadRequest()
+        public async Task AndAValidationExceptionReturnedThenItShouldReturnBadRequest()
         {
             // Arrange
             _mediator.Setup(m => m.SendAsync(It.Is<GetPeriodQueryRequest>(r => r.PeriodId == PeriodId)))
-                .Throws(new ValidationException(new[] { "Unit tests" }));
+                .Returns(Task.FromResult(new GetPeriodQueryResponse
+                {
+                    IsValid = false,
+                    Exception = new ValidationException(new[] { "Unit tests" })
+                }));
 
             // Act
             var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page, PageSize);
@@ -137,15 +179,19 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
             // Assert
             Assert.IsNotNull(actual);
             Assert.IsInstanceOf<BadRequestErrorMessageResult>(actual);
-            Assert.AreEqual("Unit tests", ((BadRequestErrorMessageResult) actual).Message);
+            Assert.AreEqual("Unit tests", ((BadRequestErrorMessageResult)actual).Message);
         }
 
         [Test]
-        public async Task AndAExceptionIsThrownThenItShouldReturnInternalServerError()
+        public async Task AndAExceptionIsReturnedThenItShouldReturnInternalServerError()
         {
             // Arrange
             _mediator.Setup(m => m.SendAsync(It.Is<GetPeriodQueryRequest>(r => r.PeriodId == PeriodId)))
-                .Throws(new Exception("Unit tests"));
+                .Returns(Task.FromResult(new GetPeriodQueryResponse
+                {
+                    IsValid = false,
+                    Exception = new Exception("Unit tests")
+                }));
 
             // Act
             var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page, PageSize);

@@ -43,6 +43,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=5.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.5.1.1\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MediatR, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MediatR.2.1.0\lib\net45\MediatR.dll</HintPath>
       <Private>True</Private>
@@ -96,6 +100,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Plumbing\Json\StrictEnumConverter.cs" />
+    <Compile Include="Plumbing\Mapping\AutoMapperConfigurationFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -122,6 +127,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Events.Domain\SFA.DAS.Payments.Events.Domain.csproj">
       <Project>{cfbf1c38-4e74-4dd7-aa90-feab37b85fd7}</Project>
       <Name>SFA.DAS.Payments.Events.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Events.Infrastructure\SFA.DAS.Payments.Events.Infrastructure.csproj">
+      <Project>{960BB861-896A-4EEC-870C-BF03227848FD}</Project>
+      <Name>SFA.DAS.Payments.Events.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
