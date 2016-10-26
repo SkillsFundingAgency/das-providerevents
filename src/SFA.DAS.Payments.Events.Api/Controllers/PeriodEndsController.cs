@@ -6,7 +6,7 @@ using SFA.DAS.Payments.Events.Api.Types;
 namespace SFA.DAS.Payments.Events.Api.Controllers
 {
     [RoutePrefix("api/periodend")]
-    public class PeriodEndController : ApiController
+    public class PeriodEndsController : ApiController
     {
 
         [Route("", Name = "PeriodEndList")]

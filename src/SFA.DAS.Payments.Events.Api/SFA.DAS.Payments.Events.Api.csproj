@@ -43,6 +43,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MediatR, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediatR.2.1.0\lib\net45\MediatR.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
       <Private>True</Private>
@@ -86,8 +90,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\PaymentController.cs" />
-    <Compile Include="Controllers\PeriodEndController.cs" />
+    <Compile Include="Controllers\PaymentsController.cs" />
+    <Compile Include="Controllers\PeriodEndsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -110,6 +114,14 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Events.Api.Types\SFA.DAS.Payments.Events.Api.Types.csproj">
       <Project>{A557E17C-EB78-4F2E-AC2A-CCACDC2C3172}</Project>
       <Name>SFA.DAS.Payments.Events.Api.Types</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Events.Application\SFA.DAS.Payments.Events.Application.csproj">
+      <Project>{5DF95FFE-D3ED-4EB9-9797-8056142E7591}</Project>
+      <Name>SFA.DAS.Payments.Events.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.Events.Domain\SFA.DAS.Payments.Events.Domain.csproj">
+      <Project>{cfbf1c38-4e74-4dd7-aa90-feab37b85fd7}</Project>
+      <Name>SFA.DAS.Payments.Events.Domain</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
