@@ -21,6 +21,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{DAFC5414
 		RunBuild.bat = RunBuild.bat
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Events.Api.Types", "SFA.DAS.Payments.Events.Api.Types\SFA.DAS.Payments.Events.Api.Types.csproj", "{A557E17C-EB78-4F2E-AC2A-CCACDC2C3172}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Events.Application.UnitTests", "SFA.DAS.Payments.Events.Application.UnitTests\SFA.DAS.Payments.Events.Application.UnitTests.csproj", "{E0700D0C-C7CA-41EF-97C6-469134028D21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,11 +51,20 @@ Global
 		{728ABBE1-C547-49E0-8560-1DEC6C94EE96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{728ABBE1-C547-49E0-8560-1DEC6C94EE96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{728ABBE1-C547-49E0-8560-1DEC6C94EE96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A557E17C-EB78-4F2E-AC2A-CCACDC2C3172}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A557E17C-EB78-4F2E-AC2A-CCACDC2C3172}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A557E17C-EB78-4F2E-AC2A-CCACDC2C3172}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A557E17C-EB78-4F2E-AC2A-CCACDC2C3172}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0700D0C-C7CA-41EF-97C6-469134028D21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0700D0C-C7CA-41EF-97C6-469134028D21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0700D0C-C7CA-41EF-97C6-469134028D21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0700D0C-C7CA-41EF-97C6-469134028D21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{728ABBE1-C547-49E0-8560-1DEC6C94EE96} = {6A018802-06F9-444D-8D38-B71E58F77766}
+		{E0700D0C-C7CA-41EF-97C6-469134028D21} = {6A018802-06F9-444D-8D38-B71E58F77766}
 	EndGlobalSection
 EndGlobal
