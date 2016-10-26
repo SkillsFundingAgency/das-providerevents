@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Web.Http;
 using MediatR;
+using NLog;
 using SFA.DAS.Payments.Events.Api.Types;
 using SFA.DAS.Payments.Events.Application.Payments.GetPaymentsQuery;
 using SFA.DAS.Payments.Events.Application.Period.GetPeriodQuery;
@@ -15,11 +16,13 @@ namespace SFA.DAS.Payments.Events.Api.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
-        public PaymentsController(IMediator mediator, IMapper mapper)
+        public PaymentsController(IMediator mediator, IMapper mapper, ILogger logger)
         {
             _mediator = mediator;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [Route("", Name = "PaymentsList")]
@@ -58,6 +61,7 @@ namespace SFA.DAS.Payments.Events.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.Error(ex, ex.Message);
                 return InternalServerError();
             }
         }

@@ -16,12 +16,20 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
+using SFA.DAS.Payments.Events.Api.Plumbing.DependencyResolution.Policies;
 using StructureMap;
 
-namespace SFA.DAS.Payments.Events.Api.Plumbing.DependencyResolution {
-    public static class IoC {
-        public static IContainer Initialize() {
-            return new Container(c => c.AddRegistry<DefaultRegistry>());
+namespace SFA.DAS.Payments.Events.Api.Plumbing.DependencyResolution
+{
+    public static class IoC
+    {
+        public static IContainer Initialize()
+        {
+            return new Container(c =>
+            {
+                c.Policies.Add<LoggingPolicy>();
+                c.AddRegistry<DefaultRegistry>();
+            });
         }
     }
 }

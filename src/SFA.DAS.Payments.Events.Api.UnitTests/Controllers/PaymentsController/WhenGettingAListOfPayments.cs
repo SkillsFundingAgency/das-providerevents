@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Web.Http.Results;
 using MediatR;
 using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.Payments.Events.Application.Payments.GetPaymentsQuery;
 using SFA.DAS.Payments.Events.Application.Period.GetPeriodQuery;
@@ -25,6 +26,7 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
         private Mock<IMediator> _mediator;
         private Mock<IMapper> _mapper;
         private Api.Controllers.PaymentsController _controller;
+        private Mock<ILogger> _logger;
 
         [SetUp]
         public void Arrange()
@@ -118,7 +120,9 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
                     };
                 });
 
-            _controller = new Api.Controllers.PaymentsController(_mediator.Object, _mapper.Object);
+            _logger = new Mock<ILogger>();
+
+            _controller = new Api.Controllers.PaymentsController(_mediator.Object, _mapper.Object, _logger.Object);
         }
 
         [Test]
