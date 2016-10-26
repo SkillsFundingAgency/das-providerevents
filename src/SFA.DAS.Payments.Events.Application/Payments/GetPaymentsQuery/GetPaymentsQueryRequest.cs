@@ -1,8 +1,8 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.Payments.Events.Application.Payments.GetPaymentsForPeriodQuery
+namespace SFA.DAS.Payments.Events.Application.Payments.GetPaymentsQuery
 {
-    public class GetPaymentsForPeriodQueryRequest : IAsyncRequest<GetPaymentsForPeriodQueryResponse>
+    public class GetPaymentsQueryRequest : IAsyncRequest<GetPaymentsQueryResponse>
     {
         public Domain.Period Period { get; set; }
         public string EmployerAccountId { get; set; }

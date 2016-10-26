@@ -5,7 +5,7 @@ using System.Web.Http.Results;
 using MediatR;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Payments.Events.Application.Payments.GetPaymentsForPeriodQuery;
+using SFA.DAS.Payments.Events.Application.Payments.GetPaymentsQuery;
 using SFA.DAS.Payments.Events.Application.Period.GetPeriodQuery;
 using SFA.DAS.Payments.Events.Application.Validation;
 using SFA.DAS.Payments.Events.Domain.Mapping;
@@ -68,11 +68,11 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
                     IsValid = true,
                     Result = _period
                 }));
-            _mediator.Setup(m => m.SendAsync(It.Is<GetPaymentsForPeriodQueryRequest>(r => r.Period == _period
+            _mediator.Setup(m => m.SendAsync(It.Is<GetPaymentsQueryRequest>(r => r.Period == _period
                                                                                        && r.EmployerAccountId == EmployerAccountId
                                                                                        && r.PageNumber == Page
                                                                                        && r.PageSize == PageSize)))
-                .Returns(Task.FromResult(new GetPaymentsForPeriodQueryResponse
+                .Returns(Task.FromResult(new GetPaymentsQueryResponse
                 {
                     IsValid = true,
                     Result = new Domain.PageOfResults<Domain.Payment>

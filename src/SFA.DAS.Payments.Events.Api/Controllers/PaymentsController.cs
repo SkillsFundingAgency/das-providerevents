@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using MediatR;
 using SFA.DAS.Payments.Events.Api.Types;
-using SFA.DAS.Payments.Events.Application.Payments.GetPaymentsForPeriodQuery;
+using SFA.DAS.Payments.Events.Application.Payments.GetPaymentsQuery;
 using SFA.DAS.Payments.Events.Application.Period.GetPeriodQuery;
 using SFA.DAS.Payments.Events.Application.Validation;
 using SFA.DAS.Payments.Events.Domain.Mapping;
@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.Events.Api.Controllers
                     period = getPeriodResponse.Result;
                 }
 
-                var paymentsResponse = await _mediator.SendAsync(new GetPaymentsForPeriodQueryRequest
+                var paymentsResponse = await _mediator.SendAsync(new GetPaymentsQueryRequest
                 {
                     Period = period,
                     EmployerAccountId = employerAccountId,

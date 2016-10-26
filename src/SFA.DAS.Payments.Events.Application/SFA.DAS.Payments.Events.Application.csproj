@@ -44,9 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Payments\GetPaymentsForPeriodQuery\GetPaymentsForPeriodQueryHandler.cs" />
-    <Compile Include="Payments\GetPaymentsForPeriodQuery\GetPaymentsForPeriodQueryRequest.cs" />
-    <Compile Include="Payments\GetPaymentsForPeriodQuery\GetPaymentsForPeriodQueryResponse.cs" />
+    <Compile Include="Payments\GetPaymentsQuery\GetPaymentsQueryHandler.cs" />
+    <Compile Include="Payments\GetPaymentsQuery\GetPaymentsQueryRequest.cs" />
+    <Compile Include="Payments\GetPaymentsQuery\GetPaymentsQueryResponse.cs" />
     <Compile Include="Period\GetPeriodQuery\GetPeriodQueryHandler.cs" />
     <Compile Include="Period\GetPeriodQuery\GetPeriodQueryRequest.cs" />
     <Compile Include="Period\GetPeriodQuery\GetPeriodQueryRequestValidator.cs" />

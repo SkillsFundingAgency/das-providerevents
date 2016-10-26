@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Payments.Events.Domain;
@@ -7,20 +6,20 @@ using SFA.DAS.Payments.Events.Domain.Data;
 using SFA.DAS.Payments.Events.Domain.Data.Entities;
 using SFA.DAS.Payments.Events.Domain.Mapping;
 
-namespace SFA.DAS.Payments.Events.Application.Payments.GetPaymentsForPeriodQuery
+namespace SFA.DAS.Payments.Events.Application.Payments.GetPaymentsQuery
 {
-    public class GetPaymentsForPeriodQueryHandler : IAsyncRequestHandler<GetPaymentsForPeriodQueryRequest, GetPaymentsForPeriodQueryResponse>
+    public class GetPaymentsQueryHandler : IAsyncRequestHandler<GetPaymentsQueryRequest, GetPaymentsQueryResponse>
     {
         private readonly IPaymentRepository _paymentRepository;
         private readonly IMapper _mapper;
 
-        public GetPaymentsForPeriodQueryHandler(IPaymentRepository paymentRepository, IMapper mapper)
+        public GetPaymentsQueryHandler(IPaymentRepository paymentRepository, IMapper mapper)
         {
             _paymentRepository = paymentRepository;
             _mapper = mapper;
         }
 
-        public async Task<GetPaymentsForPeriodQueryResponse> Handle(GetPaymentsForPeriodQueryRequest message)
+        public async Task<GetPaymentsQueryResponse> Handle(GetPaymentsQueryRequest message)
         {
             try
             {
@@ -46,7 +45,7 @@ namespace SFA.DAS.Payments.Events.Application.Payments.GetPaymentsForPeriodQuery
                     payments = await _paymentRepository.GetPayments(message.PageNumber, message.PageSize);
                 }
 
-                return new GetPaymentsForPeriodQueryResponse
+                return new GetPaymentsQueryResponse
                 {
                     IsValid = true,
                     Result = _mapper.Map<PageOfResults<Payment>>(payments)
@@ -84,7 +83,7 @@ namespace SFA.DAS.Payments.Events.Application.Payments.GetPaymentsForPeriodQuery
             }
             catch (Exception ex)
             {
-                return new GetPaymentsForPeriodQueryResponse
+                return new GetPaymentsQueryResponse
                 {
                     IsValid = false,
                     Exception = ex

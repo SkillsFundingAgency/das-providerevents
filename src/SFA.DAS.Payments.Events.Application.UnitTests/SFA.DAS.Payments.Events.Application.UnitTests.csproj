@@ -56,7 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Payments\GetPaymentsForPeriodQuery\GetPaymentsForPeriodQueryHandler\WhenHandling.cs" />
+    <Compile Include="Payments\GetPaymentsQuery\GetPaymentsQueryHandler\WhenHandling.cs" />
     <Compile Include="Period\GetPeriodQuery\GetPeriodQueryHandler\WhenHandling.cs" />
     <Compile Include="Period\GetPeriodQuery\GetPeriodQueryRequestValidator\WhenValidating.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

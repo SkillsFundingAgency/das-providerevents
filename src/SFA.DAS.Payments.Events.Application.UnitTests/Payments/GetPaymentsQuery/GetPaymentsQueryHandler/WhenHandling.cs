@@ -3,26 +3,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Payments.Events.Application.Payments.GetPaymentsForPeriodQuery;
+using SFA.DAS.Payments.Events.Application.Payments.GetPaymentsQuery;
 using SFA.DAS.Payments.Events.Domain;
 using SFA.DAS.Payments.Events.Domain.Data;
 using SFA.DAS.Payments.Events.Domain.Data.Entities;
 using SFA.DAS.Payments.Events.Domain.Mapping;
 
-namespace SFA.DAS.Payments.Events.Application.UnitTests.Payments.GetPaymentsForPeriodQuery.GetPaymentsForPeriodQueryHandler
+namespace SFA.DAS.Payments.Events.Application.UnitTests.Payments.GetPaymentsQuery.GetPaymentsQueryHandler
 {
     public class WhenHandling
     {
         private Mock<IPaymentRepository> _paymentRepository;
         private Mock<IMapper> _mapper;
-        private Application.Payments.GetPaymentsForPeriodQuery.GetPaymentsForPeriodQueryHandler _handler;
-        private GetPaymentsForPeriodQueryRequest _request;
+        private Application.Payments.GetPaymentsQuery.GetPaymentsQueryHandler _handler;
+        private GetPaymentsQueryRequest _request;
         private PageOfEntities<PaymentEntity> _pageOfEntities;
 
         [SetUp]
         public void Arrange()
         {
-            _request = new GetPaymentsForPeriodQueryRequest
+            _request = new GetPaymentsQueryRequest
             {
                 PageNumber = 1,
                 PageSize = 1000
@@ -119,7 +119,7 @@ namespace SFA.DAS.Payments.Events.Application.UnitTests.Payments.GetPaymentsForP
                     };
                 });
 
-            _handler = new Application.Payments.GetPaymentsForPeriodQuery.GetPaymentsForPeriodQueryHandler(_paymentRepository.Object, _mapper.Object);
+            _handler = new Application.Payments.GetPaymentsQuery.GetPaymentsQueryHandler(_paymentRepository.Object, _mapper.Object);
         }
 
         [Test]
