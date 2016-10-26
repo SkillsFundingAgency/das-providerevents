@@ -3,7 +3,7 @@
     public class PageOfEntities<T>
     {
         public int PageNumber { get; set; }
-        public int NumberOfPages { get; set; }
+        public int TotalNumberOfPages { get; set; }
         public T[] Items { get; set; }
     }
 }

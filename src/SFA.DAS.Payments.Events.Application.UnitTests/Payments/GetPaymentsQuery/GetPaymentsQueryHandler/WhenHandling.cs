@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.Events.Application.UnitTests.Payments.GetPaymentsQuer
             _pageOfEntities = new PageOfEntities<PaymentEntity>
             {
                 PageNumber = 1,
-                NumberOfPages = 10,
+                TotalNumberOfPages = 10,
                 Items = new[]
                 {
                     new PaymentEntity
@@ -90,7 +90,7 @@ namespace SFA.DAS.Payments.Events.Application.UnitTests.Payments.GetPaymentsQuer
                     return new PageOfResults<Payment>
                     {
                         PageNumber = source.PageNumber,
-                        TotalNumberOfPages = source.NumberOfPages,
+                        TotalNumberOfPages = source.TotalNumberOfPages,
                         Items = source.Items.Select(e => new Payment
                         {
                             Id = e.Id,

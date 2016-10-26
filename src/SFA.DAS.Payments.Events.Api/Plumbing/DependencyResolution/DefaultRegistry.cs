@@ -17,8 +17,6 @@
 
 using MediatR;
 using StructureMap;
-using StructureMap.Configuration.DSL;
-using StructureMap.Graph;
 
 namespace SFA.DAS.Payments.Events.Api.Plumbing.DependencyResolution
 {
@@ -34,6 +32,8 @@ namespace SFA.DAS.Payments.Events.Api.Plumbing.DependencyResolution
                     scan.AssembliesFromApplicationBaseDirectory(a => a.GetName().Name.StartsWith(ServiceName));
                     scan.RegisterConcreteTypesAgainstTheFirstInterface();
                 });
+
+            For<AutoMapper.MapperConfiguration>().Use(Mapping.AutoMapperConfigurationFactory.CreateMappingConfig());
 
             RegisterMediator();
         }
