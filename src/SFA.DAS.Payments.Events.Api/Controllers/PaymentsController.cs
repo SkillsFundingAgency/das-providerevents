@@ -56,7 +56,7 @@ namespace SFA.DAS.Payments.Events.Api.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return InternalServerError();
             }
