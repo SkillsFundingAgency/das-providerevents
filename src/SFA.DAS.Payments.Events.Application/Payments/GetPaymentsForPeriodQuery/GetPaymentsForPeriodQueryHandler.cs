@@ -2,18 +2,22 @@
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Payments.Events.Domain;
 using SFA.DAS.Payments.Events.Domain.Data;
 using SFA.DAS.Payments.Events.Domain.Data.Entities;
+using SFA.DAS.Payments.Events.Domain.Mapping;
 
 namespace SFA.DAS.Payments.Events.Application.Payments.GetPaymentsForPeriodQuery
 {
     public class GetPaymentsForPeriodQueryHandler : IAsyncRequestHandler<GetPaymentsForPeriodQueryRequest, GetPaymentsForPeriodQueryResponse>
     {
         private readonly IPaymentRepository _paymentRepository;
+        private readonly IMapper _mapper;
 
-        public GetPaymentsForPeriodQueryHandler(IPaymentRepository paymentRepository)
+        public GetPaymentsForPeriodQueryHandler(IPaymentRepository paymentRepository, IMapper mapper)
         {
             _paymentRepository = paymentRepository;
+            _mapper = mapper;
         }
 
         public async Task<GetPaymentsForPeriodQueryResponse> Handle(GetPaymentsForPeriodQueryRequest message)
@@ -45,35 +49,37 @@ namespace SFA.DAS.Payments.Events.Application.Payments.GetPaymentsForPeriodQuery
                 return new GetPaymentsForPeriodQueryResponse
                 {
                     IsValid = true,
-                    Result = new Domain.PageOfResults<Domain.Payment>
-                    {
-                        PageNumber = payments.PageNumber,
-                        TotalNumberOfPages = payments.NumberOfPages,
-                        Items = payments.Items.Select(e => new Domain.Payment
-                        {
-                            Id = e.Id,
-                            Ukprn = e.Ukprn,
-                            Uln = e.Uln,
-                            EmployerAccountId = e.EmployerAccountId,
-                            ApprenticeshipId = e.ApprenticeshipId,
-                            DeliveryPeriod = new Domain.CalendarPeriod
-                            {
-                                Month = e.DeliveryPeriodMonth,
-                                Year = e.DeliveryPeriodYear
-                            },
-                            CollectionPeriod = new Domain.CalendarPeriod
-                            {
-                                Month = e.CollectionPeriodMonth,
-                                Year = e.CollectionPeriodYear
-                            },
-                            EvidenceSubmittedOn = e.EvidenceSubmittedOn,
-                            EmployerAccountVersion = e.EmployerAccountVersion,
-                            ApprenticeshipVersion = e.ApprenticeshipVersion,
-                            FundingSource = (Domain.FundingSource)e.FundingSource,
-                            TransactionType = (Domain.TransactionType)e.TransactionType,
-                            Amount = e.Amount
-                        }).ToArray()
-                    }
+                    Result = _mapper.Map<PageOfResults<Payment>>(payments)
+                    //Result = new PageOfResults<Payment>
+                    //{
+                    //    PageNumber = payments.PageNumber,
+                    //    TotalNumberOfPages = payments.NumberOfPages,
+                    //    Items = payments.Items.Select(e => new Payment
+                    //    {
+                    //        Id = e.Id,
+                    //        Ukprn = e.Ukprn,
+                    //        Uln = e.Uln,
+                    //        EmployerAccountId = e.EmployerAccountId,
+                    //        ApprenticeshipId = e.ApprenticeshipId,
+                    //        DeliveryPeriod = new CalendarPeriod
+                    //        {
+                    //            Month = e.DeliveryPeriodMonth,
+                    //            Year = e.DeliveryPeriodYear
+                    //        },
+                    //        CollectionPeriod = new NamedCalendarPeriod
+                    //        {
+                    //            Id = e.CollectionPeriodId,
+                    //            Month = e.CollectionPeriodMonth,
+                    //            Year = e.CollectionPeriodYear
+                    //        },
+                    //        EvidenceSubmittedOn = e.EvidenceSubmittedOn,
+                    //        EmployerAccountVersion = e.EmployerAccountVersion,
+                    //        ApprenticeshipVersion = e.ApprenticeshipVersion,
+                    //        FundingSource = (FundingSource)e.FundingSource,
+                    //        TransactionType = (TransactionType)e.TransactionType,
+                    //        Amount = e.Amount
+                    //    }).ToArray()
+                    //}
                 };
             }
             catch (Exception ex)

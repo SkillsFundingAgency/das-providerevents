@@ -13,6 +13,7 @@ namespace SFA.DAS.Payments.Events.Domain.Data.Entities
 
         public int DeliveryPeriodMonth { get; set; }
         public int DeliveryPeriodYear { get; set; }
+        public string CollectionPeriodId { get; set; }
         public int CollectionPeriodMonth { get; set; }
         public int CollectionPeriodYear { get; set; }
 

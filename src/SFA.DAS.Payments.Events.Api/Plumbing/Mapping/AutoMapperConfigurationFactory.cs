@@ -10,6 +10,9 @@ namespace SFA.DAS.Payments.Events.Api.Plumbing.Mapping
             return new MapperConfiguration(cfg =>
             {
                 DomainAutoMapperConfiguration.AddDomainMappings(cfg);
+
+                cfg.CreateMap<Domain.Payment, Types.Payment>();
+                cfg.CreateMap<Domain.PageOfResults<Domain.Payment>, Types.PageOfResults<Types.Payment>>();
             });
         }
     }

@@ -1,16 +1,20 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Events.Application.Payments.GetPaymentsForPeriodQuery;
+using SFA.DAS.Payments.Events.Domain;
 using SFA.DAS.Payments.Events.Domain.Data;
 using SFA.DAS.Payments.Events.Domain.Data.Entities;
+using SFA.DAS.Payments.Events.Domain.Mapping;
 
 namespace SFA.DAS.Payments.Events.Application.UnitTests.Payments.GetPaymentsForPeriodQuery.GetPaymentsForPeriodQueryHandler
 {
     public class WhenHandling
     {
         private Mock<IPaymentRepository> _paymentRepository;
+        private Mock<IMapper> _mapper;
         private Application.Payments.GetPaymentsForPeriodQuery.GetPaymentsForPeriodQueryHandler _handler;
         private GetPaymentsForPeriodQueryRequest _request;
         private PageOfEntities<PaymentEntity> _pageOfEntities;
@@ -79,7 +83,43 @@ namespace SFA.DAS.Payments.Events.Application.UnitTests.Payments.GetPaymentsForP
             _paymentRepository.Setup(r => r.GetPaymentsForAccountInPeriod(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(_pageOfEntities));
 
-            _handler = new Application.Payments.GetPaymentsForPeriodQuery.GetPaymentsForPeriodQueryHandler(_paymentRepository.Object);
+            _mapper = new Mock<IMapper>();
+            _mapper.Setup(m => m.Map<PageOfResults<Payment>>(It.IsAny<PageOfEntities<PaymentEntity>>()))
+                .Returns((PageOfEntities<PaymentEntity> source) =>
+                {
+                    return new PageOfResults<Payment>
+                    {
+                        PageNumber = source.PageNumber,
+                        TotalNumberOfPages = source.NumberOfPages,
+                        Items = source.Items.Select(e => new Payment
+                        {
+                            Id = e.Id,
+                            Ukprn = e.Ukprn,
+                            Uln = e.Uln,
+                            EmployerAccountId = e.EmployerAccountId,
+                            ApprenticeshipId = e.ApprenticeshipId,
+                            DeliveryPeriod = new CalendarPeriod
+                            {
+                                Month = e.DeliveryPeriodMonth,
+                                Year = e.DeliveryPeriodYear
+                            },
+                            CollectionPeriod = new NamedCalendarPeriod
+                            {
+                                Id = e.CollectionPeriodId,
+                                Month = e.CollectionPeriodMonth,
+                                Year = e.CollectionPeriodYear
+                            },
+                            EvidenceSubmittedOn = e.EvidenceSubmittedOn,
+                            EmployerAccountVersion = e.EmployerAccountVersion,
+                            ApprenticeshipVersion = e.ApprenticeshipVersion,
+                            FundingSource = (FundingSource)e.FundingSource,
+                            TransactionType = (TransactionType)e.TransactionType,
+                            Amount = e.Amount
+                        }).ToArray()
+                    };
+                });
+
+            _handler = new Application.Payments.GetPaymentsForPeriodQuery.GetPaymentsForPeriodQueryHandler(_paymentRepository.Object, _mapper.Object);
         }
 
         [Test]
@@ -158,6 +198,16 @@ namespace SFA.DAS.Payments.Events.Application.UnitTests.Payments.GetPaymentsForP
             // Assert
             _paymentRepository.Verify(r => r.GetPaymentsForAccountInPeriod(_request.EmployerAccountId, _request.Period.CalendarYear, _request.Period.CalendarMonth,
                 _request.PageNumber, _request.PageSize), Times.Once);
+        }
+
+        [Test]
+        public async Task ThenItShouldMapEntitiesToDomainObjects()
+        {
+            // Act
+            await _handler.Handle(_request);
+
+            // Assert
+            _mapper.Verify(m => m.Map<PageOfResults<Payment>>(It.IsAny<PageOfEntities<PaymentEntity>>()), Times.Once);
         }
 
         [Test]

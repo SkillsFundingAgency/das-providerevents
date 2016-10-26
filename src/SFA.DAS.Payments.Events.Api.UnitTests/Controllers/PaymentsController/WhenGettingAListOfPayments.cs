@@ -36,8 +36,9 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
                 Uln = 987654,
                 EmployerAccountId = EmployerAccountId,
                 ApprenticeshipId = 147852,
-                CollectionPeriod = new Domain.CalendarPeriod
+                CollectionPeriod = new Domain.NamedCalendarPeriod
                 {
+                    Id = "1718-R02",
                     Month = 9,
                     Year = 2017
                 },
