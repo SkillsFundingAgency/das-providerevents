@@ -28,11 +28,9 @@ namespace SFA.DAS.Payments.Events.Application.Payments.GetPaymentsForPeriodQuery
                 }
                 else if (message.Period != null)
                 {
-                    payments =
-                        await
-                            _paymentRepository.GetPaymentsForPeriod(message.Period.CalendarYear,
-                                message.Period.CalendarMonth,
-                                message.PageNumber, message.PageSize);
+                    payments = await _paymentRepository.GetPaymentsForPeriod(message.Period.CalendarYear,
+                                    message.Period.CalendarMonth,
+                                    message.PageNumber, message.PageSize);
                 }
                 else if (!string.IsNullOrEmpty(message.EmployerAccountId))
                 {

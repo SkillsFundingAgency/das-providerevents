@@ -24,8 +24,9 @@ namespace SFA.DAS.Payments.Events.Api.Controllers
                         Uln = 987654,
                         EmployerAccountId = "147852",
                         ApprenticeshipId = 963258,
-                        CollectionPeriod = new CalendarPeriod
+                        CollectionPeriod = new NamedCalendarPeriod
                         {
+                            Id = "1718-R02",
                             Month = 9,
                             Year = 2017
                         },
