@@ -12,6 +12,7 @@ using SFA.DAS.Payments.Events.Domain.Mapping;
 namespace SFA.DAS.Payments.Events.Api.Controllers
 {
     [RoutePrefix("api/payments")]
+    [Authorize(Roles = "ReadPayments")]
     public class PaymentsController : ApiController
     {
         private readonly IMediator _mediator;
