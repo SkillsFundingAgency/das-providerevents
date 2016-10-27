@@ -35,6 +35,14 @@ namespace SFA.DAS.Payments.Events.Application.Period.GetPeriodQuery
                 var periodName = message.PeriodId.Substring(5);
 
                 var period = await _periodRepository.GetPeriod(academicYear, periodName);
+                if (period == null)
+                {
+                    return new GetPeriodQueryResponse
+                    {
+                        IsValid = false,
+                        Exception = new ValidationException(new[] { "Period not found" })
+                    };
+                }
                 return new GetPeriodQueryResponse
                 {
                     IsValid = true,

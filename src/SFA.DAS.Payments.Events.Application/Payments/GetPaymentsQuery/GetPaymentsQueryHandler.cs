@@ -49,36 +49,6 @@ namespace SFA.DAS.Payments.Events.Application.Payments.GetPaymentsQuery
                 {
                     IsValid = true,
                     Result = _mapper.Map<PageOfResults<Payment>>(payments)
-                    //Result = new PageOfResults<Payment>
-                    //{
-                    //    PageNumber = payments.PageNumber,
-                    //    TotalNumberOfPages = payments.NumberOfPages,
-                    //    Items = payments.Items.Select(e => new Payment
-                    //    {
-                    //        Id = e.Id,
-                    //        Ukprn = e.Ukprn,
-                    //        Uln = e.Uln,
-                    //        EmployerAccountId = e.EmployerAccountId,
-                    //        ApprenticeshipId = e.ApprenticeshipId,
-                    //        DeliveryPeriod = new CalendarPeriod
-                    //        {
-                    //            Month = e.DeliveryPeriodMonth,
-                    //            Year = e.DeliveryPeriodYear
-                    //        },
-                    //        CollectionPeriod = new NamedCalendarPeriod
-                    //        {
-                    //            Id = e.CollectionPeriodId,
-                    //            Month = e.CollectionPeriodMonth,
-                    //            Year = e.CollectionPeriodYear
-                    //        },
-                    //        EvidenceSubmittedOn = e.EvidenceSubmittedOn,
-                    //        EmployerAccountVersion = e.EmployerAccountVersion,
-                    //        ApprenticeshipVersion = e.ApprenticeshipVersion,
-                    //        FundingSource = (FundingSource)e.FundingSource,
-                    //        TransactionType = (TransactionType)e.TransactionType,
-                    //        Amount = e.Amount
-                    //    }).ToArray()
-                    //}
                 };
             }
             catch (Exception ex)

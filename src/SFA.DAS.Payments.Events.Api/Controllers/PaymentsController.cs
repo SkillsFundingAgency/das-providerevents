@@ -26,6 +26,7 @@ namespace SFA.DAS.Payments.Events.Api.Controllers
         }
 
         [Route("", Name = "PaymentsList")]
+        [HttpGet]
         public async Task<IHttpActionResult> GetListOfPayments(string periodId = null, string employerAccountId = null, int page = 1, int pageSize = 1000)
         {
             try

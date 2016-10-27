@@ -12,11 +12,7 @@ namespace SFA.DAS.Payments.Events.Api
             // Web API configuration and services
             GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.Converters.Add(new StrictEnumConverter());
 
-            var apiKeySecret = CloudConfigurationManager.GetSetting("ApiTokenSecret");
-            var apiIssuer = CloudConfigurationManager.GetSetting("ApiIssuer");
-            var apiAudiences = CloudConfigurationManager.GetSetting("ApiAudiences").Split(' ');
-
-            config.MessageHandlers.Add(new ApiKeyHandler("Authorization", apiKeySecret, apiIssuer, apiAudiences));
+            ConfigureJwtSecurity(config);
 
             // Web API routes
             config.MapHttpAttributeRoutes();
@@ -26,6 +22,15 @@ namespace SFA.DAS.Payments.Events.Api
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+        }
+
+        private static void ConfigureJwtSecurity(HttpConfiguration config)
+        {
+            var apiKeySecret = CloudConfigurationManager.GetSetting("ApiTokenSecret");
+            var apiIssuer = CloudConfigurationManager.GetSetting("ApiIssuer");
+            var apiAudiences = CloudConfigurationManager.GetSetting("ApiAudiences").Split(' ');
+
+            config.MessageHandlers.Add(new ApiKeyHandler("Authorization", apiKeySecret, apiIssuer, apiAudiences));
         }
     }
 }
