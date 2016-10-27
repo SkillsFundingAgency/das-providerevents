@@ -10,10 +10,13 @@
   <appSettings>
     <add key="LogLevel" value="Debug"/>
     <add key="LoggingConnectionString" value="server=.;database=PaymentsEventApi;trusted_connection=true;" />
+<<<<<<< HEAD
     <add key="MonthEndConnectionString" value="server=.;database=PaymentsEventApi;trusted_connection=true;" />
+=======
     <add key="ApiTokenSecret" value="dodge duck dip dive dodge"/>
     <add key="ApiIssuer" value="http://localhost:57968/"/>
     <add key="ApiAudiences" value="http://localhost"/>
+>>>>>>> DDP-Add_jwt_to_payment_events_api
   </appSettings>
   
   <system.web>
