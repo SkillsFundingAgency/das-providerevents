@@ -15,6 +15,8 @@ namespace SFA.DAS.Payments.Events.Api.Controllers
     [Authorize(Roles = "ReadPayments")]
     public class PaymentsController : ApiController
     {
+        private const int PageSize = 1000;
+
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
@@ -28,7 +30,7 @@ namespace SFA.DAS.Payments.Events.Api.Controllers
 
         [Route("", Name = "PaymentsList")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetListOfPayments(string periodId = null, string employerAccountId = null, int page = 1, int pageSize = 1000)
+        public async Task<IHttpActionResult> GetListOfPayments(string periodId = null, string employerAccountId = null, int page = 1)
         {
             try
             {
@@ -48,7 +50,7 @@ namespace SFA.DAS.Payments.Events.Api.Controllers
                     Period = period,
                     EmployerAccountId = employerAccountId,
                     PageNumber = page,
-                    PageSize = pageSize
+                    PageSize = PageSize
                 });
                 if (!paymentsResponse.IsValid)
                 {
