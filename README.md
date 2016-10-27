@@ -8,7 +8,7 @@ REST api for surfacing information about payments made on behalf of employer acc
 
 Period ends are a slow moving feed of items signifying a successful completion of a period end.
 
-> GET https://host:port/api/periodends/
+    GET https://host:port/api/periodends/
 
 Response:
 ```json
@@ -35,7 +35,7 @@ Response:
 
 Payments is a feed of low level payments made by the system. They can optionally be filtered.
 
-> GET https://host:port/api/payments?periodId={period_id}&employerAccountId={employer_account_id}&page={page_number}
+    GET https://host:port/api/payments?periodId={period_id}&employerAccountId={employer_account_id}&page={page_number}
 
 Where:
 * period_id = (Optional) period identifier to filter by, i.e. 1617-R02. Default is null / no filter
@@ -84,6 +84,6 @@ Authorization:Bearer {your_token}
 
 The only supported scope is:
 
-> ReadPayments
+    ReadPayments
 
 Note that tokens can viewed using an online tool such as the one at [http://jwt.io](http://jwt.io)
