@@ -4,7 +4,7 @@ namespace SFA.DAS.Payments.Events.Api.Types
 {
     public class ReferenceDataDetails
     {
-        public DateTime AccountDataValidTill { get; set; }
-        public DateTime CommitmentDataValidTill { get; set; }
+        public DateTime AccountDataValidAt { get; set; }
+        public DateTime CommitmentDataValidAt { get; set; }
     }
 }

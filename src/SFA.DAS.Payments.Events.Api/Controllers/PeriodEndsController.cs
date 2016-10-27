@@ -1,42 +1,60 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Web.Http;
+using MediatR;
+using NLog;
 using SFA.DAS.Payments.Events.Api.Types;
+using SFA.DAS.Payments.Events.Application.Period.GetPeriodsQuery;
+using SFA.DAS.Payments.Events.Application.Validation;
+using SFA.DAS.Payments.Events.Domain.Mapping;
 
 namespace SFA.DAS.Payments.Events.Api.Controllers
 {
-    [RoutePrefix("api/periodend")]
+    [RoutePrefix("api/periodends")]
     public class PeriodEndsController : ApiController
     {
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
+        private readonly ILogger _logger;
+
+        public PeriodEndsController(IMediator mediator, IMapper mapper, ILogger logger)
+        {
+            _mediator = mediator;
+            _mapper = mapper;
+            _logger = logger;
+        }
 
         [Route("", Name = "PeriodEndList")]
         [HttpGet]
-        public Task<IHttpActionResult> ListPeriodEnds()
+        public async Task<IHttpActionResult> ListPeriodEnds()
         {
-            var result = new[]
+            try
             {
-                new PeriodEnd
+                var periodsResponse = await _mediator.SendAsync(new GetPeriodsQueryRequest());
+                if (!periodsResponse.IsValid)
                 {
-                    Id = "0917",
-                    CalendarPeriod = new CalendarPeriod
-                    {
-                        Month = 9,
-                        Year = 2017
-                    },
-                    ReferenceData = new ReferenceDataDetails
-                    {
-                        AccountDataValidTill = new DateTime(2017, 9, 30),
-                        CommitmentDataValidTill = new DateTime(2017, 10, 1)
-                    },
-                    RunOn = new DateTime(2017,10, 5, 19, 30, 0),
-                    Links = new PeriodEndLinks
-                    {
-                        PaymentsForPeriod = Url.Link("PaymentsList", new { periodId = "0917" })
-                    }
+                    throw periodsResponse.Exception;
                 }
-            };
 
-            return Task.FromResult<IHttpActionResult>(Ok(result));
+                var periodEnds = _mapper.Map<PeriodEnd[]>(periodsResponse.Result);
+                foreach (var periodEnd in periodEnds)
+                {
+                    periodEnd.Links = new PeriodEndLinks
+                    {
+                        PaymentsForPeriod = Url.Link("PaymentsList", new { periodId = periodEnd.Id })
+                    };
+                }
+                return Ok(periodEnds);
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, ex.Message);
+                return InternalServerError();
+            }
         }
     }
 }

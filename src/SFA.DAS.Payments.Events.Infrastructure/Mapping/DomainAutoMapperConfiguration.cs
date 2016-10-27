@@ -31,6 +31,8 @@ namespace SFA.DAS.Payments.Events.Infrastructure.Mapping
                     dst.FundingSource = (FundingSource)src.FundingSource;
                     dst.TransactionType = (TransactionType)src.TransactionType;
                 });
+
+            cfg.CreateMap<PeriodEntity, Period>();
         }
     }
 }

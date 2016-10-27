@@ -22,6 +22,24 @@ namespace SFA.DAS.Payments.Events.Api.Plumbing.Mapping
                         dst.TransactionType = (Types.TransactionType)(int)src.TransactionType;
                     });
                 cfg.CreateMap<Domain.PageOfResults<Domain.Payment>, Types.PageOfResults<Types.Payment>>();
+
+                cfg.CreateMap<Domain.Period, Types.PeriodEnd>()
+                    .ForMember(dst => dst.CalendarPeriod, opt => opt.Ignore())
+                    .ForMember(dst => dst.ReferenceData, opt => opt.Ignore())
+                    .ForMember(dst => dst.Links, opt => opt.Ignore())
+                    .AfterMap((src, dst) =>
+                    {
+                        dst.CalendarPeriod = new Types.CalendarPeriod
+                        {
+                            Month = src.CalendarMonth,
+                            Year = src.CalendarYear
+                        };
+                        dst.ReferenceData = new Types.ReferenceDataDetails
+                        {
+                            AccountDataValidAt = src.AccountDataValidAt,
+                            CommitmentDataValidAt = src.CommitmentDataValidAt
+                        };
+                    });
             });
         }
     }

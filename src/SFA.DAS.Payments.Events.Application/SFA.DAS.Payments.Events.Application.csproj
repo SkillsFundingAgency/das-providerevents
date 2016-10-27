@@ -51,6 +51,9 @@
     <Compile Include="Period\GetPeriodQuery\GetPeriodQueryRequest.cs" />
     <Compile Include="Period\GetPeriodQuery\GetPeriodQueryRequestValidator.cs" />
     <Compile Include="Period\GetPeriodQuery\GetPeriodQueryResponse.cs" />
+    <Compile Include="Period\GetPeriodsQuery\GetPeriodsQueryHandler.cs" />
+    <Compile Include="Period\GetPeriodsQuery\GetPeriodsQueryRequest.cs" />
+    <Compile Include="Period\GetPeriodsQuery\GetPeriodsQueryResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryResponse.cs" />
     <Compile Include="Response.cs" />

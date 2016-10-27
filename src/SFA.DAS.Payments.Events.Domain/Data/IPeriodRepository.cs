@@ -5,6 +5,7 @@ namespace SFA.DAS.Payments.Events.Domain.Data
 {
     public interface IPeriodRepository
     {
+        Task<PeriodEntity[]> GetPeriods();
         Task<PeriodEntity> GetPeriod(string academicYear, string periodName);
     }
 }

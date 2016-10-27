@@ -8,7 +8,7 @@ namespace SFA.DAS.Payments.Events.Api.Types
         public string Id { get; set; }
         public CalendarPeriod CalendarPeriod { get; set; }
         public ReferenceDataDetails ReferenceData { get; set; }
-        public DateTime RunOn { get; set; }
+        public DateTime CompletionDateTime { get; set; }
 
         [JsonProperty("_links")]
         public PeriodEndLinks Links { get; set; }
