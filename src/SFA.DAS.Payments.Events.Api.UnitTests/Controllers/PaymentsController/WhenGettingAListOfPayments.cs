@@ -18,7 +18,7 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
         private const string PeriodId = "PERIOD-1";
         private const string EmployerAccountId = "ACCOUNT-1";
         private const int Page = 2;
-        private const int PageSize = 500;
+        private const int PageSize = 1000;
         private const int TotalNumberOfPages = 100;
 
         private Domain.Payment _payment1;
@@ -129,7 +129,7 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
         public async Task ThenItShouldReturnAOkResult()
         {
             // Act
-            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page, PageSize);
+            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -140,7 +140,7 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
         public async Task ThenItShouldReturnCorrectPageOfResults()
         {
             // Act
-            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page, PageSize);
+            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page);
 
             // Assert
             var page = ((OkNegotiatedContentResult<Types.PageOfResults<Types.Payment>>)actual).Content;
@@ -179,7 +179,7 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
                 }));
 
             // Act
-            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page, PageSize);
+            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -199,7 +199,7 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
                 }));
 
             // Act
-            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page, PageSize);
+            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page);
 
             // Assert
             Assert.IsNotNull(actual);
