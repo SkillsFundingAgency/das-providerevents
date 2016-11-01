@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Http;
-using System.Web.Routing;
+﻿using System.Web.Http;
+using SFA.DAS.Payments.Events.Infrastructure.Logging;
 
 namespace SFA.DAS.Payments.Events.Api
 {
@@ -11,6 +7,8 @@ namespace SFA.DAS.Payments.Events.Api
     {
         protected void Application_Start()
         {
+            LoggingConfig.ConfigureLogging();
+
             GlobalConfiguration.Configure(WebApiConfig.Register);
         }
     }
