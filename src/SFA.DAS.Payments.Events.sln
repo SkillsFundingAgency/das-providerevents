@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Events.Api
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Events.Api.Client.UnitTests", "SFA.DAS.Payments.Events.Api.Client.UnitTests\SFA.DAS.Payments.Events.Api.Client.UnitTests.csproj", "{8471FD9B-3C0E-47BD-80EB-E5DB482C214B}"
 EndProject
+Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "CloudService", "CloudService\CloudService.ccproj", "{8C7F6755-FEE5-4644-A181-E4F860C762DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{8471FD9B-3C0E-47BD-80EB-E5DB482C214B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8471FD9B-3C0E-47BD-80EB-E5DB482C214B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8471FD9B-3C0E-47BD-80EB-E5DB482C214B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C7F6755-FEE5-4644-A181-E4F860C762DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C7F6755-FEE5-4644-A181-E4F860C762DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C7F6755-FEE5-4644-A181-E4F860C762DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C7F6755-FEE5-4644-A181-E4F860C762DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
