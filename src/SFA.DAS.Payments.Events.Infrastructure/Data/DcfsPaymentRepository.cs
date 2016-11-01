@@ -7,25 +7,25 @@ namespace SFA.DAS.Payments.Events.Infrastructure.Data
 {
     public class DcfsPaymentRepository : DcfsRepository, IPaymentRepository
     {
-        private const string Source = "Payments.Payments";
-        private const string Columns = "CAST(PaymentId as varchar(36)) [Id], "
-                                     + "CommitmentId [ApprenticeshipId], "
-                                     + "CommitmentVersion [ApprenticeshipVersion], "
-                                     + "Ukprn, "
-                                     + "Uln, "
-                                     + "AccountId [EmployerAccountId], "
-                                     + "AccountVersion [EmployerAccountVersion], "
-                                     + "DeliveryMonth [DeliveryPeriodMonth], "
-                                     + "DeliveryYear [DeliveryPeriodYear], "
-                                     + "CollectionPeriodName [CollectionPeriodId], "
-                                     + "CollectionPeriodMonth, "
-                                     + "CollectionPeriodYear, "
-                                     + "IlrSubmissionDate [EvidenceSubmittedOn], "
-                                     + "FundingSource, "
-                                     + "TransactionType, "
-                                     + "Amount";
-        private const string CountColumn = "COUNT(PaymentId)";
-        private const string Pagination = "ORDER BY CollectionPeriodYear, CollectionPeriodMonth OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY";
+        private const string Source = "Payments.Payments p INNER JOIN PaymentsDue.RequiredPayments rp ON p.RequiredPaymentId = rp.Id";
+        private const string Columns = "CAST(p.PaymentId as varchar(36)) [Id], "
+                                     + "p.CommitmentId [ApprenticeshipId], "
+                                     + "rp.CommitmentVersionId [ApprenticeshipVersion], "
+                                     + "p.Ukprn, "
+                                     + "rp.Uln, "
+                                     + "rp.AccountId [EmployerAccountId], "
+                                     + "rp.AccountVersionId [EmployerAccountVersion], "
+                                     + "p.DeliveryMonth [DeliveryPeriodMonth], "
+                                     + "p.DeliveryYear [DeliveryPeriodYear], "
+                                     + "p.CollectionPeriodName [CollectionPeriodId], "
+                                     + "p.CollectionPeriodMonth, "
+                                     + "p.CollectionPeriodYear, "
+                                     + "rp.IlrSubmissionDateTime [EvidenceSubmittedOn], "
+                                     + "p.FundingSource, "
+                                     + "p.TransactionType, "
+                                     + "p.Amount";
+        private const string CountColumn = "COUNT(p.PaymentId)";
+        private const string Pagination = "ORDER BY p.CollectionPeriodYear, p.CollectionPeriodMonth OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY";
 
         public async Task<PageOfEntities<PaymentEntity>> GetPayments(int page, int pageSize)
         {
@@ -34,14 +34,14 @@ namespace SFA.DAS.Payments.Events.Infrastructure.Data
 
         public async Task<PageOfEntities<PaymentEntity>> GetPaymentsForPeriod(int collectionPeriodYear, int collectionPeriodMonth, int page, int pageSize)
         {
-            var whereClause = $"WHERE CollectionPeriodYear = {collectionPeriodYear} AND CollectionPeriodMonth = {collectionPeriodMonth}";
+            var whereClause = $"WHERE p.CollectionPeriodYear = {collectionPeriodYear} AND p.CollectionPeriodMonth = {collectionPeriodMonth}";
 
             return await GetPageOfPayments(whereClause, page, pageSize);
         }
 
         public async Task<PageOfEntities<PaymentEntity>> GetPaymentsForAccount(string employerAccountId, int page, int pageSize)
         {
-            var whereClause = $"WHERE AccountId = '{employerAccountId.Replace("'", "''")}'";
+            var whereClause = $"WHERE rp.AccountId = '{employerAccountId.Replace("'", "''")}'";
 
             return await GetPageOfPayments(whereClause, page, pageSize);
         }
@@ -49,7 +49,7 @@ namespace SFA.DAS.Payments.Events.Infrastructure.Data
         public async Task<PageOfEntities<PaymentEntity>> GetPaymentsForAccountInPeriod(string employerAccountId, int collectionPeriodYear, int collectionPeriodMonth,
             int page, int pageSize)
         {
-            var whereClause = $"WHERE AccountId = '{employerAccountId.Replace("'", "''")}' AND CollectionPeriodYear = {collectionPeriodYear} AND CollectionPeriodMonth = {collectionPeriodMonth}";
+            var whereClause = $"WHERE rp.AccountId = '{employerAccountId.Replace("'", "''")}' AND p.CollectionPeriodYear = {collectionPeriodYear} AND p.CollectionPeriodMonth = {collectionPeriodMonth}";
 
             return await GetPageOfPayments(whereClause, page, pageSize);
         }
