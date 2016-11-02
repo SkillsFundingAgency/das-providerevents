@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using Microsoft.Azure;
 
 namespace SFA.DAS.Payments.Events.Infrastructure.Data
 {
@@ -21,7 +22,7 @@ namespace SFA.DAS.Payments.Events.Infrastructure.Data
 
         protected async Task<SqlConnection> GetOpenConnection()
         {
-            var connection = new SqlConnection(ConfigurationManager.AppSettings[_connectionStringName]);
+            var connection = new SqlConnection(CloudConfigurationManager.GetSetting(_connectionStringName));
             await connection.OpenAsync();
             return connection;
         }
