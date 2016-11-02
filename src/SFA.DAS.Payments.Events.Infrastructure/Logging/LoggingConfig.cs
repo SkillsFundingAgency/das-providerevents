@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using System.Linq;
+using Microsoft.Azure;
 using NLog;
 using NLog.Targets;
 
@@ -20,7 +21,7 @@ namespace SFA.DAS.Payments.Events.Infrastructure.Logging
             var targets = LogManager.Configuration.AllTargets.Where(t => t is DatabaseTarget).Cast< DatabaseTarget>().ToArray();
             foreach (var target in targets)
             {
-                target.ConnectionString = ConfigurationManager.AppSettings["LoggingConnectionString"]; //CloudConfigurationManager.GetSetting("LoggingConnectionString");
+                target.ConnectionString = CloudConfigurationManager.GetSetting("LoggingConnectionString");
             }
         }
 
@@ -49,7 +50,7 @@ namespace SFA.DAS.Payments.Events.Infrastructure.Logging
         }
         private static LogLevel GetLogLevelFromConfigurationManager()
         {
-            var settingValue = ConfigurationManager.AppSettings["LogLevel"]; //CloudConfigurationManager.GetSetting("LogLevel");
+            var settingValue = CloudConfigurationManager.GetSetting("LogLevel");
             return LogLevel.FromString(settingValue);
         }
     }
