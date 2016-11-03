@@ -6,15 +6,15 @@ namespace SFA.DAS.Payments.Events.Api.Client
 {
     public class PaymentsEventsApiClient : IPaymentsEventsApiClient
     {
-        private readonly PaymentsEventsApiConfiguration _configuration;
+        private readonly IPaymentsEventsApiConfiguration _configuration;
         private readonly SecureHttpClient _httpClient;
 
-        public PaymentsEventsApiClient(PaymentsEventsApiConfiguration configuration)
+        public PaymentsEventsApiClient(IPaymentsEventsApiConfiguration configuration)
         {
             _configuration = configuration;
             _httpClient = new SecureHttpClient(configuration.ClientToken);
         }
-        internal PaymentsEventsApiClient(PaymentsEventsApiConfiguration configuration, SecureHttpClient httpClient)
+        internal PaymentsEventsApiClient(IPaymentsEventsApiConfiguration configuration, SecureHttpClient httpClient)
         {
             _configuration = configuration;
             _httpClient = httpClient;

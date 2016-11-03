@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IPaymentsEventsApiClient.cs" />
+    <Compile Include="IPaymentsEventsApiConfiguration.cs" />
     <Compile Include="PaymentsEventsApiClient.cs" />
     <Compile Include="PaymentsEventsApiConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
