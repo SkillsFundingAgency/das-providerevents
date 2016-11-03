@@ -22,6 +22,12 @@ namespace SFA.DAS.Payments.Events.Api
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            config.Routes.MapHttpRoute(
+                name: "CatchAll",
+                routeTemplate: "{path}",
+                defaults: new { controller = "Error", action = "NotFound", path = RouteParameter.Optional }
+            );
         }
 
         private static void ConfigureJwtSecurity(HttpConfiguration config)
