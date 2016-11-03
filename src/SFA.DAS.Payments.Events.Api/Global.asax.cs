@@ -1,4 +1,6 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Web;
+using System.Web.Http;
 using SFA.DAS.Payments.Events.Infrastructure.Logging;
 
 namespace SFA.DAS.Payments.Events.Api
@@ -10,6 +12,14 @@ namespace SFA.DAS.Payments.Events.Api
             LoggingConfig.ConfigureLogging();
 
             GlobalConfiguration.Configure(WebApiConfig.Register);
+        }
+        protected void Application_BeginRequest(object sender, EventArgs e)
+        {
+            var application = sender as HttpApplication;
+            if (application?.Context != null)
+            {
+                application.Context.Response.Headers.Remove("Server");
+            }
         }
     }
 }
