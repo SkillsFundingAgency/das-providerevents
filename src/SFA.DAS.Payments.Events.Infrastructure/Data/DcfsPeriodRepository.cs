@@ -16,7 +16,7 @@ namespace SFA.DAS.Payments.Events.Infrastructure.Data
 
         public async Task<PeriodEntity[]> GetPeriods()
         {
-            var command = $"SELECT {Columns} FROM {Source} ORDER BY CalendarYear, CalendarMonth";
+            var command = $"SELECT {Columns} FROM {Source} ORDER BY CompletionDateTime";
             return await Query<PeriodEntity>(command);
         }
         public async Task<PeriodEntity> GetPeriod(string academicYear, string periodName)
