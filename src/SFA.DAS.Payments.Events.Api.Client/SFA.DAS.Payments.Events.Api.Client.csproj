@@ -44,12 +44,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiException.cs" />
+    <Compile Include="BadRequestException.cs" />
     <Compile Include="IPaymentsEventsApiClient.cs" />
     <Compile Include="IPaymentsEventsApiConfiguration.cs" />
     <Compile Include="PaymentsEventsApiClient.cs" />
     <Compile Include="PaymentsEventsApiConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecureHttpClient.cs" />
+    <Compile Include="ServerUnavailableException.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.Events.Api.Types\SFA.DAS.Payments.Events.Api.Types.csproj">
