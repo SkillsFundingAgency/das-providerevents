@@ -42,6 +42,15 @@ namespace SFA.DAS.Payments.Events.Api.Controllers
                     {
                         throw getPeriodResponse.Exception;
                     }
+                    if (getPeriodResponse.Result == null)
+                    {
+                        return Ok(new PageOfResults<Payment>
+                        {
+                            PageNumber = page,
+                            TotalNumberOfPages = 0,
+                            Items = new Payment[0]
+                        });
+                    }
                     period = getPeriodResponse.Result;
                 }
 

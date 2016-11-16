@@ -100,7 +100,7 @@ namespace SFA.DAS.Payments.Events.Application.UnitTests.Period.GetPeriodQuery.Ge
         }
 
         [Test]
-        public async Task ThenItShouldReturnAnInvalidResponseWithAValidationExceptionIfNoPeriodInRepo()
+        public async Task ThenItShouldReturnAnValidResponseWithNoResultIfNoPeriodInRepo()
         {
             // Arrange
             _periodRepository.Setup(r => r.GetPeriod("1617", "R02"))
@@ -111,15 +111,8 @@ namespace SFA.DAS.Payments.Events.Application.UnitTests.Period.GetPeriodQuery.Ge
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.IsFalse(actual.IsValid);
-            Assert.IsNotNull(actual.Exception);
-            Assert.IsInstanceOf<ValidationException>(actual.Exception);
-
-            var validationException = (ValidationException)actual.Exception;
-            Assert.AreEqual("Period not found", validationException.Message);
-            Assert.IsNotNull(validationException.ValidationMessages);
-            Assert.AreEqual(1, validationException.ValidationMessages.Length);
-            Assert.AreEqual("Period not found", validationException.ValidationMessages[0]);
+            Assert.IsTrue(actual.IsValid);
+            Assert.IsNull(actual.Result);
         }
     }
 }
