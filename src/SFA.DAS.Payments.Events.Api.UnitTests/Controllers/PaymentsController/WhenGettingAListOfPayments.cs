@@ -173,6 +173,31 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
         }
 
         [Test]
+        public async Task ThenItShouldReturnAnOkResultWithNoItemsIfPeriodSpecifiedNotFound()
+        {
+            // Arrange
+            _mediator.Setup(m => m.SendAsync(It.Is<GetPeriodQueryRequest>(r => r.PeriodId == PeriodId)))
+                .Returns(Task.FromResult(new GetPeriodQueryResponse
+                {
+                    IsValid = true,
+                    Result = null
+                }));
+
+            // Act
+            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page);
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsInstanceOf<OkNegotiatedContentResult<Types.PageOfResults<Types.Payment>>>(actual);
+
+            var page = ((OkNegotiatedContentResult<Types.PageOfResults<Types.Payment>>)actual).Content;
+            Assert.IsNotNull(page);
+            Assert.AreEqual(Page, page.PageNumber);
+            Assert.AreEqual(0, page.TotalNumberOfPages);
+            Assert.AreEqual(0, page.Items.Length);
+        }
+
+        [Test]
         public async Task AndAValidationExceptionReturnedThenItShouldReturnBadRequest()
         {
             // Arrange

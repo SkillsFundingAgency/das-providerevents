@@ -39,8 +39,8 @@ namespace SFA.DAS.Payments.Events.Application.Period.GetPeriodQuery
                 {
                     return new GetPeriodQueryResponse
                     {
-                        IsValid = false,
-                        Exception = new ValidationException(new[] { "Period not found" })
+                        IsValid = true,
+                        Result = null
                     };
                 }
                 return new GetPeriodQueryResponse
