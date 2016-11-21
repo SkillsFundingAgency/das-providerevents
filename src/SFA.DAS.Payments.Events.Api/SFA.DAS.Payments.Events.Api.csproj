@@ -193,7 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <None Include="Properties\PublishProfiles\SFA.DAS.Payments.Events.ApiPublishProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\SFA.DAS.Payments.EventsPublishProfile.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
