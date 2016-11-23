@@ -1,6 +1,6 @@
 while(!($myWeb = Get-Website -name "SFA.DAS.Payments.Events.Api*")){
     Write-Host "Website not installed. Waiting 30 seconds..."
-    Start-Sleep 60
+    Start-Sleep 30
 }
 
 Import-Module WebAdministration
