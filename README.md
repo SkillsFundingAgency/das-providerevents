@@ -68,7 +68,8 @@ Response:
       "ApprenticeshipVersion": "1",
       "FundingSource": "Levy",
       "TransactionType": "Learning",
-      "Amount": 1234
+      "Amount": 1234,
+      "StandardCode": 25
     }
   ]
 }
