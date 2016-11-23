@@ -21,5 +21,10 @@ namespace SFA.DAS.Payments.Events.Domain
         public FundingSource FundingSource { get; set; }
         public TransactionType TransactionType { get; set; }
         public decimal Amount { get; set; }
+
+        public long? StandardCode { get; set; }
+        public int? FrameworkCode { get; set; }
+        public int? ProgrammeType { get; set; }
+        public int? PathwayCode { get; set; }
     }
 }

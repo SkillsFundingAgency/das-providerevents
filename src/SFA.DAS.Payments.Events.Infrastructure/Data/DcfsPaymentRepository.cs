@@ -23,7 +23,11 @@ namespace SFA.DAS.Payments.Events.Infrastructure.Data
                                      + "rp.IlrSubmissionDateTime [EvidenceSubmittedOn], "
                                      + "p.FundingSource, "
                                      + "p.TransactionType, "
-                                     + "p.Amount";
+                                     + "p.Amount, "
+                                     + "rp.StandardCode, "
+                                     + "rp.FrameworkCode, "
+                                     + "rp.ProgrammeType, "
+                                     + "rp.PathwayCode";
         private const string CountColumn = "COUNT(p.PaymentId)";
         private const string Pagination = "ORDER BY p.CollectionPeriodYear, p.CollectionPeriodMonth OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY";
 

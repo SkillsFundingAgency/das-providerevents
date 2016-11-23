@@ -45,7 +45,8 @@ namespace SFA.DAS.Payments.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 ApprenticeshipVersion = "B",
                 FundingSource = FundingSource.Levy,
                 TransactionType = TransactionType.Learning,
-                Amount = 1234.56m
+                Amount = 1234.56m,
+                StandardCode = 25
             };
 
             _httpClient = new Mock<SecureHttpClient>();
@@ -96,6 +97,10 @@ namespace SFA.DAS.Payments.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             Assert.AreEqual(_payment1.FundingSource, actual.Items[0].FundingSource);
             Assert.AreEqual(_payment1.TransactionType, actual.Items[0].TransactionType);
             Assert.AreEqual(_payment1.Amount, actual.Items[0].Amount);
+            Assert.AreEqual(_payment1.StandardCode, actual.Items[0].StandardCode);
+            Assert.AreEqual(_payment1.FrameworkCode, actual.Items[0].FrameworkCode);
+            Assert.AreEqual(_payment1.ProgrammeType, actual.Items[0].ProgrammeType);
+            Assert.AreEqual(_payment1.PathwayCode, actual.Items[0].PathwayCode);
         }
     }
 }

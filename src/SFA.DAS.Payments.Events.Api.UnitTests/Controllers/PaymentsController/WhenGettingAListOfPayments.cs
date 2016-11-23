@@ -54,7 +54,8 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
                 ApprenticeshipVersion = "V1",
                 FundingSource = Domain.FundingSource.Levy,
                 TransactionType = Domain.TransactionType.Learning,
-                Amount = 1234.56m
+                Amount = 1234.56m,
+                StandardCode = 25
             };
             _period = new Domain.Period
             {
@@ -115,7 +116,11 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
                             ApprenticeshipVersion = p.ApprenticeshipVersion,
                             FundingSource = (Types.FundingSource)(int)p.FundingSource,
                             TransactionType = (Types.TransactionType)(int)p.TransactionType,
-                            Amount = p.Amount
+                            Amount = p.Amount,
+                            StandardCode = p.StandardCode,
+                            FrameworkCode = p.FrameworkCode,
+                            ProgrammeType = p.ProgrammeType,
+                            PathwayCode = p.PathwayCode
                         }).ToArray()
                     };
                 });
@@ -142,8 +147,56 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
         }
 
         [Test]
-        public async Task ThenItShouldReturnCorrectPageOfResults()
+        [TestCase(25L, null, null, null)]
+        [TestCase(null, 550, 20, 6)]
+        public async Task ThenItShouldReturnCorrectPageOfResults(long? standardCode, int? frameworkCode, int? programmeType, int? pathwayCode)
         {
+            // Assert
+            var payment = new Domain.Payment
+            {
+                Id = Guid.NewGuid().ToString(),
+                Ukprn = 123456,
+                Uln = 987654,
+                EmployerAccountId = EmployerAccountId,
+                ApprenticeshipId = 147852,
+                CollectionPeriod = new Domain.NamedCalendarPeriod
+                {
+                    Id = "1718-R02",
+                    Month = 9,
+                    Year = 2017
+                },
+                DeliveryPeriod = new Domain.CalendarPeriod
+                {
+                    Month = 8,
+                    Year = 2017
+                },
+                EvidenceSubmittedOn = DateTime.Today,
+                EmployerAccountVersion = "20170601",
+                ApprenticeshipVersion = "V1",
+                FundingSource = Domain.FundingSource.Levy,
+                TransactionType = Domain.TransactionType.Learning,
+                Amount = 1234.56m,
+                StandardCode = standardCode,
+                FrameworkCode = frameworkCode,
+                ProgrammeType = programmeType,
+                PathwayCode = pathwayCode
+            };
+
+            _mediator.Setup(m => m.SendAsync(It.Is<GetPaymentsQueryRequest>(r => r.Period == _period
+                                                                                       && r.EmployerAccountId == EmployerAccountId
+                                                                                       && r.PageNumber == Page
+                                                                                       && r.PageSize == PageSize)))
+                .Returns(Task.FromResult(new GetPaymentsQueryResponse
+                {
+                    IsValid = true,
+                    Result = new Domain.PageOfResults<Domain.Payment>
+                    {
+                        PageNumber = Page,
+                        TotalNumberOfPages = TotalNumberOfPages,
+                        Items = new[] { payment }
+                    }
+                }));
+
             // Act
             var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page);
 
@@ -155,21 +208,25 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
             Assert.AreEqual(1, page.Items.Length);
 
             var actualPayment = page.Items[0];
-            Assert.AreEqual(_payment1.Id, actualPayment.Id);
-            Assert.AreEqual(_payment1.Ukprn, actualPayment.Ukprn);
-            Assert.AreEqual(_payment1.Uln, actualPayment.Uln);
-            Assert.AreEqual(_payment1.EmployerAccountId, actualPayment.EmployerAccountId);
-            Assert.AreEqual(_payment1.ApprenticeshipId, actualPayment.ApprenticeshipId);
-            Assert.AreEqual(_payment1.CollectionPeriod.Month, actualPayment.CollectionPeriod.Month);
-            Assert.AreEqual(_payment1.CollectionPeriod.Year, actualPayment.CollectionPeriod.Year);
-            Assert.AreEqual(_payment1.CollectionPeriod.Month, actualPayment.CollectionPeriod.Month);
-            Assert.AreEqual(_payment1.DeliveryPeriod.Year, actualPayment.DeliveryPeriod.Year);
-            Assert.AreEqual(_payment1.EvidenceSubmittedOn, actualPayment.EvidenceSubmittedOn);
-            Assert.AreEqual(_payment1.EmployerAccountVersion, actualPayment.EmployerAccountVersion);
-            Assert.AreEqual(_payment1.ApprenticeshipVersion, actualPayment.ApprenticeshipVersion);
-            Assert.AreEqual((int)_payment1.FundingSource, (int)actualPayment.FundingSource);
-            Assert.AreEqual((int)_payment1.TransactionType, (int)actualPayment.TransactionType);
-            Assert.AreEqual(_payment1.Amount, actualPayment.Amount);
+            Assert.AreEqual(payment.Id, actualPayment.Id);
+            Assert.AreEqual(payment.Ukprn, actualPayment.Ukprn);
+            Assert.AreEqual(payment.Uln, actualPayment.Uln);
+            Assert.AreEqual(payment.EmployerAccountId, actualPayment.EmployerAccountId);
+            Assert.AreEqual(payment.ApprenticeshipId, actualPayment.ApprenticeshipId);
+            Assert.AreEqual(payment.CollectionPeriod.Month, actualPayment.CollectionPeriod.Month);
+            Assert.AreEqual(payment.CollectionPeriod.Year, actualPayment.CollectionPeriod.Year);
+            Assert.AreEqual(payment.CollectionPeriod.Month, actualPayment.CollectionPeriod.Month);
+            Assert.AreEqual(payment.DeliveryPeriod.Year, actualPayment.DeliveryPeriod.Year);
+            Assert.AreEqual(payment.EvidenceSubmittedOn, actualPayment.EvidenceSubmittedOn);
+            Assert.AreEqual(payment.EmployerAccountVersion, actualPayment.EmployerAccountVersion);
+            Assert.AreEqual(payment.ApprenticeshipVersion, actualPayment.ApprenticeshipVersion);
+            Assert.AreEqual((int)payment.FundingSource, (int)actualPayment.FundingSource);
+            Assert.AreEqual((int)payment.TransactionType, (int)actualPayment.TransactionType);
+            Assert.AreEqual(payment.Amount, actualPayment.Amount);
+            Assert.AreEqual(payment.StandardCode, actualPayment.StandardCode);
+            Assert.AreEqual(payment.FrameworkCode, actualPayment.FrameworkCode);
+            Assert.AreEqual(payment.ProgrammeType, actualPayment.ProgrammeType);
+            Assert.AreEqual(payment.PathwayCode, actualPayment.PathwayCode);
         }
 
         [Test]
