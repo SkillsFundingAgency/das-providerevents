@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ServiceConfiguration serviceName="CloudService" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="4" osVersion="*" schemaVersion="2015-04.2.6">
+  <Role name="SFA.DAS.Payments.Events.Api">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="LogLevel" value="__LogLevel__" />
+      <Setting name="LoggingConnectionString" value="__LoggingConnectionString__" />
+      <Setting name="MonthEndConnectionString" value="__MonthEndConnectionString__" />
+      <Setting name="ApiTokenSecret" value="__ApiTokenSecret__" />
+      <Setting name="ApiIssuer" value="__ApiIssuer__" />
+      <Setting name="ApiAudiences" value="__ApiAudiences__" />
+    </ConfigurationSettings>
+  </Role>
+  <NetworkConfiguration>
+    <VirtualNetworkSite name="__Vnet__" />
+    <AddressAssignments>
+      <InstanceAddress roleName="SFA.DAS.Payments.Events.Api">
+        <Subnets>
+          <Subnet name="__Subnet__" />
+        </Subnets>
+      </InstanceAddress>
+    </AddressAssignments>
+  </NetworkConfiguration>
+</ServiceConfiguration>
