@@ -21,7 +21,7 @@
       <InputEndpoint name="Endpoint1" protocol="http" port="80" />
     </Endpoints>
    <Startup>
-      <Task commandLine="StartUp\Startup.cmd" executionContext="elevated" taskType="simple" />
+      <Task commandLine="StartUp\Startup.bat" executionContext="elevated" taskType="simple" />
     </Startup>
   </WebRole>
 </ServiceDefinition>
