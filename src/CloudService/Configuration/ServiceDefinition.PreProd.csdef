@@ -22,7 +22,6 @@
     </Endpoints>
     <Startup>
       <Task commandLine="StartUp\IIS.bat" executionContext="elevated" taskType="background">
-
       </Task>
     </Startup>
   </WebRole>

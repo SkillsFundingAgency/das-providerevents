@@ -6,4 +6,4 @@ while(!($myWeb = Get-Website -name "SFA.DAS.Payments.Events.Api*")){
 Import-Module WebAdministration
 $data = Get-ChildItem -Path IIS:\AppPools | where-object {$_.Name -notLike ".Net*"} | select name 
 $name = $data.name
-Set-ItemProperty iis:\apppools\$name -name processModel -value @{userName="__ServiceAccount__";password="__ServiceAccountPassword__";identitytype=3}
+Set-ItemProperty iis:\apppools\$name -name processModel -value @{userName="AAAAA";password="AAAAA";identitytype=3}
