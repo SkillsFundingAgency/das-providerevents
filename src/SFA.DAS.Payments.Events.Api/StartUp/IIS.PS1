@@ -1,8 +1,49 @@
-while(!($myWeb = Get-Website -name "SFA.DAS.Payments.Events.Api*")){
-    Write-Host "Website not installed. Waiting 30 seconds..."
-    Start-Sleep 30
+function Install-MSIFile {
+
+[CmdletBinding()]
+ Param(
+  [parameter(mandatory=$true,ValueFromPipeline=$true,ValueFromPipelinebyPropertyName=$true)]
+        [ValidateNotNullorEmpty()]
+        [string]$msiFile,
+
+        [parameter()]
+        [ValidateNotNullorEmpty()]
+        [string]$targetDir
+ )
+if (!(Test-Path $msiFile)){
+    throw "Path to the MSI File $($msiFile) is invalid. Please supply a valid MSI file"
+}
+$arguments = @(
+    "/i"
+    "`"$msiFile`""
+    "/qn"
+    #"/norestart"#
+)
+if ($targetDir){
+    if (!(Test-Path $targetDir)){
+        throw "Path to the Installation Directory $($targetDir) is invalid. Please supply a valid installation directory"
+    }
+    $arguments += "INSTALLDIR=`"$targetDir`""
+}
+Write-Verbose "Installing $msiFile....."
+$process = Start-Process -FilePath msiexec.exe -ArgumentList $arguments -Wait -PassThru
+if ($process.ExitCode -eq 0){
+    Write-Verbose "$msiFile has been successfully installed"
+}
+else {
+    Write-Verbose "installer exit code  $($process.ExitCode) for file  $($msifile)"
+}
 }
 
+$name="Azure"
+
+while(!($myWeb = Get-Website -name "SFA.DAS.Payments.Events.Api*")){
+    Write-Host "Website not installed. Waiting 30 seconds..."
+    Start-Sleep 15
+}
+
+if(Get-Module -ListAvailable | Where-Object{ $_.Name -eq $name }) 
+{  
 [Reflection.Assembly]::LoadWithPartialName("Microsoft.WindowsAzure.ServiceRuntime")
 
 $ConfigurationStorageConnectionString = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("ConfigurationStorageConnectionString")
@@ -27,9 +68,16 @@ $entities = $table.CloudTable.ExecuteQuery($query)
 
 $Connection=$entities.Properties
 $Connection1=$connection.Values
-$ConnectionString=$Connection1.PropertyAsObject
+$ApplicationPool=$Connection1.PropertyAsObject
 
 Import-Module WebAdministration
 $data = Get-ChildItem -Path IIS:\AppPools | where-object {$_.Name -notLike ".Net*"} | select name 
 $name = $data.name
-Set-ItemProperty $ConnectionString
+Set-ItemProperty $ApplicationPool
+
+}  
+else  
+{  
+   "Powershell.msi" | Install-MSIFile
+}
+
