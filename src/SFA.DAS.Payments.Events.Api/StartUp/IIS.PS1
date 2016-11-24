@@ -33,14 +33,14 @@ else {
     Write-Verbose "installer exit code  $($process.ExitCode) for file  $($msifile)"
 }
 }
-$name="Azure"
+$Azure="Azure"
 
 while(!($myWeb = Get-Website -name "SFA.DAS.Payments.Events.Api*")){
     Write-Host "Website not installed. Waiting 30 seconds..."
     Start-Sleep 15
 }
 
-if(Get-Module -ListAvailable | Where-Object{ $_.Name -eq $name }) 
+if(Get-Module -ListAvailable | Where-Object{ $_.Name -eq $Azure }) 
 {  
 [Reflection.Assembly]::LoadWithPartialName("Microsoft.WindowsAzure.ServiceRuntime")
 
@@ -71,8 +71,12 @@ $String=$Data2.PropertyAsObject
 write-host "$String" 
 
 $UserName,$Password = $string.split(' ',2)
+Import-Module WebAdministration
 
-Set-ItemProperty iis:\apppools\$name -name processModel -value @{userName="$UserName";password="$Password";identitytype=3}
+$IISName= get-childitem -path iis:\apppools\ | where Name -NotLike ".Net*" | select name
+$IIS=$ID.name
+
+Set-ItemProperty iis:\apppools\$IIS -name processModel -value @{userName="$UserName";password="$Password";identitytype=3}
 
 }  
 else  
