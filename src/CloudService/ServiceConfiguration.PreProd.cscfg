@@ -10,7 +10,7 @@
       <Setting name="ApiTokenSecret" value="__ApiTokenSecret__" />
       <Setting name="ApiIssuer" value="__ApiIssuer__" />
       <Setting name="ApiAudiences" value="__ApiAudiences__" />
-       <Setting name="AppPool" value="__AppPool" />
+       <Setting name="ConfigurationStorageConnectionString" value="__ConfigurationStorageConnectionString__" />
     </ConfigurationSettings>
   </Role>
   <NetworkConfiguration>
