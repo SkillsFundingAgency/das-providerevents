@@ -17,7 +17,7 @@
       <Setting name="ApiIssuer" />
       <Setting name="ApiAudiences" />
       <Setting name="ServiceAccount" />
-      <Setting name="ServiceAccountPassword" />
+      <Setting name="ServiceAccountPwd" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="Endpoint1" protocol="http" port="80" />
