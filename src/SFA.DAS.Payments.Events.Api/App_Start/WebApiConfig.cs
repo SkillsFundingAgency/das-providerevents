@@ -1,5 +1,6 @@
 ﻿using System.Web.Http;
 using Microsoft.Azure;
+using Newtonsoft.Json;
 using SFA.DAS.ApiTokens.Client;
 using SFA.DAS.Payments.Events.Api.Plumbing.Json;
 
@@ -10,6 +11,7 @@ namespace SFA.DAS.Payments.Events.Api
         public static void Register(HttpConfiguration config)
         {
             // Web API configuration and services
+            GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
             GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.Converters.Add(new StrictEnumConverter());
 
             ConfigureJwtSecurity(config);

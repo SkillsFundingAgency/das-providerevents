@@ -68,7 +68,33 @@ Response:
       "ApprenticeshipVersion": "1",
       "FundingSource": "Levy",
       "TransactionType": "Learning",
-      "Amount": 1234
+      "Amount": 1234,
+      "StandardCode": 25
+    },
+    {
+      "Id": "E65F46E3-B665-4D8A-93DA-10DBAF866E89",
+      "Ukprn": 123456,
+      "Uln": 9876543,
+      "EmployerAccountId": "123",
+      "ApprenticeshipId": 2,
+      "DeliveryPeriod": {
+        "Month": 8,
+        "Year": 2017
+      },
+      "CollectionPeriod": {
+        "Id": "1617-R12",
+        "Month": 8,
+        "Year": 2017
+      },
+      "EvidenceSubmittedOn": "2017-07-01T00:00:00",
+      "EmployerAccountVersion": "20170315",
+      "ApprenticeshipVersion": "1",
+      "FundingSource": "Levy",
+      "TransactionType": "Learning",
+      "Amount": 4321,
+      "FrameworkCode": 550,
+      "ProgrammeType": 20,
+      "PathwayCode": 6
     }
   ]
 }
