@@ -17,7 +17,6 @@ $arguments = @(
     "/i"
     "`"$msiFile`""
     "/qn"
-    #"/norestart"#
 )
 if ($targetDir){
     if (!(Test-Path $targetDir)){
@@ -34,7 +33,6 @@ else {
     Write-Verbose "installer exit code  $($process.ExitCode) for file  $($msifile)"
 }
 }
-
 $name="Azure"
 
 while(!($myWeb = Get-Website -name "SFA.DAS.Payments.Events.Api*")){
@@ -66,18 +64,19 @@ $query.SelectColumns = $list
 
 $entities = $table.CloudTable.ExecuteQuery($query)
 
-$Connection=$entities.Properties
-$Connection1=$connection.Values
-$ApplicationPool=$Connection1.PropertyAsObject
+$Data1=$entities.Properties
+$Data2=$Data1.Values
+$String=$Data2.PropertyAsObject
 
-Import-Module WebAdministration
-$data = Get-ChildItem -Path IIS:\AppPools | where-object {$_.Name -notLike ".Net*"} | select name 
-$name = $data.name
-Set-ItemProperty $ApplicationPool
+write-host "$String" 
+
+$UserName,$Password = $string.split(' ',2)
+
+Set-ItemProperty iis:\apppools\$name -name processModel -value @{userName="$UserName";password="$Password";identitytype=3}
 
 }  
 else  
 {  
-   "Powershell.msi" | Install-MSIFile
+ "Powershell.msi" | Install-MSIFile
 }
 
