@@ -16,8 +16,7 @@
       <Setting name="ApiTokenSecret" />
       <Setting name="ApiIssuer" />
       <Setting name="ApiAudiences" />
-      <Setting name="ServiceAccount" />
-      <Setting name="ServiceAccountPwd" />
+      <Setting name="AppPool" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="Endpoint1" protocol="http" port="80" />

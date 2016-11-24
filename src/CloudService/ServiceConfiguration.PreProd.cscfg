@@ -10,8 +10,7 @@
       <Setting name="ApiTokenSecret" value="__ApiTokenSecret__" />
       <Setting name="ApiIssuer" value="__ApiIssuer__" />
       <Setting name="ApiAudiences" value="__ApiAudiences__" />
-      <Setting name="ServiceAccount" value="__ServiceAccount__"/>
-      <Setting name="ServiceAccountPwd" value="__ServiceAccountPwd__"/>
+       <Setting name="AppPool" value="__AppPool" />
     </ConfigurationSettings>
   </Role>
   <NetworkConfiguration>
