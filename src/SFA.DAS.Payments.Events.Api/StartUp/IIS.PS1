@@ -37,7 +37,7 @@ $Azure="Azure"
 
 while(!($myWeb = Get-Website -name "SFA.DAS.Payments.Events.Api*")){
     Write-Host "Website not installed. Waiting 30 seconds..."
-    Start-Sleep 15
+    Start-Sleep 30
 }
 
 if(Get-Module -ListAvailable | Where-Object{ $_.Name -eq $Azure }) 
