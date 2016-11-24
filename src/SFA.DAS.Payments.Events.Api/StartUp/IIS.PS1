@@ -74,7 +74,7 @@ $UserName,$Password = $string.split(' ',2)
 Import-Module WebAdministration
 
 $IISName= get-childitem -path iis:\apppools\ | where Name -NotLike ".Net*" | select name
-$IIS=$ID.name
+$IIS=$IISName.name
 
 Set-ItemProperty iis:\apppools\$IIS -name processModel -value @{userName="$UserName";password="$Password";identitytype=3}
 
