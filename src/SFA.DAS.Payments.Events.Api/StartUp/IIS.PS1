@@ -3,11 +3,9 @@ while(!($myWeb = Get-Website -name "SFA.DAS.Payments.Events.Api*")){
     Start-Sleep 30
 }
 
-$XMLPath = "..\Web.config"
-$xml = [xml](Get-Content $XMLPath)
+[Reflection.Assembly]::LoadWithPartialName("Microsoft.WindowsAzure.ServiceRuntime")
 
-$ServiceAccount= $xml.configuration.appSettings.add | where-object {$_.key -eq 'ConfigurationStorageConnectionString'}  
-$ConfigurationStorageConnectionString=$ServiceAccount.value
+$ConfigurationStorageConnectionString = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("ConfigurationStorageConnectionString")
 
 #Query
 $Ctx = New-AzureStorageContext -ConnectionString $ConfigurationStorageConnectionString
