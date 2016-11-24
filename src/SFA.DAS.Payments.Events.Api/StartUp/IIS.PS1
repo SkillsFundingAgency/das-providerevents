@@ -79,6 +79,6 @@ Set-ItemProperty iis:\apppools\$IIS -name processModel -value @{userName="$UserN
 }  
 else  
 {  
- "Powershell.msi" | Install-MSIFile
+ "StartUp\Powershell.msi" | Install-MSIFile
 }
 
