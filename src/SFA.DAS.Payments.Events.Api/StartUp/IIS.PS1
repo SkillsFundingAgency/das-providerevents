@@ -67,9 +67,7 @@ $entities = $table.CloudTable.ExecuteQuery($query)
 $Data1=$entities.Properties
 $Data2=$Data1.Values
 $String=$Data2.PropertyAsObject
-
-write-host "$String" 
-
+Write-Host "Assigning AppPool"
 $UserName,$Password = $string.split(' ',2)
 Import-Module WebAdministration
 
