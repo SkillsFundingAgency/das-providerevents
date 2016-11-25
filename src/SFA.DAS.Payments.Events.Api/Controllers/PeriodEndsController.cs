@@ -44,6 +44,16 @@ namespace SFA.DAS.Payments.Events.Api.Controllers
                     {
                         PaymentsForPeriod = Url.Link("PaymentsList", new { periodId = periodEnd.Id })
                     };
+
+                    //TODO: Remove this once bug in collection fixed & EAS can handle null
+                    if (!periodEnd.ReferenceData.AccountDataValidAt.HasValue)
+                    {
+                        periodEnd.ReferenceData.AccountDataValidAt = DateTime.MinValue;
+                    }
+                    if (!periodEnd.ReferenceData.CommitmentDataValidAt.HasValue)
+                    {
+                        periodEnd.ReferenceData.CommitmentDataValidAt = DateTime.MinValue;
+                    }
                 }
                 return Ok(periodEnds);
             }
