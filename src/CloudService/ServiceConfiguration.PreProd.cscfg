@@ -29,5 +29,6 @@
       <LoadBalancer name="__ilbname__">
         <FrontendIPConfiguration type="private" subnet="__subnet__" staticVirtualNetworkIPAddress="10.78.124.26" />
       </LoadBalancer>
+    </LoadBalancers>
   </NetworkConfiguration>
 </ServiceConfiguration>

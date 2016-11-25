@@ -18,7 +18,6 @@
       <Setting name="ApiAudiences" />
       <Setting name="ConfigurationStorageConnectionString" />
     </ConfigurationSettings>
-    
     <Endpoints>
       <InputEndpoint name="https" protocol="https" port="443" certificate="WebSslCert" loadBalancer="das-pp-papi-ilb"/>
     </Endpoints>
