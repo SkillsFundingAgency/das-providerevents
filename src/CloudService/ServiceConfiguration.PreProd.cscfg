@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ServiceConfiguration serviceName="CloudService" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="4" osVersion="*" schemaVersion="2015-04.2.6">
+  <Role name="SFA.DAS.Payments.Events.Api">
+    <Instances count="2" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="LogLevel" value="__LogLevel__" />
+      <Setting name="LoggingConnectionString" value="__LoggingConnectionString__" />
+      <Setting name="MonthEndConnectionString" value="__MonthEndConnectionString__" />
+      <Setting name="ApiTokenSecret" value="__ApiTokenSecret__" />
+      <Setting name="ApiIssuer" value="__ApiIssuer__" />
+      <Setting name="ApiAudiences" value="__ApiAudiences__" />
+       <Setting name="ConfigurationStorageConnectionString" value="__ConfigurationStorageConnectionString__" />
+      <Setting name="LoggingRedisConnectionString" value="__LoggingRedisConnectionString__" />
+      <Setting name="LoggingRedisKey" value="__LoggingRedisKey__" />
+    </ConfigurationSettings>
+    <Certificates>
+      <Certificate name="WebSslCert" thumbprint="B16394AF94AFE1FBBB39687A512F52EF6D4ED041" thumbprintAlgorithm="sha1" />
+    </Certificates>
+  </Role>
+  <NetworkConfiguration>
+    <VirtualNetworkSite name="__Vnet__" />
+    <AddressAssignments>
+      <InstanceAddress roleName="SFA.DAS.Payments.Events.Api">
+        <Subnets>
+          <Subnet name="__Subnet__" />
+        </Subnets>
+      </InstanceAddress>
+    </AddressAssignments>
+    <LoadBalancers>
+      <LoadBalancer name="__ilbname__">
+        <FrontendIPConfiguration type="private" subnet="__subnet__" staticVirtualNetworkIPAddress="10.78.124.26" />
+      </LoadBalancer>
+    </LoadBalancers>
+  </NetworkConfiguration>
+</ServiceConfiguration>

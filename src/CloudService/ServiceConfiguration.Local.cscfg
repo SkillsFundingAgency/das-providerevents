@@ -10,6 +10,8 @@
       <Setting name="ApiTokenSecret" value="dodge duck dip dive dodge" />
       <Setting name="ApiIssuer" value="http://localhost:57968/" />
       <Setting name="ApiAudiences" value="http://localhost" />
+      <Setting name="LoggingRedisConnectionString" value="" />
+      <Setting name="LoggingRedisKey" value="" />
     </ConfigurationSettings>
   </Role>
 </ServiceConfiguration>
