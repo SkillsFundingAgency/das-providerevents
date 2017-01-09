@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CalendarPeriod.cs" />
+    <Compile Include="ContractType.cs" />
     <Compile Include="Data\Entities\PageOfEntities.cs" />
     <Compile Include="Data\Entities\PaymentEntity.cs" />
     <Compile Include="Data\Entities\PeriodEntity.cs" />

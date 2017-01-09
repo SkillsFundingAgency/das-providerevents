@@ -50,25 +50,27 @@ namespace SFA.DAS.Payments.Events.Application.UnitTests.Payments.GetPaymentsQuer
                         ApprenticeshipVersion = "CV1",
                         FundingSource = 1,
                         TransactionType = 1,
-                        Amount = 123.45m
+                        Amount = 123.45m,
+                        StandardCode = 25,
+                        ContractType = 1
                     },
                     new PaymentEntity
                     {
                         Id = "PAYMENT-2",
                         Ukprn = 200,
                         Uln = 201,
-                        EmployerAccountId = "ACC002",
-                        ApprenticeshipId = 202,
                         DeliveryPeriodMonth = 10,
                         DeliveryPeriodYear = 2017,
                         CollectionPeriodMonth = 10,
                         CollectionPeriodYear = 2017,
                         EvidenceSubmittedOn = new DateTime(2017,6,15),
-                        EmployerAccountVersion = "AV2",
-                        ApprenticeshipVersion = "CV2",
                         FundingSource = 2,
                         TransactionType = 2,
-                        Amount = 987.65m
+                        Amount = 987.65m,
+                        FrameworkCode = 550,
+                        ProgrammeType = 20,
+                        PathwayCode = 6,
+                        ContractType = 2
                     }
                 }
             };
@@ -114,7 +116,12 @@ namespace SFA.DAS.Payments.Events.Application.UnitTests.Payments.GetPaymentsQuer
                             ApprenticeshipVersion = e.ApprenticeshipVersion,
                             FundingSource = (FundingSource)e.FundingSource,
                             TransactionType = (TransactionType)e.TransactionType,
-                            Amount = e.Amount
+                            Amount = e.Amount,
+                            StandardCode = e.StandardCode,
+                            FrameworkCode = e.FrameworkCode,
+                            ProgrammeType = e.ProgrammeType,
+                            PathwayCode = e.PathwayCode,
+                            ContractType = (ContractType)e.ContractType
                         }).ToArray()
                     };
                 });

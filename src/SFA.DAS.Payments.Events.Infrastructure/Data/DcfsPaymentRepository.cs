@@ -9,9 +9,9 @@ namespace SFA.DAS.Payments.Events.Infrastructure.Data
     {
         private const string Source = "Payments.Payments p INNER JOIN PaymentsDue.RequiredPayments rp ON p.RequiredPaymentId = rp.Id";
         private const string Columns = "CAST(p.PaymentId as varchar(36)) [Id], "
-                                     + "p.CommitmentId [ApprenticeshipId], "
+                                     + "rp.CommitmentId [ApprenticeshipId], "
                                      + "rp.CommitmentVersionId [ApprenticeshipVersion], "
-                                     + "p.Ukprn, "
+                                     + "rp.Ukprn, "
                                      + "rp.Uln, "
                                      + "rp.AccountId [EmployerAccountId], "
                                      + "rp.AccountVersionId [EmployerAccountVersion], "
@@ -27,7 +27,8 @@ namespace SFA.DAS.Payments.Events.Infrastructure.Data
                                      + "rp.StandardCode, "
                                      + "rp.FrameworkCode, "
                                      + "rp.ProgrammeType, "
-                                     + "rp.PathwayCode";
+                                     + "rp.PathwayCode, "
+                                     + "rp.ApprenticeshipContractType [ContractType]";
         private const string CountColumn = "COUNT(p.PaymentId)";
         private const string Pagination = "ORDER BY p.CollectionPeriodYear, p.CollectionPeriodMonth OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY";
 

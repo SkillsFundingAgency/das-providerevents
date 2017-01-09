@@ -55,7 +55,8 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
                 FundingSource = Domain.FundingSource.Levy,
                 TransactionType = Domain.TransactionType.Learning,
                 Amount = 1234.56m,
-                StandardCode = 25
+                StandardCode = 25,
+                ContractType = Domain.ContractType.ContractWithEmployer
             };
             _period = new Domain.Period
             {
@@ -120,7 +121,8 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
                             StandardCode = p.StandardCode,
                             FrameworkCode = p.FrameworkCode,
                             ProgrammeType = p.ProgrammeType,
-                            PathwayCode = p.PathwayCode
+                            PathwayCode = p.PathwayCode,
+                            ContractType = (Types.ContractType)(int)p.ContractType
                         }).ToArray()
                     };
                 });
@@ -149,7 +151,7 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
         [Test]
         [TestCase(25L, null, null, null)]
         [TestCase(null, 550, 20, 6)]
-        public async Task ThenItShouldReturnCorrectPageOfResults(long? standardCode, int? frameworkCode, int? programmeType, int? pathwayCode)
+        public async Task ThenItShouldReturnCorrectTrainingCourseInformation(long? standardCode, int? frameworkCode, int? programmeType, int? pathwayCode)
         {
             // Assert
             var payment = new Domain.Payment
@@ -179,7 +181,8 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
                 StandardCode = standardCode,
                 FrameworkCode = frameworkCode,
                 ProgrammeType = programmeType,
-                PathwayCode = pathwayCode
+                PathwayCode = pathwayCode,
+                ContractType = Domain.ContractType.ContractWithEmployer
             };
 
             _mediator.Setup(m => m.SendAsync(It.Is<GetPaymentsQueryRequest>(r => r.Period == _period
@@ -227,6 +230,7 @@ namespace SFA.DAS.Payments.Events.Api.UnitTests.Controllers.PaymentsController
             Assert.AreEqual(payment.FrameworkCode, actualPayment.FrameworkCode);
             Assert.AreEqual(payment.ProgrammeType, actualPayment.ProgrammeType);
             Assert.AreEqual(payment.PathwayCode, actualPayment.PathwayCode);
+            Assert.AreEqual((int)payment.ContractType, (int)actualPayment.ContractType);
         }
 
         [Test]
