@@ -49,52 +49,72 @@ Response:
   "TotalNumberOfPages": 1,
   "Items": [
     {
-      "Id": "7F341453-F4D7-455F-8B8A-D7FC81F5D121",
-      "Ukprn": 123456,
-      "Uln": 987654,
-      "EmployerAccountId": "123",
-      "ApprenticeshipId": 1,
+      "Id": "631E716C-C760-48BC-9BA1-9EAF78F6BF6C",
+      "Ukprn": 234432,
+      "Uln": 45126,
       "DeliveryPeriod": {
-        "Month": 8,
+        "Month": 4,
         "Year": 2017
       },
       "CollectionPeriod": {
-        "Id": "1617-R12",
-        "Month": 8,
+        "Id": "1617-R09",
+        "Month": 4,
         "Year": 2017
       },
-      "EvidenceSubmittedOn": "2017-07-01T00:00:00",
-      "EmployerAccountVersion": "20170315",
-      "ApprenticeshipVersion": "1",
-      "FundingSource": "Levy",
+      "EvidenceSubmittedOn": "2017-01-09T10:40:11.68",
+      "FundingSource": "CoInvestedEmployer",
       "TransactionType": "Learning",
-      "Amount": 1234,
-      "StandardCode": 25
-    },
-    {
-      "Id": "E65F46E3-B665-4D8A-93DA-10DBAF866E89",
-      "Ukprn": 123456,
-      "Uln": 9876543,
-      "EmployerAccountId": "123",
-      "ApprenticeshipId": 2,
-      "DeliveryPeriod": {
-        "Month": 8,
-        "Year": 2017
-      },
-      "CollectionPeriod": {
-        "Id": "1617-R12",
-        "Month": 8,
-        "Year": 2017
-      },
-      "EvidenceSubmittedOn": "2017-07-01T00:00:00",
-      "EmployerAccountVersion": "20170315",
-      "ApprenticeshipVersion": "1",
-      "FundingSource": "Levy",
-      "TransactionType": "Learning",
-      "Amount": 4321,
+      "Amount": 110.76923,
       "FrameworkCode": 550,
       "ProgrammeType": 20,
-      "PathwayCode": 6
+      "PathwayCode": 6,
+      "ContractType": "ContractWithSfa"
+    },
+    {
+      "Id": "E04992C3-3A54-40A5-89DC-A1432B5993B5",
+      "Ukprn": 234432,
+      "Uln": 45126,
+      "DeliveryPeriod": {
+        "Month": 4,
+        "Year": 2017
+      },
+      "CollectionPeriod": {
+        "Id": "1617-R09",
+        "Month": 4,
+        "Year": 2017
+      },
+      "EvidenceSubmittedOn": "2017-01-09T10:40:11.68",
+      "FundingSource": "CoInvestedSfa",
+      "TransactionType": "Learning",
+      "Amount": 996.92308,
+      "FrameworkCode": 550,
+      "ProgrammeType": 20,
+      "PathwayCode": 6,
+      "ContractType": "ContractWithSfa"
+    },
+    {
+      "Id": "D08BEF99-382A-4138-8B69-F235A6529F18",
+      "Ukprn": 234432,
+      "Uln": 23423,
+      "EmployerAccountId": "602844077",
+      "ApprenticeshipId": 999,
+      "DeliveryPeriod": {
+        "Month": 4,
+        "Year": 2017
+      },
+      "CollectionPeriod": {
+        "Id": "1617-R09",
+        "Month": 4,
+        "Year": 2017
+      },
+      "EvidenceSubmittedOn": "2017-01-09T10:40:11.68",
+      "EmployerAccountVersion": "20170104115139",
+      "ApprenticeshipVersion": "1",
+      "FundingSource": "Levy",
+      "TransactionType": "Learning",
+      "Amount": 923.07692,
+      "StandardCode": 25,
+      "ContractType": "ContractWithEmployer"
     }
   ]
 }

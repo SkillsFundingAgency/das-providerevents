@@ -10,7 +10,8 @@ namespace SFA.DAS.Payments.Events.Api.Client.UnitTests.PaymentsEventsApiClient
     public class WhenGettingPayments
     {
         private PaymentsEventsApiConfiguration _configuration;
-        private Payment _payment1;
+        private Payment _dasPayment;
+        private Payment _nonDasPayment;
         private Client.PaymentsEventsApiClient _client;
         private Mock<SecureHttpClient> _httpClient;
 
@@ -23,7 +24,7 @@ namespace SFA.DAS.Payments.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 ClientToken = "super_secure_token"
             };
 
-            _payment1 = new Payment
+            _dasPayment = new Payment
             {
                 Id = Guid.NewGuid().ToString(),
                 Ukprn = 123456,
@@ -46,7 +47,33 @@ namespace SFA.DAS.Payments.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 FundingSource = FundingSource.Levy,
                 TransactionType = TransactionType.Learning,
                 Amount = 1234.56m,
-                StandardCode = 25
+                StandardCode = 25,
+                ContractType = ContractType.ContractWithEmployer
+            };
+
+            _nonDasPayment = new Payment
+            {
+                Id = Guid.NewGuid().ToString(),
+                Ukprn = 654321,
+                Uln = 987654,
+                DeliveryPeriod = new CalendarPeriod
+                {
+                    Month = 8,
+                    Year = 2017
+                },
+                CollectionPeriod = new NamedCalendarPeriod
+                {
+                    Month = 9,
+                    Year = 2017
+                },
+                EvidenceSubmittedOn = new DateTime(2017, 10, 1),
+                FundingSource = FundingSource.CoInvestedSfa,
+                TransactionType = TransactionType.Learning,
+                Amount = 987.65m,
+                FrameworkCode = 550,
+                ProgrammeType = 20,
+                PathwayCode = 6,
+                ContractType = ContractType.ContractWithSfa
             };
 
             _httpClient = new Mock<SecureHttpClient>();
@@ -57,7 +84,8 @@ namespace SFA.DAS.Payments.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                     TotalNumberOfPages = 2,
                     Items = new[]
                     {
-                        _payment1
+                        _dasPayment,
+                        _nonDasPayment
                     }
                 })));
 
@@ -82,25 +110,32 @@ namespace SFA.DAS.Payments.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.AreEqual(_payment1.Id, actual.Items[0].Id);
-            Assert.AreEqual(_payment1.Ukprn, actual.Items[0].Ukprn);
-            Assert.AreEqual(_payment1.Uln, actual.Items[0].Uln);
-            Assert.AreEqual(_payment1.EmployerAccountId, actual.Items[0].EmployerAccountId);
-            Assert.AreEqual(_payment1.ApprenticeshipId, actual.Items[0].ApprenticeshipId);
-            Assert.AreEqual(_payment1.DeliveryPeriod.Month, actual.Items[0].DeliveryPeriod.Month);
-            Assert.AreEqual(_payment1.DeliveryPeriod.Year, actual.Items[0].DeliveryPeriod.Year);
-            Assert.AreEqual(_payment1.CollectionPeriod.Month, actual.Items[0].CollectionPeriod.Month);
-            Assert.AreEqual(_payment1.CollectionPeriod.Year, actual.Items[0].CollectionPeriod.Year);
-            Assert.AreEqual(_payment1.EvidenceSubmittedOn, actual.Items[0].EvidenceSubmittedOn);
-            Assert.AreEqual(_payment1.EmployerAccountVersion, actual.Items[0].EmployerAccountVersion);
-            Assert.AreEqual(_payment1.ApprenticeshipVersion, actual.Items[0].ApprenticeshipVersion);
-            Assert.AreEqual(_payment1.FundingSource, actual.Items[0].FundingSource);
-            Assert.AreEqual(_payment1.TransactionType, actual.Items[0].TransactionType);
-            Assert.AreEqual(_payment1.Amount, actual.Items[0].Amount);
-            Assert.AreEqual(_payment1.StandardCode, actual.Items[0].StandardCode);
-            Assert.AreEqual(_payment1.FrameworkCode, actual.Items[0].FrameworkCode);
-            Assert.AreEqual(_payment1.ProgrammeType, actual.Items[0].ProgrammeType);
-            Assert.AreEqual(_payment1.PathwayCode, actual.Items[0].PathwayCode);
+            Assert.IsTrue(PaymentsMatch(_dasPayment, actual.Items[0]));
+            Assert.IsTrue(PaymentsMatch(_nonDasPayment, actual.Items[1]));
+        }
+
+        private bool PaymentsMatch(Payment original, Payment client)
+        {
+            return original.Id == client.Id
+                   && original.Ukprn == client.Ukprn
+                   && original.Uln == client.Uln
+                   && original.EmployerAccountId == client.EmployerAccountId
+                   && original.ApprenticeshipId == client.ApprenticeshipId
+                   && original.DeliveryPeriod.Month == client.DeliveryPeriod.Month
+                   && original.DeliveryPeriod.Year == client.DeliveryPeriod.Year
+                   && original.CollectionPeriod.Month == client.CollectionPeriod.Month
+                   && original.CollectionPeriod.Year == client.CollectionPeriod.Year
+                   && original.EvidenceSubmittedOn == client.EvidenceSubmittedOn
+                   && original.EmployerAccountVersion == client.EmployerAccountVersion
+                   && original.ApprenticeshipVersion == client.ApprenticeshipVersion
+                   && original.FundingSource == client.FundingSource
+                   && original.TransactionType == client.TransactionType
+                   && original.Amount == client.Amount
+                   && original.StandardCode == client.StandardCode
+                   && original.FrameworkCode == client.FrameworkCode
+                   && original.ProgrammeType == client.ProgrammeType
+                   && original.PathwayCode == client.PathwayCode
+                   && original.ContractType == client.ContractType;
         }
     }
 }

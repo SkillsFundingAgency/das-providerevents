@@ -9,7 +9,7 @@ namespace SFA.DAS.Payments.Events.Domain.Data.Entities
         public long Ukprn { get; set; }
         public long Uln { get; set; }
         public string EmployerAccountId { get; set; }
-        public long ApprenticeshipId { get; set; }
+        public long? ApprenticeshipId { get; set; }
 
         public int DeliveryPeriodMonth { get; set; }
         public int DeliveryPeriodYear { get; set; }
@@ -29,5 +29,7 @@ namespace SFA.DAS.Payments.Events.Domain.Data.Entities
         public int? FrameworkCode { get; set; }
         public int? ProgrammeType { get; set; }
         public int? PathwayCode { get; set; }
+
+        public int ContractType { get; set; }
     }
 }
