@@ -1,6 +1,6 @@
-# DAS Payments Events API
+# DAS Provider Events API
 
-REST api for surfacing information about payments made on behalf of employer accounts
+REST api for surfacing information about payments made to providers
 
 ## Functionality
 
