@@ -11,7 +11,7 @@ using SFA.DAS.Provider.Events.Domain.Mapping;
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
     [RoutePrefix("api/periodends")]
-    //[Authorize(Roles = "ReadPayments")]
+    [Authorize(Roles = "ReadPayments")]
     public class PeriodEndsController : ApiController
     {
         private readonly IMediator _mediator;
