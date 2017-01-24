@@ -41,21 +41,21 @@
     <ServiceConfiguration Include="ServiceConfiguration.Cloud.cscfg" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Payments.Events.Api\SFA.DAS.Payments.Events.Api.csproj">
-      <Name>SFA.DAS.Payments.Events.Api</Name>
+    <ProjectReference Include="..\SFA.DAS.Provider.Events.Api\SFA.DAS.Provider.Events.Api.csproj">
+      <Name>SFA.DAS.Provider.Events.Api</Name>
       <Project>{d1f5fbbb-3e25-44aa-9d4e-4f822edfc767}</Project>
       <Private>True</Private>
       <RoleType>Web</RoleType>
-      <RoleName>SFA.DAS.Payments.Events.Api</RoleName>
+      <RoleName>SFA.DAS.Provider.Events.Api</RoleName>
       <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
-    <Folder Include="SFA.DAS.Payments.Events.ApiContent\" />
+    <Folder Include="SFA.DAS.Provider.Events.ApiContent\" />
   </ItemGroup>
   <ItemGroup>
-    <DiagnosticsConfiguration Include="SFA.DAS.Payments.Events.ApiContent\diagnostics.wadcfgx" />
+    <DiagnosticsConfiguration Include="SFA.DAS.Provider.Events.ApiContent\diagnostics.wadcfgx" />
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>
