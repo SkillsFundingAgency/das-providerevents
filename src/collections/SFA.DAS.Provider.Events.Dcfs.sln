@@ -24,6 +24,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dml", "dml", "{E3F58A12-AF3
 		DeploySubmissions\Sql\dml\02 submissions.populate.submissions.sql = DeploySubmissions\Sql\dml\02 submissions.populate.submissions.sql
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F6C3B67B-9BFD-4CA9-82D8-21E142F4D8B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.Submission.IntegrationTests", "SFA.DAS.Provider.Events.Submission.IntegrationTests\SFA.DAS.Provider.Events.Submission.IntegrationTests.csproj", "{2EFC4146-CCA9-4B3F-8921-76EC2B5B4C68}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,15 +42,21 @@ Global
 		{DD3BB96D-6257-4EF6-A804-282DEA31A1DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD3BB96D-6257-4EF6-A804-282DEA31A1DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD3BB96D-6257-4EF6-A804-282DEA31A1DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EFC4146-CCA9-4B3F-8921-76EC2B5B4C68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EFC4146-CCA9-4B3F-8921-76EC2B5B4C68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EFC4146-CCA9-4B3F-8921-76EC2B5B4C68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EFC4146-CCA9-4B3F-8921-76EC2B5B4C68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A0ED5AC8-2E8D-4F37-951C-66F9B128E79A} = {E10D1710-C31E-4738-8693-885EA1D3ECE4}
-		{DD3BB96D-6257-4EF6-A804-282DEA31A1DC} = {E10D1710-C31E-4738-8693-885EA1D3ECE4}
+		{DD3BB96D-6257-4EF6-A804-282DEA31A1DC} = {F6C3B67B-9BFD-4CA9-82D8-21E142F4D8B0}
 		{CC4EE84E-1CBE-4FE7-A3EE-C6026BE0F7DF} = {E10D1710-C31E-4738-8693-885EA1D3ECE4}
 		{9CA6F09C-9DCF-4A75-819E-B9FBA3B73089} = {CC4EE84E-1CBE-4FE7-A3EE-C6026BE0F7DF}
 		{E3F58A12-AF3C-4999-8C7B-C38D069EC790} = {CC4EE84E-1CBE-4FE7-A3EE-C6026BE0F7DF}
+		{F6C3B67B-9BFD-4CA9-82D8-21E142F4D8B0} = {E10D1710-C31E-4738-8693-885EA1D3ECE4}
+		{2EFC4146-CCA9-4B3F-8921-76EC2B5B4C68} = {F6C3B67B-9BFD-4CA9-82D8-21E142F4D8B0}
 	EndGlobalSection
 EndGlobal

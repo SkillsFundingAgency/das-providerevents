@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SFA.DAS.Provider.Events.Submission")]
+[assembly: AssemblyTitle("SFA.DAS.Provider.Events.Submission.IntegrationTests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SFA.DAS.Provider.Events.Submission")]
+[assembly: AssemblyProduct("SFA.DAS.Provider.Events.Submission.IntegrationTests")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("a0ed5ac8-2e8d-4f37-951c-66f9b128e79a")]
+[assembly: Guid("2efc4146-cca9-4b3f-8921-76ec2b5b4c68")]
 
 // Version information for an assembly consists of the following four values:
 //
