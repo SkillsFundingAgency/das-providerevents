@@ -15,8 +15,12 @@ INNER JOIN ${ILR_Summarisation.FQ}.dbo.FileDetails fd
 INSERT INTO [Reference].[Providers]
 (UKPRN)
 SELECT
-	UKPRN
-FROM @ProvidersToProcess
+	p.UKPRN,
+	fd.Filename,
+	fd.SubmittedTime
+FROM @ProvidersToProcess p
+INNER JOIN ${ILR_Summarisation.FQ}.dbo.FileDetails fd
+	ON p.UKPRN = fd.UKPRN
 
 
 INSERT INTO [Reference].[LearningDeliveries]

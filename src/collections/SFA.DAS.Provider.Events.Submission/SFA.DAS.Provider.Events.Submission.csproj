@@ -72,14 +72,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\GetCurrentVersions\GetCurrentVersionsQuery.cs" />
+    <Compile Include="Application\GetCurrentVersions\GetCurrentVersionsQueryHandler.cs" />
+    <Compile Include="Application\GetCurrentVersions\GetCurrentVersionsQueryResponse.cs" />
+    <Compile Include="Application\GetLastSeenVersions\GetLastSeenVersionsQuery.cs" />
+    <Compile Include="Application\GetLastSeenVersions\GetLastSeenVersionsQueryHandler.cs" />
+    <Compile Include="Application\GetLastSeenVersions\GetLastSeenVersionsQueryResponse.cs" />
+    <Compile Include="Application\WriteLastSeenIlrDetails\WriteLastSeenIlrDetailsCommand.cs" />
+    <Compile Include="Application\WriteLastSeenIlrDetails\WriteLastSeenIlrDetailsCommandHandler.cs" />
+    <Compile Include="Application\WriteSubmissionEvent\WriteSubmissionEventCommand.cs" />
+    <Compile Include="Application\WriteSubmissionEvent\WriteSubmissionEventCommandHandler.cs" />
+    <Compile Include="Domain\Data\IIlrSubmissionRepository.cs" />
+    <Compile Include="Domain\Data\ISubmissionEventRepository.cs" />
+    <Compile Include="Domain\IlrDetails.cs" />
+    <Compile Include="Domain\SubmissionEvent.cs" />
+    <Compile Include="Infrastructure\Data\DcfsIlrSubmissionRepository.cs" />
+    <Compile Include="Infrastructure\Data\DcfsSubmissionEventRepository.cs" />
+    <Compile Include="Infrastructure\Data\SqlServerRepository.cs" />
     <Compile Include="Infrastructure\DependencyResolution\SubmissionEventsRegistry.cs" />
     <Compile Include="Infrastructure\DependencyResolution\TaskDependencyResolver.cs" />
+    <Compile Include="SubmissionEventsProcessor.cs" />
     <Compile Include="SubmissionEventsTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

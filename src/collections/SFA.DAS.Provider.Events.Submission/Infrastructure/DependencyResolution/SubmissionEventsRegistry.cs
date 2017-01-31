@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using MediatR;
 using NLog;
+using SFA.DAS.Provider.Events.Submission.Domain.Data;
+using SFA.DAS.Provider.Events.Submission.Infrastructure.Data;
 using StructureMap;
 
 namespace SFA.DAS.Provider.Events.Submission.Infrastructure.DependencyResolution
@@ -19,6 +21,9 @@ namespace SFA.DAS.Provider.Events.Submission.Infrastructure.DependencyResolution
                 });
 
             For<ILogger>().Use(() => LogManager.GetLogger(taskType.FullName));
+
+            For<IIlrSubmissionRepository>().Use<DcfsIlrSubmissionRepository>();
+            For<ISubmissionEventRepository>().Use<DcfsSubmissionEventRepository>();
 
             For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => GetInstance(ctx, t));
             For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => GetAllInstances(ctx, t));

@@ -41,13 +41,13 @@ GO
 --------------------------------------------------------------------------------------
 -- LatestVersion
 --------------------------------------------------------------------------------------
-IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'LatestVersion' AND [schema_id] = SCHEMA_ID('Submissions'))
+IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'LastSeenVersion' AND [schema_id] = SCHEMA_ID('Submissions'))
 	BEGIN
-		DROP TABLE [Submissions].[LatestVersion]
+		DROP TABLE [Submissions].[LastSeenVersion]
 	END
 GO
 
-CREATE TABLE [Submissions].[LatestVersion]
+CREATE TABLE [Submissions].[LastSeenVersion]
 (
 	IlrFileName				nvarchar(50)	NOT NULL,
 	FileDateTime			datetime		NOT NULL,

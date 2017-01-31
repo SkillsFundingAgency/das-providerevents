@@ -14,6 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ddl", "ddl", "{9CA6F09C-9DCF-4A75-819E-B9FBA3B73089}"
 	ProjectSection(SolutionItems) = preProject
 		DeploySubmissions\Sql\ddl\submissions.deds.ddl.tables.sql = DeploySubmissions\Sql\ddl\submissions.deds.ddl.tables.sql
+		DeploySubmissions\Sql\ddl\submissions.transient.ddl.functions.sql = DeploySubmissions\Sql\ddl\submissions.transient.ddl.functions.sql
 		DeploySubmissions\Sql\ddl\submissions.transient.ddl.tables.sql = DeploySubmissions\Sql\ddl\submissions.transient.ddl.tables.sql
 		DeploySubmissions\Sql\ddl\submissions.transient.ddl.views.sql = DeploySubmissions\Sql\ddl\submissions.transient.ddl.views.sql
 	EndProjectSection

@@ -64,13 +64,13 @@ GO
 --------------------------------------------------------------------------------------
 -- LatestVersion
 --------------------------------------------------------------------------------------
-IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'LatestVersion' AND [schema_id] = SCHEMA_ID('Submissions'))
+IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'LastSeenVersion' AND [schema_id] = SCHEMA_ID('Submissions'))
 	BEGIN
-		DROP TABLE [Submissions].[LatestVersion]
+		DROP TABLE [Submissions].[LastSeenVersion]
 	END
 GO
 
-CREATE TABLE [Submissions].[LatestVersion]
+CREATE TABLE [Submissions].[LastSeenVersion]
 (
 	IlrFileName				nvarchar(50)	NOT NULL,
 	FileDateTime			datetime		NOT NULL,
@@ -114,7 +114,9 @@ GO
 
 CREATE TABLE [Reference].[Providers]
 (
-	UKPRN	bigint	PRIMARY KEY
+	UKPRN			bigint			PRIMARY KEY,
+	IlrFilename		nvarchar(50)	NOT NULL,
+	SubmittedTime	datetime		NOT NULL
 )
 GO
 
@@ -155,6 +157,7 @@ GO
 
 CREATE TABLE [Reference].[PriceEdpisodes]
 (
+	PriceEpisodeIdentifier			varchar(25)		NOT NULL,
 	Ukprn							bigint			NOT NULL,
 	LearnRefNumber					varchar(100)	NOT NULL,
 	PriceEpisodeAimSeqNumber		int				NOT NULL,
