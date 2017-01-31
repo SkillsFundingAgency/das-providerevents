@@ -5,13 +5,13 @@ using SFA.DAS.Provider.Events.Submission.IntegrationTests.Execution;
 
 namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Specs
 {
-    public class WhenANewIlrFileIsSubmitted
+    public class WhenAnUpdatedIlrFileIsSubmitted
     {
         [Test]
-        public void ThenItShouldWriteANewSubmissionEventWithAllPropertiesPopulated()
+        public void ThenItShouldWriteANewSubmissionEventWithOnlyUpdatedPropertiesPopulated()
         {
             // Arrange
-            var testDataSet = TestDataSet.GetFirstSubmissionDataset();
+            var testDataSet = TestDataSet.GetUpdatedSubmissionDataSet();
             testDataSet.Store();
 
             // Act
@@ -32,22 +32,22 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Specs
             Assert.AreEqual(testDataSet.LearningDeliveries[0].AimSeqNumber, newEvent.AimSeqNumber);
             Assert.AreEqual(testDataSet.PriceEpisodes[0].PriceEpisodeIdentifier, newEvent.PriceEpisodeIdentifier);
             Assert.AreEqual(testDataSet.LearningDeliveries[0].StdCode, newEvent.StandardCode);
-            Assert.AreEqual(testDataSet.LearningDeliveries[0].ProgType, newEvent.ProgrammeType);
-            Assert.AreEqual(testDataSet.LearningDeliveries[0].FworkCode, newEvent.FrameworkCode);
-            Assert.AreEqual(testDataSet.LearningDeliveries[0].PwayCode, newEvent.PathwayCode);
-            Assert.AreEqual(testDataSet.LearningDeliveries[0].LearnStartDate, newEvent.ActualStartDate);
-            Assert.AreEqual(testDataSet.LearningDeliveries[0].LearnPlanEndDate, newEvent.PlannedEndDate);
-            Assert.AreEqual(testDataSet.LearningDeliveries[0].LearnActEndDate, newEvent.ActualEndDate);
+            Assert.IsNull(newEvent.ProgrammeType);
+            Assert.IsNull(newEvent.FrameworkCode);
+            Assert.IsNull(newEvent.PathwayCode);
+            Assert.IsNull(newEvent.ActualStartDate);
+            Assert.IsNull(newEvent.PlannedEndDate);
+            Assert.IsNull(newEvent.ActualEndDate);
             Assert.AreEqual(testDataSet.PriceEpisodes[0].Tnp1, newEvent.OnProgrammeTotalPrice);
-            Assert.AreEqual(testDataSet.PriceEpisodes[0].Tnp2, newEvent.CompletionTotalPrice);
-            Assert.AreEqual(testDataSet.LearningDeliveries[0].NiNumber, newEvent.NiNumber);
+            Assert.IsNull(newEvent.CompletionTotalPrice);
+            Assert.IsNull(newEvent.NiNumber);
         }
 
         [Test]
         public void ThenItShouldWriteIlrDetailsToLastSeenVersion()
         {
             // Arrange
-            var testDataSet = TestDataSet.GetFirstSubmissionDataset();
+            var testDataSet = TestDataSet.GetUpdatedSubmissionDataSet();
             testDataSet.Store();
 
             // Act

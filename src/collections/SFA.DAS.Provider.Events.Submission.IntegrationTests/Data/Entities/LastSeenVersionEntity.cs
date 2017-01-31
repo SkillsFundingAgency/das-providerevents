@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data.Entities
 {
-    public class LatestVersionEntity
+    public class LastSeenVersionEntity
     {
         public string IlrFileName { get; set; }
         public DateTime FileDateTime { get; set; }

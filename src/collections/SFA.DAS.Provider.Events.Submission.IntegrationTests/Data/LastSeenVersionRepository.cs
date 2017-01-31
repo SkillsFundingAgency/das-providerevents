@@ -6,24 +6,24 @@ using SFA.DAS.Provider.Events.Submission.IntegrationTests.TestContext;
 
 namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
 {
-    public static class LatestVersionRepository
+    public static class LastSeenVersionRepository
     {
-        public static LatestVersionEntity GetLastestVersionForProvider(long ukprn)
+        public static LastSeenVersionEntity[] GetLastestVersionsForProvider(long ukprn)
         {
             using (var connection = new SqlConnection(GlobalTestContext.Current.TransientDatabaseConnectionString))
             {
-                return connection.Query<LatestVersionEntity>("SELECT * FROM Submissions.LatestVersion WHERE UKPRN=@Ukprn", new { ukprn }).SingleOrDefault();
+                return connection.Query<LastSeenVersionEntity>("SELECT * FROM Submissions.LastSeenVersion WHERE UKPRN=@Ukprn", new { ukprn }).ToArray();
             }
         }
 
-        public static void Create(LatestVersionEntity latestVersion)
+        public static void Create(LastSeenVersionEntity lastSeenVersion)
         {
             using (var connection = new SqlConnection(GlobalTestContext.Current.TransientDatabaseConnectionString))
             {
-                connection.Execute("INSERT INTO Submissions.LatestVersion VALUES (@IlrFileName,@FileDateTime,@SubmittedDateTime," +
+                connection.Execute("INSERT INTO Submissions.LastSeenVersion VALUES (@IlrFileName,@FileDateTime,@SubmittedDateTime," +
                                    "@ComponentVersionNumber,@UKPRN,@ULN,@LearnRefNumber,@AimSeqNumber,@PriceEpisodeIdentifier,@StandardCode," +
                                    "@ProgrammeType,@FrameworkCode,@PathwayCode,@ActualStartDate,@PlannedEndDate,@ActualEndDate," +
-                                   "@OnProgrammeTotalPrice,@CompletionTotalPrice,@NINumber)", latestVersion);
+                                   "@OnProgrammeTotalPrice,@CompletionTotalPrice,@NINumber)", lastSeenVersion);
             }
         }
     }
