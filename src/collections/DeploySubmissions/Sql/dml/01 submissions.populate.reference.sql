@@ -6,8 +6,8 @@ INSERT INTO @ProvidersToProcess
 (UKPRN)
 SELECT
 	p.UKPRN
-FROM ${ILR_Summarisation.FQ}.Valid.LearningProvider p
-INNER JOIN ${ILR_Summarisation.FQ}.dbo.FileDetails fd
+FROM ${ILR_Deds.FQ}.Valid.LearningProvider p
+INNER JOIN ${ILR_Deds.FQ}.dbo.FileDetails fd
 	ON p.UKPRN = fd.UKPRN
 	AND fd.SubmittedTime > @LastProcessedDate
 
@@ -19,7 +19,7 @@ SELECT
 	fd.Filename,
 	fd.SubmittedTime
 FROM @ProvidersToProcess p
-INNER JOIN ${ILR_Summarisation.FQ}.dbo.FileDetails fd
+INNER JOIN ${ILR_Deds.FQ}.dbo.FileDetails fd
 	ON p.UKPRN = fd.UKPRN
 
 
@@ -38,9 +38,9 @@ SELECT
 	ld.LearnStartDate,
 	ld.LearnPlanEndDate,
 	ld.LearnActEndDate,
-FROM ${ILR_Summarisation.FQ}.Valid.LearningDelivery ld
+FROM ${ILR_Deds.FQ}.Valid.LearningDelivery ld
 INNER JOIN @ProvidersToProcess p
 	ON ld.UKPRN = p.UKPRN
-INNER JOIN ${ILR_Summarisation.FQ}.Valid.Learner l
+INNER JOIN ${ILR_Deds.FQ}.Valid.Learner l
 	ON ld.UKPRN = l.UKPRN
 	AND ld.LearnRefNumber = l.LearnRefNumber
