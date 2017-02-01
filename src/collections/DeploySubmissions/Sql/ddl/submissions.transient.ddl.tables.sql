@@ -139,7 +139,7 @@ CREATE TABLE [Reference].[LearningDeliveries]
 	ProgType			int				NULL,
 	FworkCode			int				NULL,
 	PwayCode			int				NULL,
-	StdCode				int				NULL,
+	StdCode				bigint			NULL,
 	LearnStartDate		date			NOT NULL,
 	LearnPlanEndDate	date			NOT NULL,
 	LearnActEndDate		date			NULL
