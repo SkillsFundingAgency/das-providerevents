@@ -1,5 +1,5 @@
 ﻿using System.Web.Http;
-using SFA.DAS.Provider.Events.Api.Models;
+using SFA.DAS.Provider.Events.Api.Types;
 
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
@@ -8,7 +8,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
     {
         public IHttpActionResult Get()
         {
-            return Ok(new HealthModel());
+            return Ok(new HealthStatus());
         }
     }
 }
