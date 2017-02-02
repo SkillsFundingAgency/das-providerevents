@@ -45,8 +45,10 @@
     <Compile Include="Data\Entities\PageOfEntities.cs" />
     <Compile Include="Data\Entities\PaymentEntity.cs" />
     <Compile Include="Data\Entities\PeriodEntity.cs" />
+    <Compile Include="Data\Entities\SubmissionEventEntity.cs" />
     <Compile Include="Data\IPaymentRepository.cs" />
     <Compile Include="Data\IPeriodRepository.cs" />
+    <Compile Include="Data\ISubmissionEventsRepository.cs" />
     <Compile Include="FundingSource.cs" />
     <Compile Include="Mapping\IMapper.cs" />
     <Compile Include="NamedCalendarPeriod.cs" />

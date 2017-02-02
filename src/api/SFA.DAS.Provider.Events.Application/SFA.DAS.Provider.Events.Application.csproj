@@ -59,9 +59,11 @@
     <Compile Include="Response.cs" />
     <Compile Include="Submissions\GetSubmissionEventsQuery\GetSubmissionEventsQueryHandler.cs" />
     <Compile Include="Submissions\GetSubmissionEventsQuery\GetSubmissionEventsQueryRequest.cs" />
+    <Compile Include="Submissions\GetSubmissionEventsQuery\GetSubmissionEventsQueryRequestValidator.cs" />
     <Compile Include="Submissions\GetSubmissionEventsQuery\GetSubmissionEventsQueryResponse.cs" />
     <Compile Include="Validation\IValidationRule.cs" />
     <Compile Include="Validation\IValidator.cs" />
+    <Compile Include="Validation\Rules\PageNumberMustBeAtLeastOneRule.cs" />
     <Compile Include="Validation\Rules\PeriodIdFormatValidationRule.cs" />
     <Compile Include="Validation\ValidationException.cs" />
     <Compile Include="Validation\ValidationResult.cs" />

@@ -47,6 +47,11 @@ namespace SFA.DAS.Provider.Events.Api.Plumbing.Mapping
                             CommitmentDataValidAt = src.CommitmentDataValidAt
                         };
                     });
+
+
+
+                cfg.CreateMap<Domain.PageOfResults<Domain.SubmissionEvent>, Types.PageOfResults<Types.SubmissionEvent>>();
+                cfg.CreateMap<Domain.SubmissionEvent, Types.SubmissionEvent>();
             });
         }
     }

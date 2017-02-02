@@ -60,6 +60,7 @@
     <Compile Include="Data\DcfsPaymentRepository.cs" />
     <Compile Include="Data\DcfsPeriodRepository.cs" />
     <Compile Include="Data\DcfsRepository.cs" />
+    <Compile Include="Data\DcfsSubmissionEventsRepository.cs" />
     <Compile Include="Logging\LoggingConfig.cs" />
     <Compile Include="Mapping\AutoMapperMapper.cs" />
     <Compile Include="Mapping\DomainAutoMapperConfiguration.cs" />
