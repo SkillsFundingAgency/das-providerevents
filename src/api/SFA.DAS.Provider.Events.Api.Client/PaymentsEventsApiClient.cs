@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SFA.DAS.Provider.Events.Api.Types;
 
@@ -40,6 +41,24 @@ namespace SFA.DAS.Provider.Events.Api.Client
         {
             var response = await _httpClient.GetAsync($"{BaseUrl}api/payments?page={page}&periodId={periodId}&employerAccountId={employerAccountId}");
             return JsonConvert.DeserializeObject<PageOfResults<Payment>>(response);
+        }
+
+
+
+        public async Task<PageOfResults<SubmissionEvent>> GetSubmissionEvents(int sinceEventId = 0, DateTime? sinceTime = null, int page = 1)
+        {
+            var url = $"{BaseUrl}api/submissions?page={page}";
+            if (sinceEventId > 0)
+            {
+                url += $"sinceEventId={sinceEventId}";
+            }
+            if (sinceTime.HasValue)
+            {
+                url += $"sinceTime={sinceTime.Value:yyyy-MM-ddTHH:mm:ss}";
+            }
+
+            var response = await _httpClient.GetAsync(url);
+            return JsonConvert.DeserializeObject<PageOfResults<SubmissionEvent>>(response);
         }
     }
 }
