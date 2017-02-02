@@ -54,6 +54,7 @@
     <Compile Include="Payment.cs" />
     <Compile Include="Period.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SubmissionEvent.cs" />
     <Compile Include="TransactionType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

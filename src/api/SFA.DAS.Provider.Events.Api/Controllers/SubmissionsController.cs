@@ -1,0 +1,64 @@
+﻿using System;
+using System.Threading.Tasks;
+using System.Web.Http;
+using MediatR;
+using NLog;
+using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsQuery;
+using SFA.DAS.Provider.Events.Application.Validation;
+using SFA.DAS.Provider.Events.Domain.Mapping;
+
+namespace SFA.DAS.Provider.Events.Api.Controllers
+{
+    [RoutePrefix("api/submissions")]
+    //[Authorize(Roles = "ReadPayments")]
+    public class SubmissionsController : ApiController
+    {
+        private const int PageSize = 1000;
+
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
+        private readonly ILogger _logger;
+
+        public SubmissionsController(IMediator mediator, IMapper mapper, ILogger logger)
+        {
+            _mediator = mediator;
+            _mapper = mapper;
+            _logger = logger;
+        }
+
+        [Route("", Name = "SubmissionEventsList")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetSubmissionEvents(int sinceEventId = 0, DateTime? sinceTime = null, int pageNumber = 1)
+        {
+            try
+            {
+                _logger.Debug($"Processing GetSubmissionEvents, sinceEventId={sinceEventId}, sinceTime={sinceTime}, pageNumber={pageNumber}");
+
+                var queryResponse = await _mediator.SendAsync(new GetSubmissionEventsQueryRequest
+                {
+                    SinceEventId = sinceEventId,
+                    SinceTime = sinceTime,
+                    PageNumber = pageNumber,
+                    PageSize = PageSize
+                });
+                if (!queryResponse.IsValid)
+                {
+                    throw queryResponse.Exception;
+                }
+
+                return Ok(_mapper.Map<PageOfResults<SubmissionEvent>>(queryResponse.Result));
+            }
+            catch (ValidationException ex)
+            {
+                _logger.Info($"Bad request received to GetSubmissionEvents - {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Unexpected error processing GetSubmissionEvents - {ex.Message}");
+                return InternalServerError();
+            }
+        }
+    }
+}
