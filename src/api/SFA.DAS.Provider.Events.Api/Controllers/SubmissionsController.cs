@@ -11,7 +11,7 @@ using SFA.DAS.Provider.Events.Domain.Mapping;
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
     [RoutePrefix("api/submissions")]
-    //[Authorize(Roles = "ReadPayments")]
+    [Authorize(Roles = "ReadSubmissions")]
     public class SubmissionsController : ApiController
     {
         private const int PageSize = 1000;
