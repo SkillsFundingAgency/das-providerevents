@@ -20,11 +20,11 @@ namespace SFA.DAS.Provider.Events.Submission.Infrastructure.Data
             Execute("INSERT INTO Submissions.SubmissionEvents " +
                     "(Id,IlrFileName,FileDateTime,SubmittedDateTime,ComponentVersionNumber,UKPRN,ULN,LearnRefNumber,AimSeqNumber," +
                     "PriceEpisodeIdentifier,StandardCode,ProgrammeType,FrameworkCode,PathwayCode,ActualStartDate,PlannedEndDate," +
-                    "ActualEndDate,OnProgrammeTotalPrice,CompletionTotalPrice,NINumber) " +
+                    "ActualEndDate,OnProgrammeTotalPrice,CompletionTotalPrice,NINumber,CommitmentId) " +
                     "VALUES " +
                     "(@Id,@IlrFileName,@FileDateTime,@SubmittedDateTime,@ComponentVersionNumber,@UKPRN,@ULN,@LearnRefNumber,@AimSeqNumber,@" +
                     "PriceEpisodeIdentifier,@StandardCode,@ProgrammeType,@FrameworkCode,@PathwayCode,@ActualStartDate,@PlannedEndDate,@" +
-                    "ActualEndDate,@OnProgrammeTotalPrice,@CompletionTotalPrice,@NINumber)",
+                    "ActualEndDate,@OnProgrammeTotalPrice,@CompletionTotalPrice,@NINumber,@CommitmentId)",
                     @event);
         }
     }

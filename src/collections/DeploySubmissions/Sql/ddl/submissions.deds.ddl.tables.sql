@@ -34,7 +34,8 @@ CREATE TABLE [Submissions].[SubmissionEvents]
 	ActualEndDate			date			NULL,
 	OnProgrammeTotalPrice	decimal(10,5)	NULL,
 	CompletionTotalPrice	decimal(10,5)	NULL,
-	NINumber				varchar(9)		NULL
+	NINumber				varchar(9)		NULL,
+	CommitmentId			varchar(50)		NULL
 )
 GO
 
@@ -67,6 +68,7 @@ CREATE TABLE [Submissions].[LastSeenVersion]
 	ActualEndDate			date			NULL,
 	OnProgrammeTotalPrice	decimal(10,5)	NULL,
 	CompletionTotalPrice	decimal(10,5)	NULL,
-	NINumber				varchar(9)		NULL
+	NINumber				varchar(9)		NULL,
+	CommitmentId			varchar(50)		NULL
 )
 GO
