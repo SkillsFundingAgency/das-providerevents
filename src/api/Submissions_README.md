@@ -37,7 +37,8 @@ Response:
       "PlannedEndDate": "2018-06-02T00:00:00",
       "OnProgrammeTotalPrice": 12000,
       "CompletionTotalPrice": 3000,
-      "NiNumber": "AB123456A"
+      "NiNumber": "AB123456A",
+      "CommitmentId": "6757"
     },
     {
       "Id": 2,
