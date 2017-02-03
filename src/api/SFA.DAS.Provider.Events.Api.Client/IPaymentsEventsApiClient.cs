@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using SFA.DAS.Provider.Events.Api.Types;
 
 namespace SFA.DAS.Provider.Events.Api.Client
@@ -19,5 +20,14 @@ namespace SFA.DAS.Provider.Events.Api.Client
         /// <param name="page">The page number to view. Default is 1</param>
         /// <returns>A task that yields a page of payments</returns>
         Task<PageOfResults<Payment>> GetPayments(string periodId = null, string employerAccountId = null, int page = 1);
+
+        /// <summary>
+        /// Get a page of submissions
+        /// </summary>
+        /// <param name="sinceEventId">An event id to read from (non-inclusive)</param>
+        /// <param name="sinceTime">A time to read from (non-inclusive)</param>
+        /// <param name="page">The page number to view. Default is 1</param>
+        /// <returns>A task that yields a page of submission events</returns>
+        Task<PageOfResults<SubmissionEvent>> GetSubmissionEvents(int sinceEventId = 0, DateTime? sinceTime = null, int page = 1);
     }
 }
