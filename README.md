@@ -12,6 +12,8 @@ Install-Package SFA.DAS.Provider.Events.Api.Client
 
 The api has a number of streams:
 
-* [Period ends](src/api/README.md) - notification that a period end has been completed.
-* [Payments](src/api/README.md) - notification of payments that have been processed.
-* Submissions - notification that material information about learning has changed.
+* [Period ends](src/api/PeriodEnds_README.md) - notification that a period end has been completed.
+* [Payments](src/api/Payments_README.md) - notification of payments that have been processed.
+* [Submissions](src/api/Submissions_README.md) - notification that material information about learning has changed.
+
+More information about the API can be viewed in the [README](src/api/README.md).
