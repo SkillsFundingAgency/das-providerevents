@@ -47,6 +47,7 @@
     <Compile Include="CalendarPeriod.cs" />
     <Compile Include="ContractType.cs" />
     <Compile Include="FundingSource.cs" />
+    <Compile Include="HealthStatus.cs" />
     <Compile Include="NamedCalendarPeriod.cs" />
     <Compile Include="PageOfResults.cs" />
     <Compile Include="Payment.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="PeriodEndLinks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceDataDetails.cs" />
+    <Compile Include="SubmissionEvent.cs" />
     <Compile Include="TransactionType.cs" />
   </ItemGroup>
   <ItemGroup>

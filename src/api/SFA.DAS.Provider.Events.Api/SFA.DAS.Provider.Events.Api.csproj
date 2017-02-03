@@ -175,8 +175,10 @@
     <Compile Include="App_Start\StructuremapWebApi.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\HealthCheckController.cs" />
     <Compile Include="Controllers\PaymentsController.cs" />
     <Compile Include="Controllers\PeriodEndsController.cs" />
+    <Compile Include="Controllers\SubmissionsController.cs" />
     <Compile Include="Plumbing\DependencyResolution\DefaultRegistry.cs" />
     <Compile Include="Plumbing\DependencyResolution\IoC.cs" />
     <Compile Include="Plumbing\DependencyResolution\Policies\LoggingPolicy.cs" />

@@ -33,6 +33,11 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
                 });
 
             cfg.CreateMap<PeriodEntity, Period>();
+
+
+            cfg.CreateMap<PageOfEntities<SubmissionEventEntity>, PageOfResults<SubmissionEvent>>();
+
+            cfg.CreateMap<SubmissionEventEntity, SubmissionEvent>();
         }
     }
 }

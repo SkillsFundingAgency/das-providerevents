@@ -7,9 +7,9 @@ namespace SFA.DAS.Provider.Events.Application.Validation.Rules
     {
         private const string ValidPeriodIdFormat = @"^[0-9]{4}\-R[0-9]{2}$";
 
-        public virtual Task<string> Validate(string item)
+        public virtual Task<string> Validate(string pageNumber)
         {
-            if (!Regex.IsMatch(item, ValidPeriodIdFormat))
+            if (!Regex.IsMatch(pageNumber, ValidPeriodIdFormat))
             {
                 return Task.FromResult("Period Id is not in a valid format. Excepted format is [AcademicYear]-[Period]; e.g. 1617-R01");
             }
