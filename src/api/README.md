@@ -8,6 +8,8 @@ The API has 3 endpoints [PeriodEnds](PeriodEnds_README.md), [Payments](Payments_
 
 Period ends is a slow moving feed to notify consumers when a period end has occured. Payments gives details of all payments and can optionally be filtered by period and/or employer. As payments can only occur as part of a period end, is is advisable that consumers poll the period end endpoint to see if there will be any new payments. Then query the payments endpoint filtered by at least period to minimise the amount of traffic and processing that needs to occur.
 
+Submissions is a feed of changes that have happened to the learning record.
+
 ## Security
 All API endpoints are protected by JWT tokens.
 
