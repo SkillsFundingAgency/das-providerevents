@@ -38,7 +38,7 @@ Response:
       "OnProgrammeTotalPrice": 12000,
       "CompletionTotalPrice": 3000,
       "NiNumber": "AB123456A",
-      "CommitmentId": "6757"
+      "CommitmentId": 6757
     },
     {
       "Id": 2,

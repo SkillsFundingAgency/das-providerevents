@@ -35,7 +35,7 @@ CREATE TABLE [Submissions].[SubmissionEvents]
 	OnProgrammeTotalPrice	decimal(10,5)	NULL,
 	CompletionTotalPrice	decimal(10,5)	NULL,
 	NINumber				varchar(9)		NULL,
-	CommitmentId			varchar(50)		NULL
+	CommitmentId			bigint			NULL
 )
 GO
 
@@ -69,6 +69,6 @@ CREATE TABLE [Submissions].[LastSeenVersion]
 	OnProgrammeTotalPrice	decimal(10,5)	NULL,
 	CompletionTotalPrice	decimal(10,5)	NULL,
 	NINumber				varchar(9)		NULL,
-	CommitmentId			varchar(50)		NULL
+	CommitmentId			bigint			NULL
 )
 GO

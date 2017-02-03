@@ -88,7 +88,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
                         EpisodeEffectiveTnpStartDate = startDate,
                         Tnp1 = 12000,
                         Tnp2 = 3000,
-                        CommitmentId = "567577"
+                        CommitmentId = 567577
                     }
                 }
             };
