@@ -27,7 +27,8 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                                      + "ActualEndDate, "
                                      + "OnProgrammeTotalPrice, "
                                      + "CompletionTotalPrice, "
-                                     + "NINumber";
+                                     + "NINumber, "
+                                     + "CommitmentId";
         private const string CountColumn = "COUNT(se.Id)";
         private const string Pagination = "ORDER BY se.Id OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY";
 

@@ -23,7 +23,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
                 connection.Execute("INSERT INTO Submissions.LastSeenVersion VALUES (@IlrFileName,@FileDateTime,@SubmittedDateTime," +
                                    "@ComponentVersionNumber,@UKPRN,@ULN,@LearnRefNumber,@AimSeqNumber,@PriceEpisodeIdentifier,@StandardCode," +
                                    "@ProgrammeType,@FrameworkCode,@PathwayCode,@ActualStartDate,@PlannedEndDate,@ActualEndDate," +
-                                   "@OnProgrammeTotalPrice,@CompletionTotalPrice,@NINumber)", lastSeenVersion);
+                                   "@OnProgrammeTotalPrice,@CompletionTotalPrice,@NINumber,@CommitmentId)", lastSeenVersion);
             }
         }
     }

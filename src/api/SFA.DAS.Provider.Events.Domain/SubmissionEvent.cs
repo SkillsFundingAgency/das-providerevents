@@ -21,5 +21,6 @@ namespace SFA.DAS.Provider.Events.Domain
         public decimal? OnProgrammeTotalPrice { get; set; }
         public decimal? CompletionTotalPrice { get; set; }
         public string NiNumber { get; set; }
+        public string CommitmentId { get; set; }
     }
 }

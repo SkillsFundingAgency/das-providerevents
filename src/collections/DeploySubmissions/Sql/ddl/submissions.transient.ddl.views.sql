@@ -30,7 +30,8 @@ SELECT
 		WHEN ISNULL(pe.TNP1,0) > 0 THEN pe.TNP2
 		ELSE pe.TNP4
 	END CompletionTotalPrice,
-	ld.NINumber
+	ld.NINumber,
+	pe.CommitmentId
 FROM Reference.Providers p
 INNER JOIN Reference.LearningDeliveries ld
 	ON p.UKPRN = ld.UKPRN

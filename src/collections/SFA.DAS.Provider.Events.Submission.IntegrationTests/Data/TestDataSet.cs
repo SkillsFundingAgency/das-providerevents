@@ -87,7 +87,8 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
                         PriceEpisodeAimSeqNumber = 1,
                         EpisodeEffectiveTnpStartDate = startDate,
                         Tnp1 = 12000,
-                        Tnp2 = 3000
+                        Tnp2 = 3000,
+                        CommitmentId = 567577
                     }
                 }
             };
@@ -143,7 +144,8 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
                         ActualEndDate = learningDelivery.LearnActEndDate,
                         OnProgrammeTotalPrice = pe.Tnp1,
                         CompletionTotalPrice = pe.Tnp2,
-                        NiNumber = learningDelivery.NiNumber
+                        NiNumber = learningDelivery.NiNumber,
+                        CommitmentId = pe.CommitmentId
                     }));
             }
 
