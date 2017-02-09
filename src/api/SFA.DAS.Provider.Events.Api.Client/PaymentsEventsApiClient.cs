@@ -60,5 +60,29 @@ namespace SFA.DAS.Provider.Events.Api.Client
             var response = await _httpClient.GetAsync(url);
             return JsonConvert.DeserializeObject<PageOfResults<SubmissionEvent>>(response);
         }
+
+        public async Task<PageOfResults<DataLockEvent>> GetDataLockEvents(int sinceEventId = 0, DateTime? sinceTime = null, string employerAccountId = null, long  ukprn = 0, int page = 1)
+        {
+            var url = $"{BaseUrl}api/datalock?page={page}";
+            if (sinceEventId > 0)
+            {
+                url += $"&sinceEventId={sinceEventId}";
+            }
+            if (sinceTime.HasValue)
+            {
+                url += $"&sinceTime={sinceTime.Value:yyyy-MM-ddTHH:mm:ss}";
+            }
+            if (!string.IsNullOrEmpty(employerAccountId))
+            {
+                url += $"&employerAccountId={employerAccountId}";
+            }
+            if (ukprn > 0)
+            {
+                url += $"&ukprn={ukprn}";
+            }
+
+            var response = await _httpClient.GetAsync(url);
+            return JsonConvert.DeserializeObject<PageOfResults<DataLockEvent>>(response);
+        }
     }
 }

@@ -46,6 +46,9 @@
   <ItemGroup>
     <Compile Include="CalendarPeriod.cs" />
     <Compile Include="ContractType.cs" />
+    <Compile Include="DataLockEvent.cs" />
+    <Compile Include="DataLockEventError.cs" />
+    <Compile Include="EventSource.cs" />
     <Compile Include="FundingSource.cs" />
     <Compile Include="HealthStatus.cs" />
     <Compile Include="NamedCalendarPeriod.cs" />
