@@ -40,6 +40,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ddl", "ddl", "{8DB91691-7F7A-424C-86F2-BE76A6FD5B0F}"
 	ProjectSection(SolutionItems) = preProject
 		DeployDataLock\sql\ddl\datalock.deds.ddl.tables.sql = DeployDataLock\sql\ddl\datalock.deds.ddl.tables.sql
+		DeployDataLock\sql\ddl\datalock.transient.ddl.tables.sql = DeployDataLock\sql\ddl\datalock.transient.ddl.tables.sql
+		DeployDataLock\sql\ddl\datalock.transient.ddl.views.sql = DeployDataLock\sql\ddl\datalock.transient.ddl.views.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dml", "dml", "{6A3B6C2E-062C-4639-B2AD-18500D395520}"

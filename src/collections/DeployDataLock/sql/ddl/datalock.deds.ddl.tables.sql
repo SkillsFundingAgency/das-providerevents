@@ -13,7 +13,6 @@ IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'DataLockEvents' AN
 	END
 GO
 
--- Start date, course, price
 CREATE TABLE [DataLock].[DataLockEvents]
 (
 	Id							bigint			PRIMARY KEY,
@@ -35,7 +34,43 @@ CREATE TABLE [DataLock].[DataLockEvents]
 	IlrFrameworkCode			int				NULL,
 	IlrPathwayCode				int				NULL,
 	IlrTrainingPrice			decimal(12,5)	NULL,
-	IlrEndpointAssessorPrice	decimal(12,5)	NULL,
+	IlrEndpointAssessorPrice	decimal(12,5)	NULL
+)
+GO
+
+--------------------------------------------------------------------------------------
+-- DataLockEventPeriods
+--------------------------------------------------------------------------------------
+IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'DataLockEventPeriods' AND [schema_id] = SCHEMA_ID('DataLock'))
+	BEGIN
+		DROP TABLE [DataLock].[DataLockEventPeriods]
+	END
+GO
+
+CREATE TABLE [DataLock].[DataLockEventPeriods]
+(
+	DataLockEventId			bigint			NOT NULL,
+	CollectionPeriodName	varchar(8)		NOT NULL,
+	CollectionPeriodMonth	int				NOT NULL,
+	CollectionPeriodYear	int				NOT NULL,
+	CommitmentVersion		bigint			NOT NULL,
+	IsPayable				bit				NOT NULL
+)
+GO
+
+--------------------------------------------------------------------------------------
+-- DataLockEventCommitmentVersions
+--------------------------------------------------------------------------------------
+IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'DataLockEventCommitmentVersions' AND [schema_id] = SCHEMA_ID('DataLock'))
+	BEGIN
+		DROP TABLE [DataLock].[DataLockEventCommitmentVersions]
+	END
+GO
+
+CREATE TABLE [DataLock].[DataLockEventCommitmentVersions]
+(
+	DataLockEventId				bigint			NOT NULL,
+	CommitmentVersion			bigint			NOT NULL,
 	CommitmentStartDate			date			NULL,
 	CommitmentStandardCode		bigint			NULL,
 	CommitmentProgrammeType		int				NULL,
