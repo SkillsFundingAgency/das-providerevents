@@ -43,9 +43,13 @@
     <Compile Include="CalendarPeriod.cs" />
     <Compile Include="ContractType.cs" />
     <Compile Include="DataLockEvent.cs" />
+    <Compile Include="DataLockEventApprenticeship.cs" />
     <Compile Include="DataLockEventError.cs" />
+    <Compile Include="DataLockEventPeriod.cs" />
+    <Compile Include="Data\Entities\DataLockEventApprenticeshipEntity.cs" />
     <Compile Include="Data\Entities\DataLockEventErrorEntity.cs" />
     <Compile Include="Data\Entities\DataLockEventEntity.cs" />
+    <Compile Include="Data\Entities\DataLockEventPeriodEntity.cs" />
     <Compile Include="Data\Entities\PageOfEntities.cs" />
     <Compile Include="Data\Entities\PaymentEntity.cs" />
     <Compile Include="Data\Entities\PeriodEntity.cs" />

@@ -18,6 +18,8 @@ namespace SFA.DAS.Provider.Events.Domain.Data
         Task<PageOfEntities<DataLockEventEntity>> GetDataLockEventsForAccountAndProviderSinceId(string employerAccountId, long ukprn, int eventId, int page, int pageSize);
         Task<PageOfEntities<DataLockEventEntity>> GetDataLockEventsForAccountAndProviderSinceTime(string employerAccountId, long ukprn, DateTime time, int page, int pageSize);
 
-        Task<DataLockEventErrorEntity[]> GetDataLockErrorsForDataLockEvent(long eventId);
+        Task<DataLockEventErrorEntity[]> GetDataLockErrorsForEvent(long eventId);
+        Task<DataLockEventPeriodEntity[]> GetDataLockPeriodsForEvent(long eventId);
+        Task<DataLockEventApprenticeshipEntity[]> GetDataLockApprenticeshipsForEvent(long eventId);
     }
 }

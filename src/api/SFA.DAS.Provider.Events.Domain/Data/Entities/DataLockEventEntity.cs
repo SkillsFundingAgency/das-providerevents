@@ -12,8 +12,7 @@ namespace SFA.DAS.Provider.Events.Domain.Data.Entities
         public string LearnRefNumber { get; set; }
         public long AimSeqNumber { get; set; }
         public string PriceEpisodeIdentifier { get; set; }
-        public long CommitmentId { get; set; }
-        public long CommitmentVersion { get; set; }
+        public long ApprenticeshipId { get; set; }
         public long EmployerAccountId { get; set; }
         public int EventSource { get; set; }
         public bool HasErrors { get; set; }
@@ -24,14 +23,9 @@ namespace SFA.DAS.Provider.Events.Domain.Data.Entities
         public int? IlrPathwayCode { get; set; }
         public decimal? IlrTrainingPrice { get; set; }
         public decimal? IlrEndpointAssessorPrice { get; set; }
-        public DateTime? CommitmentStartDate { get; set; }
-        public long? CommitmentStandardCode { get; set; }
-        public int? CommitmentProgrammeType { get; set; }
-        public int? CommitmentFrameworkCode { get; set; }
-        public int? CommitmentPathwayCode { get; set; }
-        public decimal? CommitmentNegotiatedPrice { get; set; }
-        public DateTime? CommitmentEffectiveDate { get; set; }
 
         public DataLockEventErrorEntity[] Errors { get; set; }
+        public DataLockEventPeriodEntity[] Periods { get; set; }
+        public DataLockEventApprenticeshipEntity[] Apprenticeships { get; set; }
     }
 }

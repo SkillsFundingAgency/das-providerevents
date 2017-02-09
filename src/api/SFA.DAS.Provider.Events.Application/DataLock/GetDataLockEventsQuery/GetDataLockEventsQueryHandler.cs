@@ -87,8 +87,11 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.GetDataLockEventsQuery
                 {
                     if (entity.HasErrors)
                     {
-                        entity.Errors = await _dataLockEventsRepository.GetDataLockErrorsForDataLockEvent(entity.Id);
+                        entity.Errors = await _dataLockEventsRepository.GetDataLockErrorsForEvent(entity.Id);
                     }
+
+                    entity.Periods = await _dataLockEventsRepository.GetDataLockPeriodsForEvent(entity.Id);
+                    entity.Apprenticeships = await _dataLockEventsRepository.GetDataLockApprenticeshipsForEvent(entity.Id);
                 }
 
                 return new GetDataLockEventsQueryResponse

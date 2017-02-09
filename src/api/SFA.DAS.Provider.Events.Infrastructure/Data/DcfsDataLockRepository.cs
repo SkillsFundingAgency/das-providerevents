@@ -16,8 +16,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                                      + "LearnRefNumber, "
                                      + "AimSeqNumber, "
                                      + "PriceEpisodeIdentifier, "
-                                     + "CommitmentId, "
-                                     + "CommitmentVersion, "
+                                     + "CommitmentId AS ApprenticeshipId, "
                                      + "EmployerAccountId, "
                                      + "EventSource, "
                                      + "HasErrors, "
@@ -27,21 +26,19 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                                      + "IlrFrameworkCode, "
                                      + "IlrPathwayCode, "
                                      + "IlrTrainingPrice, "
-                                     + "IlrEndpointAssessorPrice, "
-                                     + "CommitmentStartDate, "
-                                     + "CommitmentStandardCode, "
-                                     + "CommitmentProgrammeType, "
-                                     + "CommitmentFrameworkCode, "
-                                     + "CommitmentPathwayCode, "
-                                     + "CommitmentNegotiatedPrice, "
-                                     + "CommitmentEffectiveDate";
+                                     + "IlrEndpointAssessorPrice";
         private const string CountColumn = "COUNT(ev.Id)";
         private const string Pagination = "ORDER BY ev.Id OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY";
 
         private const string ErrorsSource = "DataLock.DataLockEventErrors er";
-        private const string ErrorsColumns = "DataLockEventId, "
-                                           + "ErrorCode, "
+        private const string ErrorsColumns = "ErrorCode, "
                                            + "SystemDescription";
+
+        private const string PeriodsSource = "";
+        private const string PeriodsColumns = "";
+
+        private const string ApprenticeshipsSource = "";
+        private const string ApprenticeshipsColumns = "";
 
         public DcfsDataLockRepository()
             : base("EventsConnectionString")
@@ -105,10 +102,22 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             return await GetPageOfDataLockEvents(whereClause, page, pageSize);
         }
 
-        public async Task<DataLockEventErrorEntity[]> GetDataLockErrorsForDataLockEvent(long eventId)
+        public async Task<DataLockEventErrorEntity[]> GetDataLockErrorsForEvent(long eventId)
         {
             var command = $"SELECT {ErrorsColumns} FROM {ErrorsSource} WHERE er.DataLockEventId = @eventId";
             return await Query<DataLockEventErrorEntity>(command, new { eventId });
+        }
+
+        public async Task<DataLockEventPeriodEntity[]> GetDataLockPeriodsForEvent(long eventId)
+        {
+            var command = $"SELECT {PeriodsColumns} FROM {PeriodsSource} WHERE pe.DataLockEventId = @eventId";
+            return await Query<DataLockEventPeriodEntity>(command, new { eventId });
+        }
+
+        public async Task<DataLockEventApprenticeshipEntity[]> GetDataLockApprenticeshipsForEvent(long eventId)
+        {
+            var command = $"SELECT {ApprenticeshipsColumns} FROM {ApprenticeshipsSource} WHERE app.DataLockEventId = @eventId";
+            return await Query<DataLockEventApprenticeshipEntity>(command, new { eventId });
         }
 
         private async Task<PageOfEntities<DataLockEventEntity>> GetPageOfDataLockEvents(string whereClause, int page, int pageSize)

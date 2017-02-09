@@ -33,8 +33,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 LearnRefNumber = "Lrn1",
                 AimSeqNumber = 1,
                 PriceEpisodeIdentifier = "25-27-01/05/2017",
-                CommitmentId = 1,
-                CommitmentVersion = 19,
+                ApprenticeshipId = 1,
                 EmployerAccountId = 123,
                 EventSource = EventSource.Submission,
                 HasErrors = true,
@@ -42,17 +41,48 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 IlrStandardCode = 27,
                 IlrTrainingPrice = 12000m,
                 IlrEndpointAssessorPrice = 3000m,
-                CommitmentStartDate = new DateTime(2017, 5, 1),
-                CommitmentStandardCode = 27,
-                CommitmentNegotiatedPrice = 17500m,
-                CommitmentEffectiveDate = new DateTime(2017, 5, 1),
                 Errors = new []
                 {
                     new DataLockEventError
                     {
-                        DataLockEventId = 1,
                         ErrorCode = "Err15",
                         SystemDescription = "Mismatch on price."
+                    }
+                },
+                Periods = new []
+                {
+                    new DataLockEventPeriod
+                    {
+                        ApprenticeshipVersion = 19,
+                        Period = new NamedCalendarPeriod
+                        {
+                            Id = "1617-R09",
+                            Month = 4,
+                            Year = 2017
+                        },
+                        Payable = false
+                    },
+                    new DataLockEventPeriod
+                    {
+                        ApprenticeshipVersion = 19,
+                        Period = new NamedCalendarPeriod
+                        {
+                            Id = "1617-R10",
+                            Month = 5,
+                            Year = 2017
+                        },
+                        Payable = false
+                    }
+                },
+                Apprenticeships = new []
+                {
+                    new DataLockEventApprenticeship
+                    {
+                        Version = 19,
+                        StartDate = new DateTime(2017, 5, 1),
+                        StandardCode = 27,
+                        NegotiatedPrice = 17500m,
+                        EffectiveDate = new DateTime(2017, 5, 1)
                     }
                 }
             };
@@ -113,8 +143,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                    && original.LearnRefNumber == client.LearnRefNumber
                    && original.AimSeqNumber == client.AimSeqNumber
                    && original.PriceEpisodeIdentifier == client.PriceEpisodeIdentifier
-                   && original.CommitmentId == client.CommitmentId
-                   && original.CommitmentVersion == client.CommitmentVersion
+                   && original.ApprenticeshipId == client.ApprenticeshipId
                    && original.EmployerAccountId == client.EmployerAccountId
                    && original.EventSource == client.EventSource
                    && original.HasErrors == client.HasErrors
@@ -125,14 +154,9 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                    && original.IlrPathwayCode == client.IlrPathwayCode
                    && original.IlrTrainingPrice == client.IlrTrainingPrice
                    && original.IlrEndpointAssessorPrice == client.IlrEndpointAssessorPrice
-                   && original.CommitmentStartDate == client.CommitmentStartDate
-                   && original.CommitmentStandardCode == client.CommitmentStandardCode
-                   && original.CommitmentProgrammeType == client.CommitmentProgrammeType
-                   && original.CommitmentFrameworkCode == client.CommitmentFrameworkCode
-                   && original.CommitmentPathwayCode == client.CommitmentPathwayCode
-                   && original.CommitmentNegotiatedPrice == client.CommitmentNegotiatedPrice
-                   && original.CommitmentEffectiveDate == client.CommitmentEffectiveDate
-                   && EventErrorsMatch(original.Errors, client.Errors);
+                   && EventErrorsMatch(original.Errors, client.Errors)
+                   && EventPeriodsMatch(original.Periods, client.Periods)
+                   && EventApprenticeshipsMatch(original.Apprenticeships, client.Apprenticeships);
         }
 
         private bool EventErrorsMatch(DataLockEventError[] original, DataLockEventError[] client)
@@ -154,9 +178,58 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 
         private bool ErrorsMatch(DataLockEventError original, DataLockEventError client)
         {
-            return original.DataLockEventId == client.DataLockEventId
-                   && original.ErrorCode == client.ErrorCode
+            return original.ErrorCode == client.ErrorCode
                    && original.SystemDescription == client.SystemDescription;
+        }
+
+        private bool EventPeriodsMatch(DataLockEventPeriod[] original, DataLockEventPeriod[] client)
+        {
+            if (original.Length != client.Length)
+            {
+                return false;
+            }
+
+            var result = true;
+
+            for (var x = 0; x < original.Length; x++)
+            {
+                result = result && PeriodsMatch(original[x], client[x]);
+            }
+
+            return result;
+        }
+
+        private bool PeriodsMatch(DataLockEventPeriod original, DataLockEventPeriod client)
+        {
+            return original.ApprenticeshipVersion == client.ApprenticeshipVersion
+                   && original.Period.Id == client.Period.Id
+                   && original.Period.Month == client.Period.Month
+                   && original.Period.Year == client.Period.Year
+                   && original.Payable == client.Payable;
+        }
+
+        private bool EventApprenticeshipsMatch(DataLockEventApprenticeship[] original, DataLockEventApprenticeship[] client)
+        {
+            if (original.Length != client.Length)
+            {
+                return false;
+            }
+
+            var result = true;
+
+            return result;
+        }
+
+        private bool ApprenticeshipsMatch(DataLockEventApprenticeship original, DataLockEventApprenticeship client)
+        {
+            return original.Version == client.Version
+                   && original.StartDate == client.StartDate
+                   && original.StandardCode == client.StandardCode
+                   && original.ProgrammeType == client.ProgrammeType
+                   && original.FrameworkCode == client.FrameworkCode
+                   && original.PathwayCode == client.PathwayCode
+                   && original.NegotiatedPrice == client.NegotiatedPrice
+                   && original.EffectiveDate == client.EffectiveDate;
         }
     }
 }
