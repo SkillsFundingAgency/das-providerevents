@@ -38,6 +38,13 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
             cfg.CreateMap<PageOfEntities<SubmissionEventEntity>, PageOfResults<SubmissionEvent>>();
 
             cfg.CreateMap<SubmissionEventEntity, SubmissionEvent>();
+
+
+            cfg.CreateMap<PageOfEntities<DataLockEventEntity>, PageOfResults<DataLockEvent>>();
+
+            cfg.CreateMap<DataLockEventEntity, DataLockEvent>();
+
+            cfg.CreateMap<DataLockEventErrorEntity, DataLockEventError>();
         }
     }
 }

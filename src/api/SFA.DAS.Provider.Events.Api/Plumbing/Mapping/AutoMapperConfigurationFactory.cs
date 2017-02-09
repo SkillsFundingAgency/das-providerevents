@@ -52,6 +52,11 @@ namespace SFA.DAS.Provider.Events.Api.Plumbing.Mapping
 
                 cfg.CreateMap<Domain.PageOfResults<Domain.SubmissionEvent>, Types.PageOfResults<Types.SubmissionEvent>>();
                 cfg.CreateMap<Domain.SubmissionEvent, Types.SubmissionEvent>();
+
+
+                cfg.CreateMap<Domain.PageOfResults<Domain.DataLockEvent>, Types.PageOfResults<Types.DataLockEvent>>();
+                cfg.CreateMap<Domain.DataLockEvent, Types.DataLockEvent>();
+                cfg.CreateMap<Domain.DataLockEventError, Types.DataLockEventError>();
             });
         }
     }
