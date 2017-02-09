@@ -4,6 +4,6 @@
     {
         public long ApprenticeshipVersion { get; set; }
         public NamedCalendarPeriod Period { get; set; }
-        public bool Payable { get; set; }
+        public bool IsPayable { get; set; }
     }
 }

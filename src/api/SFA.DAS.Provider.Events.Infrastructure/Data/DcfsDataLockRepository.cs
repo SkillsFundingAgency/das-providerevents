@@ -34,11 +34,22 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         private const string ErrorsColumns = "ErrorCode, "
                                            + "SystemDescription";
 
-        private const string PeriodsSource = "";
-        private const string PeriodsColumns = "";
+        private const string PeriodsSource = "DataLock.DataLockEventPeriods pe";
+        private const string PeriodsColumns = "CollectionPeriodName AS CollectionPeriodId, "
+                                              + "CollectionPeriodMonth, "
+                                              + "CollectionPeriodYear, "
+                                              + "CommitmentVersion AS ApprenticeshipVersion, "
+                                              + "IsPayable";
 
-        private const string ApprenticeshipsSource = "";
-        private const string ApprenticeshipsColumns = "";
+        private const string ApprenticeshipsSource = "DataLock.DataLockEventCommitmentVersions cv";
+        private const string ApprenticeshipsColumns = "CommitmentVersion AS Version, "
+                                                      + "CommitmentStartDate AS StartDate, "
+                                                      + "CommitmentStandardCode AS StandardCode, "
+                                                      + "CommitmentProgrammeType AS ProgrammeType, "
+                                                      + "CommitmentFrameworkCode AS FrameworkCode, "
+                                                      + "CommitmentPathwayCode AS PathwayCode, "
+                                                      + "CommitmentNegotiatedPrice AS NegotiatedPrice, "
+                                                      + "CommitmentEffectiveDate AS EffectiveDate";
 
         public DcfsDataLockRepository()
             : base("EventsConnectionString")
@@ -116,7 +127,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 
         public async Task<DataLockEventApprenticeshipEntity[]> GetDataLockApprenticeshipsForEvent(long eventId)
         {
-            var command = $"SELECT {ApprenticeshipsColumns} FROM {ApprenticeshipsSource} WHERE app.DataLockEventId = @eventId";
+            var command = $"SELECT {ApprenticeshipsColumns} FROM {ApprenticeshipsSource} WHERE cv.DataLockEventId = @eventId";
             return await Query<DataLockEventApprenticeshipEntity>(command, new { eventId });
         }
 

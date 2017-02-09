@@ -60,7 +60,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                             Month = 4,
                             Year = 2017
                         },
-                        Payable = false
+                        IsPayable = false
                     },
                     new DataLockEventPeriod
                     {
@@ -71,7 +71,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                             Month = 5,
                             Year = 2017
                         },
-                        Payable = false
+                        IsPayable = false
                     }
                 },
                 Apprenticeships = new []
@@ -205,7 +205,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                    && original.Period.Id == client.Period.Id
                    && original.Period.Month == client.Period.Month
                    && original.Period.Year == client.Period.Year
-                   && original.Payable == client.Payable;
+                   && original.IsPayable == client.IsPayable;
         }
 
         private bool EventApprenticeshipsMatch(DataLockEventApprenticeship[] original, DataLockEventApprenticeship[] client)

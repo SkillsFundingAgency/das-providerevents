@@ -56,7 +56,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController
                                             Month = 4,
                                             Year = 2017
                                         },
-                                        Payable = true
+                                        IsPayable = true
                                     }
                                 },
                                 Apprenticeships = new []
@@ -105,7 +105,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController
                                         Month = e.Periods[0].Period.Month,
                                         Year = e.Periods[0].Period.Year
                                     },
-                                    Payable = e.Periods[0].Payable
+                                    IsPayable = e.Periods[0].IsPayable
                                 }
                             },
                             Apprenticeships = new []

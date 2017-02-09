@@ -6,6 +6,6 @@
         public string CollectionPeriodId { get; set; }
         public int CollectionPeriodMonth { get; set; }
         public int CollectionPeriodYear { get; set; }
-        public bool Payable { get; set; }
+        public bool IsPayable { get; set; }
     }
 }
