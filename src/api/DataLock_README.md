@@ -85,7 +85,7 @@ Response:
 }
 ```
 
-Response *Items* structure
+Response **Items** structure:
 | Attribute | Data type | Optional | Description |
 | --- | --- | --- | --- |
 | Id | long | no | event unique identifier |
@@ -117,7 +117,7 @@ Response *Items* structure
 | CommitmentEffectiveDate | DateTime | yes | apprenticeship change effective from date time |
 | Errors | DataLockEventError[] | no | event's list of errors, see following table for structure |
 
-*Errors* structure
+**Errors** structure:
 | Attribute | Data type | Optional | Description |
 | --- | --- | --- | --- |
 | DataLockEventId | long | no | related data lock event unique identifier |
