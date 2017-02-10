@@ -155,7 +155,7 @@ Response **Items** structure:
 | Attribute | Data type | Optional | Description |
 | --- | --- | --- | --- |
 | Id | long | no | event unique identifier |
-| ProcessDateTime | DateTime | No | ??? |
+| ProcessDateTime | DateTime | No | event creation date and time |
 | IlrFileName | string | no | name of the related ilr file |
 | Ukprn | long | no | learning provider's ukprn |
 | Uln | long | no | learner's unique number |
