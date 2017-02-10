@@ -36,10 +36,10 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 StandardCode = 27,
                 ActualStartDate = new DateTime(2017, 4, 1),
                 PlannedEndDate =  new DateTime(2018, 5, 1),
-                OnProgrammeTotalPrice = 12000m,
-                CompletionTotalPrice = 3000m,
+                TrainingPrice = 12000m,
+                EndpointAssessorPrice = 3000m,
                 NiNumber = "AB12345C",
-                CommitmentId = "1"
+                ApprenticeshipId = 1
             };
 
             _submissionFrameworkEvent = new SubmissionEvent
@@ -56,10 +56,10 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 PathwayCode = 6,
                 ActualStartDate = new DateTime(2017, 4, 1),
                 PlannedEndDate = new DateTime(2018, 5, 1),
-                OnProgrammeTotalPrice = 6000m,
-                CompletionTotalPrice = 1500m,
+                TrainingPrice = 6000m,
+                EndpointAssessorPrice = 1500m,
                 NiNumber = "AB12345C",
-                CommitmentId = "9"
+                ApprenticeshipId = 9
             };
 
             _httpClient = new Mock<SecureHttpClient>();
@@ -136,10 +136,10 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                    && original.ActualStartDate == client.ActualStartDate
                    && original.PlannedEndDate == client.PlannedEndDate
                    && original.ActualEndDate == client.ActualEndDate
-                   && original.OnProgrammeTotalPrice == client.OnProgrammeTotalPrice
-                   && original.CompletionTotalPrice == client.CompletionTotalPrice
+                   && original.TrainingPrice == client.TrainingPrice
+                   && original.EndpointAssessorPrice == client.EndpointAssessorPrice
                    && original.NiNumber == client.NiNumber
-                   && original.CommitmentId == client.CommitmentId;
+                   && original.ApprenticeshipId == client.ApprenticeshipId;
         }
     }
 }

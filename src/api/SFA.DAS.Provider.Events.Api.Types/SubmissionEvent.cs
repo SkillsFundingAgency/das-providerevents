@@ -18,9 +18,9 @@ namespace SFA.DAS.Provider.Events.Api.Types
         public DateTime? ActualStartDate { get; set; }
         public DateTime? PlannedEndDate { get; set; }
         public DateTime? ActualEndDate { get; set; }
-        public decimal? OnProgrammeTotalPrice { get; set; }
-        public decimal? CompletionTotalPrice { get; set; }
+        public decimal? TrainingPrice { get; set; }
+        public decimal? EndpointAssessorPrice { get; set; }
         public string NiNumber { get; set; }
-        public string CommitmentId { get; set; }
+        public long? ApprenticeshipId { get; set; }
     }
 }

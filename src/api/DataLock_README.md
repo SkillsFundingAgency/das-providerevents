@@ -12,7 +12,7 @@ Where:
 * since_event_id = (Optional) The event id that you want to read from. This is non-inclusive.
 * since_time = (Optional) The time that you want to read from. This is non-inclusive.
 * employer_account_id = (Optional) employer account identifier to filter by, i.e. 12345. Default is null / no filter.
-* ukprn = (Optional) learning provider ukprn to filter by, i.e. 12345. Default is null / mo filter.
+* ukprn = (Optional) learning provider ukprn to filter by, i.e. 12345. Default is null / no filter.
 * page_number = (Optional) page number to display, i.e. 10. Default is 1.
 
 Note: You may specify since_event_id, since_time or neither. You may not specify both.
