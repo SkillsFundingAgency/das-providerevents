@@ -91,6 +91,57 @@ Response:
 }
 ```
 
+Response **Items** structure:
+
+| Attribute | Data type | Optional | Description |
+| --- | --- | --- | --- |
+| Id | string | no | payment unique identifier |
+| Ukprn | long | no | learning provider's ukprn |
+| Uln | long | no | learner's unique number |
+| ApprenticeshipId | long | yes | apprenticeship unique identifier |
+| ApprenticeshipVersion | long | yes | apprenticeship version |
+| EmployerAccountId | string | yes | employer account unique identifier |
+| EmployerAccountVersion | string | yes | employer account version |
+| DeliveryPeriod | CalendarPeriod | no | ilr learning period containing calendar month and calcndar year |
+| CollectionPeriod | NamedCalendarPeriod | no | ilr collection period containing an id, calendar month and calcndar year |
+| EvidenceSubmittedOn | DateTime | no | ilr file submission date and time |
+| FundingSource | FundingSource | no | funding source of the payment, see following tables for all possible values |
+| TransactionType | TransactionType | no | transaction of the payment, see following tables for all possible values |
+| Amount | decimal | no | payment amount |
+| StandardCode | long | yes | learning standard code |
+| ProgrammeType | int | yes | learning programme type |
+| FrameworkCode | int | yes | learning frameworh code |
+| PathwayCode | int | yes | learning pathway code |
+| ContractType | ContractType | no | apprenticeship contract type, see following tables for all possible values |
+
+**FundingSource** values:
+
+| Value | Description |
+| --- | --- |
+| Levy | payment funded by the employer's digital account |
+| CoInvestedSfa | payment co-invested by the SFA |
+| CoInvestedEmployer | payment co-invested by the employer |
+| FullyFundedSfa | payment fully covered by the SFA |
+
+**TransactionType** values:
+
+| Value | Description |
+| --- | --- |
+| Learning | on programme payment |
+| Completion | completion payment |
+| Balancing | balancing payment |
+| First16To18EmployerIncentive | first 16-18 employer incentive payment |
+| First16To18ProviderIncentive | first 16-18 provider incentive payment |
+| Second16To18EmployerIncentive | second 16-18 employer incentive payment |
+| Second16To18ProviderIncentive | second 16-18 provider incentive payment |
+
+**ContractType** values:
+
+| Value | Description |
+| --- | --- |
+| ContractWithEmployer | levy contract |
+| ContractWithSfa | non levy contract |
+
 ## Using the client
 
 A .NET client also exists to easy calling the api and encapsulates the authentication and deserialization. It can be added from nuget:
