@@ -50,11 +50,11 @@ namespace SFA.DAS.Provider.Events.Api.Client
             var url = $"{BaseUrl}api/submissions?page={page}";
             if (sinceEventId > 0)
             {
-                url += $"sinceEventId={sinceEventId}";
+                url += $"&sinceEventId={sinceEventId}";
             }
             if (sinceTime.HasValue)
             {
-                url += $"sinceTime={sinceTime.Value:yyyy-MM-ddTHH:mm:ss}";
+                url += $"&sinceTime={sinceTime.Value:yyyy-MM-ddTHH:mm:ss}";
             }
 
             var response = await _httpClient.GetAsync(url);

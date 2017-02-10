@@ -217,6 +217,11 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 
             var result = true;
 
+            for (var x = 0; x < original.Length; x++)
+            {
+                result = result & ApprenticeshipsMatch(original[x], client[x]);
+            }
+
             return result;
         }
 
