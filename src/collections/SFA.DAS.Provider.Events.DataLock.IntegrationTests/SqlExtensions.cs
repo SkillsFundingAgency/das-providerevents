@@ -35,6 +35,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests
                       .Replace("${ILR_Summarisation.FQ}", databaseName)
                       .Replace("${DAS_Commitments.FQ}", databaseName)
                       .Replace("${DAS_PeriodEnd.FQ}", databaseName)
+                      .Replace("${DataLock_Deds.FQ}", databaseName)
                       .Replace("${YearOfCollection}", "1617");
         }
     }
