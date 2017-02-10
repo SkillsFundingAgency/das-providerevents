@@ -1,3 +1,16 @@
+--------------------------------------------------------------------------------------
+-- IdentifierSeed
+--------------------------------------------------------------------------------------
+INSERT INTO Reference.IdentifierSeed
+(IdentifierName, MaxIdInDeds)
+SELECT
+	'SubmissionEvents',
+	MAX(Id)
+FROM ${DAS_ProviderEvents.FQ}.Submissions.SubmissionEvents
+
+---------------------------------------------------------------
+-- LatestVersion
+---------------------------------------------------------------
 INSERT INTO [Submissions].[LatestVersion]
 (
 	IlrFileName,
