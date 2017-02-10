@@ -12,6 +12,16 @@ SELECT
 FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEvents
 GROUP BY PriceEpisodeIdentifier
 
+--------------------------------------------------------------------------------------
+-- IdentifierSeed
+--------------------------------------------------------------------------------------
+INSERT INTO Reference.IdentifierSeed
+(IdentifierName, MaxIdInDeds)
+SELECT
+	'DataLockEvents',
+	MAX(Id)
+FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEvents
+
 ---------------------------------------------------------------
 -- DataLockEvents
 ---------------------------------------------------------------

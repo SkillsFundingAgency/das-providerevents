@@ -28,6 +28,22 @@ CREATE TABLE DataLock.TaskLog
 GO
 
 --------------------------------------------------------------------------------------
+-- IdentifierSeed
+--------------------------------------------------------------------------------------
+IF EXISTS(SELECT [object_id] FROM sys.tables WHERE [name]='IdentifierSeed' AND [schema_id] = SCHEMA_ID('Reference'))
+BEGIN
+    DROP TABLE Reference.IdentifierSeed
+END
+GO
+
+CREATE TABLE Reference.IdentifierSeed
+(
+    IdentifierName		varchar(50)		PRIMARY KEY,
+	MaxIdInDeds			bigint			NOT NULL
+)
+GO
+
+--------------------------------------------------------------------------------------
 -- DataLockEvents
 --------------------------------------------------------------------------------------
 IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'DataLockEvents' AND [schema_id] = SCHEMA_ID('DataLock'))

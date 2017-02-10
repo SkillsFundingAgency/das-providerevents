@@ -45,6 +45,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ddl", "ddl", "{8DB91691-7F7
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dml", "dml", "{6A3B6C2E-062C-4639-B2AD-18500D395520}"
+	ProjectSection(SolutionItems) = preProject
+		DeployDataLock\sql\dml\01 datalock.populate.reference.provider.periodend.sql = DeployDataLock\sql\dml\01 datalock.populate.reference.provider.periodend.sql
+		DeployDataLock\sql\dml\01 datalock.populate.reference.provider.submission.sql = DeployDataLock\sql\dml\01 datalock.populate.reference.provider.submission.sql
+		DeployDataLock\sql\dml\02 datalock.populate.reference.input.sql = DeployDataLock\sql\dml\02 datalock.populate.reference.input.sql
+		DeployDataLock\sql\dml\03 datalock.populate.reference.history.sql = DeployDataLock\sql\dml\03 datalock.populate.reference.history.sql
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.DataLock.UnitTests", "SFA.DAS.Provider.Events.DataLock.UnitTests\SFA.DAS.Provider.Events.DataLock.UnitTests.csproj", "{5011105D-1ED2-4682-A53E-61CF8A2FF902}"
 EndProject
