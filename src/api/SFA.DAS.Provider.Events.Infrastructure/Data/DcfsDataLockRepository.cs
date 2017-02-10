@@ -64,7 +64,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 
         public async Task<PageOfEntities<DataLockEventEntity>> GetDataLockEventsSinceTime(DateTime time, int page, int pageSize)
         {
-            var whereClause = $"WHERE ev.SubmittedDateTime > '{time:yyyy-MM-dd HH:mm:ss}'";
+            var whereClause = $"WHERE ev.ProcessDateTime > '{time:yyyy-MM-dd HH:mm:ss}'";
             return await GetPageOfDataLockEvents(whereClause, page, pageSize);
         }
 
@@ -79,7 +79,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         public async Task<PageOfEntities<DataLockEventEntity>> GetDataLockEventsForAccountSinceTime(string employerAccountId, DateTime time, int page, int pageSize)
         {
             var whereClause = $"WHERE ev.EmployerAccountId = '{employerAccountId.Replace("'", "''")}'"
-                              + $" AND ev.SubmittedDateTime > '{time:yyyy-MM-dd HH:mm:ss}'";
+                              + $" AND ev.ProcessDateTime > '{time:yyyy-MM-dd HH:mm:ss}'";
             return await GetPageOfDataLockEvents(whereClause, page, pageSize);
         }
 
@@ -94,7 +94,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         public async Task<PageOfEntities<DataLockEventEntity>> GetDataLockEventsForProviderSinceTime(long ukprn, DateTime time, int page, int pageSize)
         {
             var whereClause = $"WHERE ev.Ukprn = {ukprn}"
-                              + $" AND ev.SubmittedDateTime > '{time:yyyy-MM-dd HH:mm:ss}'";
+                              + $" AND ev.ProcessDateTime > '{time:yyyy-MM-dd HH:mm:ss}'";
             return await GetPageOfDataLockEvents(whereClause, page, pageSize);
         }
 
@@ -109,7 +109,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         public async Task<PageOfEntities<DataLockEventEntity>> GetDataLockEventsForAccountAndProviderSinceTime(string employerAccountId, long ukprn, DateTime time, int page, int pageSize)
         {
             var whereClause = $"WHERE ev.EmployerAccountId = '{employerAccountId.Replace("'", "''")}' AND ev.Ukprn = {ukprn}"
-                              + $" AND ev.SubmittedDateTime > '{time:yyyy-MM-dd HH:mm:ss}'";
+                              + $" AND ev.ProcessDateTime > '{time:yyyy-MM-dd HH:mm:ss}'";
             return await GetPageOfDataLockEvents(whereClause, page, pageSize);
         }
 
