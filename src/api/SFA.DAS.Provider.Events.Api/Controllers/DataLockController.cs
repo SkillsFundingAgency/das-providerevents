@@ -11,7 +11,7 @@ using SFA.DAS.Provider.Events.Domain.Mapping;
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
     [RoutePrefix("api/datalock")]
-    //[Authorize(Roles = "ReadDataLock")]
+    [Authorize(Roles = "ReadDataLock")]
     public class DataLockController : ApiController
     {
         private const int PageSize = 1000;
