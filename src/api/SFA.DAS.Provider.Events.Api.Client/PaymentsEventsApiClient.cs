@@ -45,7 +45,7 @@ namespace SFA.DAS.Provider.Events.Api.Client
 
 
 
-        public async Task<PageOfResults<SubmissionEvent>> GetSubmissionEvents(int sinceEventId = 0, DateTime? sinceTime = null, int page = 1)
+        public async Task<PageOfResults<SubmissionEvent>> GetSubmissionEvents(int sinceEventId = 0, DateTime? sinceTime = null, long ukprn = 0, int page = 1)
         {
             var url = $"{BaseUrl}api/submissions?page={page}";
             if (sinceEventId > 0)
@@ -55,6 +55,10 @@ namespace SFA.DAS.Provider.Events.Api.Client
             if (sinceTime.HasValue)
             {
                 url += $"&sinceTime={sinceTime.Value:yyyy-MM-ddTHH:mm:ss}";
+            }
+            if (ukprn > 0)
+            {
+                url += $"&ukprn={ukprn}";
             }
 
             var response = await _httpClient.GetAsync(url);

@@ -48,6 +48,21 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             return await GetPageOfSubmissionEvents($"WHERE SubmittedDateTime > '{time:yyyy-MM-dd HH:mm:ss}'", page, pageSize);
         }
 
+        public async Task<PageOfEntities<SubmissionEventEntity>> GetSubmissionEventsForProviderSinceId(long ukprn, int eventId, int page, int pageSize)
+        {
+            var whereClause = eventId > 0
+                ? $"WHERE se.Id > {eventId} AND se.UKPRN = '{ukprn}'"
+                : $"WHERE se.UKPRN = {ukprn}";
+            return await GetPageOfSubmissionEvents(whereClause, page, pageSize);
+        }
+
+        public async Task<PageOfEntities<SubmissionEventEntity>> GetSubmissionEventsForProviderSinceTime(long ukprn, DateTime time, int page, int pageSize)
+        {
+            var whereClause = $"WHERE se.UKPRN = {ukprn}"
+                              + $" AND se.SubmittedDateTime > '{time:yyyy-MM-dd HH:mm:ss}'";
+            return await GetPageOfSubmissionEvents(whereClause, page, pageSize);
+        }
+
 
         private async Task<PageOfEntities<SubmissionEventEntity>> GetPageOfSubmissionEvents(string whereClause, int page, int pageSize)
         {

@@ -82,7 +82,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
         public async Task ThenItShouldCallTheCorrectUrlForSinceTimeFilter()
         {
             // Act
-            await _client.GetSubmissionEvents(0, new DateTime(2017, 2, 8, 12, 10, 45), 7);
+            await _client.GetSubmissionEvents(0, new DateTime(2017, 2, 8, 12, 10, 45), 0, 7);
 
             // Assert
             _httpClient.Verify(c => c.GetAsync("some-url/api/submissions?page=7&sinceTime=2017-02-08T12:10:45"), Times.Once);
@@ -92,10 +92,20 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
         public async Task ThenItShouldCallTheCorrectUrlForSinceEventIdFilter()
         {
             // Act
-            await _client.GetSubmissionEvents(9, null, 7);
+            await _client.GetSubmissionEvents(9, null, 0, 7);
 
             // Assert
             _httpClient.Verify(c => c.GetAsync("some-url/api/submissions?page=7&sinceEventId=9"), Times.Once);
+        }
+
+        [Test]
+        public async Task ThenItShouldCallTheCorrectUrlForProviderFilter()
+        {
+            // Act
+            await _client.GetSubmissionEvents(0, null, 123, 7);
+
+            // Assert
+            _httpClient.Verify(c => c.GetAsync("some-url/api/submissions?page=7&ukprn=123"), Times.Once);
         }
 
         [Test]

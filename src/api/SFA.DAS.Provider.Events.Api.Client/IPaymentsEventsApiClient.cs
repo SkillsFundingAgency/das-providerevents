@@ -26,9 +26,10 @@ namespace SFA.DAS.Provider.Events.Api.Client
         /// </summary>
         /// <param name="sinceEventId">An event id to read from (non-inclusive)</param>
         /// <param name="sinceTime">A time to read from (non-inclusive)</param>
+        /// <param name="ukprn">The learning provider's ukprn to filter by, i.e. 12345. Default is 0 for no filter</param>
         /// <param name="page">The page number to view. Default is 1</param>
         /// <returns>A task that yields a page of submission events</returns>
-        Task<PageOfResults<SubmissionEvent>> GetSubmissionEvents(int sinceEventId = 0, DateTime? sinceTime = null, int page = 1);
+        Task<PageOfResults<SubmissionEvent>> GetSubmissionEvents(int sinceEventId = 0, DateTime? sinceTime = null, long ukprn = 0, int page = 1);
 
         /// <summary>
         /// Get a page of data lock events

@@ -27,24 +27,48 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetSubmissio
                  .ReturnsAsync(new ValidationResult());
 
             _submissionEventsRepository = new Mock<ISubmissionEventsRepository>();
-            _submissionEventsRepository.Setup(r => r.GetSubmissionEventsSinceId(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync(new Domain.Data.Entities.PageOfEntities<Domain.Data.Entities.SubmissionEventEntity>
+            _submissionEventsRepository
+                .Setup(r => r.GetSubmissionEventsSinceId(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+                .ReturnsAsync(new PageOfEntities<SubmissionEventEntity>
                 {
                     PageNumber = 1,
                     TotalNumberOfPages = 2,
                     Items = new[]
                     {
-                        new Domain.Data.Entities.SubmissionEventEntity {Id = 1}
+                        new SubmissionEventEntity {Id = 1}
                     }
                 });
-            _submissionEventsRepository.Setup(r => r.GetSubmissionEventsSinceTime(It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync(new Domain.Data.Entities.PageOfEntities<Domain.Data.Entities.SubmissionEventEntity>
+            _submissionEventsRepository
+                .Setup(r => r.GetSubmissionEventsSinceTime(It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
+                .ReturnsAsync(new PageOfEntities<SubmissionEventEntity>
                 {
                     PageNumber = 2,
                     TotalNumberOfPages = 3,
                     Items = new[]
                     {
-                        new Domain.Data.Entities.SubmissionEventEntity {Id = 2}
+                        new SubmissionEventEntity {Id = 2}
+                    }
+                });
+            _submissionEventsRepository
+                .Setup(r => r.GetSubmissionEventsForProviderSinceId(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+                .ReturnsAsync(new PageOfEntities<SubmissionEventEntity>
+                {
+                    PageNumber = 3,
+                    TotalNumberOfPages = 4,
+                    Items = new[]
+                    {
+                        new SubmissionEventEntity {Id = 3}
+                    }
+                });
+            _submissionEventsRepository
+                .Setup(r => r.GetSubmissionEventsForProviderSinceTime(It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
+                .ReturnsAsync(new PageOfEntities<SubmissionEventEntity>
+                {
+                    PageNumber = 4,
+                    TotalNumberOfPages = 5,
+                    Items = new[]
+                    {
+                        new SubmissionEventEntity {Id = 4}
                     }
                 });
 
@@ -133,6 +157,45 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetSubmissio
             Assert.AreEqual(2, actual.Result.TotalNumberOfPages);
             Assert.AreEqual(1, actual.Result.Items.Length);
             Assert.AreEqual(1, actual.Result.Items[0].Id);
+        }
+
+        [TestCase(0)]
+        [TestCase(1)]
+        public async Task ThenItShouldReturnResultsBasedOnUkprnAndEventIdIfBothFiltersArePresentAndTimeFilterNotSpecified(int eventId)
+        {
+            // Arrange
+            _request.Ukprn = 10000534;
+            _request.SinceEventId = eventId;
+
+            // Act
+            var actual = await _handler.Handle(_request);
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsNotNull(actual.Result);
+            Assert.AreEqual(3, actual.Result.PageNumber);
+            Assert.AreEqual(4, actual.Result.TotalNumberOfPages);
+            Assert.AreEqual(1, actual.Result.Items.Length);
+            Assert.AreEqual(3, actual.Result.Items[0].Id);
+        }
+
+        [Test]
+        public async Task ThenItShouldReturnResultsBasedUkprnAndTimeIfBothFiltersAreSpecified()
+        {
+            // Arrange
+            _request.Ukprn = 10000534;
+            _request.SinceTime = DateTime.Now;
+
+            // Act
+            var actual = await _handler.Handle(_request);
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsNotNull(actual.Result);
+            Assert.AreEqual(4, actual.Result.PageNumber);
+            Assert.AreEqual(5, actual.Result.TotalNumberOfPages);
+            Assert.AreEqual(1, actual.Result.Items.Length);
+            Assert.AreEqual(4, actual.Result.Items[0].Id);
         }
 
         [Test]
