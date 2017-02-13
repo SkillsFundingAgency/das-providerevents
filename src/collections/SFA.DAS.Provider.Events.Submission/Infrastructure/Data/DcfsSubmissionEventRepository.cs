@@ -17,7 +17,7 @@ namespace SFA.DAS.Provider.Events.Submission.Infrastructure.Data
                 @event.Id = QuerySingle<int>("SELECT ISNULL(MAX(Id),0) FROM Submissions.SubmissionEvents") + 1;
                 if (@event.Id == 1)
                 {
-                    @event.Id = QuerySingle<int>("SELECT ISNULL(MaxIdInDeds),0) FROM Reference.IdentifierSeed WHERE IdentifierName = 'SubmissionEvents'") + 1;
+                    @event.Id = QuerySingle<int>("SELECT ISNULL(MaxIdInDeds,0) FROM Reference.IdentifierSeed WHERE IdentifierName = 'SubmissionEvents'") + 1;
                 }
             }
 
@@ -26,9 +26,9 @@ namespace SFA.DAS.Provider.Events.Submission.Infrastructure.Data
                     "PriceEpisodeIdentifier,StandardCode,ProgrammeType,FrameworkCode,PathwayCode,ActualStartDate,PlannedEndDate," +
                     "ActualEndDate,OnProgrammeTotalPrice,CompletionTotalPrice,NINumber,CommitmentId) " +
                     "VALUES " +
-                    "(@Id,@IlrFileName,@FileDateTime,@SubmittedDateTime,@ComponentVersionNumber,@UKPRN,@ULN,@LearnRefNumber,@AimSeqNumber,@" +
-                    "PriceEpisodeIdentifier,@StandardCode,@ProgrammeType,@FrameworkCode,@PathwayCode,@ActualStartDate,@PlannedEndDate,@" +
-                    "ActualEndDate,@OnProgrammeTotalPrice,@CompletionTotalPrice,@NINumber,@CommitmentId)",
+                    "(@Id,@IlrFileName,@FileDateTime,@SubmittedDateTime,@ComponentVersionNumber,@UKPRN,@ULN,@LearnRefNumber,@AimSeqNumber," +
+                    "@PriceEpisodeIdentifier,@StandardCode,@ProgrammeType,@FrameworkCode,@PathwayCode,@ActualStartDate,@PlannedEndDate," +
+                    "@ActualEndDate,@OnProgrammeTotalPrice,@CompletionTotalPrice,@NINumber,@CommitmentId)",
                     @event);
         }
     }
