@@ -56,6 +56,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataLock\GetDataLockEventsQuery\GetDataLockEventsQueryHandler\WhenHandling.cs" />
+    <Compile Include="DataLock\GetDataLockEventsQuery\GetDataLockEventsQueryRequestValidator\WhenValidating.cs" />
     <Compile Include="Payments\GetPaymentsQuery\GetPaymentsQueryHandler\WhenHandling.cs" />
     <Compile Include="Period\GetPeriodQuery\GetPeriodQueryHandler\WhenHandling.cs" />
     <Compile Include="Period\GetPeriodQuery\GetPeriodQueryRequestValidator\WhenValidating.cs" />

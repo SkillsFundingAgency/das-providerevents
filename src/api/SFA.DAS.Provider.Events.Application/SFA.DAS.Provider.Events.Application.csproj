@@ -44,6 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataLock\GetDataLockEventsQuery\GetDataLockEventsQueryHandler.cs" />
+    <Compile Include="DataLock\GetDataLockEventsQuery\GetDataLockEventsQueryRequest.cs" />
+    <Compile Include="DataLock\GetDataLockEventsQuery\GetDataLockEventsQueryRequestValidator.cs" />
+    <Compile Include="DataLock\GetDataLockEventsQuery\GetDataLockEventsQueryResponse.cs" />
     <Compile Include="Payments\GetPaymentsQuery\GetPaymentsQueryHandler.cs" />
     <Compile Include="Payments\GetPaymentsQuery\GetPaymentsQueryRequest.cs" />
     <Compile Include="Payments\GetPaymentsQuery\GetPaymentsQueryResponse.cs" />
