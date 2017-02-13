@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.WindowsAzure.Storage;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Domain;
 using SFA.DAS.Provider.Events.Infrastructure.Mapping;
@@ -52,6 +53,18 @@ namespace SFA.DAS.Provider.Events.Api.Plumbing.Mapping
 
                 cfg.CreateMap<Domain.PageOfResults<Domain.SubmissionEvent>, Types.PageOfResults<Types.SubmissionEvent>>();
                 cfg.CreateMap<Domain.SubmissionEvent, Types.SubmissionEvent>();
+
+
+                cfg.CreateMap<Domain.PageOfResults<Domain.DataLockEvent>, Types.PageOfResults<Types.DataLockEvent>>();
+                cfg.CreateMap<Domain.DataLockEvent, Types.DataLockEvent>()
+                    .ForMember(dst => dst.EventSource, opt => opt.Ignore())
+                    .AfterMap((src, dst) =>
+                    {
+                        dst.EventSource = (Types.EventSource)(int)src.EventSource;
+                    });
+                cfg.CreateMap<Domain.DataLockEventError, Types.DataLockEventError>();
+                cfg.CreateMap<Domain.DataLockEventPeriod, Types.DataLockEventPeriod>();
+                cfg.CreateMap<Domain.DataLockEventApprenticeship, Types.DataLockEventApprenticeship>();
             });
         }
     }

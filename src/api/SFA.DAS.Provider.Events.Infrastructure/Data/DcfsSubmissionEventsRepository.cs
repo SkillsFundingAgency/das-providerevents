@@ -25,10 +25,10 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                                      + "ActualStartDate, "
                                      + "PlannedEndDate, "
                                      + "ActualEndDate, "
-                                     + "OnProgrammeTotalPrice, "
-                                     + "CompletionTotalPrice, "
+                                     + "OnProgrammeTotalPrice AS TrainingPrice, "
+                                     + "CompletionTotalPrice AS EndpointAssessorPrice, "
                                      + "NINumber, "
-                                     + "CommitmentId";
+                                     + "CommitmentId AS ApprenticeshipId";
         private const string CountColumn = "COUNT(se.Id)";
         private const string Pagination = "ORDER BY se.Id OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY";
 
@@ -46,6 +46,21 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         public async Task<PageOfEntities<SubmissionEventEntity>> GetSubmissionEventsSinceTime(DateTime time, int page, int pageSize)
         {
             return await GetPageOfSubmissionEvents($"WHERE SubmittedDateTime > '{time:yyyy-MM-dd HH:mm:ss}'", page, pageSize);
+        }
+
+        public async Task<PageOfEntities<SubmissionEventEntity>> GetSubmissionEventsForProviderSinceId(long ukprn, int eventId, int page, int pageSize)
+        {
+            var whereClause = eventId > 0
+                ? $"WHERE se.Id > {eventId} AND se.UKPRN = '{ukprn}'"
+                : $"WHERE se.UKPRN = {ukprn}";
+            return await GetPageOfSubmissionEvents(whereClause, page, pageSize);
+        }
+
+        public async Task<PageOfEntities<SubmissionEventEntity>> GetSubmissionEventsForProviderSinceTime(long ukprn, DateTime time, int page, int pageSize)
+        {
+            var whereClause = $"WHERE se.UKPRN = {ukprn}"
+                              + $" AND se.SubmittedDateTime > '{time:yyyy-MM-dd HH:mm:ss}'";
+            return await GetPageOfSubmissionEvents(whereClause, page, pageSize);
         }
 
 

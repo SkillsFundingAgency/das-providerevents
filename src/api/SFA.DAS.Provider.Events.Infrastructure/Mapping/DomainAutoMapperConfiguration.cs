@@ -38,6 +38,23 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
             cfg.CreateMap<PageOfEntities<SubmissionEventEntity>, PageOfResults<SubmissionEvent>>();
 
             cfg.CreateMap<SubmissionEventEntity, SubmissionEvent>();
+
+
+            cfg.CreateMap<PageOfEntities<DataLockEventEntity>, PageOfResults<DataLockEvent>>();
+            cfg.CreateMap<DataLockEventEntity, DataLockEvent>();
+            cfg.CreateMap<DataLockEventErrorEntity, DataLockEventError>();
+            cfg.CreateMap<DataLockEventPeriodEntity, DataLockEventPeriod>()
+                .ForMember(dst => dst.Period, opt => opt.Ignore())
+                .AfterMap((src, dst) =>
+                {
+                    dst.Period = new NamedCalendarPeriod
+                    {
+                        Id = src.CollectionPeriodId.Trim(),
+                        Month = src.CollectionPeriodMonth,
+                        Year = src.CollectionPeriodYear
+                    };
+                });
+            cfg.CreateMap<DataLockEventApprenticeshipEntity, DataLockEventApprenticeship>();
         }
     }
 }

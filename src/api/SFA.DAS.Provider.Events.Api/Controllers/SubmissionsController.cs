@@ -11,7 +11,7 @@ using SFA.DAS.Provider.Events.Domain.Mapping;
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
     [RoutePrefix("api/submissions")]
-    //[Authorize(Roles = "ReadSubmissions")]
+    [Authorize(Roles = "ReadSubmissions")]
     public class SubmissionsController : ApiController
     {
         private const int PageSize = 1000;
@@ -29,7 +29,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
 
         [Route("", Name = "SubmissionEventsList")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetSubmissionEvents(int sinceEventId = 0, DateTime? sinceTime = null, int pageNumber = 1)
+        public async Task<IHttpActionResult> GetSubmissionEvents(int sinceEventId = 0, DateTime? sinceTime = null, long ukprn = 0, int pageNumber = 1)
         {
             try
             {
@@ -39,6 +39,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
                 {
                     SinceEventId = sinceEventId,
                     SinceTime = sinceTime,
+                    Ukprn = ukprn,
                     PageNumber = pageNumber,
                     PageSize = PageSize
                 });
