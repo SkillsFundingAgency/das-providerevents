@@ -37,7 +37,14 @@ namespace SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsQue
                 }
 
                 PageOfEntities<SubmissionEventEntity> pageOfEntities;
-                if (message.SinceTime.HasValue)
+
+                if (message.Ukprn > 0)
+                {
+                    pageOfEntities = message.SinceTime.HasValue
+                        ? await _submissionEventsRepository.GetSubmissionEventsForProviderSinceTime(message.Ukprn, message.SinceTime.Value, message.PageNumber, message.PageSize)
+                        : await _submissionEventsRepository.GetSubmissionEventsForProviderSinceId(message.Ukprn, message.SinceEventId, message.PageNumber, message.PageSize);
+                }
+                else if (message.SinceTime.HasValue)
                 {
                     pageOfEntities = await _submissionEventsRepository.GetSubmissionEventsSinceTime(message.SinceTime.Value, message.PageNumber, message.PageSize);
                 }

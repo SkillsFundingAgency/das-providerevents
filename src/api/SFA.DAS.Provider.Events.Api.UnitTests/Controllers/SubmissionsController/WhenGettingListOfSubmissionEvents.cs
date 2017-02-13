@@ -99,13 +99,13 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
         }
 
         [Test, TestCaseSource(nameof(RequestedFiltersTestCases))]
-        public async Task ThenItShouldQueryWithTheRequestedFilters(int sinceEventId, DateTime? sinceTime)
+        public async Task ThenItShouldQueryWithTheRequestedFilters(int sinceEventId, DateTime? sinceTime, long ukprn)
         {
             // Act
-            await _controller.GetSubmissionEvents(sinceEventId, sinceTime);
+            await _controller.GetSubmissionEvents(sinceEventId, sinceTime, ukprn);
 
             // Assert
-            _mediator.Verify(m => m.SendAsync(It.Is<GetSubmissionEventsQueryRequest>(r => r.SinceEventId == sinceEventId && r.SinceTime == sinceTime)), Times.Once);
+            _mediator.Verify(m => m.SendAsync(It.Is<GetSubmissionEventsQueryRequest>(r => r.SinceEventId == sinceEventId && r.SinceTime == sinceTime && r.Ukprn == ukprn)), Times.Once);
         }
 
         [TestCase(1)]
@@ -160,9 +160,13 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
 
         private static object[] RequestedFiltersTestCases => new object[]
         {
-            new object[] {3, null},
-            new object[] {0, new DateTime(2017, 2, 3, 12, 45, 36)},
-            new object[] {3, new DateTime(2017, 2, 3, 12, 45, 36)}
+            new object[] {0, new DateTime(2017, 2, 8, 15, 15, 09), 10000534},
+            new object[] {7, null, 10000534},
+            new object[] {0, null, 10000534},
+
+            new object[] {3, null, 0},
+            new object[] {0, new DateTime(2017, 2, 3, 12, 45, 36), 0},
+            new object[] {3, new DateTime(2017, 2, 3, 12, 45, 36), 0}
         };
     }
 }

@@ -36,10 +36,10 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 StandardCode = 27,
                 ActualStartDate = new DateTime(2017, 4, 1),
                 PlannedEndDate =  new DateTime(2018, 5, 1),
-                OnProgrammeTotalPrice = 12000m,
-                CompletionTotalPrice = 3000m,
+                TrainingPrice = 12000m,
+                EndpointAssessorPrice = 3000m,
                 NiNumber = "AB12345C",
-                CommitmentId = "1"
+                ApprenticeshipId = 1
             };
 
             _submissionFrameworkEvent = new SubmissionEvent
@@ -56,10 +56,10 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 PathwayCode = 6,
                 ActualStartDate = new DateTime(2017, 4, 1),
                 PlannedEndDate = new DateTime(2018, 5, 1),
-                OnProgrammeTotalPrice = 6000m,
-                CompletionTotalPrice = 1500m,
+                TrainingPrice = 6000m,
+                EndpointAssessorPrice = 1500m,
                 NiNumber = "AB12345C",
-                CommitmentId = "9"
+                ApprenticeshipId = 9
             };
 
             _httpClient = new Mock<SecureHttpClient>();
@@ -82,7 +82,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
         public async Task ThenItShouldCallTheCorrectUrlForSinceTimeFilter()
         {
             // Act
-            await _client.GetSubmissionEvents(0, new DateTime(2017, 2, 8, 12, 10, 45), 7);
+            await _client.GetSubmissionEvents(0, new DateTime(2017, 2, 8, 12, 10, 45), 0, 7);
 
             // Assert
             _httpClient.Verify(c => c.GetAsync("some-url/api/submissions?page=7&sinceTime=2017-02-08T12:10:45"), Times.Once);
@@ -92,10 +92,20 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
         public async Task ThenItShouldCallTheCorrectUrlForSinceEventIdFilter()
         {
             // Act
-            await _client.GetSubmissionEvents(9, null, 7);
+            await _client.GetSubmissionEvents(9, null, 0, 7);
 
             // Assert
             _httpClient.Verify(c => c.GetAsync("some-url/api/submissions?page=7&sinceEventId=9"), Times.Once);
+        }
+
+        [Test]
+        public async Task ThenItShouldCallTheCorrectUrlForProviderFilter()
+        {
+            // Act
+            await _client.GetSubmissionEvents(0, null, 123, 7);
+
+            // Assert
+            _httpClient.Verify(c => c.GetAsync("some-url/api/submissions?page=7&ukprn=123"), Times.Once);
         }
 
         [Test]
@@ -126,10 +136,10 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                    && original.ActualStartDate == client.ActualStartDate
                    && original.PlannedEndDate == client.PlannedEndDate
                    && original.ActualEndDate == client.ActualEndDate
-                   && original.OnProgrammeTotalPrice == client.OnProgrammeTotalPrice
-                   && original.CompletionTotalPrice == client.CompletionTotalPrice
+                   && original.TrainingPrice == client.TrainingPrice
+                   && original.EndpointAssessorPrice == client.EndpointAssessorPrice
                    && original.NiNumber == client.NiNumber
-                   && original.CommitmentId == client.CommitmentId;
+                   && original.ApprenticeshipId == client.ApprenticeshipId;
         }
     }
 }
