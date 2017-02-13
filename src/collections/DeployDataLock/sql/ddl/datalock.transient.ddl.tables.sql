@@ -27,21 +27,6 @@ CREATE TABLE DataLock.TaskLog
 )
 GO
 
---------------------------------------------------------------------------------------
--- IdentifierSeed
---------------------------------------------------------------------------------------
-IF EXISTS(SELECT [object_id] FROM sys.tables WHERE [name]='IdentifierSeed' AND [schema_id] = SCHEMA_ID('Reference'))
-BEGIN
-    DROP TABLE Reference.IdentifierSeed
-END
-GO
-
-CREATE TABLE Reference.IdentifierSeed
-(
-    IdentifierName		varchar(50)		PRIMARY KEY,
-	MaxIdInDeds			bigint			NOT NULL
-)
-GO
 
 --------------------------------------------------------------------------------------
 -- DataLockEvents
@@ -57,13 +42,14 @@ CREATE TABLE [DataLock].[DataLockEvents]
 	Id							bigint			PRIMARY KEY,
 	ProcessDateTime				datetime		NOT NULL,
 	IlrFileName					nvarchar(50)	NOT NULL,
+	SubmittedDateTime		    datetime		NOT NULL,
+	AcademicYear				varchar(4)    	NOT NULL,
 	UKPRN						bigint			NOT NULL,
 	ULN							bigint			NOT NULL,
 	LearnRefNumber				varchar(100)	NOT NULL,
     AimSeqNumber				bigint			NOT NULL,
 	PriceEpisodeIdentifier		varchar(25)		NOT NULL,
 	CommitmentId				bigint			NOT NULL,
-	CommitmentVersion			bigint			NOT NULL,
 	EmployerAccountId			bigint			NOT NULL,
 	EventSource					int				NOT NULL,
 	HasErrors					bit				NOT NULL,
@@ -148,6 +134,22 @@ IF NOT EXISTS (SELECT [schema_id] FROM sys.schemas WHERE [name] = 'Reference')
 GO
 
 --------------------------------------------------------------------------------------
+-- IdentifierSeed
+--------------------------------------------------------------------------------------
+IF EXISTS(SELECT [object_id] FROM sys.tables WHERE [name]='IdentifierSeed' AND [schema_id] = SCHEMA_ID('Reference'))
+BEGIN
+    DROP TABLE Reference.IdentifierSeed
+END
+GO
+
+CREATE TABLE Reference.IdentifierSeed
+(
+    IdentifierName		varchar(50)		PRIMARY KEY,
+	MaxIdInDeds			bigint			NOT NULL
+)
+GO
+
+--------------------------------------------------------------------------------------
 -- Providers
 --------------------------------------------------------------------------------------
 IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'Providers' AND [schema_id] = SCHEMA_ID('Reference'))
@@ -158,9 +160,9 @@ GO
 
 CREATE TABLE [Reference].[Providers]
 (
-	UKPRN			bigint			PRIMARY KEY,
-	IlrFilename		nvarchar(50)	NOT NULL,
-	SubmittedTime	datetime		NOT NULL
+	UKPRN			    bigint			PRIMARY KEY,
+	IlrFilename		    nvarchar(50)	NOT NULL,
+	SubmittedTime   	datetime		NOT NULL
 )
 GO
 
@@ -236,6 +238,34 @@ CREATE TABLE [Reference].[ValidationError]
 GO
 
 --------------------------------------------------------------------------------------
+-- IlrPriceEpisodeData
+--------------------------------------------------------------------------------------
+IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'IlrPriceEpisodeData' AND [schema_id] = SCHEMA_ID('Reference'))
+	BEGIN
+		DROP TABLE [Reference].[IlrPriceEpisodeData]
+	END
+GO
+
+CREATE TABLE [Reference].[IlrPriceEpisodeData]
+(
+	Ukprn					bigint			NOT NULL,
+	Uln						bigint			NOT NULL,
+	PriceEpisodeIdentifier	varchar(25)		NOT NULL,
+	LearnRefNumber			varchar(12)	    NOT NULL,
+	AimSeqNumber			bigint			NULL,
+    StartDate               date            NULL,
+	ProgType			    int				NULL,
+	FworkCode			    int				NULL,
+	PwayCode			    int				NULL,
+	StdCode				    bigint			NULL,
+	TNP1					decimal(10,5)	NULL,
+	TNP2					decimal(10,5)	NULL,
+	TNP3					decimal(10,5)	NULL,
+	TNP4					decimal(10,5)	NULL
+) 
+GO
+
+--------------------------------------------------------------------------------------
 -- DataLockEvents
 --------------------------------------------------------------------------------------
 IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'DataLockEvents' AND [schema_id] = SCHEMA_ID('Reference'))
@@ -249,13 +279,14 @@ CREATE TABLE [Reference].[DataLockEvents]
 	Id							bigint			PRIMARY KEY,
 	ProcessDateTime				datetime		NOT NULL,
 	IlrFileName					nvarchar(50)	NOT NULL,
+	SubmittedDateTime		    datetime		NOT NULL,
+	AcademicYear				varchar(4)    	NOT NULL,
 	UKPRN						bigint			NOT NULL,
 	ULN							bigint			NOT NULL,
 	LearnRefNumber				varchar(100)	NOT NULL,
     AimSeqNumber				bigint			NOT NULL,
 	PriceEpisodeIdentifier		varchar(25)		NOT NULL,
 	CommitmentId				bigint			NOT NULL,
-	CommitmentVersion			bigint			NOT NULL,
 	EmployerAccountId			bigint			NOT NULL,
 	EventSource					int				NOT NULL,
 	HasErrors					bit				NOT NULL,
@@ -328,4 +359,28 @@ CREATE TABLE [Reference].[DataLockEventErrors]
 	SystemDescription		nvarchar(255)	NOT NULL,
 	PRIMARY KEY (DataLockEventId, ErrorCode)
 )
+GO
+
+--------------------------------------------------------------------------------------
+-- DataLockCommitmentData
+--------------------------------------------------------------------------------------
+IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'DataLockCommitmentData' AND [schema_id] = SCHEMA_ID('Reference'))
+	BEGIN
+		DROP TABLE [Reference].[DataLockCommitmentData]
+	END
+GO
+
+CREATE TABLE [Reference].[DataLockCommitmentData]
+(
+	CommitmentId			bigint			NOT NULL,
+	CommitmentVersion		bigint			NOT NULL,
+    EmployerAccountId       bigint          NOT NULL,
+	StartDate			    date			NOT NULL,
+	StandardCode		    bigint			NULL,
+	ProgrammeType		    int				NULL,
+	FrameworkCode		    int				NULL,
+	PathwayCode		        int				NULL,
+	NegotiatedPrice	        decimal(12,5)	NOT NULL,
+	EffectiveDate		    date			NOT NULL
+) 
 GO

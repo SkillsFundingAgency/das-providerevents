@@ -63,3 +63,58 @@ SELECT
 FROM ${DataLock_Deds.FQ}.DataLock.ValidationError ve
 INNER JOIN @ProvidersToProcess p
 	ON ve.UKPRN = p.UKPRN
+
+---------------------------------------------------------------
+-- IlrPriceEpisodeData
+---------------------------------------------------------------
+INSERT INTO [Reference].[IlrPriceEpisodeData]
+(Ukprn, Uln, PriceEpisodeIdentifier, LearnRefNumber, AimSeqNumber, StartDate, ProgType, FworkCode, PwayCode, StdCode, TNP1, TNP2, TNP3, TNP4)
+SELECT
+	pe.Ukprn, 
+    l.Uln, 
+    pe.PriceEpisodeIdentifier, 
+	pe.LearnRefNumber, 
+	pe.PriceEpisodeAimSeqNumber, 
+	pe.EpisodeEffectiveTNPStartDate, 
+	ld.ProgType,
+	ld.FworkCode,
+    ld.PwayCode,
+    ld.StdCode,
+    pe.TNP1,
+    pe.TNP2,
+    pe.TNP3,
+    pe.TNP4
+FROM ${ILR_Deds.FQ}.Rulebase.AEC_ApprenticeshipPriceEpisode pe
+INNER JOIN ${ILR_Deds.FQ}.Valid.Learner l
+    ON pe.Ukprn = l.Ukprn
+    AND pe.LearnRefNumber = l.LearnRefNumber
+INNER JOIN ${ILR_Deds.FQ}.Valid.LearningDelivery ld
+    ON pe.Ukprn = ld.Ukprn
+    AND pe.LearnRefNumber = ld.LearnRefNumber
+    AND pe.PriceEpisodeAimSeqNumber = ld.AimSeqNumber
+INNER JOIN @ProvidersToProcess p
+	ON pe.UKPRN = p.UKPRN
+
+---------------------------------------------------------------
+-- DataLockCommitmentData
+---------------------------------------------------------------
+INSERT INTO [Reference].[DataLockCommitmentData]
+(CommitmentId, CommitmentVersion, StartDate, StandardCode, ProgrammeType, FrameworkCode, PathwayCode, NegotiatedPrice, EffectiveDate, EmployerAccountId)
+SELECT
+	CommitmentId, 
+    VersionId,
+    StartDate,
+    StandardCode,
+    ProgrammeType,
+    FrameworkCode,
+    PathwayCode,
+    AgreedCost,
+    EffectiveFromDate,
+    AccountId
+FROM ${DAS_Commitments.FQ}.dbo.DasCommitments
+WHERE CommitmentId IN (
+    SELECT DISTINCT CommitmentId 
+    FROM ${DataLock_Deds.FQ}.DataLock.PriceEpisodeMatch pem
+    INNER JOIN @ProvidersToProcess p
+        ON pem.UKPRN = p.UKPRN
+)

@@ -18,13 +18,14 @@ CREATE TABLE [DataLock].[DataLockEvents]
 	Id							bigint			PRIMARY KEY,
 	ProcessDateTime				datetime		NOT NULL,
 	IlrFileName					nvarchar(50)	NOT NULL,
+	SubmittedDateTime		    datetime		NOT NULL,
+	AcademicYear				varchar(4)    	NOT NULL,
 	UKPRN						bigint			NOT NULL,
 	ULN							bigint			NOT NULL,
 	LearnRefNumber				varchar(100)	NOT NULL,
     AimSeqNumber				bigint			NOT NULL,
 	PriceEpisodeIdentifier		varchar(25)		NOT NULL,
 	CommitmentId				bigint			NOT NULL,
-	CommitmentVersion			bigint			NOT NULL,
 	EmployerAccountId			bigint			NOT NULL,
 	EventSource					int				NOT NULL,
 	HasErrors					bit				NOT NULL,
@@ -96,5 +97,23 @@ CREATE TABLE [DataLock].[DataLockEventErrors]
 	ErrorCode				varchar(15)		NOT NULL,
 	SystemDescription		nvarchar(255)	NOT NULL,
 	PRIMARY KEY (DataLockEventId, ErrorCode)
+)
+GO
+
+
+--------------------------------------------------------------------------------------
+-- DataLockLastSeenSubmissions
+--------------------------------------------------------------------------------------
+IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'DataLockLastSeenSubmissions' AND [schema_id] = SCHEMA_ID('DataLock'))
+	BEGIN
+		DROP TABLE [DataLock].[DataLockLastSeenSubmissions]
+	END
+GO
+
+CREATE TABLE [DataLock].[DataLockLastSeenSubmissions]
+(
+	UKPRN			        bigint			NOT NULL,
+	SubmittedDateTime		datetime		NOT NULL,
+	PRIMARY KEY (UKPRN, SubmittedDateTime)
 )
 GO

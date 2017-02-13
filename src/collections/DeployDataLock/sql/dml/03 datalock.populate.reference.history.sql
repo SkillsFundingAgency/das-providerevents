@@ -26,20 +26,21 @@ FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEvents
 -- DataLockEvents
 ---------------------------------------------------------------
 INSERT INTO Reference.DataLockEvents
-(Id, ProcessDateTime, IlrFileName, UKPRN, ULN, LearnRefNumber, AimSeqNumber, PriceEpisodeIdentifier, CommitmentId, 
-CommitmentVersion, EmployerAccountId, EventSource, HasErrors, IlrStartDate, IlrStandardCode, IlrProgrammeType, 
-IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice)
+(Id, ProcessDateTime, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, 
+PriceEpisodeIdentifier, CommitmentId, EmployerAccountId, EventSource, HasErrors, IlrStartDate, IlrStandardCode, 
+IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice)
 SELECT
 	dle.Id, 
 	dle.ProcessDateTime, 
 	dle.IlrFileName, 
+    dle.SubmittedDateTime, 
+    dle.AcademicYear, 
 	dle.UKPRN, 
 	dle.ULN, 
 	dle.LearnRefNumber, 
 	dle.AimSeqNumber, 
 	dle.PriceEpisodeIdentifier, 
 	dle.CommitmentId, 
-	dle.CommitmentVersion, 
 	dle.EmployerAccountId, 
 	dle.EventSource, 
 	dle.HasErrors, 

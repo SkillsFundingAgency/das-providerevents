@@ -1,5 +1,5 @@
 INSERT INTO [Reference].[Providers]
-(UKPRN)
+(UKPRN, IlrFilename, SubmittedTime)
 SELECT
 	p.UKPRN,
 	fd.Filename,

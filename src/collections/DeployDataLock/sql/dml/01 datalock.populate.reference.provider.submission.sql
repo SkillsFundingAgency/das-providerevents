@@ -1,5 +1,7 @@
+DECLARE @LastProcessedDate datetime = (SELECT MAX(SubmittedDateTime) FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockLastSeenSubmissions)
+
 INSERT INTO [Reference].[Providers]
-(UKPRN)
+(UKPRN, IlrFilename, SubmittedTime)
 SELECT
 	p.UKPRN,
 	fd.Filename,
