@@ -73,6 +73,10 @@
       <Link>DbSetupScripts\datalock.transient.ddl.views.sql</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\DeployDataLock\sql\ddl\datalock.transient.reference.ddl.tables.sql">
+      <Link>DbSetupScripts\datalock.transient.reference.ddl.tables.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

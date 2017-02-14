@@ -28,10 +28,10 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests
         {
             using (var connection = new SqlConnection(GlobalTestContext.Current.TransientDatabaseConnectionString))
             {
+                connection.RunDbSetupSqlScriptFile("datalock.transient.reference.ddl.tables.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
                 connection.RunDbSetupSqlScriptFile("datalock.transient.ddl.tables.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
                 connection.RunDbSetupSqlScriptFile("datalock.transient.ddl.views.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
             }
         }
-
     }
 }
