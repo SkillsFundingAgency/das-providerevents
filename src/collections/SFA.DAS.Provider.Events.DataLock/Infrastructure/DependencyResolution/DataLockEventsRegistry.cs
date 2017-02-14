@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using MediatR;
 using NLog;
+using SFA.DAS.Provider.Events.DataLock.Domain.Data;
+using SFA.DAS.Provider.Events.DataLock.Infrastructure.Data;
 using StructureMap;
 
 namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.DependencyResolution
@@ -19,6 +21,16 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.DependencyResolution
                 });
 
             For<ILogger>().Use(() => LogManager.GetLogger(taskType.FullName));
+
+            For<ICommitmentRepository>().Use<DcfsCommitmentRepository>();
+            For<IDataLockEventCommitmentVersionRepository>().Use<DcfsDataLockEventCommitmentVersionRepository>();
+            For<IDataLockEventErrorRepository>().Use<DcfsDataLockEventErrorRepository>();
+            For<IDataLockEventPeriodRepository>().Use<DcfsDataLockEventPeriodRepository>();
+            For<IDataLockEventRepository>().Use<DcfsDataLockEventRepository>();
+            For<IIlrPriceEpisodeRepository>().Use<DcfsIlrPriceEpisodeRepository>();
+            For<IPriceEpisodeMatchRepository>().Use<DcfsPriceEpisodeMatchRepository>();
+            For<IPriceEpisodePeriodMatchRepository>().Use<DcfsPriceEpisodePeriodMatchRepository>();
+            For<IValidationErrorRepository>().Use<DcfsValidationErrorRepository>();
 
             For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => GetInstance(ctx, t));
             For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => GetAllInstances(ctx, t));

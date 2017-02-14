@@ -78,6 +78,8 @@
     <Compile Include="Application\GetLastSeenEvents\GetLastSeenEventsHandler.cs" />
     <Compile Include="Application\GetLastSeenEvents\GetLastSeenEventsRequest.cs" />
     <Compile Include="Application\GetLastSeenEvents\GetLastSeenEventsResponse.cs" />
+    <Compile Include="Application\WriteDataLockEvent\WriteDataLockEventCommandHandler.cs" />
+    <Compile Include="Application\WriteDataLockEvent\WriteDataLockEventCommandRequest.cs" />
     <Compile Include="DataLockEventsProcessor.cs" />
     <Compile Include="DataLockEventsTask.cs" />
     <Compile Include="Domain\CollectionPeriod.cs" />

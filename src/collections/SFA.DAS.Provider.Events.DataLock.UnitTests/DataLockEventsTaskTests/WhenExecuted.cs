@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.DCFS.Context;
 using SFA.DAS.Payments.DCFS.Infrastructure.DependencyResolution;
+using SFA.DAS.Provider.Events.DataLock.Infrastructure.Context;
 
 namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsTaskTests
 {
@@ -31,7 +32,9 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsTaskTests
                 .Returns(new Dictionary<string, string>
                 {
                     {ContextPropertyKeys.TransientDatabaseConnectionString, "some-connection-string"},
-                    {ContextPropertyKeys.LogLevel, "Debug"}
+                    {ContextPropertyKeys.LogLevel, "Debug"},
+                    {DataLockContextPropertyKeys.YearOfCollection, "1617"},
+                    {DataLockContextPropertyKeys.DataLockEventsSource, "Submission"}
                 });
         }
 
