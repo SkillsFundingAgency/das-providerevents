@@ -11,6 +11,7 @@ SELECT
 	MAX(Id)
 FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEvents
 GROUP BY PriceEpisodeIdentifier
+--GROUP BY UKPRN, LearnRefNumber, PriceEpisodeIdentifier
 
 --------------------------------------------------------------------------------------
 -- IdentifierSeed
@@ -59,14 +60,15 @@ INNER JOIN @LastestDataLockEvents le
 -- DataLockEventPeriods
 ---------------------------------------------------------------
 INSERT INTO Reference.DataLockEventPeriods
-(DataLockEventId, CollectionPeriodName, CollectionPeriodMonth, CollectionPeriodYear, CommitmentVersion, IsPayable)
+(DataLockEventId, CollectionPeriodName, CollectionPeriodMonth, CollectionPeriodYear, CommitmentVersion, IsPayable, TransactionType)
 SELECT
 	dlep.DataLockEventId, 
 	dlep.CollectionPeriodName, 
 	dlep.CollectionPeriodMonth, 
 	dlep.CollectionPeriodYear, 
 	dlep.CommitmentVersion, 
-	dlep.IsPayable
+	dlep.IsPayable,
+    dlep.TransactionType
 FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEventPeriods dlep
 INNER JOIN @LastestDataLockEvents le
 	ON dlep.DataLockEventId = le.EventId

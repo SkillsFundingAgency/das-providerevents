@@ -72,10 +72,52 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\GetCurrentEvents\GetCurrentEventsHandler.cs" />
+    <Compile Include="Application\GetCurrentEvents\GetCurrentEventsRequest.cs" />
+    <Compile Include="Application\GetCurrentEvents\GetCurrentEventsResponse.cs" />
+    <Compile Include="Application\GetLastSeenEvents\GetLastSeenEventsHandler.cs" />
+    <Compile Include="Application\GetLastSeenEvents\GetLastSeenEventsRequest.cs" />
+    <Compile Include="Application\GetLastSeenEvents\GetLastSeenEventsResponse.cs" />
     <Compile Include="DataLockEventsProcessor.cs" />
     <Compile Include="DataLockEventsTask.cs" />
+    <Compile Include="Domain\CollectionPeriod.cs" />
+    <Compile Include="Domain\DataLockEventCommitmentVersion.cs" />
+    <Compile Include="Domain\DataLockEventError.cs" />
+    <Compile Include="Domain\Data\Entities\CommitmentEntity.cs" />
+    <Compile Include="Domain\Data\Entities\DataLockEventCommitmentVersionEntity.cs" />
+    <Compile Include="Domain\Data\Entities\DataLockEventEntity.cs" />
+    <Compile Include="Domain\Data\Entities\DataLockEventErrorEntity.cs" />
+    <Compile Include="Domain\Data\Entities\DataLockEventPeriodEntity.cs" />
+    <Compile Include="Domain\Data\Entities\IlrPriceEpisodeEntity.cs" />
+    <Compile Include="Domain\Data\Entities\PriceEpisodeMatchEntity.cs" />
+    <Compile Include="Domain\Data\Entities\PriceEpisodePeriodMatchEntity.cs" />
+    <Compile Include="Domain\Data\Entities\ValidationErrorEntity.cs" />
+    <Compile Include="Domain\Data\ICommitmentRepository.cs" />
+    <Compile Include="Domain\Data\IDataLockEventCommitmentVersionRepository.cs" />
+    <Compile Include="Domain\Data\IDataLockEventErrorRepository.cs" />
+    <Compile Include="Domain\Data\IDataLockEventPeriodRepository.cs" />
+    <Compile Include="Domain\Data\IDataLockEventRepository.cs" />
+    <Compile Include="Domain\Data\IIlrPriceEpisodeRepository.cs" />
+    <Compile Include="Domain\Data\IValidationErrorRepository.cs" />
+    <Compile Include="Domain\Data\IPriceEpisodeMatchRepository.cs" />
+    <Compile Include="Domain\Data\IPriceEpisodePeriodMatchRepository.cs" />
+    <Compile Include="Domain\DataLockEvent.cs" />
+    <Compile Include="Domain\DataLockEventPeriod.cs" />
+    <Compile Include="Domain\EventSource.cs" />
+    <Compile Include="Infrastructure\Context\DataLockContextPropertyKeys.cs" />
+    <Compile Include="Infrastructure\Data\DcfsCommitmentRepository.cs" />
+    <Compile Include="Infrastructure\Data\DcfsDataLockEventCommitmentVersionRepository.cs" />
+    <Compile Include="Infrastructure\Data\DcfsDataLockEventErrorRepository.cs" />
+    <Compile Include="Infrastructure\Data\DcfsDataLockEventPeriodRepository.cs" />
+    <Compile Include="Infrastructure\Data\DcfsDataLockEventRepository.cs" />
+    <Compile Include="Infrastructure\Data\DcfsIlrPriceEpisodeRepository.cs" />
+    <Compile Include="Infrastructure\Data\DcfsPriceEpisodeMatchRepository.cs" />
+    <Compile Include="Infrastructure\Data\DcfsPriceEpisodePeriodMatchRepository.cs" />
+    <Compile Include="Infrastructure\Data\DcfsValidationErrorRepository.cs" />
+    <Compile Include="Infrastructure\DependencyResolution\EventsSourcePolicy.cs" />
     <Compile Include="Infrastructure\DependencyResolution\DataLockEventsRegistry.cs" />
     <Compile Include="Infrastructure\DependencyResolution\TaskDependencyResolver.cs" />
+    <Compile Include="Infrastructure\DependencyResolution\YearOfCollectionPolicy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

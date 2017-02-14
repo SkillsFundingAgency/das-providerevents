@@ -1,39 +1,42 @@
-IF EXISTS(SELECT [object_id] FROM sys.views WHERE [name]='vw_PriceEpisodeMatchCurrentVersion' AND [schema_id] = SCHEMA_ID('DataLock'))
+IF NOT EXISTS (SELECT [schema_id] FROM sys.schemas WHERE [name] = 'Reference')
+	BEGIN
+		EXEC('CREATE SCHEMA Reference')
+	END
+GO
+
+--------------------------------------------------------------------------------------
+-- vw_IlrPriceEpisodes
+--------------------------------------------------------------------------------------
+IF EXISTS(SELECT [object_id] FROM sys.views WHERE [name]='vw_IlrPriceEpisodes' AND [schema_id] = SCHEMA_ID('Reference'))
 BEGIN
-    DROP VIEW DataLock.vw_PriceEpisodeMatchCurrentVersion
+    DROP VIEW Reference.vw_IlrPriceEpisodes
 END
 GO
 
-CREATE VIEW DataLock.vw_PriceEpisodeMatchCurrentVersion
+CREATE VIEW Reference.vw_IlrPriceEpisodes
 AS
 SELECT
     p.IlrFilename,
     p.SubmittedTime,
     p.Ukprn,
-    iped.Uln,
-    iped.LearnRefNumber,
-    iped.AimSeqNumber,
-    iped.PriceEpisodeIdentifier,
-	pem.CommitmentId,
-    (SELECT TOP 1 EmployerAccountId FROM Reference.DataLockCommitmentData WHERE CommitmentId = pem.CommitmentId) EmployerAccountId,
-    pem.IsSuccess,
-    iped.StartDate IlrStartDate,
-    iped.StdCode IlrStandardCode,
-    iped.ProgType IlrProgrammeType,
-    iped.FworkCode IlrFrameworkCode,
-    iped.PwayCode IlrPathwayCode,
+    pe.Uln,
+    pe.PriceEpisodeIdentifier,
+    pe.LearnRefNumber,
+    pe.AimSeqNumber,
+    pe.StartDate IlrStartDate,
+    pe.StdCode IlrStandardCode,
+    pe.ProgType IlrProgrammeType,
+    pe.FworkCode IlrFrameworkCode,
+    pe.PwayCode IlrPathwayCode,
 	CASE
-		WHEN ISNULL(iped.TNP1, 0) > 0 THEN iped.TNP1
-		ELSE iped.TNP3
+		WHEN ISNULL(pe.TNP1, 0) > 0 THEN pe.TNP1
+		ELSE pe.TNP3
 	END IlrTrainingPrice,
 	CASE
-		WHEN ISNULL(iped.TNP1, 0) > 0 THEN iped.TNP2
-		ELSE iped.TNP4
+		WHEN ISNULL(pe.TNP1, 0) > 0 THEN pe.TNP2
+		ELSE pe.TNP4
 	END IlrEndpointAssessorPrice
-FROM Reference.PriceEpisodeMatch pem
+FROM Reference.IlrPriceEpisodes pe
 INNER JOIN Reference.Providers p
-    ON pem.Ukprn = p.Ukprn
-INNER JOIN Reference.IlrPriceEpisodeData iped
-	ON pem.Ukprn = iped.Ukprn
-    AND pem.PriceEpisodeIdentifier = iped.PriceEpisodeIdentifier
-	AND pem.LearnRefNumber = iped.LearnRefNumber
+    ON pe.Ukprn = p.Ukprn
+GO

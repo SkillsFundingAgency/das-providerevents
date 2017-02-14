@@ -65,9 +65,9 @@ INNER JOIN @ProvidersToProcess p
 	ON ve.UKPRN = p.UKPRN
 
 ---------------------------------------------------------------
--- IlrPriceEpisodeData
+-- IlrPriceEpisodes
 ---------------------------------------------------------------
-INSERT INTO [Reference].[IlrPriceEpisodeData]
+INSERT INTO [Reference].[IlrPriceEpisodes]
 (Ukprn, Uln, PriceEpisodeIdentifier, LearnRefNumber, AimSeqNumber, StartDate, ProgType, FworkCode, PwayCode, StdCode, TNP1, TNP2, TNP3, TNP4)
 SELECT
 	pe.Ukprn, 
@@ -96,9 +96,9 @@ INNER JOIN @ProvidersToProcess p
 	ON pe.UKPRN = p.UKPRN
 
 ---------------------------------------------------------------
--- DataLockCommitmentData
+-- Commitments
 ---------------------------------------------------------------
-INSERT INTO [Reference].[DataLockCommitmentData]
+INSERT INTO [Reference].[Commitments]
 (CommitmentId, CommitmentVersion, StartDate, StandardCode, ProgrammeType, FrameworkCode, PathwayCode, NegotiatedPrice, EffectiveDate, EmployerAccountId)
 SELECT
 	CommitmentId, 

@@ -55,7 +55,8 @@ CREATE TABLE [DataLock].[DataLockEventPeriods]
 	CollectionPeriodMonth	int				NOT NULL,
 	CollectionPeriodYear	int				NOT NULL,
 	CommitmentVersion		bigint			NOT NULL,
-	IsPayable				bit				NOT NULL
+	IsPayable				bit				NOT NULL,
+	TransactionType			int				NOT NULL
 )
 GO
 
@@ -72,13 +73,13 @@ CREATE TABLE [DataLock].[DataLockEventCommitmentVersions]
 (
 	DataLockEventId				bigint			NOT NULL,
 	CommitmentVersion			bigint			NOT NULL,
-	CommitmentStartDate			date			NULL,
+	CommitmentStartDate			date			NOT NULL,
 	CommitmentStandardCode		bigint			NULL,
 	CommitmentProgrammeType		int				NULL,
 	CommitmentFrameworkCode		int				NULL,
 	CommitmentPathwayCode		int				NULL,
-	CommitmentNegotiatedPrice	decimal(12,5)	NULL,
-	CommitmentEffectiveDate		date			NULL
+	CommitmentNegotiatedPrice	decimal(12,5)	NOT NULL,
+	CommitmentEffectiveDate		date			NOT NULL
 )
 GO
 
