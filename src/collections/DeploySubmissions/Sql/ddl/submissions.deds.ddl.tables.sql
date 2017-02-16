@@ -55,7 +55,7 @@ GO
 CREATE TABLE [Submissions].[LastSeenVersion]
 (
 	IlrFileName				nvarchar(50)	NOT NULL,
-	FileDateTime			datetime		NOT NULL,
+	FileDateTime			datetime		NOT NULL,	
 	SubmittedDateTime		datetime		NOT NULL,
 	ComponentVersionNumber	int				NOT NULL,
 	UKPRN					bigint			NOT NULL,

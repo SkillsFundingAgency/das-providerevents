@@ -11,10 +11,12 @@ namespace SFA.DAS.Provider.Events.Submission
     public class SubmissionEventsProcessor
     {
         private readonly IMediator _mediator;
+        private readonly string _yearOfCollection;
 
-        public SubmissionEventsProcessor(IMediator mediator)
+        public SubmissionEventsProcessor(IMediator mediator, string yearOfCollection)
         {
             _mediator = mediator;
+            _yearOfCollection = yearOfCollection;
         }
         protected SubmissionEventsProcessor()
         {
@@ -31,6 +33,7 @@ namespace SFA.DAS.Provider.Events.Submission
                 var lastSeenIlr = lastSeenVersions.Items.SingleOrDefault(ilr => ilr.Ukprn == currentIlr.Ukprn
                                                                              && ilr.Uln == currentIlr.Uln
                                                                              && ilr.PriceEpisodeIdentifier == currentIlr.PriceEpisodeIdentifier);
+                currentIlr.AcademicYear = _yearOfCollection;
                 var @event = CalculateDelta(currentIlr, lastSeenIlr);
                 if (@event != null)
                 {
@@ -43,6 +46,7 @@ namespace SFA.DAS.Provider.Events.Submission
                 _mediator.Send(new WriteLastSeenIlrDetailsCommand
                 {
                     LastSeenIlr = currentIlr
+                   
                 });
             }
         }
@@ -108,7 +112,11 @@ namespace SFA.DAS.Provider.Events.Submission
                 (@event = @event ?? new SubmissionEvent()).CommitmentId = currentIlr.CommitmentId;
             }
 
-
+            if (currentIlr.EmployerReferenceNumber != lastSeenIlr?.EmployerReferenceNumber)
+            {
+                (@event = @event ?? new SubmissionEvent()).EmployerReferenceNumber = currentIlr.EmployerReferenceNumber;
+            }
+          
 
             // If there have been changes then set the standard properties
             if (@event != null)
@@ -122,6 +130,8 @@ namespace SFA.DAS.Provider.Events.Submission
                 @event.LearnRefNumber = currentIlr.LearnRefNumber;
                 @event.AimSeqNumber = currentIlr.AimSeqNumber;
                 @event.PriceEpisodeIdentifier = currentIlr.PriceEpisodeIdentifier;
+                @event.EmployerReferenceNumber = currentIlr.EmployerReferenceNumber;
+                @event.AcademicYear = currentIlr.AcademicYear;
             }
 
             return @event;
