@@ -1,4 +1,4 @@
-# Submissions API
+#Â Submissions API
 
 Submissions is a feed of changes that have happened to the learning record. A new record is added to the API everytime a significant change occurs, and will only include details of what has changed since the last event. The first event for a record will include all details.
 
@@ -27,9 +27,11 @@ Response:
       "IlrFileName": "ILR-80810436-1617-20170202-075857-01.xml",
       "FileDateTime": "2017-02-02T00:00:00",
       "SubmittedDateTime": "2017-02-02T08:02:57.577",
+      "AcademicYear": "1617",
       "ComponentVersionNumber": 1,
       "Ukprn": 80810436,
       "Uln": 321,
+      "EmployerReferenceNumber": 123456,
       "StandardCode": 27,
       "ActualStartDate": "2017-05-01T00:00:00",
       "PlannedEndDate": "2018-06-15T00:00:00",
@@ -43,9 +45,11 @@ Response:
       "IlrFileName": "ILR-80810463-1617-20170205-075957-01.xml",
       "FileDateTime": "2017-02-05T00:00:00",
       "SubmittedDateTime": "2017-02-05T08:05:57.577",
+      "AcademicYear": "1617",
       "ComponentVersionNumber": 1,
       "Ukprn": 80810463,
       "Uln": 456,
+      "EmployerReferenceNumber": 654321,
       "ProgrammeType": 20,
       "FrameworkCode": 550,
       "PathwayCode": 6,
@@ -67,9 +71,11 @@ Response **Items** structure:
 | IlrFileName | string | no | name of the related ilr file |
 | FileDateTime | DateTime | no | ilr file date and time |
 | SubmittedDateTime | DateTime | no | ilr file submission date and time |
+| AcademicYear | string | no | ilr academic year |
 | ComponentVersionNumber | int | no | version of the compoonent that created the event |
 | Ukprn | long | no | learning provider's ukprn |
 | Uln | long | no | learner's unique number |
+| EmployerReferenceNumber | int | yes | ilr learner employer's reference number |
 | StandardCode | long | yes | ilr learning standard code |
 | ProgrammeType | int | yes | ilr learning programme type |
 | FrameworkCode | int | yes | ilr learning frameworh code |
