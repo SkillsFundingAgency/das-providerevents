@@ -46,6 +46,10 @@
       <HintPath>..\packages\FastMember.1.1.0\lib\net40\FastMember.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MediatR, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediatR.2.1.0\lib\net45\MediatR.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Moq, Version=4.5.30.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\packages\Moq.4.5.30\lib\net45\Moq.dll</HintPath>
       <Private>True</Private>
@@ -72,7 +76,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataLockEventsTaskTests\WhenExecuted.cs" />
+    <Compile Include="Application\GetCurrentEvents\GetCurrentEventsHandler\WhenHandling.cs" />
+    <Compile Include="Application\GetLastSeenEvents\GetLastSeenEventsHandler\WhenHandling.cs" />
+    <Compile Include="Application\WriteDataLockEvent\WriteDataLockEventCommandHandler\WhenHandling.cs" />
+    <Compile Include="DataLockEventsProcessor\WhenProcessing.cs" />
+    <Compile Include="DataLockEventsTask\WhenExecuted.cs" />
+    <Compile Include="DataLockEventsTask\WhenExecutedWithInvalidContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -32,7 +32,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenEvents
                 var lastSeenEventEntities = _dataLockEventRepository.GetLastSeenEvents();
 
                 var lastSeenEvents = lastSeenEventEntities == null
-                    ? null
+                    ? new DataLockEvent[0]
                     : lastSeenEventEntities
                         .Select(e => new DataLockEvent
                         {
@@ -84,7 +84,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenEvents
             var errorEnities = _dataLockEventErrorRepository.GetDatalockEventErrors(eventId);
 
             return errorEnities == null
-                ? null
+                ? new DataLockEventError[0]
                 : errorEnities
                     .Select(e => new DataLockEventError
                     {
@@ -100,7 +100,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenEvents
             var periodEntities = _dataLockEventPeriodRepository.GetDataLockEventPeriods(eventId);
 
             return periodEntities == null
-                ? null
+                ? new DataLockEventPeriod[0]
                 : periodEntities
                     .Select(e => new DataLockEventPeriod
                     {
@@ -123,7 +123,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenEvents
             var commitmentVersionEntities = _dataLockEventCommitmentVersionRepository.GetDataLockEventCommitmentVersions(eventId);
 
             return commitmentVersionEntities == null
-                ? null
+                ? new DataLockEventCommitmentVersion[0]
                 : commitmentVersionEntities
                     .Select(e => new DataLockEventCommitmentVersion
                     {

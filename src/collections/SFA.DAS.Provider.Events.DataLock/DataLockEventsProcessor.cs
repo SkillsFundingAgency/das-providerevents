@@ -39,6 +39,7 @@ namespace SFA.DAS.Provider.Events.DataLock
 
                 if (EventsAreDifferent(current, lastSeen))
                 {
+                    current.Id = 0;
                     current.ProcessDateTime = DateTime.Now;
 
                     _mediator.Send(new WriteDataLockEventCommandRequest
@@ -198,9 +199,9 @@ namespace SFA.DAS.Provider.Events.DataLock
             foreach (var currentPeriod in current)
             {
                 if (!lastSeen.Any(p =>
-                    p.CollectionPeriod.Name == currentPeriod.CollectionPeriod.Name &&
-                    p.CollectionPeriod.Month == currentPeriod.CollectionPeriod.Month &&
-                    p.CollectionPeriod.Year == currentPeriod.CollectionPeriod.Year &&
+                    p.CollectionPeriod?.Name == currentPeriod.CollectionPeriod?.Name &&
+                    p.CollectionPeriod?.Month == currentPeriod.CollectionPeriod?.Month &&
+                    p.CollectionPeriod?.Year == currentPeriod.CollectionPeriod?.Year &&
                     p.CommitmentVersion == currentPeriod.CommitmentVersion &&
                     p.IsPayable == currentPeriod.IsPayable &&
                     p.TransactionType == currentPeriod.TransactionType))

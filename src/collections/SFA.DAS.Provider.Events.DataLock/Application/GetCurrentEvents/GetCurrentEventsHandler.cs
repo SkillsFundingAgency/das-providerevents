@@ -46,40 +46,43 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentEvents
 
                 var priceEpisodeMatches = _priceEpisodeMatchRepository.GetCurrentPriceEpisodeMatches();
 
-                foreach (var match in priceEpisodeMatches)
+                if (priceEpisodeMatches != null)
                 {
-                    var matchPeriods = _priceEpisodePeriodMatchRepository.GetPriceEpisodePeriodMatches(match.Ukprn, match.PriceEpisodeIdentifier, match.PriceEpisodeIdentifier);
-                    var matchErrors = _validationErrorRepository.GetPriceEpisodeValidationErrors(match.Ukprn, match.PriceEpisodeIdentifier, match.LearnRefnumber);
-                    var ilrData = _ilrPriceEpisodeRepository.GetPriceEpisodeIlrData(match.Ukprn, match.PriceEpisodeIdentifier, match.LearnRefnumber);
-                    var commitmentVersions = _commitmentRepository.GetCommitmentVersions(match.CommitmentId);
-
-                    var @event = new DataLockEvent
+                    foreach (var match in priceEpisodeMatches)
                     {
-                        IlrFileName = ilrData.IlrFileName,
-                        SubmittedDateTime = ilrData.SubmittedTime,
-                        AcademicYear = _academicYear,
-                        Ukprn = match.Ukprn,
-                        Uln = ilrData.Uln,
-                        LearnRefnumber = match.LearnRefnumber,
-                        AimSeqNumber = match.AimSeqNumber,
-                        PriceEpisodeIdentifier = match.PriceEpisodeIdentifier,
-                        CommitmentId = match.CommitmentId,
-                        EmployerAccountId = commitmentVersions[0].EmployerAccountId,
-                        EventSource = _eventsSource,
-                        HasErrors = !match.IsSuccess,
-                        IlrStartDate = ilrData.IlrStartDate,
-                        IlrStandardCode = ilrData.IlrStandardCode,
-                        IlrProgrammeType = ilrData.IlrProgrammeType,
-                        IlrFrameworkCode = ilrData.IlrFrameworkCode,
-                        IlrPathwayCode = ilrData.IlrPathwayCode,
-                        IlrTrainingPrice = ilrData.IlrTrainingPrice,
-                        IlrEndpointAssessorPrice = ilrData.IlrEndpointAssessorPrice,
-                        Errors = GetEventErrors(matchErrors),
-                        Periods = GetEventPeriods(matchPeriods),
-                        CommitmentVersions = GetEventCommitmentVersions(matchPeriods, commitmentVersions)
-                    };
+                        var matchPeriods = _priceEpisodePeriodMatchRepository.GetPriceEpisodePeriodMatches(match.Ukprn, match.PriceEpisodeIdentifier, match.PriceEpisodeIdentifier);
+                        var matchErrors = _validationErrorRepository.GetPriceEpisodeValidationErrors(match.Ukprn, match.PriceEpisodeIdentifier, match.LearnRefnumber);
+                        var ilrData = _ilrPriceEpisodeRepository.GetPriceEpisodeIlrData(match.Ukprn, match.PriceEpisodeIdentifier, match.LearnRefnumber);
+                        var commitmentVersions = _commitmentRepository.GetCommitmentVersions(match.CommitmentId);
 
-                    currentEvents.Add(@event);
+                        var @event = new DataLockEvent
+                        {
+                            IlrFileName = ilrData.IlrFileName,
+                            SubmittedDateTime = ilrData.SubmittedTime,
+                            AcademicYear = _academicYear,
+                            Ukprn = match.Ukprn,
+                            Uln = ilrData.Uln,
+                            LearnRefnumber = match.LearnRefnumber,
+                            AimSeqNumber = match.AimSeqNumber,
+                            PriceEpisodeIdentifier = match.PriceEpisodeIdentifier,
+                            CommitmentId = match.CommitmentId,
+                            EmployerAccountId = commitmentVersions[0].EmployerAccountId,
+                            EventSource = _eventsSource,
+                            HasErrors = !match.IsSuccess,
+                            IlrStartDate = ilrData.IlrStartDate,
+                            IlrStandardCode = ilrData.IlrStandardCode,
+                            IlrProgrammeType = ilrData.IlrProgrammeType,
+                            IlrFrameworkCode = ilrData.IlrFrameworkCode,
+                            IlrPathwayCode = ilrData.IlrPathwayCode,
+                            IlrTrainingPrice = ilrData.IlrTrainingPrice,
+                            IlrEndpointAssessorPrice = ilrData.IlrEndpointAssessorPrice,
+                            Errors = GetEventErrors(matchErrors),
+                            Periods = GetEventPeriods(matchPeriods),
+                            CommitmentVersions = GetEventCommitmentVersions(matchPeriods, commitmentVersions)
+                        };
+
+                        currentEvents.Add(@event);
+                    }
                 }
 
                 return new GetCurrentEventsResponse
@@ -100,6 +103,11 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentEvents
 
         private DataLockEventError[] GetEventErrors(ValidationErrorEntity[] validationErrors)
         {
+            if (validationErrors == null)
+            {
+                return new DataLockEventError[0];
+            }
+
             return validationErrors
                 .Select(ve => new DataLockEventError
                 {
@@ -111,6 +119,11 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentEvents
 
         private DataLockEventPeriod[] GetEventPeriods(PriceEpisodePeriodMatchEntity[] periodMatches)
         {
+            if (periodMatches == null)
+            {
+                return new DataLockEventPeriod[0];
+            }
+
             return periodMatches
                 .Select(p => new DataLockEventPeriod
                 {
@@ -124,6 +137,11 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentEvents
 
         private DataLockEventCommitmentVersion[] GetEventCommitmentVersions(PriceEpisodePeriodMatchEntity[] periodMatches, CommitmentEntity[] commitmentVersions)
         {
+            if (periodMatches == null || commitmentVersions == null)
+            {
+                return new DataLockEventCommitmentVersion[0];
+            }
+
             return periodMatches
                 .Select(p =>
                 {
