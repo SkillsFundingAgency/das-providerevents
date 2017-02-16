@@ -49,7 +49,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dml", "dml", "{6A3B6C2E-062
 	ProjectSection(SolutionItems) = preProject
 		DeployDataLock\sql\dml\01 datalock.populate.reference.provider.periodend.sql = DeployDataLock\sql\dml\01 datalock.populate.reference.provider.periodend.sql
 		DeployDataLock\sql\dml\01 datalock.populate.reference.provider.submission.sql = DeployDataLock\sql\dml\01 datalock.populate.reference.provider.submission.sql
-		DeployDataLock\sql\dml\02 datalock.populate.reference.input.sql = DeployDataLock\sql\dml\02 datalock.populate.reference.input.sql
+		DeployDataLock\sql\dml\02 datalock.populate.reference.input.periodend.sql = DeployDataLock\sql\dml\02 datalock.populate.reference.input.periodend.sql
+		DeployDataLock\sql\dml\02 datalock.populate.reference.input.submission.sql = DeployDataLock\sql\dml\02 datalock.populate.reference.input.submission.sql
 		DeployDataLock\sql\dml\03 datalock.populate.reference.history.sql = DeployDataLock\sql\dml\03 datalock.populate.reference.history.sql
 	EndProjectSection
 EndProject

@@ -15,14 +15,14 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
         private static readonly string[] PeriodEndCopyReferenceDataScripts =
         {
             "01 datalock.populate.reference.provider.periodend.sql",
-            "02 datalock.populate.reference.input.sql",
+            "02 datalock.populate.reference.input.periodend.sql",
             "03 datalock.populate.reference.history.sql"
         };
 
         private static readonly string[] SubmissionCopyReferenceDataScripts =
         {
             "01 datalock.populate.reference.provider.submission.sql",
-            "02 datalock.populate.reference.input.sql",
+            "02 datalock.populate.reference.input.submission.sql",
             "03 datalock.populate.reference.history.sql"
         };
 
@@ -41,7 +41,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                         FROM sys.objects o WITH (NOWAIT)
                         JOIN sys.schemas s WITH (NOWAIT) ON o.[schema_id] = s.[schema_id]
                         WHERE o.[type] = 'U'
-                            AND s.name IN ('dbo', 'Valid', 'Reference', 'DataLock', 'Rulebase')
+                            AND s.name IN ('dbo', 'Valid', 'Reference', 'DataLock', 'Rulebase', 'Payments')
                         FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)')
 
                     EXEC sys.sp_executesql @SQL                
@@ -228,6 +228,15 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                     + "SELECT Ukprn, @learnerRefNumber, 'ZPROG001', 1, @aimSequenceNumber, StartDate, EndDate, 36, StandardCode, ProgrammeType, FrameworkCode, PathwayCode FROM dbo.DasCommitments "
                     + "WHERE CommitmentId = @commitmentId",
                 new { commitmentId, learnerRefNumber, aimSequenceNumber }, false);
+        }
+
+        internal static void AddPeriodEndPeriod()
+        {
+            Execute("INSERT INTO Payments.Periods"
+                + "(PeriodName, CalendarMonth, CalendarYear, AccountDataValidAt, CommitmentDataValidAt, CompletionDateTime) "
+                + "VALUES "
+                + "('1617-R09', 4, 2017, @validTime, @validTime, @completionTime)",
+                new { validTime = DateTime.Today, completionTime = DateTime.Now }, false);
         }
 
         internal static void AddDataLockLastSeenSubmission(long ukprn, DateTime submittedDateTime)

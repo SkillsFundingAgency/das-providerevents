@@ -24,6 +24,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests
                 connection.RunDbSetupSqlScriptFile("DataLock.deds.ddl.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
                 connection.RunDbSetupSqlScriptFile("Ilr.deds.ddl.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
                 connection.RunDbSetupSqlScriptFile("Ilr.Earnings.deds.ddl.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+                connection.RunDbSetupSqlScriptFile("Payments.deds.ddl.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
 
                 connection.RunDbSetupSqlScriptFile("datalock.deds.ddl.tables.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
             }   

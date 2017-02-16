@@ -76,6 +76,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Specs
             TestDataHelper.AddCommitment(commitmentId, ukprn, "Lrn-001", passedDataLock: false);
             TestDataHelper.AddIlrDataForCommitment(commitmentId, "Lrn-001");
 
+            TestDataHelper.AddPeriodEndPeriod();
             TestDataHelper.AddDataLockLastSeenSubmission(ukprn, DateTime.Now.AddDays(-1));
             TestDataHelper.AddDataLockEvent(ukprn, "Lrn-001", passedDataLock: false);
 
@@ -146,6 +147,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Specs
             TestDataHelper.AddCommitment(commitmentId, ukprn, "Lrn-001", passedDataLock: false);
             TestDataHelper.AddIlrDataForCommitment(commitmentId, "Lrn-001");
 
+            TestDataHelper.AddPeriodEndPeriod();
             TestDataHelper.AddDataLockLastSeenSubmission(ukprn, DateTime.Now.AddDays(-1));
             TestDataHelper.AddDataLockEvent(ukprn, "Lrn-001");
 
