@@ -54,7 +54,8 @@ Response:
             "Month": 5,
             "Year": 2017
           },
-          "IsPayable": false
+          "IsPayable": false,
+          "TransactionType": "Learning"
         },
         {
           "ApprenticeshipVersion": 99,
@@ -63,7 +64,8 @@ Response:
             "Month": 6,
             "Year": 2017
           },
-          "IsPayable": false
+          "IsPayable": false,
+          "TransactionType": "Learning"
         },
         {
           "ApprenticeshipVersion": 99,
@@ -72,7 +74,8 @@ Response:
             "Month": 7,
             "Year": 2017
           },
-          "IsPayable": false
+          "IsPayable": false,
+          "TransactionType": "Learning"
         }
       ],
       "Apprenticeships": [
@@ -113,7 +116,8 @@ Response:
             "Month": 6,
             "Year": 2017
           },
-          "IsPayable": true
+          "IsPayable": true,
+          "TransactionType": "Learning"
         },
         {
           "ApprenticeshipVersion": 25,
@@ -122,7 +126,8 @@ Response:
             "Month": 7,
             "Year": 2017
           },
-          "IsPayable": false
+          "IsPayable": false,
+          "TransactionType": "Learning"
         }
       ],
       "Apprenticeships": [
@@ -191,6 +196,7 @@ Response **Items** structure:
 | ApprenticeshipVersion | long | no | apprenticeship version |
 | Period | NamedCollectionPeriod | no | ilr collection period containing an id, calendar month and calcndar year |
 | IsPayable | bool | no | whether any earnings against the period will be paid or not |
+| TransactionType | TransactionType | no | the type of payment the period relates to; see the following tables for all possible values |
 
 **Apprenticeships** structure:
 
@@ -204,6 +210,18 @@ Response **Items** structure:
 | PathwayCode | int | yes | apprenticeship pathway code |
 | NegotiatedPrice | decimal | no | apprenticeship negotiated price |
 | EffectiveDate | DateTime | no | apprenticeship change effective from date |
+
+**TransactionType** values:
+
+| Value | Description |
+| --- | --- |
+| Learning | on programme payment |
+| Completion | completion payment |
+| Balancing | balancing payment |
+| First16To18EmployerIncentive | first 16-18 employer incentive payment |
+| First16To18ProviderIncentive | first 16-18 provider incentive payment |
+| Second16To18EmployerIncentive | second 16-18 employer incentive payment |
+| Second16To18ProviderIncentive | second 16-18 provider incentive payment |
 
 ## Using the client
 
