@@ -50,10 +50,20 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentEvents
                 {
                     foreach (var match in priceEpisodeMatches)
                     {
-                        var matchPeriods = _priceEpisodePeriodMatchRepository.GetPriceEpisodePeriodMatches(match.Ukprn, match.PriceEpisodeIdentifier, match.PriceEpisodeIdentifier);
+                        var matchPeriods = _priceEpisodePeriodMatchRepository.GetPriceEpisodePeriodMatches(match.Ukprn, match.PriceEpisodeIdentifier, match.LearnRefnumber);
                         var matchErrors = _validationErrorRepository.GetPriceEpisodeValidationErrors(match.Ukprn, match.PriceEpisodeIdentifier, match.LearnRefnumber);
                         var ilrData = _ilrPriceEpisodeRepository.GetPriceEpisodeIlrData(match.Ukprn, match.PriceEpisodeIdentifier, match.LearnRefnumber);
                         var commitmentVersions = _commitmentRepository.GetCommitmentVersions(match.CommitmentId);
+
+                        if (ilrData == null)
+                        {
+                            throw new Exception($"Could not find ILR data for price episode with ukprn {match.Ukprn}, identifier {match.PriceEpisodeIdentifier}, learner reference number {match.LearnRefnumber}");
+                        }
+
+                        if (commitmentVersions == null)
+                        {
+                            throw new Exception($"Could not find any commitment versions for commitment with id {match.CommitmentId}");
+                        }
 
                         var @event = new DataLockEvent
                         {
@@ -137,30 +147,35 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentEvents
 
         private DataLockEventCommitmentVersion[] GetEventCommitmentVersions(PriceEpisodePeriodMatchEntity[] periodMatches, CommitmentEntity[] commitmentVersions)
         {
+            var versions = new List<DataLockEventCommitmentVersion>();
+
             if (periodMatches == null || commitmentVersions == null)
             {
                 return new DataLockEventCommitmentVersion[0];
             }
 
-            return periodMatches
-                .Select(p =>
-                {
-                    var commitment = commitmentVersions
-                        .Single(c => c.CommitmentId == p.CommitmentId && c.CommitmentVersion == p.VersionId);
+            foreach (var version in commitmentVersions)
+            {
+                var period = periodMatches
+                    .FirstOrDefault(p => p.CommitmentId == version.CommitmentId && p.VersionId == version.CommitmentVersion);
 
-                    return new DataLockEventCommitmentVersion
+                if (period != null)
+                {
+                    versions.Add(new DataLockEventCommitmentVersion
                     {
-                        CommitmentVersion = commitment.CommitmentVersion,
-                        CommitmentStartDate = commitment.StartDate,
-                        CommitmentStandardCode = commitment.StandardCode,
-                        CommitmentProgrammeType = commitment.ProgrammeType,
-                        CommitmentFrameworkCode = commitment.FrameworkCode,
-                        CommitmentPathwayCode = commitment.PathwayCode,
-                        CommitmentNegotiatedPrice = commitment.NegotiatedPrice,
-                        CommitmentEffectiveDate = commitment.EffectiveDate
-                    };
-                })
-                .ToArray();
+                        CommitmentVersion = version.CommitmentVersion,
+                        CommitmentStartDate = version.StartDate,
+                        CommitmentStandardCode = version.StandardCode,
+                        CommitmentProgrammeType = version.ProgrammeType,
+                        CommitmentFrameworkCode = version.FrameworkCode,
+                        CommitmentPathwayCode = version.PathwayCode,
+                        CommitmentNegotiatedPrice = version.NegotiatedPrice,
+                        CommitmentEffectiveDate = version.EffectiveDate
+                    });
+                }
+            }
+
+            return versions.ToArray();
         }
 
         private string GetErrorDescription(string errorCode)

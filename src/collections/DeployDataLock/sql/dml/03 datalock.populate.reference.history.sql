@@ -3,15 +3,14 @@ INSERT INTO @ProvidersToProcess
 (UKPRN)
 SELECT
 	p.UKPRN
-FROM Reference.Providers
+FROM Reference.Providers p
 
 DECLARE @LastestDataLockEvents TABLE (EventId bigint)
 INSERT INTO @LastestDataLockEvents
 SELECT
 	MAX(Id)
 FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEvents
-GROUP BY PriceEpisodeIdentifier
---GROUP BY UKPRN, LearnRefNumber, PriceEpisodeIdentifier
+GROUP BY UKPRN, LearnRefNumber, PriceEpisodeIdentifier
 
 --------------------------------------------------------------------------------------
 -- IdentifierSeed
@@ -20,7 +19,7 @@ INSERT INTO Reference.IdentifierSeed
 (IdentifierName, MaxIdInDeds)
 SELECT
 	'DataLockEvents',
-	MAX(Id)
+	ISNULL(MAX(Id), 0)
 FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEvents
 
 ---------------------------------------------------------------
@@ -82,7 +81,7 @@ SELECT
 	dlee.DataLockEventId, 
 	dlee.ErrorCode, 
 	dlee.SystemDescription
-FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEventPeriods dlee
+FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEventErrors dlee
 INNER JOIN @LastestDataLockEvents le
 	ON dlee.DataLockEventId = le.EventId
 

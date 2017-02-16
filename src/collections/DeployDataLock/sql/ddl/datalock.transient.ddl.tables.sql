@@ -79,7 +79,8 @@ CREATE TABLE [DataLock].[DataLockEventPeriods]
 	CollectionPeriodMonth	int				NOT NULL,
 	CollectionPeriodYear	int				NOT NULL,
 	CommitmentVersion		bigint			NOT NULL,
-	IsPayable				bit				NOT NULL
+	IsPayable				bit				NOT NULL,
+	TransactionType			int				NOT NULL
 )
 GO
 

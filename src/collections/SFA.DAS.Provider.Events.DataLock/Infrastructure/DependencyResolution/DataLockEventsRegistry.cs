@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MediatR;
 using NLog;
+using SFA.DAS.Provider.Events.DataLock.Application.GetCurrentEvents;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data;
 using SFA.DAS.Provider.Events.DataLock.Infrastructure.Data;
 using StructureMap;
@@ -31,6 +32,8 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.DependencyResolution
             For<IPriceEpisodeMatchRepository>().Use<DcfsPriceEpisodeMatchRepository>();
             For<IPriceEpisodePeriodMatchRepository>().Use<DcfsPriceEpisodePeriodMatchRepository>();
             For<IValidationErrorRepository>().Use<DcfsValidationErrorRepository>();
+
+            For<IRequestHandler<GetCurrentEventsRequest, GetCurrentEventsResponse>>().Use<GetCurrentEventsHandler>();
 
             For<SingleInstanceFactory>().Use<SingleInstanceFactory>(ctx => t => GetInstance(ctx, t));
             For<MultiInstanceFactory>().Use<MultiInstanceFactory>(ctx => t => GetAllInstances(ctx, t));

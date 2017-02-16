@@ -29,9 +29,9 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
         public void WriteDataLockEventPeriod(DataLockEventPeriodEntity period)
         {
             Execute("INSERT INTO DataLock.DataLockEventPeriods " +
-                    "(DataLockEventId, CollectionPeriodName, CollectionPeriodMonth, CollectionPeriodYear, CommitmentVersion, IsPayable) " +
+                    "(DataLockEventId, CollectionPeriodName, CollectionPeriodMonth, CollectionPeriodYear, CommitmentVersion, IsPayable, TransactionType) " +
                     "VALUES " +
-                    "(@DataLockEventId, @CollectionPeriodName, @CollectionPeriodMonth, @CollectionPeriodYear, @CommitmentVersion, @IsPayable)",
+                    "(@DataLockEventId, @CollectionPeriodName, @CollectionPeriodMonth, @CollectionPeriodYear, @CommitmentVersion, @IsPayable, @TransactionType)",
                     period);
         }
     }

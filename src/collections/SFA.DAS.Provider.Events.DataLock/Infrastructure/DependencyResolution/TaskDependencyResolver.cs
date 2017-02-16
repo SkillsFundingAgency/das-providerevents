@@ -16,6 +16,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.DependencyResolution
         {
             base.AddPolicies(config, taskType, contextWrapper);
             config.Policies.Add(new YearOfCollectionPolicy(contextWrapper));
+            config.Policies.Add(new EventsSourcePolicy(contextWrapper));
         }
     }
 }

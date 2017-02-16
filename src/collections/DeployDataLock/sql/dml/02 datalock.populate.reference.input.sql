@@ -3,7 +3,7 @@ INSERT INTO @ProvidersToProcess
 (UKPRN)
 SELECT
 	p.UKPRN
-FROM Reference.Providers
+FROM Reference.Providers p
 
 ---------------------------------------------------------------
 -- PriceEpisodeMatch
@@ -20,7 +20,7 @@ SELECT
 	pem.CollectionPeriodMonth, 
 	pem.CollectionPeriodYear, 
 	pem.IsSuccess
-FROM ${DataLock_Deds.FQ}.DataLock.PriceEpisodeMatch pem
+FROM [DasProviderDataLockEvents_Deds].DataLock.PriceEpisodeMatch pem
 INNER JOIN @ProvidersToProcess p
 	ON pem.UKPRN = p.UKPRN
 
@@ -42,7 +42,7 @@ SELECT
 	pepm.CollectionPeriodName, 
 	pepm.CollectionPeriodMonth, 
 	pepm.CollectionPeriodYear
-FROM ${DataLock_Deds.FQ}.DataLock.PriceEpisodePeriodMatch pepm
+FROM [DasProviderDataLockEvents_Deds].DataLock.PriceEpisodePeriodMatch pepm
 INNER JOIN @ProvidersToProcess p
 	ON pepm.UKPRN = p.UKPRN
 
@@ -52,7 +52,7 @@ INNER JOIN @ProvidersToProcess p
 INSERT INTO [Reference].[ValidationError]
 (Ukprn, LearnRefNumber, AimSeqNumber, RuleId, PriceEpisodeIdentifier, CollectionPeriodName, CollectionPeriodMonth, CollectionPeriodYear)
 SELECT
-	Ukprn, 
+	ve.Ukprn, 
 	LearnRefNumber, 
 	AimSeqNumber, 
 	RuleId, 
@@ -60,7 +60,7 @@ SELECT
 	CollectionPeriodName, 
 	CollectionPeriodMonth, 
 	CollectionPeriodYear
-FROM ${DataLock_Deds.FQ}.DataLock.ValidationError ve
+FROM [DasProviderDataLockEvents_Deds].DataLock.ValidationError ve
 INNER JOIN @ProvidersToProcess p
 	ON ve.UKPRN = p.UKPRN
 
@@ -84,11 +84,11 @@ SELECT
     pe.TNP2,
     pe.TNP3,
     pe.TNP4
-FROM ${ILR_Deds.FQ}.Rulebase.AEC_ApprenticeshipPriceEpisode pe
-INNER JOIN ${ILR_Deds.FQ}.Valid.Learner l
+FROM [DasProviderDataLockEvents_Deds].Rulebase.AEC_ApprenticeshipPriceEpisode pe
+INNER JOIN [DasProviderDataLockEvents_Deds].Valid.Learner l
     ON pe.Ukprn = l.Ukprn
     AND pe.LearnRefNumber = l.LearnRefNumber
-INNER JOIN ${ILR_Deds.FQ}.Valid.LearningDelivery ld
+INNER JOIN [DasProviderDataLockEvents_Deds].Valid.LearningDelivery ld
     ON pe.Ukprn = ld.Ukprn
     AND pe.LearnRefNumber = ld.LearnRefNumber
     AND pe.PriceEpisodeAimSeqNumber = ld.AimSeqNumber
@@ -111,10 +111,10 @@ SELECT
     AgreedCost,
     EffectiveFromDate,
     AccountId
-FROM ${DAS_Commitments.FQ}.dbo.DasCommitments
+FROM [DasProviderDataLockEvents_Deds].dbo.DasCommitments
 WHERE CommitmentId IN (
     SELECT DISTINCT CommitmentId 
-    FROM ${DataLock_Deds.FQ}.DataLock.PriceEpisodeMatch pem
+    FROM [DasProviderDataLockEvents_Deds].DataLock.PriceEpisodeMatch pem
     INNER JOIN @ProvidersToProcess p
         ON pem.UKPRN = p.UKPRN
 )

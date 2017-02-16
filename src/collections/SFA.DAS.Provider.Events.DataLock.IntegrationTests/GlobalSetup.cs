@@ -20,6 +20,11 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests
         {
             using (var connection = new SqlConnection(GlobalTestContext.Current.DedsDatabaseConnectionString))
             {
+                connection.RunDbSetupSqlScriptFile("DasCommitments.deds.ddl.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+                connection.RunDbSetupSqlScriptFile("DataLock.deds.ddl.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+                connection.RunDbSetupSqlScriptFile("Ilr.deds.ddl.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+                connection.RunDbSetupSqlScriptFile("Ilr.Earnings.deds.ddl.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+
                 connection.RunDbSetupSqlScriptFile("datalock.deds.ddl.tables.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
             }   
         }
