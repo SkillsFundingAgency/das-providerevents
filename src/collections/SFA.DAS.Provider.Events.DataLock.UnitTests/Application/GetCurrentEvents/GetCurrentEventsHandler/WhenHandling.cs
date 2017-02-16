@@ -29,6 +29,12 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvent
             new object[] { new ValidationErrorEntity[] {} }
         };
 
+        private static readonly object[] EmptyCommitmentVersions =
+        {
+            new object[] { null },
+            new object[] { new CommitmentEntity[] {} }
+        };
+
         private Mock<IPriceEpisodeMatchRepository> _priceEpisodeMatchRepository;
         private Mock<IPriceEpisodePeriodMatchRepository> _priceEpisodePeriodMatchRepository;
         private Mock<IValidationErrorRepository> _validationErrorRepository;
@@ -302,6 +308,39 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvent
             Assert.IsFalse(actual.IsValid);
             Assert.IsNotNull(actual.Exception);
             Assert.AreEqual("Test", actual.Exception.Message);
+        }
+
+        [Test]
+        public void ThenItShouldReturnInvalidResponseIfNoIlrDataFound()
+        {
+            // Arrange
+            _ilrPriceEpisodeRepository.Setup(r => r.GetPriceEpisodeIlrData(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns((IlrPriceEpisodeEntity)null);
+
+            // Act
+            var actual = _handler.Handle(new GetCurrentEventsRequest());
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsFalse(actual.IsValid);
+            Assert.IsNotNull(actual.Exception);
+        }
+
+        [Test]
+        [TestCaseSource(nameof(EmptyCommitmentVersions))]
+        public void ThenItShouldReturnInvalidResponseIfNoCommitmentVersionsFound(CommitmentEntity[] entities)
+        {
+            // Arrange
+            _commitmentRepository.Setup(r => r.GetCommitmentVersions(It.IsAny<long>()))
+                .Returns(entities);
+
+            // Act
+            var actual = _handler.Handle(new GetCurrentEventsRequest());
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsFalse(actual.IsValid);
+            Assert.IsNotNull(actual.Exception);
         }
 
         [Test]

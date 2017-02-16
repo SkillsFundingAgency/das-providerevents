@@ -60,9 +60,9 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentEvents
                             throw new Exception($"Could not find ILR data for price episode with ukprn {match.Ukprn}, identifier {match.PriceEpisodeIdentifier}, learner reference number {match.LearnRefnumber}");
                         }
 
-                        if (commitmentVersions == null)
+                        if (commitmentVersions == null || commitmentVersions.Length == 0)
                         {
-                            throw new Exception($"Could not find any commitment versions for commitment with id {match.CommitmentId}");
+                            throw new Exception($"Could not find any versions for commitment with id {match.CommitmentId}");
                         }
 
                         var @event = new DataLockEvent
