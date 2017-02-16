@@ -108,6 +108,8 @@ namespace SFA.DAS.Provider.Events.Submission
                 (@event = @event ?? new SubmissionEvent()).CommitmentId = currentIlr.CommitmentId;
             }
 
+
+
             // If there have been changes then set the standard properties
             if (@event != null)
             {

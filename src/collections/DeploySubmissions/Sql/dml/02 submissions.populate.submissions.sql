@@ -18,7 +18,9 @@ INSERT INTO [Submissions].[LatestVersion]
 	ActualEndDate,
 	OnProgrammeTotalPrice,
 	CompletionTotalPrice,
-	NINumber
+	NINumber,
+	AcademicYear,
+	EmployerReferenceNumber 
 )
 SELECT
 	IlrFileName,
@@ -39,7 +41,9 @@ SELECT
 	ActualEndDate,
 	OnProgrammeTotalPrice,
 	CompletionTotalPrice,
-	NINumber
+	NINumber,
+	AcademicYear,
+	EmployerReferenceNumber 
 FROM ${DAS_ProviderEvents.FQ}.Submissions.LatestVersion lv
 WHERE UKPRN IN (SELECT UKPRN FROM [Reference].[Providers]
 GO
