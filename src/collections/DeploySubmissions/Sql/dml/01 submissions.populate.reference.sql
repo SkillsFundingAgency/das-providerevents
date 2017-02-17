@@ -70,28 +70,29 @@ SELECT
 	pe.TNP3,
 	pe.TNP4,
 	(Select Max(CommitmentId) FROM
-		DasPaymentsAT_Deds.DataLock.PriceEpisodeMatch pem
+		 ${ILR_Deds.FQ}.DataLock.PriceEpisodeMatch pem
 		WHERE  pe.Ukprn = pem.Ukprn  AND 
 				pe.PriceEpisodeIdentifier = pem.PriceEpisodeIdentifier AND 
 				pe.LearnRefNumber = pem.LearnRefNumber AND 
 				pe.PriceEpisodeAimSeqNumber = pem.AimSeqNumber) AS CommitmentId,
-	es3.EmpId
+	empStatId.EmpId
 	
-FROM DasPaymentsAT_Deds.[Rulebase].[AEC_ApprenticeshipPriceEpisode] pe
+FROM  ${ILR_Deds.FQ}.[Rulebase].[AEC_ApprenticeshipPriceEpisode] pe
 JOIN @ProvidersToProcess p
 	ON p.UKPRN = pe.UKPRN
-JOIN (SELECT Max(es1.DateEmpStatApp) AS DateEmpStatApp , es1.UKPRN,es1.LearnRefNumber
-		FROM [Valid].[LearnerEmploymentStatus] es1
-		JOIN  DasPaymentsAT_Deds.[Rulebase].[AEC_ApprenticeshipPriceEpisode] pe 	
-		 ON es1.UKPRN = pe.UKPRN 
-		AND es1.LearnRefNumber = pe.LearnRefNumber 	
-		WHERE pe.EpisodeEffectiveTNPStartDate >= es1.DateEmpStatApp AND es1.UKPRN = pe.UKPRN AND pe.LearnRefNumber = es1.LearnRefNumber
-		GROUP BY es1.UKPRN,es1.LearnRefNumber) es
+JOIN (SELECT Max(empStat.DateEmpStatApp) AS DateEmpStatApp , empStat.UKPRN,empStat.LearnRefNumber
+		FROM  ${ILR_Deds.FQ}.[Valid].[LearnerEmploymentStatus] empStat
+		JOIN   ${ILR_Deds.FQ}.[Rulebase].[AEC_ApprenticeshipPriceEpisode] pe 	
+		 ON empStat.UKPRN = pe.UKPRN 
+		AND empStat.LearnRefNumber = pe.LearnRefNumber 	
+		WHERE pe.EpisodeEffectiveTNPStartDate >= empStat.DateEmpStatApp AND empStat.UKPRN = pe.UKPRN AND pe.LearnRefNumber = empStat.LearnRefNumber
+		GROUP BY empStat.UKPRN,empStat.LearnRefNumber) es
 ON 	es.UKPRN  = pe.UKPRN 
 AND es.LearnRefNumber = pe.LearnRefNumber
 
-JOIN  [Valid].[LearnerEmploymentStatus] es3  
-ON 	es3.UKPRN  = es.UKPRN 
-AND es3.LearnRefNumber = es.LearnRefNumber
-AND es3.DateEmpStatApp = es.DateEmpStatApp
+JOIN   ${ILR_Deds.FQ}.[Valid].[LearnerEmploymentStatus] empStatId  
+ON 	empStatId.UKPRN  = es.UKPRN 
+AND empStatId.LearnRefNumber = es.LearnRefNumber
+AND empStatId.DateEmpStatApp = es.DateEmpStatApp
+
 
