@@ -19,6 +19,7 @@ INSERT INTO [Submissions].[LatestVersion]
 	OnProgrammeTotalPrice,
 	CompletionTotalPrice,
 	NINumber,
+	CommitmentId,
 	AcademicYear,
 	EmployerReferenceNumber 
 )
@@ -42,6 +43,7 @@ SELECT
 	OnProgrammeTotalPrice,
 	CompletionTotalPrice,
 	NINumber,
+	CommitmentId,
 	AcademicYear,
 	EmployerReferenceNumber 
 FROM ${DAS_ProviderEvents.FQ}.Submissions.LatestVersion lv
