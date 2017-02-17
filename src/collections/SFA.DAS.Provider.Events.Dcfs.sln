@@ -58,6 +58,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.Dat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.DataLock.IntegrationTests", "SFA.DAS.Provider.Events.DataLock.IntegrationTests\SFA.DAS.Provider.Events.DataLock.IntegrationTests.csproj", "{2A595E5F-955C-4B4A-B99F-36F6F4E7D076}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{0F7A5106-3DCA-40E7-B6F1-3334C1BA0D28}"
+	ProjectSection(SolutionItems) = preProject
+		Build.fsx = Build.fsx
+		RunBuild.bat = RunBuild.bat
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
