@@ -11,7 +11,7 @@ FROM ${DAS_ProviderEvents.FQ}.Submissions.SubmissionEvents
 ---------------------------------------------------------------
 -- LatestVersion
 ---------------------------------------------------------------
-INSERT INTO [Submissions].[LatestVersion]
+INSERT INTO [Submissions].[LastSeenVersion]
 (
 	IlrFileName,
 	FileDateTime,
@@ -31,7 +31,10 @@ INSERT INTO [Submissions].[LatestVersion]
 	ActualEndDate,
 	OnProgrammeTotalPrice,
 	CompletionTotalPrice,
-	NINumber
+	NINumber,
+	CommitmentId,
+	AcademicYear,
+	EmployerReferenceNumber 
 )
 SELECT
 	IlrFileName,
@@ -52,7 +55,10 @@ SELECT
 	ActualEndDate,
 	OnProgrammeTotalPrice,
 	CompletionTotalPrice,
-	NINumber
-FROM ${DAS_ProviderEvents.FQ}.Submissions.LatestVersion lv
-WHERE UKPRN IN (SELECT UKPRN FROM [Reference].[Providers]
+	NINumber,
+	CommitmentId,
+	AcademicYear,
+	EmployerReferenceNumber 
+FROM ${DAS_ProviderEvents.FQ}.Submissions.LastSeenVersion lv
+WHERE UKPRN IN (SELECT UKPRN FROM [Reference].[Providers])
 GO

@@ -50,3 +50,49 @@ LEFT JOIN ${ILR_Deds.FQ}.DataLock.PriceEpisodeMatch pem
     AND pe.PriceEpisodeIdentifier = pem.PriceEpisodeIdentifier
     AND ld.LearnRefNumber = pem.LearnRefNumber
     AND ld.AimSeqNumber = pem.AimSeqNumber
+
+
+	
+
+INSERT INTO [Reference].[PriceEpisodes]
+(PriceEpisodeIdentifier,Ukprn,LearnRefNumber,PriceEpisodeAimSeqNumber,EpisodeEffectiveTNPStartDate,TNP1,NP2,TNP3,TNP4,CommitmentId,EmpId)
+
+
+SELECT
+	
+	pe.PriceEpisodeIdentifier,
+	pe.UKPRN,
+	pe.LearnRefNumber,
+	pe.PriceEpisodeAimSeqNumber,
+	pe.EpisodeEffectiveTNPStartDate,
+	pe.TNP1,
+	pe.TNP2,
+	pe.TNP3,
+	pe.TNP4,
+	(Select Max(CommitmentId) FROM
+		 ${ILR_Deds.FQ}.DataLock.PriceEpisodeMatch pem
+		WHERE  pe.Ukprn = pem.Ukprn  AND 
+				pe.PriceEpisodeIdentifier = pem.PriceEpisodeIdentifier AND 
+				pe.LearnRefNumber = pem.LearnRefNumber AND 
+				pe.PriceEpisodeAimSeqNumber = pem.AimSeqNumber) AS CommitmentId,
+	empStatId.EmpId
+	
+FROM  ${ILR_Deds.FQ}.[Rulebase].[AEC_ApprenticeshipPriceEpisode] pe
+JOIN @ProvidersToProcess p
+	ON p.UKPRN = pe.UKPRN
+JOIN (SELECT Max(empStat.DateEmpStatApp) AS DateEmpStatApp , empStat.UKPRN,empStat.LearnRefNumber
+		FROM  ${ILR_Deds.FQ}.[Valid].[LearnerEmploymentStatus] empStat
+		JOIN   ${ILR_Deds.FQ}.[Rulebase].[AEC_ApprenticeshipPriceEpisode] pe 	
+		 ON empStat.UKPRN = pe.UKPRN 
+		AND empStat.LearnRefNumber = pe.LearnRefNumber 	
+		WHERE pe.EpisodeEffectiveTNPStartDate >= empStat.DateEmpStatApp AND empStat.UKPRN = pe.UKPRN AND pe.LearnRefNumber = empStat.LearnRefNumber
+		GROUP BY empStat.UKPRN,empStat.LearnRefNumber) es
+ON 	es.UKPRN  = pe.UKPRN 
+AND es.LearnRefNumber = pe.LearnRefNumber
+
+JOIN   ${ILR_Deds.FQ}.[Valid].[LearnerEmploymentStatus] empStatId  
+ON 	empStatId.UKPRN  = es.UKPRN 
+AND empStatId.LearnRefNumber = es.LearnRefNumber
+AND empStatId.DateEmpStatApp = es.DateEmpStatApp
+
+

@@ -25,5 +25,8 @@ namespace SFA.DAS.Provider.Events.Submission.Domain
         public decimal? CompletionTotalPrice { get; set; }
         public string NiNumber { get; set; }
         public long? CommitmentId { get; set; }
+
+        public int EmployerReferenceNumber { get; set; }
+        public string AcademicYear { get; set; }
     }
 }

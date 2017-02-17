@@ -16,6 +16,8 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
             PreviousVersions = new List<LastSeenVersionEntity>();
         }
 
+        public string AcademicYear { get; set; }
+        
         public List<ProviderEntity> Providers { get; set; }
         public List<LearningDeliveryEntity> LearningDeliveries { get; set; }
         public List<PriceEpisodeEntity> PriceEpisodes { get; set; }
@@ -54,6 +56,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
             var startDate = DateTime.Today.AddMonths(3);
             return new TestDataSet
             {
+                AcademicYear = academicYear,
                 Providers = new List<ProviderEntity>
                 {
                     new ProviderEntity
@@ -88,7 +91,8 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
                         EpisodeEffectiveTnpStartDate = startDate,
                         Tnp1 = 12000,
                         Tnp2 = 3000,
-                        CommitmentId = 567577
+                        CommitmentId = 567577,
+                        EmpId=1
                     }
                 }
             };
@@ -145,7 +149,9 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
                         OnProgrammeTotalPrice = pe.Tnp1,
                         CompletionTotalPrice = pe.Tnp2,
                         NiNumber = learningDelivery.NiNumber,
-                        CommitmentId = pe.CommitmentId
+                        CommitmentId = pe.CommitmentId,
+                        EmployerReferenceNumber = pe.EmpId,
+                        AcademicYear = dataset.AcademicYear
                     }));
             }
 

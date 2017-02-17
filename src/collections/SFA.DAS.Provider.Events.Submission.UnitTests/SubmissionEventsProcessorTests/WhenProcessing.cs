@@ -20,7 +20,7 @@ namespace SFA.DAS.Provider.Events.Submission.UnitTests.SubmissionEventsProcessor
         {
             _mediator = new Mock<IMediator>();
 
-            _processor = new SubmissionEventsProcessor(_mediator.Object);
+            _processor = new SubmissionEventsProcessor(_mediator.Object,"1617");
         }
 
         [Test]

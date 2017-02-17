@@ -328,7 +328,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                 Execute("INSERT INTO DataLock.DataLockEventErrors "
                       + "(DataLockEventId, ErrorCode, SystemDescription) "
                       + "VALUES "
-                      + "(1, 'DLOCK_07', 'DLOCK_07')", inTransient: false);
+                      + "(1, 'DLOCK_07', 'No matching record found in the employer digital account for the negotiated cost of training')", inTransient: false);
             }
 
             Execute("INSERT INTO DataLock.DataLockEventCommitmentVersions "
