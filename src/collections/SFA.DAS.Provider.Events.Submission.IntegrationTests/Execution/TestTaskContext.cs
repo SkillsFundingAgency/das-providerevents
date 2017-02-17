@@ -13,6 +13,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Execution
             {
                 { ContextPropertyKeys.TransientDatabaseConnectionString, GlobalTestContext.Current.TransientDatabaseConnectionString },
                 { ContextPropertyKeys.LogLevel, "Debug" },
+                { SubmissionEventsContextPropertyKeys.YearOfCollection,"1617" },
             };
         }
 

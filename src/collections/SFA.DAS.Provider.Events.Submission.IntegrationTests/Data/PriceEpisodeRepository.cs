@@ -12,7 +12,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
             using (var connection = new SqlConnection(GlobalTestContext.Current.TransientDatabaseConnectionString))
             {
                 connection.Execute("INSERT INTO Reference.PriceEdpisodes VALUES (@PriceEpisodeIdentifier,@Ukprn,@LearnRefNumber,@PriceEpisodeAimSeqNumber," +
-                                   "@EpisodeEffectiveTNPStartDate,@TNP1,@TNP2,@TNP3,@TNP4,@CommitmentId)",
+                                   "@EpisodeEffectiveTNPStartDate,@TNP1,@TNP2,@TNP3,@TNP4,@CommitmentId,@EmpId)",
                                    priceEpisode);
             }
         }

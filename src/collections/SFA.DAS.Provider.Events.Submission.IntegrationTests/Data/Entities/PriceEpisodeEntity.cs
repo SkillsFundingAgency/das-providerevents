@@ -14,5 +14,6 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data.Entities
         public decimal Tnp3 { get; set; }
         public decimal Tnp4 { get; set; }
         public long CommitmentId { get; set; }
+        public int EmpId { get; set; }
     }
 }

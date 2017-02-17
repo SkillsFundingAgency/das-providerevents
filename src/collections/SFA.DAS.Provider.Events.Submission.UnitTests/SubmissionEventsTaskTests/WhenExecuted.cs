@@ -31,7 +31,8 @@ namespace SFA.DAS.Provider.Events.Submission.UnitTests.SubmissionEventsTaskTests
                 .Returns(new Dictionary<string, string>
                 {
                     {ContextPropertyKeys.TransientDatabaseConnectionString, "some-connection-string"},
-                    {ContextPropertyKeys.LogLevel, "Debug"}
+                    {ContextPropertyKeys.LogLevel, "Debug"},
+                    {SubmissionEventsContextPropertyKeys.YearOfCollection,"1617" }
                 });
         }
 
