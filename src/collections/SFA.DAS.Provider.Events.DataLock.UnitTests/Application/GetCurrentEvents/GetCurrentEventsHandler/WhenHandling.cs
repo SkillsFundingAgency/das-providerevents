@@ -52,6 +52,8 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvent
         private string _academicYear = "1617";
         private EventSource _eventsSource = EventSource.Submission;
 
+        private readonly string _expectedErrorDescription = "No matching record found in the employer digital account for the negotiated cost of training";
+
         [SetUp]
         public void Arrange()
         {
@@ -421,7 +423,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvent
         private bool ErrorMatches(DataLockEventError error)
         {
             return error.ErrorCode == _validationError.RuleId
-                   && error.SystemDescription == _validationError.RuleId;
+                   && error.SystemDescription == _expectedErrorDescription;
         }
 
         private bool PeriodMatches(DataLockEventPeriod period)
