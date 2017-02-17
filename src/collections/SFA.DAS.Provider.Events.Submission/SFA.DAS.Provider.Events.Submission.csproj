@@ -82,6 +82,7 @@
     <Compile Include="Application\WriteLastSeenIlrDetails\WriteLastSeenIlrDetailsCommandHandler.cs" />
     <Compile Include="Application\WriteSubmissionEvent\WriteSubmissionEventCommand.cs" />
     <Compile Include="Application\WriteSubmissionEvent\WriteSubmissionEventCommandHandler.cs" />
+    <Compile Include="Context\SubmissionEventsContextPropertyKeys.cs" />
     <Compile Include="Domain\Data\IIlrSubmissionRepository.cs" />
     <Compile Include="Domain\Data\ISubmissionEventRepository.cs" />
     <Compile Include="Domain\IlrDetails.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="Infrastructure\Data\DcfsSubmissionEventRepository.cs" />
     <Compile Include="Infrastructure\DependencyResolution\SubmissionEventsRegistry.cs" />
     <Compile Include="Infrastructure\DependencyResolution\TaskDependencyResolver.cs" />
+    <Compile Include="Infrastructure\DependencyResolution\YearOfCollectionPolicy.cs" />
     <Compile Include="SubmissionEventsProcessor.cs" />
     <Compile Include="SubmissionEventsTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

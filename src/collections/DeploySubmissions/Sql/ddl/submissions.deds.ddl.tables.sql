@@ -35,7 +35,11 @@ CREATE TABLE [Submissions].[SubmissionEvents]
 	OnProgrammeTotalPrice	decimal(10,5)	NULL,
 	CompletionTotalPrice	decimal(10,5)	NULL,
 	NINumber				varchar(9)		NULL,
-	CommitmentId			bigint			NULL
+	CommitmentId			bigint			NULL,
+	AcademicYear			varchar(4)    	NOT NULL,
+	EmployerReferenceNumber int             NULL
+
+
 )
 GO
 
@@ -51,7 +55,7 @@ GO
 CREATE TABLE [Submissions].[LastSeenVersion]
 (
 	IlrFileName				nvarchar(50)	NOT NULL,
-	FileDateTime			datetime		NOT NULL,
+	FileDateTime			datetime		NOT NULL,	
 	SubmittedDateTime		datetime		NOT NULL,
 	ComponentVersionNumber	int				NOT NULL,
 	UKPRN					bigint			NOT NULL,
@@ -69,6 +73,8 @@ CREATE TABLE [Submissions].[LastSeenVersion]
 	OnProgrammeTotalPrice	decimal(10,5)	NULL,
 	CompletionTotalPrice	decimal(10,5)	NULL,
 	NINumber				varchar(9)		NULL,
-	CommitmentId			bigint			NULL
+	CommitmentId			bigint			NULL,
+	AcademicYear			varchar(4)    	NOT NULL,
+	EmployerReferenceNumber int             NULL
 )
 GO

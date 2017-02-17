@@ -31,7 +31,8 @@ SELECT
 		ELSE pe.TNP4
 	END CompletionTotalPrice,
 	ld.NINumber,
-	pe.CommitmentId
+	pe.CommitmentId,
+	pe.EmpId As EmployerReferenceNumber
 FROM Reference.Providers p
 INNER JOIN Reference.LearningDeliveries ld
 	ON p.UKPRN = ld.UKPRN

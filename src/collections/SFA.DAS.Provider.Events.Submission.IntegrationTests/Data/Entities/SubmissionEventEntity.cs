@@ -24,5 +24,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data.Entities
         public decimal? OnProgrammeTotalPrice { get; set; }
         public decimal? CompletionTotalPrice { get; set; }
         public string NiNumber { get; set; }
+        public int EmployerReferenceNumber { get; set; }
+        public string AcademicYear { get; set; }
     }
 }

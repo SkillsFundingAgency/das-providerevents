@@ -74,7 +74,10 @@ CREATE TABLE [Submissions].[SubmissionEvents]
 	OnProgrammeTotalPrice	decimal(10,5)	NULL,
 	CompletionTotalPrice	decimal(10,5)	NULL,
 	NINumber				varchar(9)		NULL,
-	CommitmentId			bigint			NULL
+	CommitmentId			bigint			NULL,
+	AcademicYear			varchar(4)    	NOT NULL,
+	EmployerReferenceNumber int             NULL
+	
 )
 GO
 
@@ -108,7 +111,9 @@ CREATE TABLE [Submissions].[LastSeenVersion]
 	OnProgrammeTotalPrice	decimal(10,5)	NULL,
 	CompletionTotalPrice	decimal(10,5)	NULL,
 	NINumber				varchar(9)		NULL,
-	CommitmentId			bigint			NULL
+	CommitmentId			bigint			NULL,
+	AcademicYear			varchar(4)    	NOT NULL,
+	EmployerReferenceNumber int             NULL
 )
 GO
 
@@ -184,5 +189,6 @@ CREATE TABLE [Reference].[PriceEdpisodes]
 	TNP2							decimal(10,5)	NULL,
 	TNP3							decimal(10,5)	NULL,
 	TNP4							decimal(10,5)	NULL,
-	CommitmentId					bigint			NULL
+	CommitmentId					bigint			NULL,
+	EmpId							int
 )
