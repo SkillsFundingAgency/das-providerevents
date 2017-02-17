@@ -92,6 +92,14 @@
           <Source>CommitmentId</Source>
           <Destination>CommitmentId</Destination>
         </ColumnMapping>
+        <ColumnMapping>
+          <Source>AcademicYear</Source>
+          <Destination>AcademicYear</Destination>
+        </ColumnMapping>
+        <ColumnMapping>
+          <Source>EmployerReferenceNumber</Source>
+          <Destination>EmployerReferenceNumber</Destination>
+        </ColumnMapping>
       </ColumnMappings>
     </TableMapping>
     <TableMapping>
@@ -178,6 +186,14 @@
         <ColumnMapping>
           <Source>CommitmentId</Source>
           <Destination>CommitmentId</Destination>
+        </ColumnMapping>
+        <ColumnMapping>
+          <Source>AcademicYear</Source>
+          <Destination>AcademicYear</Destination>
+        </ColumnMapping>
+        <ColumnMapping>
+          <Source>EmployerReferenceNumber</Source>
+          <Destination>EmployerReferenceNumber</Destination>
         </ColumnMapping>
       </ColumnMappings>
     </TableMapping>

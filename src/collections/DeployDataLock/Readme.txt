@@ -66,6 +66,9 @@ DAS Data Lock Events Component - ILR Submission & DAS Period End
  2.3 ILR Collection Year:
   - key: YearOfCollection
   - value: 4 characters long string representing the academic year of the ILR connection: 1617, 1718, etc.
+ 2.4 Events Source:
+  - key: DataLockEventsSource
+  - value: one of the following is valid: Submission, PeriodEnd.
 
 -------------------------------------------------------------------------------------
 3. Expected data set keys / properties in the manifest that runs the component
