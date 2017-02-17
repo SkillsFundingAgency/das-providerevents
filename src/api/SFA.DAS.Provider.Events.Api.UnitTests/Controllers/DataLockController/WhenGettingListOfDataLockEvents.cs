@@ -56,7 +56,8 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController
                                             Month = 4,
                                             Year = 2017
                                         },
-                                        IsPayable = true
+                                        IsPayable = true,
+                                        TransactionType = Domain.TransactionType.Learning
                                     }
                                 },
                                 Apprenticeships = new []

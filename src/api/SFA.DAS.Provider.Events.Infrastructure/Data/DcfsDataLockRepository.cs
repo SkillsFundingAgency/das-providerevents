@@ -39,7 +39,8 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                                               + "CollectionPeriodMonth, "
                                               + "CollectionPeriodYear, "
                                               + "CommitmentVersion AS ApprenticeshipVersion, "
-                                              + "IsPayable";
+                                              + "IsPayable, "
+                                              + "TransactionType";
 
         private const string ApprenticeshipsSource = "DataLock.DataLockEventCommitmentVersions cv";
         private const string ApprenticeshipsColumns = "CommitmentVersion AS Version, "

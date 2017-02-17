@@ -22,5 +22,7 @@ namespace SFA.DAS.Provider.Events.Domain
         public decimal? EndpointAssessorPrice { get; set; }
         public string NiNumber { get; set; }
         public long? ApprenticeshipId { get; set; }
+        public string AcademicYear { get; set; }
+        public int? EmployerReferenceNumber { get; set; }
     }
 }
