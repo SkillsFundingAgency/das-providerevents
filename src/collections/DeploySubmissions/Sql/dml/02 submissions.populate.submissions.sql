@@ -1,4 +1,4 @@
-INSERT INTO [Submissions].[LatestVersion]
+INSERT INTO [Submissions].[LastSeenVersion]
 (
 	IlrFileName,
 	FileDateTime,
@@ -46,6 +46,6 @@ SELECT
 	CommitmentId,
 	AcademicYear,
 	EmployerReferenceNumber 
-FROM ${DAS_ProviderEvents.FQ}.Submissions.LatestVersion lv
-WHERE UKPRN IN (SELECT UKPRN FROM [Reference].[Providers]
+FROM ${DAS_ProviderEvents.FQ}.Submissions.LastSeenVersion lv
+WHERE UKPRN IN (SELECT UKPRN FROM [Reference].[Providers])
 GO
