@@ -89,7 +89,6 @@
     <Compile Include="Domain\SubmissionEvent.cs" />
     <Compile Include="Infrastructure\Data\DcfsIlrSubmissionRepository.cs" />
     <Compile Include="Infrastructure\Data\DcfsSubmissionEventRepository.cs" />
-    <Compile Include="Infrastructure\Data\SqlServerRepository.cs" />
     <Compile Include="Infrastructure\DependencyResolution\SubmissionEventsRegistry.cs" />
     <Compile Include="Infrastructure\DependencyResolution\TaskDependencyResolver.cs" />
     <Compile Include="Infrastructure\DependencyResolution\YearOfCollectionPolicy.cs" />

@@ -1,9 +1,10 @@
-﻿using SFA.DAS.Provider.Events.Submission.Domain;
+﻿using SFA.DAS.Payments.DCFS.Infrastructure.Data;
+using SFA.DAS.Provider.Events.Submission.Domain;
 using SFA.DAS.Provider.Events.Submission.Domain.Data;
 
 namespace SFA.DAS.Provider.Events.Submission.Infrastructure.Data
 {
-    public class DcfsSubmissionEventRepository : SqlServerRepository, ISubmissionEventRepository
+    public class DcfsSubmissionEventRepository : DcfsRepository, ISubmissionEventRepository
     {
         public DcfsSubmissionEventRepository(string connectionString)
             : base(connectionString)
@@ -15,6 +16,10 @@ namespace SFA.DAS.Provider.Events.Submission.Infrastructure.Data
             if (@event.Id < 1)
             {
                 @event.Id = QuerySingle<int>("SELECT ISNULL(MAX(Id),0) FROM Submissions.SubmissionEvents") + 1;
+                if (@event.Id == 1)
+                {
+                    @event.Id = QuerySingle<int>("SELECT ISNULL(MaxIdInDeds,0) FROM Reference.IdentifierSeed WHERE IdentifierName = 'SubmissionEvents'") + 1;
+                }
             }
 
             Execute("INSERT INTO Submissions.SubmissionEvents " +

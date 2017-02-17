@@ -1,0 +1,100 @@
+﻿using NUnit.Framework;
+using SFA.DAS.Provider.Events.DataLock.Domain;
+using SFA.DAS.Provider.Events.DataLock.IntegrationTests.Execution;
+using SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers;
+
+namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Specs
+{
+    public class WhenANewEventIsGenerated
+    {
+        [SetUp]
+        public void Arrange()
+        {
+            TestDataHelper.Clean();
+        }
+
+        [Test]
+        public void ThenItShouldBeWrittenToTheDatabaseInASubmissionRun()
+        {
+            // Arrange
+            var ukprn = 10000534;
+            var commitmentId = 1;
+
+            TestDataHelper.AddFileDetails(ukprn);
+            TestDataHelper.AddCommitment(commitmentId, ukprn, "Lrn-001", passedDataLock: false);
+            TestDataHelper.AddIlrDataForCommitment(commitmentId, "Lrn-001");
+
+            TestDataHelper.SubmissionCopyReferenceData();
+
+            // Act
+            TaskRunner.RunTask();
+
+            // Assert
+            var events = TestDataHelper.GetAllEvents();
+
+            Assert.IsNotNull(events);
+            Assert.AreEqual(1, events.Length);
+
+            var @event = events[0];
+
+            Assert.AreEqual(1, @event.Id);
+            Assert.AreEqual(ukprn, @event.Ukprn);
+            Assert.AreEqual(commitmentId, @event.CommitmentId);
+
+            var eventErrors = TestDataHelper.GetAllEventErrors(@event.Id);
+            var eventPeriods = TestDataHelper.GetAllEventPeriods(@event.Id);
+            var eventCommitmentVersions = TestDataHelper.GetAllEventCommitmentVersions(@event.Id);
+
+            Assert.IsNotNull(eventErrors);
+            Assert.IsNotNull(eventPeriods);
+            Assert.IsNotNull(eventCommitmentVersions);
+
+            Assert.AreEqual(1, eventErrors.Length);
+            Assert.AreEqual(84, eventPeriods.Length);
+            Assert.AreEqual(1, eventCommitmentVersions.Length);
+        }
+
+        [Test]
+        public void ThenItShouldBeWrittenToTheDatabaseInAPeriodEndRun()
+        {
+            // Arrange
+            var ukprn = 10000534;
+            var commitmentId = 1;
+
+            TestDataHelper.AddFileDetails(ukprn);
+            TestDataHelper.AddCommitment(commitmentId, ukprn, "Lrn-001", passedDataLock: false);
+            TestDataHelper.AddIlrDataForCommitment(commitmentId, "Lrn-001");
+
+            TestDataHelper.AddPeriodEndPeriod();
+
+            TestDataHelper.PeriodEndCopyReferenceData();
+
+            // Act
+            TaskRunner.RunTask(eventsSource: EventSource.PeriodEnd);
+
+            // Assert
+            var events = TestDataHelper.GetAllEvents();
+
+            Assert.IsNotNull(events);
+            Assert.AreEqual(1, events.Length);
+
+            var @event = events[0];
+
+            Assert.AreEqual(1, @event.Id);
+            Assert.AreEqual(ukprn, @event.Ukprn);
+            Assert.AreEqual(commitmentId, @event.CommitmentId);
+
+            var eventErrors = TestDataHelper.GetAllEventErrors(@event.Id);
+            var eventPeriods = TestDataHelper.GetAllEventPeriods(@event.Id);
+            var eventCommitmentVersions = TestDataHelper.GetAllEventCommitmentVersions(@event.Id);
+
+            Assert.IsNotNull(eventErrors);
+            Assert.IsNotNull(eventPeriods);
+            Assert.IsNotNull(eventCommitmentVersions);
+
+            Assert.AreEqual(1, eventErrors.Length);
+            Assert.AreEqual(84, eventPeriods.Length);
+            Assert.AreEqual(1, eventCommitmentVersions.Length);
+        }
+    }
+}
