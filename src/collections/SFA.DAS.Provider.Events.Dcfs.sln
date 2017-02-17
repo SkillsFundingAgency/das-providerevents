@@ -13,16 +13,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{CC4EE84E-1CB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ddl", "ddl", "{9CA6F09C-9DCF-4A75-819E-B9FBA3B73089}"
 	ProjectSection(SolutionItems) = preProject
-		DeploySubmissions\Sql\ddl\submissions.deds.ddl.tables.sql = DeploySubmissions\Sql\ddl\submissions.deds.ddl.tables.sql
-		DeploySubmissions\Sql\ddl\submissions.transient.ddl.functions.sql = DeploySubmissions\Sql\ddl\submissions.transient.ddl.functions.sql
-		DeploySubmissions\Sql\ddl\submissions.transient.ddl.tables.sql = DeploySubmissions\Sql\ddl\submissions.transient.ddl.tables.sql
-		DeploySubmissions\Sql\ddl\submissions.transient.ddl.views.sql = DeploySubmissions\Sql\ddl\submissions.transient.ddl.views.sql
+		DeploySubmission\sql\ddl\submissions.deds.ddl.tables.sql = DeploySubmission\sql\ddl\submissions.deds.ddl.tables.sql
+		DeploySubmission\sql\ddl\submissions.transient.ddl.functions.sql = DeploySubmission\sql\ddl\submissions.transient.ddl.functions.sql
+		DeploySubmission\sql\ddl\submissions.transient.ddl.tables.sql = DeploySubmission\sql\ddl\submissions.transient.ddl.tables.sql
+		DeploySubmission\sql\ddl\submissions.transient.ddl.views.sql = DeploySubmission\sql\ddl\submissions.transient.ddl.views.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dml", "dml", "{E3F58A12-AF3C-4999-8C7B-C38D069EC790}"
 	ProjectSection(SolutionItems) = preProject
-		DeploySubmissions\Sql\dml\01 submissions.populate.reference.sql = DeploySubmissions\Sql\dml\01 submissions.populate.reference.sql
-		DeploySubmissions\Sql\dml\02 submissions.populate.submissions.sql = DeploySubmissions\Sql\dml\02 submissions.populate.submissions.sql
+		DeploySubmission\sql\dml\01 submissions.populate.reference.sql = DeploySubmission\sql\dml\01 submissions.populate.reference.sql
+		DeploySubmission\sql\dml\02 submissions.populate.submissions.sql = DeploySubmission\sql\dml\02 submissions.populate.submissions.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F6C3B67B-9BFD-4CA9-82D8-21E142F4D8B0}"

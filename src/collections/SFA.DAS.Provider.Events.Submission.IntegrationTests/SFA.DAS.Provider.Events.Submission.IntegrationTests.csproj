@@ -96,28 +96,28 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\DeploySubmissions\Sql\ddl\submissions.deds.ddl.tables.sql">
-      <Link>DbSetupScripts\submissions.deds.ddl.tables.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\DeploySubmissions\Sql\ddl\submissions.transient.ddl.functions.sql">
-      <Link>DbSetupScripts\submissions.transient.ddl.functions.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\DeploySubmissions\Sql\ddl\submissions.transient.ddl.tables.sql">
-      <Link>DbSetupScripts\submissions.transient.ddl.tables.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\DeploySubmissions\Sql\ddl\submissions.transient.ddl.views.sql">
-      <Link>DbSetupScripts\submissions.transient.ddl.views.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Provider.Events.Submission\SFA.DAS.Provider.Events.Submission.csproj">
       <Project>{A0ED5AC8-2E8D-4F37-951C-66F9B128E79A}</Project>
       <Name>SFA.DAS.Provider.Events.Submission</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\DeploySubmission\sql\ddl\submissions.deds.ddl.tables.sql">
+      <Link>DbSetupScripts\submissions.deds.ddl.tables.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\DeploySubmission\sql\ddl\submissions.transient.ddl.functions.sql">
+      <Link>DbSetupScripts\submissions.transient.ddl.functions.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\DeploySubmission\sql\ddl\submissions.transient.ddl.tables.sql">
+      <Link>DbSetupScripts\submissions.transient.ddl.tables.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\DeploySubmission\sql\ddl\submissions.transient.ddl.views.sql">
+      <Link>DbSetupScripts\submissions.transient.ddl.views.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
