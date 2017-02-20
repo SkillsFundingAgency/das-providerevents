@@ -39,7 +39,9 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 TrainingPrice = 12000m,
                 EndpointAssessorPrice = 3000m,
                 NiNumber = "AB12345C",
-                ApprenticeshipId = 1
+                ApprenticeshipId = 1,
+                AcademicYear = "1617",
+                EmployerReferenceNumber = 123456
             };
 
             _submissionFrameworkEvent = new SubmissionEvent
@@ -59,7 +61,9 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 TrainingPrice = 6000m,
                 EndpointAssessorPrice = 1500m,
                 NiNumber = "AB12345C",
-                ApprenticeshipId = 9
+                ApprenticeshipId = 9,
+                AcademicYear = "1617",
+                EmployerReferenceNumber = 123456
             };
 
             _httpClient = new Mock<SecureHttpClient>();
@@ -139,7 +143,9 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                    && original.TrainingPrice == client.TrainingPrice
                    && original.EndpointAssessorPrice == client.EndpointAssessorPrice
                    && original.NiNumber == client.NiNumber
-                   && original.ApprenticeshipId == client.ApprenticeshipId;
+                   && original.ApprenticeshipId == client.ApprenticeshipId
+                   && original.AcademicYear == client.AcademicYear
+                   && original.EmployerReferenceNumber == client.EmployerReferenceNumber;
         }
     }
 }

@@ -7,5 +7,6 @@
         public int CollectionPeriodMonth { get; set; }
         public int CollectionPeriodYear { get; set; }
         public bool IsPayable { get; set; }
+        public int TransactionType { get; set; }
     }
 }
