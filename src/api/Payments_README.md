@@ -134,6 +134,14 @@ Response **Items** structure:
 | First16To18ProviderIncentive | first 16-18 provider incentive payment |
 | Second16To18EmployerIncentive | second 16-18 employer incentive payment |
 | Second16To18ProviderIncentive | second 16-18 provider incentive payment |
+| OnProgramme16To18FrameworkUplift | 16-18 framework uplift on programme payment |
+| Completion16To18FrameworkUplift | 16-18 framework uplift completion payment |
+| Balancing16To18FrameworkUplift | 16-18 framework uplift balancing payment |
+| FirstDisadvantagePayment | first provider disadvantage payment |
+| SecondDisadvantagePayment | second provider disadvantage payment |
+| OnProgrammeMathsAndEnglish | maths or english on programme payment |
+| BalancingMathsAndEnglish | maths or english balancing payment |
+| LearningSupport | learning support payment |
 
 **ContractType** values:
 
