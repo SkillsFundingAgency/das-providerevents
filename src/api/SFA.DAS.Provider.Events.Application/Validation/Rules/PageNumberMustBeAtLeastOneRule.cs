@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SFA.DAS.Provider.Events.Application.Validation.Rules
 {
