@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.WindowsAzure.Storage;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Domain;
 using SFA.DAS.Provider.Events.Infrastructure.Mapping;
