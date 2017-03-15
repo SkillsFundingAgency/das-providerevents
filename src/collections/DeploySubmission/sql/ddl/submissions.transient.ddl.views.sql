@@ -36,7 +36,7 @@ SELECT
 FROM Reference.Providers p
 INNER JOIN Reference.LearningDeliveries ld
 	ON p.UKPRN = ld.UKPRN
-INNER JOIN Reference.PriceEdpisodes pe
+INNER JOIN Reference.PriceEpisodes pe
 	ON ld.UKPRN = pe.Ukprn
 	AND ld.LearnRefNumber = pe.LearnRefNumber
 	AND ld.AimSeqNumber = pe.PriceEpisodeAimSeqNumber

@@ -87,6 +87,7 @@
     <Compile Include="Specs\WhenANewIlrFileIsSubmitted.cs" />
     <Compile Include="Specs\WhenAnIlrFileIsSubmittedWithNoSignificantUpdates.cs" />
     <Compile Include="Specs\WhenAnUpdatedIlrFileIsSubmitted.cs" />
+    <Compile Include="Specs\WhenPreparingTransientDatabaseForCollection.cs" />
     <Compile Include="SqlExtensions.cs" />
     <Compile Include="TestContext\GlobalTestContext.cs" />
     <Compile Include="TestContext\GlobalTestContextSetupException.cs" />
@@ -116,6 +117,20 @@
     </Content>
     <Content Include="..\DeploySubmission\sql\ddl\submissions.transient.ddl.views.sql">
       <Link>DbSetupScripts\submissions.transient.ddl.views.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\DeploySubmission\sql\dml\01 submissions.populate.reference.sql">
+      <Link>DbSetupScripts\dml\01 submissions.populate.reference.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\DeploySubmission\sql\dml\02 submissions.populate.submissions.sql">
+      <Link>DbSetupScripts\dml\02 submissions.populate.submissions.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DbSetupScripts\datalock.deds.ddl.tables.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DbSetupScripts\ilr.deds.ddl.tables.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

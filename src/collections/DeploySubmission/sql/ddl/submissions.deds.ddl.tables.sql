@@ -44,7 +44,7 @@ CREATE TABLE [Submissions].[SubmissionEvents]
 GO
 
 --------------------------------------------------------------------------------------
--- LatestVersion
+-- LastSeenVersion
 --------------------------------------------------------------------------------------
 IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'LastSeenVersion' AND [schema_id] = SCHEMA_ID('Submissions'))
 	BEGIN

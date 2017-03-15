@@ -1,4 +1,4 @@
-DECLARE @LastProcessedDate datetime = (SELECT MAX(SubmittedTime) FROM ${DAS_ProviderEvents.FQ}.Submissions.LatestVersion)
+DECLARE @LastProcessedDate datetime = (SELECT MAX(SubmittedDateTime) FROM ${DAS_ProviderEvents.FQ}.Submissions.LastSeenVersion)
 DECLARE @ProvidersToProcess TABLE (UKPRN bigint)
 
 
@@ -13,7 +13,7 @@ INNER JOIN ${ILR_Deds.FQ}.dbo.FileDetails fd
 
 
 INSERT INTO [Reference].[Providers]
-(UKPRN)
+(UKPRN, IlrFilename, SubmittedTime)
 SELECT
 	p.UKPRN,
 	fd.Filename,
@@ -24,7 +24,7 @@ INNER JOIN ${ILR_Deds.FQ}.dbo.FileDetails fd
 
 
 INSERT INTO [Reference].[LearningDeliveries]
-(UKPRN, LearnRefNumber, AimSeqNumber, ULN, NINumber, ProgType, FworkCode, PwayCode, StdCode, LearnStartDate, LearnPlanEndDate, LearnActEndDate, CommitmentId)
+(UKPRN, LearnRefNumber, AimSeqNumber, ULN, NINumber, ProgType, FworkCode, PwayCode, StdCode, LearnStartDate, LearnPlanEndDate, LearnActEndDate)
 SELECT
 	ld.UKPRN,
 	ld.LearnRefNumber,
@@ -37,27 +37,19 @@ SELECT
 	ld.StdCode,
 	ld.LearnStartDate,
 	ld.LearnPlanEndDate,
-	ld.LearnActEndDate,
-	pem.CommitmentId
+	ld.LearnActEndDate
 FROM ${ILR_Deds.FQ}.Valid.LearningDelivery ld
 INNER JOIN @ProvidersToProcess p
 	ON ld.UKPRN = p.UKPRN
 INNER JOIN ${ILR_Deds.FQ}.Valid.Learner l
 	ON ld.UKPRN = l.UKPRN
 	AND ld.LearnRefNumber = l.LearnRefNumber
-LEFT JOIN ${ILR_Deds.FQ}.DataLock.PriceEpisodeMatch pem
-	ON  ld.Ukprn = pem.Ukprn
-    AND pe.PriceEpisodeIdentifier = pem.PriceEpisodeIdentifier
-    AND ld.LearnRefNumber = pem.LearnRefNumber
-    AND ld.AimSeqNumber = pem.AimSeqNumber
 
 
 	
 
 INSERT INTO [Reference].[PriceEpisodes]
-(PriceEpisodeIdentifier,Ukprn,LearnRefNumber,PriceEpisodeAimSeqNumber,EpisodeEffectiveTNPStartDate,TNP1,NP2,TNP3,TNP4,CommitmentId,EmpId)
-
-
+(PriceEpisodeIdentifier,Ukprn,LearnRefNumber,PriceEpisodeAimSeqNumber,EpisodeEffectiveTNPStartDate,TNP1,TNP2,TNP3,TNP4,CommitmentId,EmpId)
 SELECT
 	
 	pe.PriceEpisodeIdentifier,
