@@ -5,7 +5,7 @@ INSERT INTO Reference.IdentifierSeed
 (IdentifierName, MaxIdInDeds)
 SELECT
 	'SubmissionEvents',
-	MAX(Id)
+	ISNULL(MAX(Id),0)
 FROM ${DAS_ProviderEvents.FQ}.Submissions.SubmissionEvents
 
 ---------------------------------------------------------------

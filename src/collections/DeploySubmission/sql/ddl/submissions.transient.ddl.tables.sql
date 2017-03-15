@@ -82,7 +82,7 @@ CREATE TABLE [Submissions].[SubmissionEvents]
 GO
 
 --------------------------------------------------------------------------------------
--- LatestVersion
+-- LastSeenVersion
 --------------------------------------------------------------------------------------
 IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'LastSeenVersion' AND [schema_id] = SCHEMA_ID('Submissions'))
 	BEGIN
@@ -170,15 +170,15 @@ CREATE TABLE [Reference].[LearningDeliveries]
 GO
 
 --------------------------------------------------------------------------------------
--- PriceEdpisodes
+-- PriceEpisodes
 --------------------------------------------------------------------------------------
-IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'PriceEdpisodes' AND [schema_id] = SCHEMA_ID('Reference'))
+IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'PriceEpisodes' AND [schema_id] = SCHEMA_ID('Reference'))
 	BEGIN
-		DROP TABLE [Reference].[PriceEdpisodes]
+		DROP TABLE [Reference].[PriceEpisodes]
 	END
 GO
 
-CREATE TABLE [Reference].[PriceEdpisodes]
+CREATE TABLE [Reference].[PriceEpisodes]
 (
 	PriceEpisodeIdentifier			varchar(25)		NOT NULL,
 	Ukprn							bigint			NOT NULL,

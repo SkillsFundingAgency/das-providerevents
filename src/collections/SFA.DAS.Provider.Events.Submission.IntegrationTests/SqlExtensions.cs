@@ -10,8 +10,15 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests
     {
         public static void RunDbSetupSqlScriptFile(this SqlConnection connection, string fileName, string databaseName)
         {
-            var path = Path.Combine(GlobalTestContext.Current.AssemblyDirectory, "DbSetupScripts", fileName);
-            RunSqlScriptFile(connection, path, databaseName);
+            try
+            {
+                var path = Path.Combine(GlobalTestContext.Current.AssemblyDirectory, "DbSetupScripts", fileName);
+                RunSqlScriptFile(connection, path, databaseName);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error running script file {fileName} - {ex.Message}");
+            }
         }
         public static void RunSqlScriptFile(this SqlConnection connection, string path, string databaseName)
         {
@@ -25,7 +32,14 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests
 
             foreach (var command in commands)
             {
-                connection.Execute(command);
+                try
+                {
+                    connection.Execute(command);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"{ex.Message}\n(command: {command})");
+                }
             }
         }
 
@@ -35,6 +49,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests
                       .Replace("${ILR_Summarisation.FQ}", databaseName)
                       .Replace("${DAS_Commitments.FQ}", databaseName)
                       .Replace("${DAS_PeriodEnd.FQ}", databaseName)
+                      .Replace("${DAS_ProviderEvents.FQ}", databaseName)
                       .Replace("${YearOfCollection}", "1617");
         }
     }
