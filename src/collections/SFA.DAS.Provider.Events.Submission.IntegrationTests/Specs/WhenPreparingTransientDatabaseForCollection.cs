@@ -28,12 +28,13 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Specs
         [Test]
         public void ThenItShouldCopyReferenceDataFromDedsToTransient()
         {
-            GlobalSetup.SetupDedsDatabase(); //Clean deds
-
             using (var dedsConnection = new SqlConnection(GlobalTestContext.Current.DedsDatabaseConnectionString))
             using (var transConnection = new SqlConnection(GlobalTestContext.Current.TransientDatabaseConnectionString))
             {
                 // Arrange
+                CleanDeds(dedsConnection);
+                CleanTransient(transConnection);
+
                 PopulateLastSeen(dedsConnection);
                 PopulateProvider(dedsConnection);
                 PopulateFileDetails(dedsConnection);
@@ -52,6 +53,25 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Specs
                 AssertLearningDeliveries(transConnection);
                 AssertPriceEpisodes(transConnection);
             }
+        }
+
+
+        private void CleanDeds(SqlConnection dedsConnection)
+        {
+            dedsConnection.Execute("DELETE FROM Submissions.LastSeenVersion");
+            dedsConnection.Execute("DELETE FROM Valid.LearningProvider");
+            dedsConnection.Execute("DELETE FROM dbo.FileDetails");
+            dedsConnection.Execute("DELETE FROM Valid.LearningDelivery");
+            dedsConnection.Execute("DELETE FROM Valid.Learner");
+            dedsConnection.Execute("DELETE FROM Rulebase.AEC_ApprenticeshipPriceEpisode");
+            dedsConnection.Execute("DELETE FROM Valid.LearnerEmploymentStatus");
+            dedsConnection.Execute("DELETE FROM DataLock.PriceEpisodeMatch");
+        }
+        private void CleanTransient(SqlConnection transConnection)
+        {
+            transConnection.Execute("DELETE FROM Reference.LearningDeliveries");
+            transConnection.Execute("DELETE FROM Reference.PriceEpisodes");
+            transConnection.Execute("DELETE FROM Reference.Providers");
         }
 
 

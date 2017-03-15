@@ -16,7 +16,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests
         }
 
 
-        internal static void SetupDedsDatabase()
+        private void SetupDedsDatabase()
         {
             using (var connection = new SqlConnection(GlobalTestContext.Current.DedsDatabaseConnectionString))
             {
@@ -26,7 +26,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests
             }   
         }
 
-        internal static void SetupTransientDatabase()
+        private void SetupTransientDatabase()
         {
             using (var connection = new SqlConnection(GlobalTestContext.Current.TransientDatabaseConnectionString))
             {
