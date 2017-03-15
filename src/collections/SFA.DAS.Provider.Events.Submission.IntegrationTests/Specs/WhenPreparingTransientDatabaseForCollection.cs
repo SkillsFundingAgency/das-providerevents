@@ -28,6 +28,8 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Specs
         [Test]
         public void ThenItShouldCopyReferenceDataFromDedsToTransient()
         {
+            GlobalSetup.SetupDedsDatabase(); //Clean deds
+
             using (var dedsConnection = new SqlConnection(GlobalTestContext.Current.DedsDatabaseConnectionString))
             using (var transConnection = new SqlConnection(GlobalTestContext.Current.TransientDatabaseConnectionString))
             {
