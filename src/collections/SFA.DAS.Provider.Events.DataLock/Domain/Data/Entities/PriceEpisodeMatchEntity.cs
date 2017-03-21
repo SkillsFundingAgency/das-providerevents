@@ -1,7 +1,4 @@
-﻿using System;
-using System.Security.AccessControl;
-
-namespace SFA.DAS.Provider.Events.DataLock.Domain.Data.Entities
+﻿namespace SFA.DAS.Provider.Events.DataLock.Domain.Data.Entities
 {
     public class PriceEpisodeMatchEntity
     {

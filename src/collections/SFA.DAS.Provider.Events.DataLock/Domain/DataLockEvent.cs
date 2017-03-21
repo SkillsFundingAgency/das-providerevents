@@ -1,5 +1,4 @@
 ﻿using System;
-using NLog.LayoutRenderers;
 
 namespace SFA.DAS.Provider.Events.DataLock.Domain
 {

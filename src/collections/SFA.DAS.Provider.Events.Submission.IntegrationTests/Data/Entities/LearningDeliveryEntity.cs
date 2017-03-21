@@ -7,8 +7,6 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data.Entities
         public long Ukprn { get; set; }
         public string LearnRefNumber { get; set; }
         public long AimSeqNumber { get; set; }
-        public long Uln { get; set; }
-        public string NiNumber { get; set; }
         public int ProgType { get; set; }
         public int FworkCode { get; set; }
         public int PwayCode { get; set; }

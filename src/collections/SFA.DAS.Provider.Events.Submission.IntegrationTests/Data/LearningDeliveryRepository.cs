@@ -11,9 +11,18 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
         {
             using (var connection = new SqlConnection(GlobalTestContext.Current.TransientDatabaseConnectionString))
             {
-                connection.Execute("INSERT INTO Reference.LearningDeliveries VALUES (@UKPRN,@LearnRefNumber,@AimSeqNumber,@ULN," +
-                                   "@NINumber,@ProgType,@FworkCode,@PwayCode,@StdCode,@LearnStartDate,@LearnPlanEndDate,@LearnActEndDate)", 
+                connection.Execute("INSERT INTO Valid.LearningDelivery (LearnRefNumber, LearnAimRef, AimType, AimSeqNumber, LearnStartDate, LearnPlanEndDate, LearnActEndDate, FundModel, ProgType, FworkCode, PwayCode, StdCode) " +
+                                   "VALUES " +
+                                   "(@LearnRefNumber, 'ZPROG001', 1, @AimSeqNumber, @LearnStartDate, @LearnPlanEndDate, @LearnActEndDate, 36, @ProgType, @FworkCode, @PwayCode, @StdCode)", 
                                    learningDelivery);
+            }
+        }
+
+        public static void Clean()
+        {
+            using (var connection = new SqlConnection(GlobalTestContext.Current.TransientDatabaseConnectionString))
+            {
+                connection.Execute("DELETE FROM Valid.LearningDelivery");
             }
         }
     }

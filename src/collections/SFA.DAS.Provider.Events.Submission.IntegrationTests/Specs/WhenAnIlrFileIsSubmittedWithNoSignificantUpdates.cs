@@ -12,6 +12,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Specs
         {
             // Arrange
             var testDataSet = TestDataSet.GetInsignificantlyUpdatedSubmissionDataSet();
+            testDataSet.Clean();
             testDataSet.Store();
 
             // Act
@@ -28,6 +29,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Specs
         {
             // Arrange
             var testDataSet = TestDataSet.GetInsignificantlyUpdatedSubmissionDataSet();
+            testDataSet.Clean();
             testDataSet.Store();
 
             // Act
@@ -39,10 +41,10 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Specs
             Assert.AreEqual(1, lastSeenVersions.Length);
 
             var version = lastSeenVersions[0];
-            Assert.AreEqual(testDataSet.Providers[0].FileName, version.IlrFileName);
-            Assert.IsTrue(AreDateTimesLessThanASecondDifferent(testDataSet.Providers[0].SubmittedTime, version.SubmittedDateTime));
+            Assert.AreEqual(testDataSet.FileDetails[0].FileName, version.IlrFileName);
+            Assert.IsTrue(AreDateTimesLessThanASecondDifferent(testDataSet.FileDetails[0].SubmittedTime, version.SubmittedDateTime));
             Assert.AreEqual(testDataSet.Providers[0].Ukprn, version.Ukprn);
-            Assert.AreEqual(testDataSet.LearningDeliveries[0].Uln, version.Uln);
+            Assert.AreEqual(testDataSet.Learners[0].Uln, version.Uln);
             Assert.AreEqual(testDataSet.LearningDeliveries[0].LearnRefNumber, version.LearnRefNumber);
             Assert.AreEqual(testDataSet.LearningDeliveries[0].AimSeqNumber, version.AimSeqNumber);
             Assert.AreEqual(testDataSet.PriceEpisodes[0].PriceEpisodeIdentifier, version.PriceEpisodeIdentifier);
@@ -55,7 +57,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Specs
             Assert.AreEqual(testDataSet.LearningDeliveries[0].LearnActEndDate, version.ActualEndDate);
             Assert.AreEqual(testDataSet.PriceEpisodes[0].Tnp1, version.OnProgrammeTotalPrice);
             Assert.AreEqual(testDataSet.PriceEpisodes[0].Tnp2, version.CompletionTotalPrice);
-            Assert.AreEqual(testDataSet.LearningDeliveries[0].NiNumber, version.NiNumber);
+            Assert.AreEqual(testDataSet.Learners[0].NiNumber, version.NiNumber);
         }
 
 
