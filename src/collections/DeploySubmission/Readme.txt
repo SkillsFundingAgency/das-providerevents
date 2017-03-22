@@ -27,9 +27,7 @@ DAS Submission Events Component
   - sql\ddl\submissions.deds.ddl.tables.sql:
    - deds database tables that need to be present when the component is executed
   
-  - sql\dml\01 submissions.populate.reference.sql:
-   - populate reference data script
-  - sql\dml\02 submissions.populate.submissions.sql:
+  - sql\dml\01 submissions.populate.submissions.sql:
    - populate latest existing events script
  
  1.3 Copy to deds mapping xml:
@@ -65,7 +63,7 @@ DAS Submission Events Component
 4. Expected manifest steps for the post ilr submission process
 -------------------------------------------------------------------------------------
  4.1 Build the transient database.
- 4.2 Copy reference data to transient using the '01 submissions.populate.reference.sql' and '02 submissions.populate.submissions.sql' sql scripts.
+ 4.2 Copy reference data to transient using the '01 submissions.populate.submissions.sql' sql script.
  4.3 Execute the 'DAS Submission Events Component' component
  4.4 Bulk copy the submission events from transient to deds
 

@@ -11,7 +11,15 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
         {
             using (var connection = new SqlConnection(GlobalTestContext.Current.TransientDatabaseConnectionString))
             {
-                connection.Execute("INSERT INTO Reference.Providers VALUES (@ukprn, @Filename, @SubmittedTime)", provider);
+                connection.Execute("INSERT INTO Valid.LearningProvider VALUES (@ukprn)", provider);
+            }
+        }
+
+        public static void Clean()
+        {
+            using (var connection = new SqlConnection(GlobalTestContext.Current.TransientDatabaseConnectionString))
+            {
+                connection.Execute("DELETE FROM Valid.LearningProvider");
             }
         }
     }

@@ -11,9 +11,18 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
         {
             using (var connection = new SqlConnection(GlobalTestContext.Current.TransientDatabaseConnectionString))
             {
-                connection.Execute("INSERT INTO Reference.PriceEpisodes VALUES (@PriceEpisodeIdentifier,@Ukprn,@LearnRefNumber,@PriceEpisodeAimSeqNumber," +
-                                   "@EpisodeEffectiveTNPStartDate,@TNP1,@TNP2,@TNP3,@TNP4,@CommitmentId,@EmpId)",
+                connection.Execute("INSERT INTO Rulebase.AEC_ApprenticeshipPriceEpisode (LearnRefNumber, PriceEpisodeIdentifier, EpisodeEffectiveTNPStartDate, PriceEpisodeAimSeqNumber, TNP1, TNP2, TNP3, TNP4) " +
+                                   "VALUES " +
+                                   "(@LearnRefNumber, @PriceEpisodeIdentifier, @EpisodeEffectiveTNPStartDate, @PriceEpisodeAimSeqNumber, @TNP1, @TNP2, @TNP3, @TNP4)",
                                    priceEpisode);
+            }
+        }
+
+        public static void Clean()
+        {
+            using (var connection = new SqlConnection(GlobalTestContext.Current.TransientDatabaseConnectionString))
+            {
+                connection.Execute("DELETE FROM Rulebase.AEC_ApprenticeshipPriceEpisode");
             }
         }
     }

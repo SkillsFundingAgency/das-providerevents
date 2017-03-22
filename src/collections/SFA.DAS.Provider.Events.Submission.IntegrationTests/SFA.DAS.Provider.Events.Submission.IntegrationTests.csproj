@@ -69,13 +69,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Entities\FileDetailsEntity.cs" />
     <Compile Include="Data\Entities\LastSeenVersionEntity.cs" />
+    <Compile Include="Data\Entities\LearnerEmploymentStatusEntity.cs" />
+    <Compile Include="Data\Entities\LearnerEntity.cs" />
     <Compile Include="Data\Entities\LearningDeliveryEntity.cs" />
     <Compile Include="Data\Entities\PriceEpisodeEntity.cs" />
+    <Compile Include="Data\Entities\PriceEpisodeMatchEntity.cs" />
     <Compile Include="Data\Entities\ProviderEntity.cs" />
     <Compile Include="Data\Entities\SubmissionEventEntity.cs" />
+    <Compile Include="Data\FileDetailsRepository.cs" />
     <Compile Include="Data\LastSeenVersionRepository.cs" />
+    <Compile Include="Data\LearnerEmploymentStatusRepository.cs" />
+    <Compile Include="Data\LearnerRepository.cs" />
     <Compile Include="Data\LearningDeliveryRepository.cs" />
+    <Compile Include="Data\PriceEpisodeMatchRepository.cs" />
     <Compile Include="Data\PriceEpisodeRepository.cs" />
     <Compile Include="Data\ProviderRepository.cs" />
     <Compile Include="Data\SubmissionEventRepository.cs" />
@@ -119,18 +127,14 @@
       <Link>DbSetupScripts\submissions.transient.ddl.views.sql</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\DeploySubmission\sql\dml\01 submissions.populate.reference.sql">
-      <Link>DbSetupScripts\dml\01 submissions.populate.reference.sql</Link>
+    <Content Include="..\DeploySubmission\sql\dml\01 submissions.populate.submissions.sql">
+      <Link>DbSetupScripts\dml\01 submissions.populate.submissions.sql</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\DeploySubmission\sql\dml\02 submissions.populate.submissions.sql">
-      <Link>DbSetupScripts\dml\02 submissions.populate.submissions.sql</Link>
+    <Content Include="DbSetupScripts\datalock.transient.ddl.tables.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="DbSetupScripts\datalock.deds.ddl.tables.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="DbSetupScripts\ilr.deds.ddl.tables.sql">
+    <Content Include="DbSetupScripts\ilr.transient.ddl.tables.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
