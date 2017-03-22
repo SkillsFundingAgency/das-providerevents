@@ -8,6 +8,7 @@
       <Setting name="EnvironmentName" value="__EnvironmentName__" />
       <Setting name="LoggingConnectionString" value="__LoggingConnectionString__" />
       <Setting name="MonthEndConnectionString" value="__MonthEndConnectionString__" />
+      <Setting name="EventsConnectionString" value="__EventsConnectionString__" />
       <Setting name="ApiTokenSecret" value="__ApiTokenSecret__" />
       <Setting name="ApiIssuer" value="__ApiIssuer__" />
       <Setting name="ApiAudiences" value="__ApiAudiences__" />

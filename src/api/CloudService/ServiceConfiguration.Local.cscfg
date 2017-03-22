@@ -8,6 +8,7 @@
       <Setting name="EnvironmentName" value="LOCAL" />
       <Setting name="LoggingConnectionString" value="server=.;database=PaymentsEventApi;trusted_connection=true;" />
       <Setting name="MonthEndConnectionString" value="server=.;database=PaymentsEventApi;trusted_connection=true;" />
+      <Setting name="EventsConnectionString" value="server=.;database=PaymentsEventApi;trusted_connection=true;" />
       <Setting name="ApiTokenSecret" value="dodge duck dip dive dodge" />
       <Setting name="ApiIssuer" value="http://localhost:57968/" />
       <Setting name="ApiAudiences" value="http://localhost" />
