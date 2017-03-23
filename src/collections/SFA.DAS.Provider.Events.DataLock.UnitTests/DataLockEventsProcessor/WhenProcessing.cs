@@ -3,8 +3,9 @@ using MediatR;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.DCFS.Domain;
-using SFA.DAS.Provider.Events.DataLock.Application.GetCurrentEvents;
-using SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenEvents;
+using SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents;
+using SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenProviderEvents;
+using SFA.DAS.Provider.Events.DataLock.Application.GetProviders;
 using SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent;
 using SFA.DAS.Provider.Events.DataLock.Domain;
 
@@ -52,6 +53,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
         private Mock<IMediator> _mediator;
         private DataLock.DataLockEventsProcessor _processor;
 
+        private Domain.Provider _provider;
         private DataLockEvent _currentFirstEvent;
         private DataLockEvent _currentUpdatedEvent;
         private DataLockEvent _lastSeenOriginalEvent;
@@ -59,6 +61,11 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
         [SetUp]
         public void Arrange()
         {
+            _provider = new Domain.Provider
+            {
+                Ukprn = 10000534
+            };
+
             _currentFirstEvent = new DataLockEvent
             {
                 IlrFileName = "ILR-1617-10000534-75.xml",
@@ -233,8 +240,18 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
 
             _mediator = new Mock<IMediator>();
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentEventsRequest>()))
-                .Returns(new GetCurrentEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetProvidersQueryRequest>()))
+                .Returns(new GetProvidersQueryResponse
+                {
+                    IsValid = true,
+                    Items = new []
+                    {
+                        _provider
+                    }
+                });
+
+            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
+                .Returns(new GetCurrentProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new []
@@ -244,8 +261,8 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                     }
                 });
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenEventsRequest>()))
-                .Returns(new GetLastSeenEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenProviderEventsRequest>()))
+                .Returns(new GetLastSeenProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new []
@@ -258,11 +275,11 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
         }
 
         [Test]
-        public void ThenItShouldThroAnwExceptionIfGetCurrentEventsRequestFails()
+        public void ThenItShouldThrowAnExceptionIfGetProvidersRequestFails()
         {
             // Arrange
-            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentEventsRequest>()))
-                .Returns(new GetCurrentEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetProvidersQueryRequest>()))
+                .Returns(new GetProvidersQueryResponse
                 {
                     IsValid = false,
                     Exception = new Exception("Exception")
@@ -273,11 +290,26 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
         }
 
         [Test]
-        public void ThenItShouldThroAnwExceptionIfGetLastSeenEventsRequestFails()
+        public void ThenItShouldThrowAnExceptionIfGetCurrentEventsRequestFails()
         {
             // Arrange
-            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenEventsRequest>()))
-                .Returns(new GetLastSeenEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
+                .Returns(new GetCurrentProviderEventsResponse
+                {
+                    IsValid = false,
+                    Exception = new Exception("Exception")
+                });
+
+            // Assert
+            Assert.Throws<Exception>(() => _processor.Process());
+        }
+
+        [Test]
+        public void ThenItShouldThrowAnExceptionIfGetLastSeenEventsRequestFails()
+        {
+            // Arrange
+            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenProviderEventsRequest>()))
+                .Returns(new GetLastSeenProviderEventsResponse
                 {
                     IsValid = false,
                     Exception = new Exception("Exception")
@@ -291,8 +323,8 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
         public void ThenItShouldNotWriteAnyEventsIfNoCurrentEventsAreFound()
         {
             // Arrange
-            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentEventsRequest>()))
-                .Returns(new GetCurrentEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
+                .Returns(new GetCurrentProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new DataLockEvent[0]
@@ -335,15 +367,15 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 CommitmentId = 2
             };
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentEventsRequest>()))
-                .Returns(new GetCurrentEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
+                .Returns(new GetCurrentProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { current }
                 });
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenEventsRequest>()))
-                .Returns(new GetLastSeenEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenProviderEventsRequest>()))
+                .Returns(new GetLastSeenProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { last }
@@ -371,15 +403,15 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 EmployerAccountId = 2
             };
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentEventsRequest>()))
-                .Returns(new GetCurrentEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
+                .Returns(new GetCurrentProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { current }
                 });
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenEventsRequest>()))
-                .Returns(new GetLastSeenEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenProviderEventsRequest>()))
+                .Returns(new GetLastSeenProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { last }
@@ -407,15 +439,15 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 HasErrors = true
             };
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentEventsRequest>()))
-                .Returns(new GetCurrentEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
+                .Returns(new GetCurrentProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { current }
                 });
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenEventsRequest>()))
-                .Returns(new GetLastSeenEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenProviderEventsRequest>()))
+                .Returns(new GetLastSeenProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { last }
@@ -443,15 +475,15 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 IlrStartDate = DateTime.MaxValue
             };
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentEventsRequest>()))
-                .Returns(new GetCurrentEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
+                .Returns(new GetCurrentProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { current }
                 });
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenEventsRequest>()))
-                .Returns(new GetLastSeenEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenProviderEventsRequest>()))
+                .Returns(new GetLastSeenProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { last }
@@ -479,15 +511,15 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 IlrStandardCode = 28
             };
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentEventsRequest>()))
-                .Returns(new GetCurrentEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
+                .Returns(new GetCurrentProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { current }
                 });
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenEventsRequest>()))
-                .Returns(new GetLastSeenEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenProviderEventsRequest>()))
+                .Returns(new GetLastSeenProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { last }
@@ -515,15 +547,15 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 IlrProgrammeType = 28
             };
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentEventsRequest>()))
-                .Returns(new GetCurrentEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
+                .Returns(new GetCurrentProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { current }
                 });
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenEventsRequest>()))
-                .Returns(new GetLastSeenEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenProviderEventsRequest>()))
+                .Returns(new GetLastSeenProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { last }
@@ -551,15 +583,15 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 IlrFrameworkCode = 28
             };
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentEventsRequest>()))
-                .Returns(new GetCurrentEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
+                .Returns(new GetCurrentProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { current }
                 });
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenEventsRequest>()))
-                .Returns(new GetLastSeenEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenProviderEventsRequest>()))
+                .Returns(new GetLastSeenProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { last }
@@ -587,15 +619,15 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 IlrPathwayCode = 28
             };
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentEventsRequest>()))
-                .Returns(new GetCurrentEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
+                .Returns(new GetCurrentProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { current }
                 });
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenEventsRequest>()))
-                .Returns(new GetLastSeenEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenProviderEventsRequest>()))
+                .Returns(new GetLastSeenProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { last }
@@ -623,15 +655,15 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 IlrTrainingPrice = 12500
             };
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentEventsRequest>()))
-                .Returns(new GetCurrentEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
+                .Returns(new GetCurrentProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { current }
                 });
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenEventsRequest>()))
-                .Returns(new GetLastSeenEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenProviderEventsRequest>()))
+                .Returns(new GetLastSeenProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { last }
@@ -659,15 +691,15 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 IlrEndpointAssessorPrice = 3250
             };
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentEventsRequest>()))
-                .Returns(new GetCurrentEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
+                .Returns(new GetCurrentProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { current }
                 });
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenEventsRequest>()))
-                .Returns(new GetLastSeenEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenProviderEventsRequest>()))
+                .Returns(new GetLastSeenProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { last }
@@ -696,15 +728,15 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 Errors = lastSeenErrors
             };
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentEventsRequest>()))
-                .Returns(new GetCurrentEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
+                .Returns(new GetCurrentProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { current }
                 });
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenEventsRequest>()))
-                .Returns(new GetLastSeenEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenProviderEventsRequest>()))
+                .Returns(new GetLastSeenProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { last }
@@ -733,15 +765,15 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 Periods = lastSeenPeriods
             };
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentEventsRequest>()))
-                .Returns(new GetCurrentEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
+                .Returns(new GetCurrentProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { current }
                 });
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenEventsRequest>()))
-                .Returns(new GetLastSeenEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenProviderEventsRequest>()))
+                .Returns(new GetLastSeenProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { last }
@@ -770,15 +802,15 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 CommitmentVersions = lastSeenVersions
             };
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentEventsRequest>()))
-                .Returns(new GetCurrentEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
+                .Returns(new GetCurrentProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { current }
                 });
 
-            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenEventsRequest>()))
-                .Returns(new GetLastSeenEventsResponse
+            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenProviderEventsRequest>()))
+                .Returns(new GetLastSeenProviderEventsResponse
                 {
                     IsValid = true,
                     Items = new[] { last }

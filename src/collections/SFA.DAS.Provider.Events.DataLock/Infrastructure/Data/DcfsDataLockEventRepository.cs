@@ -29,22 +29,24 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
                                        "IlrTrainingPrice," +
                                        "IlrEndpointAssessorPrice";
         private const string SelectLastSeenEvents = "SELECT " + Columns + " FROM " + Source;
+        private const string SelectProviderLastSeenEvents = SelectLastSeenEvents + " WHERE Ukprn = @ukprn";
+
 
         public DcfsDataLockEventRepository(string connectionString)
             : base(connectionString)
         {
         }
 
-        public DataLockEventEntity[] GetLastSeenEvents()
+        public DataLockEventEntity[] GetProviderLastSeenEvents(long ukprn)
         {
-            return Query<DataLockEventEntity>(SelectLastSeenEvents);
+            return Query<DataLockEventEntity>(SelectProviderLastSeenEvents, new { ukprn });
         }
 
         public long WriteDataLockEvent(DataLockEventEntity @event)
         {
             if (@event.Id < 1)
             {
-                @event.Id = QuerySingle<int>("SELECT ISNULL(MAX(Id), 0) FROM DataLock.DataLockEvents") + 1;
+                @event.Id = QuerySingle<int>("SELECT ISNULL(MAX(Id), 0) FROM DataLockEvents.DataLockEvents") + 1;
 
                 if (@event.Id == 1)
                 {
@@ -52,7 +54,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
                 }
             }
 
-            Execute("INSERT INTO DataLock.DataLockEvents " +
+            Execute("INSERT INTO DataLockEvents.DataLockEvents " +
                     "(Id, ProcessDateTime, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, " +
                     "PriceEpisodeIdentifier, CommitmentId, EmployerAccountId, EventSource, HasErrors, IlrStartDate, IlrStandardCode, " +
                     "IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice) " +

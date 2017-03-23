@@ -76,8 +76,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application\GetCurrentEvents\GetCurrentEventsHandler\WhenHandling.cs" />
-    <Compile Include="Application\GetLastSeenEvents\GetLastSeenEventsHandler\WhenHandling.cs" />
+    <Compile Include="Application\GetCurrentProviderEvents\GetCurrentProviderEventsHandler\WhenHandling.cs" />
+    <Compile Include="Application\GetLastSeenProviderEvents\GetLastSeenProviderEventsHandler\WhenHandling.cs" />
+    <Compile Include="Application\GetProviders\GetProvidersQueryHandler\WhenHandling.cs" />
     <Compile Include="Application\WriteDataLockEvent\WriteDataLockEventCommandHandler\WhenHandling.cs" />
     <Compile Include="DataLockEventsProcessor\WhenProcessing.cs" />
     <Compile Include="DataLockEventsTask\WhenExecuted.cs" />

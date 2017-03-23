@@ -72,12 +72,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application\GetCurrentEvents\GetCurrentEventsHandler.cs" />
-    <Compile Include="Application\GetCurrentEvents\GetCurrentEventsRequest.cs" />
-    <Compile Include="Application\GetCurrentEvents\GetCurrentEventsResponse.cs" />
-    <Compile Include="Application\GetLastSeenEvents\GetLastSeenEventsHandler.cs" />
-    <Compile Include="Application\GetLastSeenEvents\GetLastSeenEventsRequest.cs" />
-    <Compile Include="Application\GetLastSeenEvents\GetLastSeenEventsResponse.cs" />
+    <Compile Include="Application\GetCurrentProviderEvents\GetCurrentProviderEventsHandler.cs" />
+    <Compile Include="Application\GetCurrentProviderEvents\GetCurrentProviderEventsRequest.cs" />
+    <Compile Include="Application\GetCurrentProviderEvents\GetCurrentProviderEventsResponse.cs" />
+    <Compile Include="Application\GetLastSeenProviderEvents\GetLastSeenProviderEventsHandler.cs" />
+    <Compile Include="Application\GetLastSeenProviderEvents\GetLastSeenProviderEventsRequest.cs" />
+    <Compile Include="Application\GetLastSeenProviderEvents\GetLastSeenProviderEventsResponse.cs" />
+    <Compile Include="Application\GetProviders\GetProvidersQueryHandler.cs" />
+    <Compile Include="Application\GetProviders\GetProvidersQueryRequest.cs" />
+    <Compile Include="Application\GetProviders\GetProvidersQueryResponse.cs" />
     <Compile Include="Application\WriteDataLockEvent\WriteDataLockEventCommandHandler.cs" />
     <Compile Include="Application\WriteDataLockEvent\WriteDataLockEventCommandRequest.cs" />
     <Compile Include="DataLockEventsProcessor.cs" />
@@ -93,6 +96,7 @@
     <Compile Include="Domain\Data\Entities\IlrPriceEpisodeEntity.cs" />
     <Compile Include="Domain\Data\Entities\PriceEpisodeMatchEntity.cs" />
     <Compile Include="Domain\Data\Entities\PriceEpisodePeriodMatchEntity.cs" />
+    <Compile Include="Domain\Data\Entities\ProviderEntity.cs" />
     <Compile Include="Domain\Data\Entities\ValidationErrorEntity.cs" />
     <Compile Include="Domain\Data\ICommitmentRepository.cs" />
     <Compile Include="Domain\Data\IDataLockEventCommitmentVersionRepository.cs" />
@@ -100,12 +104,14 @@
     <Compile Include="Domain\Data\IDataLockEventPeriodRepository.cs" />
     <Compile Include="Domain\Data\IDataLockEventRepository.cs" />
     <Compile Include="Domain\Data\IIlrPriceEpisodeRepository.cs" />
+    <Compile Include="Domain\Data\IProviderRepository.cs" />
     <Compile Include="Domain\Data\IValidationErrorRepository.cs" />
     <Compile Include="Domain\Data\IPriceEpisodeMatchRepository.cs" />
     <Compile Include="Domain\Data\IPriceEpisodePeriodMatchRepository.cs" />
     <Compile Include="Domain\DataLockEvent.cs" />
     <Compile Include="Domain\DataLockEventPeriod.cs" />
     <Compile Include="Domain\EventSource.cs" />
+    <Compile Include="Domain\Provider.cs" />
     <Compile Include="Infrastructure\Context\DataLockContextPropertyKeys.cs" />
     <Compile Include="Infrastructure\Data\DcfsCommitmentRepository.cs" />
     <Compile Include="Infrastructure\Data\DcfsDataLockEventCommitmentVersionRepository.cs" />
@@ -115,6 +121,7 @@
     <Compile Include="Infrastructure\Data\DcfsIlrPriceEpisodeRepository.cs" />
     <Compile Include="Infrastructure\Data\DcfsPriceEpisodeMatchRepository.cs" />
     <Compile Include="Infrastructure\Data\DcfsPriceEpisodePeriodMatchRepository.cs" />
+    <Compile Include="Infrastructure\Data\DcfsProviderRepository.cs" />
     <Compile Include="Infrastructure\Data\DcfsValidationErrorRepository.cs" />
     <Compile Include="Infrastructure\DependencyResolution\EventsSourcePolicy.cs" />
     <Compile Include="Infrastructure\DependencyResolution\DataLockEventsRegistry.cs" />

@@ -1,11 +1,18 @@
-﻿if not exists(select schema_id from sys.schemas where name='Valid')
-	exec('create schema Valid')
+﻿IF NOT EXISTS(SELECT [schema_id] FROM sys.schemas WHERE [name]='Valid')
+BEGIN
+	EXEC('CREATE SCHEMA Valid')
+END
+GO
+
+IF NOT EXISTS(SELECT [schema_id] FROM sys.schemas WHERE [name]='Rulebase')
+BEGIN
+	EXEC('CREATE SCHEMA Rulebase')
+END
 GO
 
 if object_id('[Valid].[Learner]','u') is not null
 	drop table [Valid].[Learner]
 create table [Valid].[Learner](
-	[UKPRN] [int] NOT NULL,
 	[LearnRefNumber] [varchar](12) NOT NULL,
 	[PrevLearnRefNumber] [varchar](12) NULL,
 	[PrevUKPRN] [int] NULL,
@@ -48,17 +55,25 @@ create table [Valid].[Learner](
 	[ProvSpecMon_B] [varchar](20) NULL,
 PRIMARY KEY CLUSTERED 
 (
-	[UKPRN] ASC,
 	[LearnRefNumber] ASC
 )
 )
 GO
 
+if object_id('[Valid].[LearningProvider]','u') is not null
+	drop table [Valid].[LearningProvider]
+create table [Valid].[LearningProvider](
+	[UKPRN] [int] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[UKPRN] ASC
+)
+)
+GO
 
 if object_id('[Valid].[LearningDelivery]','u') is not null
 	drop table [Valid].[LearningDelivery]
 create table [Valid].[LearningDelivery](
-	[UKPRN] [int] NOT NULL,
 	[LearnRefNumber] [varchar](12) NOT NULL,
 	[LearnAimRef] [varchar](8) NOT NULL,
 	[AimType] [int] NOT NULL,
@@ -111,21 +126,20 @@ create table [Valid].[LearningDelivery](
 	[ProvSpecMon_D] [varchar](20) NULL,
 PRIMARY KEY CLUSTERED 
 (
-	[UKPRN] ASC,
 	[LearnRefNumber] ASC,
 	[AimSeqNumber] ASC
 )
 )
 GO
 
-IF EXISTS(SELECT [object_id] FROM sys.tables WHERE [name]='FileDetails' AND [schema_id] = SCHEMA_ID('dbo'))
+IF OBJECT_ID('FileDetails') IS NOT NULL
 BEGIN
-	DROP TABLE dbo.FileDetails
+    DROP TABLE [dbo].[FileDetails]
 END
 GO
 
 CREATE TABLE [dbo].[FileDetails](
-	[ID] [int] IDENTITY(1,1) NOT NULL,
+    [ID] [int] IDENTITY(1,1),
 	[UKPRN] [int] NOT NULL,
 	[Filename] [nvarchar](50) NULL,
 	[FileSizeKb] [bigint] NULL,
@@ -135,14 +149,54 @@ CREATE TABLE [dbo].[FileDetails](
 	[TotalErrorCount] [int] NULL,
 	[TotalWarningCount] [int] NULL,
 	[SubmittedTime] [datetime] NULL,
-	[Success] [bit] NULL,
- CONSTRAINT [PK_dbo.FileDetails] UNIQUE NONCLUSTERED 
+	[Success] [bit]
+ CONSTRAINT [PK_dbo.FileDetails] UNIQUE
 (
-	[UKPRN] ASC,
-	[Filename] ASC,
-	[Success] ASC
-)
-)
-
+	[UKPRN],[Filename],[Success] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 GO
 
+IF EXISTS(SELECT [object_id] FROM sys.tables WHERE [name]='AEC_ApprenticeshipPriceEpisode' AND [schema_id] = SCHEMA_ID('Rulebase'))
+BEGIN
+	DROP TABLE Rulebase.AEC_ApprenticeshipPriceEpisode
+END
+GO
+
+CREATE TABLE [Rulebase].[AEC_ApprenticeshipPriceEpisode]
+(
+	[LearnRefNumber] varchar(12),
+	[PriceEpisodeIdentifier] varchar(25),
+	[EpisodeEffectiveTNPStartDate] date,
+	[EpisodeStartDate] date,
+	[PriceEpisodeActualEndDate] date,
+	[PriceEpisodeActualInstalments] int,
+	[PriceEpisodeAimSeqNumber] int,
+	[PriceEpisodeCappedRemainingTNPAmount] decimal(10,5),
+	[PriceEpisodeCompleted] bit,
+	[PriceEpisodeCompletionElement] decimal(10,5),
+	[PriceEpisodeExpectedTotalMonthlyValue] decimal(10,5),
+	[PriceEpisodeInstalmentValue] decimal(10,5),
+	[PriceEpisodePlannedEndDate] date,
+	[PriceEpisodePlannedInstalments] int,
+	[PriceEpisodePreviousEarnings] decimal(10,5),
+	[PriceEpisodeRemainingAmountWithinUpperLimit] decimal(10,5),
+	[PriceEpisodeRemainingTNPAmount] decimal(10,5),
+	[PriceEpisodeTotalEarnings] decimal(10,5),
+	[PriceEpisodeTotalTNPPrice] decimal(10,5),
+	[PriceEpisodeUpperBandLimit] decimal(10,5),
+	[PriceEpisodeUpperLimitAdjustment] decimal(10,5),
+	[TNP1] decimal(10,5),
+	[TNP2] decimal(10,5),
+	[TNP3] decimal(10,5),
+	[TNP4] decimal(10,5),
+	PriceEpisodeFirstAdditionalPaymentThresholdDate date NULL,
+	PriceEpisodeSecondAdditionalPaymentThresholdDate date NULL,
+	PriceEpisodeContractType varchar(50) NULL
+	primary key clustered
+	(
+		[LearnRefNumber] asc,
+		[PriceEpisodeIdentifier] asc
+	)
+)
+GO

@@ -11,9 +11,13 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Execution
     {
         public TestTaskContext(EventSource eventsSource)
         {
+            var transientConnectionString = eventsSource == EventSource.Submission
+                ? GlobalTestContext.Current.TransientSubmissionDatabaseConnectionString
+                : GlobalTestContext.Current.TransientPeriodEndDatabaseConnectionString;
+
             Properties = new Dictionary<string, string>
             {
-                { ContextPropertyKeys.TransientDatabaseConnectionString, GlobalTestContext.Current.TransientDatabaseConnectionString },
+                { ContextPropertyKeys.TransientDatabaseConnectionString, transientConnectionString },
                 { ContextPropertyKeys.LogLevel, "Debug" },
                 { DataLockContextPropertyKeys.YearOfCollection, "1617" },
                 { DataLockContextPropertyKeys.DataLockEventsSource, eventsSource.ToString() }

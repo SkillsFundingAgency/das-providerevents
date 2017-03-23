@@ -14,25 +14,22 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
     {
         private static readonly string[] PeriodEndCopyReferenceDataScripts =
         {
-            "01 datalock.populate.reference.provider.periodend.sql",
-            "02 datalock.populate.reference.input.periodend.sql",
-            "03 datalock.populate.reference.history.sql"
+            "01 datalock.populate.reference.history.sql"
         };
 
         private static readonly string[] SubmissionCopyReferenceDataScripts =
         {
-            "01 datalock.populate.reference.provider.submission.sql",
-            "02 datalock.populate.reference.input.submission.sql",
-            "03 datalock.populate.reference.history.sql"
+            "01 datalock.populate.reference.history.sql"
         };
 
         internal static void Clean()
         {
             Clean(true);
+            Clean(true, inSubmission: false);
             Clean(false);
         }
 
-        private static void Clean(bool inTransient)
+        private static void Clean(bool inTransient, bool inSubmission = true)
         {
             Execute(@"DECLARE @SQL NVARCHAR(MAX) = ''
 
@@ -41,16 +38,16 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                         FROM sys.objects o WITH (NOWAIT)
                         JOIN sys.schemas s WITH (NOWAIT) ON o.[schema_id] = s.[schema_id]
                         WHERE o.[type] = 'U'
-                            AND s.name IN ('dbo', 'Valid', 'Reference', 'DataLock', 'Rulebase', 'Payments')
+                            AND s.name IN ('dbo', 'Valid', 'Reference', 'DataLockEvents', 'DataLock', 'Rulebase', 'Payments')
                         FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)')
 
                     EXEC sys.sp_executesql @SQL                
-                ", inTransient: inTransient);
+                ", inTransient: inTransient, inSubmission: inSubmission);
         }
 
         internal static void PeriodEndCopyReferenceData()
         {
-            using (var connection = new SqlConnection(GlobalTestContext.Current.TransientDatabaseConnectionString))
+            using (var connection = new SqlConnection(GlobalTestContext.Current.TransientPeriodEndDatabaseConnectionString))
             {
                 connection.Open();
                 try
@@ -72,7 +69,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
 
         internal static void SubmissionCopyReferenceData()
         {
-            using (var connection = new SqlConnection(GlobalTestContext.Current.TransientDatabaseConnectionString))
+            using (var connection = new SqlConnection(GlobalTestContext.Current.TransientSubmissionDatabaseConnectionString))
             {
                 connection.Open();
                 try
@@ -91,10 +88,20 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
             }
         }
 
+        internal static void AddLearningProvider(long ukprn)
+        {
+            Execute("INSERT INTO Valid.LearningProvider (UKPRN) VALUES (@ukprn)", new { ukprn });
+        }
+
+        internal static void PeriodEndAddLearningProvider(long ukprn)
+        {
+            Execute("INSERT INTO Reference.Providers (Ukprn, IlrFilename, IlrSubmissionDateTime) VALUES (@ukprn, 'ILR-{ukprn}-1617-20161013-092500-98', @submissionDate)", new { ukprn, submissionDate = DateTime.Today }, inSubmission: false);
+        }
+
         internal static void AddFileDetails(long ukprn, bool successful = true)
         {
             Execute($"INSERT INTO dbo.FileDetails (UKPRN, FileName, SubmittedTime, Success) VALUES (@ukprn, 'ILR-{ukprn}-1617-20161013-092500-98', @submissionDate, @successful)",
-                new { ukprn, submissionDate = DateTime.Today, successful }, false);
+                new { ukprn, submissionDate = DateTime.Today, successful });
         }
 
         internal static void AddCommitment(long id,
@@ -110,6 +117,41 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                                            int? frameworkCode = null,
                                            int? pathwayCode = null,
                                            bool passedDataLock = true)
+        {
+            AddCommitment(id, ukprn, learnerRefNumber, aimSequenceNumber, uln, startDate, endDate, agreedCost, standardCode, programmeType, frameworkCode, pathwayCode, passedDataLock, true);
+        }
+
+        internal static void PeriodEndAddCommitment(long id,
+                                           long ukprn,
+                                           string learnerRefNumber,
+                                           int aimSequenceNumber = 1,
+                                           long uln = 0L,
+                                           DateTime startDate = default(DateTime),
+                                           DateTime endDate = default(DateTime),
+                                           decimal agreedCost = 15000m,
+                                           long? standardCode = null,
+                                           int? programmeType = null,
+                                           int? frameworkCode = null,
+                                           int? pathwayCode = null,
+                                           bool passedDataLock = true)
+        {
+            AddCommitment(id, ukprn, learnerRefNumber, aimSequenceNumber, uln, startDate, endDate, agreedCost, standardCode, programmeType, frameworkCode, pathwayCode, passedDataLock, false);
+        }
+
+        private static void AddCommitment(long id,
+                                           long ukprn,
+                                           string learnerRefNumber,
+                                           int aimSequenceNumber,
+                                           long uln,
+                                           DateTime startDate,
+                                           DateTime endDate,
+                                           decimal agreedCost,
+                                           long? standardCode,
+                                           int? programmeType,
+                                           int? frameworkCode,
+                                           int? pathwayCode,
+                                           bool passedDataLock,
+                                           bool inSubmission)
         {
             var minStartDate = new DateTime(2017, 4, 1);
 
@@ -133,19 +175,19 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                 endDate = startDate.AddYears(1);
             }
 
-            Execute("INSERT INTO dbo.DasCommitments " +
-                    "(CommitmentId,VersionId,AccountId,Uln,Ukprn,StartDate,EndDate,AgreedCost,StandardCode,ProgrammeType,FrameworkCode,PathwayCode,PaymentStatus,PaymentStatusDescription,Priority,EffectiveFromDate) " +
+            Execute("INSERT INTO Reference.DasCommitments " +
+                    "(CommitmentId,VersionId,AccountId,Uln,Ukprn,StartDate,EndDate,AgreedCost,StandardCode,ProgrammeType,FrameworkCode,PathwayCode,PaymentStatus,PaymentStatusDescription,Priority,EffectiveFrom) " +
                     "VALUES " +
                     "(@id, 1, '123', @uln, @ukprn, @startDate, @endDate, @agreedCost, @standardCode, @programmeType, @frameworkCode, @pathwayCode, 1, 'Active', 1, @startDate)",
-                    new { id, uln, ukprn, startDate, endDate, agreedCost, standardCode, programmeType, frameworkCode, pathwayCode }, false);
+                    new { id, uln, ukprn, startDate, endDate, agreedCost, standardCode, programmeType, frameworkCode, pathwayCode }, inSubmission: inSubmission);
 
             var priceEpisodeIdentifier = $"99-99-99-{startDate.ToString("yyyy-MM-dd")}";
 
             Execute("INSERT INTO DataLock.PriceEpisodeMatch "
-                    + "(Ukprn,LearnRefNumber,AimSeqNumber,CommitmentId,PriceEpisodeIdentifier,IsSuccess, CollectionPeriodName, CollectionPeriodMonth, CollectionPeriodYear) "
+                    + "(Ukprn,LearnRefNumber,AimSeqNumber,CommitmentId,PriceEpisodeIdentifier,IsSuccess) "
                     + "VALUES "
-                    + "(@ukprn,@learnerRefNumber,@aimSequenceNumber,@id,@priceEpisodeIdentifier,@isSuccess, '1617-R09', 4, 2017)",
-                    new { id, ukprn, learnerRefNumber, aimSequenceNumber, priceEpisodeIdentifier, isSuccess = passedDataLock }, false);
+                    + "(@ukprn,@learnerRefNumber,@aimSequenceNumber,@id,@priceEpisodeIdentifier,@isSuccess)",
+                    new { id, ukprn, learnerRefNumber, aimSequenceNumber, priceEpisodeIdentifier, isSuccess = passedDataLock }, inSubmission: inSubmission);
 
             var censusDate = startDate.LastDayOfMonth();
             var period = 1;
@@ -154,7 +196,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
             {
                 foreach (var traxType in Enum.GetValues(typeof(TransactionType)))
                 {
-                    AddPriceEpisodePeriodMatch(id, ukprn, learnerRefNumber, aimSequenceNumber, priceEpisodeIdentifier, period, (int)traxType, passedDataLock);
+                    AddPriceEpisodePeriodMatch(id, ukprn, learnerRefNumber, aimSequenceNumber, priceEpisodeIdentifier, period, (int)traxType, passedDataLock, inSubmission);
                 }
 
                 censusDate = censusDate.AddMonths(1).LastDayOfMonth();
@@ -165,17 +207,17 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
             {
                 foreach (var traxType in Enum.GetValues(typeof(TransactionType)))
                 {
-                    AddPriceEpisodePeriodMatch(id, ukprn, learnerRefNumber, aimSequenceNumber, priceEpisodeIdentifier, period, (int)traxType, passedDataLock);
+                    AddPriceEpisodePeriodMatch(id, ukprn, learnerRefNumber, aimSequenceNumber, priceEpisodeIdentifier, period, (int)traxType, passedDataLock, inSubmission);
                 }
             }
 
             if (!passedDataLock)
             {
                 Execute("INSERT INTO DataLock.ValidationError "
-                      + "(Ukprn, LearnRefNumber, AimSeqNumber, RuleId, PriceEpisodeIdentifier, CollectionPeriodName, CollectionPeriodMonth, CollectionPeriodYear) "
+                      + "(Ukprn, LearnRefNumber, AimSeqNumber, RuleId, PriceEpisodeIdentifier) "
                       + "VALUES "
-                      + "(@ukprn, @learnerRefNumber, @aimSequenceNumber, 'DLOCK_07', @priceEpisodeIdentifier, '1617-R09', 4, 2017)",
-                      new { id, ukprn, learnerRefNumber, aimSequenceNumber, priceEpisodeIdentifier }, false);
+                      + "(@ukprn, @learnerRefNumber, @aimSequenceNumber, 'DLOCK_07', @priceEpisodeIdentifier)",
+                      new { id, ukprn, learnerRefNumber, aimSequenceNumber, priceEpisodeIdentifier }, inSubmission: inSubmission);
             }
         }
 
@@ -186,13 +228,14 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                                                        string priceEpisodeIdentifier,
                                                        int period,
                                                        int transactionType,
-                                                       bool payable)
+                                                       bool payable,
+                                                       bool inSubmission)
         {
             Execute("INSERT INTO DataLock.PriceEpisodePeriodMatch "
-                  + "(Ukprn, PriceEpisodeIdentifier, LearnRefNumber, AimSeqNumber, CommitmentId, VersionId, Period, Payable, TransactionType, CollectionPeriodName, CollectionPeriodMonth, CollectionPeriodYear) "
+                  + "(Ukprn, PriceEpisodeIdentifier, LearnRefNumber, AimSeqNumber, CommitmentId, VersionId, Period, Payable, TransactionType) "
                   + "VALUES "
-                  + "(@ukprn, @priceEpisodeIdentifier, @learnerRefNumber, @aimSequenceNumber, @commitmentId, 1, @period, @payable, @transactionType, '1617-R09', 4, 2017)",
-                  new { commitmentId, ukprn, learnerRefNumber, aimSequenceNumber, priceEpisodeIdentifier, period, payable, transactionType }, false);
+                  + "(@ukprn, @priceEpisodeIdentifier, @learnerRefNumber, @aimSequenceNumber, @commitmentId, 1, @period, @payable, @transactionType)",
+                  new { commitmentId, ukprn, learnerRefNumber, aimSequenceNumber, priceEpisodeIdentifier, period, payable, transactionType }, inSubmission: inSubmission);
         }
 
         internal static void AddIlrDataForCommitment(long? commitmentId,
@@ -200,10 +243,9 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                                                      int aimSequenceNumber = 1)
         {
             Execute("INSERT INTO Rulebase.AEC_ApprenticeshipPriceEpisode "
-                    + "(Ukprn, LearnRefNumber, PriceEpisodeIdentifier, EpisodeEffectiveTNPStartDate, EpisodeStartDate, "
+                    + "(LearnRefNumber, PriceEpisodeIdentifier, EpisodeEffectiveTNPStartDate, EpisodeStartDate, "
                     + "PriceEpisodeAimSeqNumber, PriceEpisodePlannedEndDate, PriceEpisodeTotalTNPPrice, TNP1, TNP2) "
                     + "SELECT "
-                    + "Ukprn, "
                     + "@learnerRefNumber, "
                     + "'99-99-99-' + CONVERT(char(10), StartDate, 126), "
                     + "StartDate, "
@@ -213,39 +255,48 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                     + "AgreedCost, "
                     + "AgreedCost * 0.8, "
                     + "AgreedCost * 0.2 "
-                    + "FROM dbo.DasCommitments "
+                    + "FROM Reference.DasCommitments "
                     + "WHERE CommitmentId = @commitmentId",
-                new {commitmentId, learnerRefNumber, aimSequenceNumber}, false);
+                new {commitmentId, learnerRefNumber, aimSequenceNumber});
 
             Execute("INSERT INTO Valid.Learner "
-                    + "(UKPRN, LearnRefNumber, ULN, Ethnicity, Sex, LLDDHealthProb) "
-                    + "SELECT Ukprn, @learnerRefNumber,Uln,0,0,0 FROM dbo.DasCommitments "
+                    + "(LearnRefNumber, ULN, Ethnicity, Sex, LLDDHealthProb) "
+                    + "SELECT @learnerRefNumber,Uln,0,0,0 FROM Reference.DasCommitments "
                     + "WHERE CommitmentId = @commitmentId",
-                new { commitmentId, learnerRefNumber }, false);
+                new { commitmentId, learnerRefNumber });
 
             Execute("INSERT INTO Valid.LearningDelivery "
-                    + "(UKPRN, LearnRefNumber, LearnAimRef, AimType, AimSeqNumber, LearnStartDate, LearnPlanEndDate, FundModel, StdCode, ProgType, FworkCode, PwayCode) "
-                    + "SELECT Ukprn, @learnerRefNumber, 'ZPROG001', 1, @aimSequenceNumber, StartDate, EndDate, 36, StandardCode, ProgrammeType, FrameworkCode, PathwayCode FROM dbo.DasCommitments "
+                    + "(LearnRefNumber, LearnAimRef, AimType, AimSeqNumber, LearnStartDate, LearnPlanEndDate, FundModel, StdCode, ProgType, FworkCode, PwayCode) "
+                    + "SELECT @learnerRefNumber, 'ZPROG001', 1, @aimSequenceNumber, StartDate, EndDate, 36, StandardCode, ProgrammeType, FrameworkCode, PathwayCode FROM Reference.DasCommitments "
                     + "WHERE CommitmentId = @commitmentId",
-                new { commitmentId, learnerRefNumber, aimSequenceNumber }, false);
+                new { commitmentId, learnerRefNumber, aimSequenceNumber });
         }
 
-        internal static void AddPeriodEndPeriod()
+        internal static void PeriodEndAddIlrDataForCommitment(long? commitmentId,
+                                                     string learnerRefNumber,
+                                                     int aimSequenceNumber = 1)
         {
-            Execute("INSERT INTO Payments.Periods"
-                + "(PeriodName, CalendarMonth, CalendarYear, AccountDataValidAt, CommitmentDataValidAt, CompletionDateTime) "
-                + "VALUES "
-                + "('1617-R09', 4, 2017, @validTime, @validTime, @completionTime)",
-                new { validTime = DateTime.Today, completionTime = DateTime.Now }, false);
-        }
-
-        internal static void AddDataLockLastSeenSubmission(long ukprn, DateTime submittedDateTime)
-        {
-            Execute("INSERT INTO DataLock.DataLockLastSeenSubmissions "
-                + "(Ukprn, SubmittedDateTime) "
-                + "VALUES "
-                + "(@ukprn, @submittedDateTime)",
-                new { ukprn, submittedDateTime }, false);
+            Execute("INSERT INTO Reference.DataLockPriceEpisode "
+                    + "(Ukprn, LearnRefNumber, Uln, AimSeqNumber, StandardCode, ProgrammeType, FrameworkCode, PathwayCode, "
+                    + "StartDate, NegotiatedPrice, PriceEpisodeIdentifier, EndDate, Tnp1, Tnp2) "
+                    + "SELECT "
+                    + "Ukprn, "
+                    + "@learnerRefNumber, "
+                    + "Uln, "
+                    + "@aimSequenceNumber, "
+                    + "StandardCode, "
+                    + "ProgrammeType, "
+                    + "FrameworkCode, "
+                    + "PathwayCode, "
+                    + "StartDate, "
+                    + "AgreedCost, "
+                    + "'99-99-99-' + CONVERT(char(10), StartDate, 126), "
+                    + "EndDate, "
+                    + "AgreedCost * 0.8, "
+                    + "AgreedCost * 0.2 "
+                    + "FROM Reference.DasCommitments "
+                    + "WHERE CommitmentId = @commitmentId",
+                new { commitmentId, learnerRefNumber, aimSequenceNumber }, inSubmission: false);
         }
 
         internal static void AddDataLockEvent(long ukprn,
@@ -425,30 +476,32 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
             };
         }
 
-        internal static DataLockEvent[] GetAllEvents()
+        internal static DataLockEvent[] GetAllEvents(bool inSubmission = true)
         {
-            return Query<DataLockEvent>("SELECT * FROM DataLock.DataLockEvents");
+            return Query<DataLockEvent>("SELECT * FROM DataLockEvents.DataLockEvents", inSubmission: inSubmission);
         }
 
-        internal static DataLockEventError[] GetAllEventErrors(long eventId)
+        internal static DataLockEventError[] GetAllEventErrors(long eventId, bool inSubmission = true)
         {
-            return Query<DataLockEventError>("SELECT * FROM DataLock.DataLockEventErrors WHERE DataLockEventId = @eventId", new { eventId });
+            return Query<DataLockEventError>("SELECT * FROM DataLockEvents.DataLockEventErrors WHERE DataLockEventId = @eventId", new { eventId }, inSubmission);
         }
 
-        internal static DataLockEventPeriod[] GetAllEventPeriods(long eventId)
+        internal static DataLockEventPeriod[] GetAllEventPeriods(long eventId, bool inSubmission = true)
         {
-            return Query<DataLockEventPeriod>("SELECT * FROM DataLock.DataLockEventPeriods WHERE DataLockEventId = @eventId", new { eventId });
+            return Query<DataLockEventPeriod>("SELECT * FROM DataLockEvents.DataLockEventPeriods WHERE DataLockEventId = @eventId", new { eventId }, inSubmission);
         }
 
-        internal static DataLockEventCommitmentVersion[] GetAllEventCommitmentVersions(long eventId)
+        internal static DataLockEventCommitmentVersion[] GetAllEventCommitmentVersions(long eventId, bool inSubmission = true)
         {
-            return Query<DataLockEventCommitmentVersion>("SELECT * FROM DataLock.DataLockEventCommitmentVersions WHERE DataLockEventId = @eventId", new { eventId });
+            return Query<DataLockEventCommitmentVersion>("SELECT * FROM DataLockEvents.DataLockEventCommitmentVersions WHERE DataLockEventId = @eventId", new { eventId }, inSubmission);
         }
 
-        private static void Execute(string command, object param = null, bool inTransient = true)
+        private static void Execute(string command, object param = null, bool inTransient = true, bool inSubmission = true)
         {
             var connectionString = inTransient
-                ? GlobalTestContext.Current.TransientDatabaseConnectionString
+                ? (inSubmission
+                    ? GlobalTestContext.Current.TransientSubmissionDatabaseConnectionString
+                    : GlobalTestContext.Current.TransientPeriodEndDatabaseConnectionString)
                 : GlobalTestContext.Current.DedsDatabaseConnectionString;
 
             using (var connection = new SqlConnection(connectionString))
@@ -465,9 +518,13 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
             }
         }
 
-        private static T[] Query<T>(string command, object param = null)
+        private static T[] Query<T>(string command, object param = null, bool inSubmission = true)
         {
-            using (var connection = new SqlConnection(GlobalTestContext.Current.TransientDatabaseConnectionString))
+            var connectionString = inSubmission
+                ? GlobalTestContext.Current.TransientSubmissionDatabaseConnectionString
+                : GlobalTestContext.Current.TransientPeriodEndDatabaseConnectionString;
+
+            using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
                 try

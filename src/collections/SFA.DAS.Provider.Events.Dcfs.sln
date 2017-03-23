@@ -38,19 +38,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{144D3C62
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ddl", "ddl", "{8DB91691-7F7A-424C-86F2-BE76A6FD5B0F}"
 	ProjectSection(SolutionItems) = preProject
-		DeployDataLock\sql\ddl\datalock.deds.ddl.tables.sql = DeployDataLock\sql\ddl\datalock.deds.ddl.tables.sql
-		DeployDataLock\sql\ddl\datalock.transient.ddl.tables.sql = DeployDataLock\sql\ddl\datalock.transient.ddl.tables.sql
-		DeployDataLock\sql\ddl\datalock.transient.ddl.views.sql = DeployDataLock\sql\ddl\datalock.transient.ddl.views.sql
-		DeployDataLock\sql\ddl\datalock.transient.reference.ddl.tables.sql = DeployDataLock\sql\ddl\datalock.transient.reference.ddl.tables.sql
+		DeployDataLock\sql\ddl\datalockevents.deds.ddl.tables.sql = DeployDataLock\sql\ddl\datalockevents.deds.ddl.tables.sql
+		DeployDataLock\sql\ddl\datalockevents.transient.ddl.tables.sql = DeployDataLock\sql\ddl\datalockevents.transient.ddl.tables.sql
+		DeployDataLock\sql\ddl\datalockevents.transient.ddl.views.periodend.sql = DeployDataLock\sql\ddl\datalockevents.transient.ddl.views.periodend.sql
+		DeployDataLock\sql\ddl\datalockevents.transient.ddl.views.submission.sql = DeployDataLock\sql\ddl\datalockevents.transient.ddl.views.submission.sql
+		DeployDataLock\sql\ddl\datalockevents.transient.reference.ddl.tables.sql = DeployDataLock\sql\ddl\datalockevents.transient.reference.ddl.tables.sql
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dml", "dml", "{6A3B6C2E-062C-4639-B2AD-18500D395520}"
 	ProjectSection(SolutionItems) = preProject
-		DeployDataLock\sql\dml\01 datalock.populate.reference.provider.periodend.sql = DeployDataLock\sql\dml\01 datalock.populate.reference.provider.periodend.sql
-		DeployDataLock\sql\dml\01 datalock.populate.reference.provider.submission.sql = DeployDataLock\sql\dml\01 datalock.populate.reference.provider.submission.sql
-		DeployDataLock\sql\dml\02 datalock.populate.reference.input.periodend.sql = DeployDataLock\sql\dml\02 datalock.populate.reference.input.periodend.sql
-		DeployDataLock\sql\dml\02 datalock.populate.reference.input.submission.sql = DeployDataLock\sql\dml\02 datalock.populate.reference.input.submission.sql
-		DeployDataLock\sql\dml\03 datalock.populate.reference.history.sql = DeployDataLock\sql\dml\03 datalock.populate.reference.history.sql
+		DeployDataLock\sql\dml\01 datalock.populate.reference.history.sql = DeployDataLock\sql\dml\01 datalock.populate.reference.history.sql
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.DataLock.UnitTests", "SFA.DAS.Provider.Events.DataLock.UnitTests\SFA.DAS.Provider.Events.DataLock.UnitTests.csproj", "{5011105D-1ED2-4682-A53E-61CF8A2FF902}"
@@ -61,6 +58,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{0F7A5106
 	ProjectSection(SolutionItems) = preProject
 		Build.fsx = Build.fsx
 		RunBuild.bat = RunBuild.bat
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "copy mappings", "copy mappings", "{0DEC15D4-26C4-4051-B046-944D243B5A29}"
+	ProjectSection(SolutionItems) = preProject
+		DeployDataLock\copy mappings\DasDataLockEventsCopyToDedsMapping.xml = DeployDataLock\copy mappings\DasDataLockEventsCopyToDedsMapping.xml
 	EndProjectSection
 EndProject
 Global
@@ -112,5 +114,6 @@ Global
 		{6A3B6C2E-062C-4639-B2AD-18500D395520} = {9DB243FF-B759-44BA-B214-0883F1DF420D}
 		{5011105D-1ED2-4682-A53E-61CF8A2FF902} = {144D3C62-D0BE-4650-8569-604103E07345}
 		{2A595E5F-955C-4B4A-B99F-36F6F4E7D076} = {144D3C62-D0BE-4650-8569-604103E07345}
+		{0DEC15D4-26C4-4051-B046-944D243B5A29} = {004E9717-B703-46BF-BBCC-FE390CE0192D}
 	EndGlobalSection
 EndGlobal

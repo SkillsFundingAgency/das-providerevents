@@ -2,12 +2,12 @@
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.DCFS.Domain;
-using SFA.DAS.Provider.Events.DataLock.Application.GetCurrentEvents;
+using SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents;
 using SFA.DAS.Provider.Events.DataLock.Domain;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data.Entities;
 
-namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvents.GetCurrentEventsHandler
+namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentProviderEvents.GetCurrentProviderEventsHandler
 {
     public class WhenHandling
     {
@@ -41,7 +41,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvent
         private Mock<IIlrPriceEpisodeRepository> _ilrPriceEpisodeRepository;
         private Mock<ICommitmentRepository> _commitmentRepository;
 
-        private DataLock.Application.GetCurrentEvents.GetCurrentEventsHandler _handler;
+        private DataLock.Application.GetCurrentProviderEvents.GetCurrentProviderEventsHandler _handler;
 
         private PriceEpisodeMatchEntity _priceEpisodeMatch;
         private PriceEpisodePeriodMatchEntity _priceEpisodePeriodMatch;
@@ -121,7 +121,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvent
             _ilrPriceEpisodeRepository = new Mock<IIlrPriceEpisodeRepository>();
             _commitmentRepository = new Mock<ICommitmentRepository>();
 
-            _priceEpisodeMatchRepository.Setup(r => r.GetCurrentPriceEpisodeMatches())
+            _priceEpisodeMatchRepository.Setup(r => r.GetProviderPriceEpisodeMatches(It.IsAny<long>()))
                 .Returns(new[]
                 {
                     _priceEpisodeMatch
@@ -148,7 +148,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvent
                     _commitment
                 });
 
-            _handler = new DataLock.Application.GetCurrentEvents.GetCurrentEventsHandler(_priceEpisodeMatchRepository.Object,
+            _handler = new DataLock.Application.GetCurrentProviderEvents.GetCurrentProviderEventsHandler(_priceEpisodeMatchRepository.Object,
                 _priceEpisodePeriodMatchRepository.Object,
                 _validationErrorRepository.Object,
                 _ilrPriceEpisodeRepository.Object,
@@ -161,7 +161,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvent
         public void ThenItShouldReturnCurrentDataLockEventsFromRepository()
         {
             // Act
-            var response = _handler.Handle(new GetCurrentEventsRequest());
+            var response = _handler.Handle(new GetCurrentProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(response);
@@ -176,11 +176,11 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvent
         public void ThenItShouldReturnEmptyArrayIfNoResultFromRepository(PriceEpisodeMatchEntity[] entities)
         {
             // Arrange
-            _priceEpisodeMatchRepository.Setup(r => r.GetCurrentPriceEpisodeMatches())
+            _priceEpisodeMatchRepository.Setup(r => r.GetProviderPriceEpisodeMatches(It.IsAny<long>()))
                 .Returns(entities);
 
             // Act
-            var actual = _handler.Handle(new GetCurrentEventsRequest());
+            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(actual);
@@ -198,7 +198,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvent
                 .Returns(entities);
 
             // Act
-            var actual = _handler.Handle(new GetCurrentEventsRequest());
+            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(actual);
@@ -217,7 +217,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvent
                 .Returns(entities);
 
             // Act
-            var actual = _handler.Handle(new GetCurrentEventsRequest());
+            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(actual);
@@ -231,11 +231,11 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvent
         public void ThenItShouldReturnInvalidResponseIfPriceEpisodeMatchRepositoryErrors()
         {
             // Arrange
-            _priceEpisodeMatchRepository.Setup(r => r.GetCurrentPriceEpisodeMatches())
+            _priceEpisodeMatchRepository.Setup(r => r.GetProviderPriceEpisodeMatches(It.IsAny<long>()))
                 .Throws(new Exception("Test"));
 
             // Act
-            var actual = _handler.Handle(new GetCurrentEventsRequest());
+            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(actual);
@@ -252,7 +252,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvent
                 .Throws(new Exception("Test"));
 
             // Act
-            var actual = _handler.Handle(new GetCurrentEventsRequest());
+            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(actual);
@@ -269,7 +269,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvent
                 .Throws(new Exception("Test"));
 
             // Act
-            var actual = _handler.Handle(new GetCurrentEventsRequest());
+            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(actual);
@@ -286,7 +286,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvent
                 .Throws(new Exception("Test"));
 
             // Act
-            var actual = _handler.Handle(new GetCurrentEventsRequest());
+            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(actual);
@@ -303,7 +303,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvent
                 .Throws(new Exception("Test"));
 
             // Act
-            var actual = _handler.Handle(new GetCurrentEventsRequest());
+            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(actual);
@@ -320,7 +320,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvent
                 .Returns((IlrPriceEpisodeEntity)null);
 
             // Act
-            var actual = _handler.Handle(new GetCurrentEventsRequest());
+            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(actual);
@@ -337,7 +337,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvent
                 .Returns(entities);
 
             // Act
-            var actual = _handler.Handle(new GetCurrentEventsRequest());
+            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(actual);
@@ -381,7 +381,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentEvent
                });
 
             // Act
-            var actual = _handler.Handle(new GetCurrentEventsRequest());
+            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(actual);

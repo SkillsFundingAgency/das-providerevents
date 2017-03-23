@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.DCFS.Context;
 using SFA.DAS.Payments.DCFS.Infrastructure.DependencyResolution;
+using SFA.DAS.Provider.Events.Submission.Context;
 
 namespace SFA.DAS.Provider.Events.Submission.UnitTests.SubmissionEventsTaskTests
 {

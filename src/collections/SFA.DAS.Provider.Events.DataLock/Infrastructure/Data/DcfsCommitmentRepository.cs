@@ -6,17 +6,17 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
 {
     public class DcfsCommitmentRepository : DcfsRepository, ICommitmentRepository
     {
-        private const string Source = "Reference.Commitments";
+        private const string Source = "Reference.DasCommitments";
         private const string Columns = "CommitmentId," +
-                                       "CommitmentVersion," +
-                                       "EmployerAccountId," +
+                                       "VersionId AS CommitmentVersion," +
+                                       "AccountId AS EmployerAccountId," +
                                        "StartDate," +
                                        "StandardCode," +
                                        "ProgrammeType," +
                                        "FrameworkCode," +
                                        "PathwayCode," +
-                                       "NegotiatedPrice," +
-                                       "EffectiveDate";
+                                       "AgreedCost AS NegotiatedPrice," +
+                                       "EffectiveFrom AS EffectiveDate";
         private const string SelectCommitmentVersions = "SELECT " + Columns + " FROM " + Source +
             " WHERE CommitmentId = @commitmentId";
 

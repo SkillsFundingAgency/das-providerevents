@@ -24,7 +24,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
 
         public void WriteDataLockEventError(DataLockEventErrorEntity error)
         {
-            Execute("INSERT INTO DataLock.DataLockEventErrors " +
+            Execute("INSERT INTO DataLockEvents.DataLockEventErrors " +
                     "(DataLockEventId, ErrorCode, SystemDescription) " +
                     "VALUES " +
                     "(@DataLockEventId, @ErrorCode, @SystemDescription)",
