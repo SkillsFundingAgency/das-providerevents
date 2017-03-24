@@ -11,8 +11,10 @@
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
       <Setting name="LogLevel" />
+      <Setting name="EnvironmentName" />
       <Setting name="LoggingConnectionString" />
       <Setting name="MonthEndConnectionString" />
+      <Setting name="EventsConnectionString" />
       <Setting name="ApiTokenSecret" />
       <Setting name="ApiIssuer" />
       <Setting name="ApiAudiences" />
