@@ -2,8 +2,8 @@
 
 namespace SFA.DAS.Provider.Events.DataLock.Domain.Data
 {
-    public interface IPriceEpisodeMatchRepository
+    public interface IProviderRepository
     {
-        PriceEpisodeMatchEntity[] GetProviderPriceEpisodeMatches(long ukprn);
+        ProviderEntity[] GetAllProviders();
     }
 }

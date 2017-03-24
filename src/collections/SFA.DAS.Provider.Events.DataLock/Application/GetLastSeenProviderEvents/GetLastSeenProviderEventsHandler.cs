@@ -5,16 +5,16 @@ using SFA.DAS.Payments.DCFS.Domain;
 using SFA.DAS.Provider.Events.DataLock.Domain;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data;
 
-namespace SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenEvents
+namespace SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenProviderEvents
 {
-    public class GetLastSeenEventsHandler : IRequestHandler<GetLastSeenEventsRequest, GetLastSeenEventsResponse>
+    public class GetLastSeenProviderEventsHandler : IRequestHandler<GetLastSeenProviderEventsRequest, GetLastSeenProviderEventsResponse>
     {
         private readonly IDataLockEventRepository _dataLockEventRepository;
         private readonly IDataLockEventPeriodRepository _dataLockEventPeriodRepository;
         private readonly IDataLockEventCommitmentVersionRepository _dataLockEventCommitmentVersionRepository;
         private readonly IDataLockEventErrorRepository _dataLockEventErrorRepository;
 
-        public GetLastSeenEventsHandler(IDataLockEventRepository dataLockEventRepository,
+        public GetLastSeenProviderEventsHandler(IDataLockEventRepository dataLockEventRepository,
             IDataLockEventPeriodRepository dataLockEventPeriodRepository,
             IDataLockEventCommitmentVersionRepository dataLockEventCommitmentVersionRepository,
             IDataLockEventErrorRepository dataLockEventErrorRepository)
@@ -25,11 +25,11 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenEvents
             _dataLockEventErrorRepository = dataLockEventErrorRepository;
         }
 
-        public GetLastSeenEventsResponse Handle(GetLastSeenEventsRequest message)
+        public GetLastSeenProviderEventsResponse Handle(GetLastSeenProviderEventsRequest message)
         {
             try
             {
-                var lastSeenEventEntities = _dataLockEventRepository.GetLastSeenEvents();
+                var lastSeenEventEntities = _dataLockEventRepository.GetProviderLastSeenEvents(message.Ukprn);
 
                 var lastSeenEvents = lastSeenEventEntities == null
                     ? new DataLockEvent[0]
@@ -63,7 +63,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenEvents
                         })
                         .ToArray();
 
-                return new GetLastSeenEventsResponse
+                return new GetLastSeenProviderEventsResponse
                 {
                     IsValid = true,
                     Items = lastSeenEvents
@@ -71,7 +71,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenEvents
             }
             catch (Exception ex)
             {
-                return new GetLastSeenEventsResponse
+                return new GetLastSeenProviderEventsResponse
                 {
                     IsValid =  false,
                     Exception = ex

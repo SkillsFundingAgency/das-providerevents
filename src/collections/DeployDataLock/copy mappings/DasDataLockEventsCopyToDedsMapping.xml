@@ -4,7 +4,7 @@
   <DestinationConnectionString>DestinationConnectionString</DestinationConnectionString>
   <TableMappings>
     <TableMapping>
-      <Source>[DataLock].[DataLockEvents]</Source>
+      <Source>[DataLockEvents].[DataLockEvents]</Source>
       <Destination>[DataLock].[DataLockEvents]</Destination>
       <Ordinal>1</Ordinal>
       <ColumnMappings>
@@ -95,7 +95,7 @@
       </ColumnMappings>
     </TableMapping>
     <TableMapping>
-      <Source>[DataLock].[DataLockEventPeriods]</Source>
+      <Source>[DataLockEvents].[DataLockEventPeriods]</Source>
       <Destination>[DataLock].[DataLockEventPeriods]</Destination>
       <Ordinal>2</Ordinal>
       <ColumnMappings>
@@ -130,7 +130,7 @@
       </ColumnMappings>
     </TableMapping>
     <TableMapping>
-      <Source>[DataLock].[DataLockEventCommitmentVersions]</Source>
+      <Source>[DataLockEvents].[DataLockEventCommitmentVersions]</Source>
       <Destination>[DataLock].[DataLockEventCommitmentVersions]</Destination>
       <Ordinal>3</Ordinal>
       <ColumnMappings>
@@ -173,7 +173,7 @@
       </ColumnMappings>
     </TableMapping>
     <TableMapping>
-      <Source>[DataLock].[DataLockEventErrors]</Source>
+      <Source>[DataLockEvents].[DataLockEventErrors]</Source>
       <Destination>[DataLock].[DataLockEventErrors]</Destination>
       <Ordinal>4</Ordinal>
       <ColumnMappings>

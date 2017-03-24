@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
 using MediatR;
-using SFA.DAS.Provider.Events.DataLock.Application.GetCurrentEvents;
-using SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenEvents;
+using SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents;
+using SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenProviderEvents;
+using SFA.DAS.Provider.Events.DataLock.Application.GetProviders;
 using SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent;
 using SFA.DAS.Provider.Events.DataLock.Domain;
 
@@ -23,36 +24,44 @@ namespace SFA.DAS.Provider.Events.DataLock
 
         public virtual void Process()
         {
-            var currentEventsResponse = ReturnValidGetCurrentEventsResponseOrThrow();
-            var lastSeenEventsResponse = ReturnValidGetLastSeenEventsResponseOrThrow();
+            var providersResponse = ReturnValidGetProvidersQueryResponseOrThrow();
 
-            if (!currentEventsResponse.HasAnyItems())
+            if (providersResponse.HasAnyItems())
             {
-                return;
-            }
-
-            foreach (var current in currentEventsResponse.Items)
-            {
-                var lastSeen = lastSeenEventsResponse.Items?.SingleOrDefault(ev => ev.Ukprn == current.Ukprn &&
-                                                                                   ev.PriceEpisodeIdentifier == current.PriceEpisodeIdentifier &&
-                                                                                   ev.Uln == current.Uln);
-
-                if (EventsAreDifferent(current, lastSeen))
+                foreach (var provider in providersResponse.Items)
                 {
-                    current.Id = 0;
-                    current.ProcessDateTime = DateTime.Now;
+                    var currentEventsResponse = ReturnValidGetCurrentProviderEventsResponseOrThrow(provider.Ukprn);
+                    var lastSeenEventsResponse = ReturnValidGetLastSeenProviderEventsResponseOrThrow(provider.Ukprn);
 
-                    _mediator.Send(new WriteDataLockEventCommandRequest
+                    if (!currentEventsResponse.HasAnyItems())
                     {
-                        Event = current
-                    });
+                        continue;
+                    }
+
+                    foreach (var current in currentEventsResponse.Items)
+                    {
+                        var lastSeen = lastSeenEventsResponse.Items?.SingleOrDefault(ev => ev.Ukprn == current.Ukprn &&
+                                                                                           ev.PriceEpisodeIdentifier == current.PriceEpisodeIdentifier &&
+                                                                                           ev.Uln == current.Uln);
+
+                        if (EventsAreDifferent(current, lastSeen))
+                        {
+                            current.Id = 0;
+                            current.ProcessDateTime = DateTime.Now;
+
+                            _mediator.Send(new WriteDataLockEventCommandRequest
+                            {
+                                Event = current
+                            });
+                        }
+                    }
                 }
             }
         }
 
-        private GetCurrentEventsResponse ReturnValidGetCurrentEventsResponseOrThrow()
+        private GetProvidersQueryResponse ReturnValidGetProvidersQueryResponseOrThrow()
         {
-            var response = _mediator.Send(new GetCurrentEventsRequest());
+            var response = _mediator.Send(new GetProvidersQueryRequest());
 
             if (!response.IsValid)
             {
@@ -62,9 +71,27 @@ namespace SFA.DAS.Provider.Events.DataLock
             return response;
         }
 
-        private GetLastSeenEventsResponse ReturnValidGetLastSeenEventsResponseOrThrow()
+        private GetCurrentProviderEventsResponse ReturnValidGetCurrentProviderEventsResponseOrThrow(long ukprn)
         {
-            var response = _mediator.Send(new GetLastSeenEventsRequest());
+            var response = _mediator.Send(new GetCurrentProviderEventsRequest
+            {
+                Ukprn = ukprn
+            });
+
+            if (!response.IsValid)
+            {
+                throw response.Exception;
+            }
+
+            return response;
+        }
+
+        private GetLastSeenProviderEventsResponse ReturnValidGetLastSeenProviderEventsResponseOrThrow(long ukprn)
+        {
+            var response = _mediator.Send(new GetLastSeenProviderEventsRequest
+            {
+                Ukprn = ukprn
+            });
 
             if (!response.IsValid)
             {

@@ -6,7 +6,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
 {
     public class DcfsValidationErrorRepository : DcfsRepository, IValidationErrorRepository
     {
-        private const string Source = "Reference.ValidationError";
+        private const string Source = "DataLock.ValidationError";
         private const string Columns = "Ukprn," +
                                        "LearnRefNumber," +
                                        "AimSeqNumber," +

@@ -15,9 +15,13 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.TestContext
 
         public string AssemblyDirectory { get; private set; }
 
-        public string TransientDatabaseConnectionString { get; private set; }
-        public string TransientDatabaseName { get; private set; }
-        public string TransientDatabaseNameBracketed { get; private set; }
+        public string TransientSubmissionDatabaseConnectionString { get; private set; }
+        public string TransientSubmissionDatabaseName { get; private set; }
+        public string TransientSubmissionDatabaseNameBracketed { get; private set; }
+
+        public string TransientPeriodEndDatabaseConnectionString { get; private set; }
+        public string TransientPeriodEndDatabaseName { get; private set; }
+        public string TransientPeriodEndDatabaseNameBracketed { get; private set; }
 
         public string DedsDatabaseConnectionString { get; private set; }
         public string DedsDatabaseName { get; private set; }
@@ -32,10 +36,16 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.TestContext
 
         private void SetupConnectionStrings()
         {
-            TransientDatabaseConnectionString = Environment.GetEnvironmentVariable("TransientDatabaseConnectionString");
-            if (string.IsNullOrEmpty(TransientDatabaseConnectionString))
+            TransientSubmissionDatabaseConnectionString = Environment.GetEnvironmentVariable("TransientSubmissionDatabaseConnectionString");
+            if (string.IsNullOrEmpty(TransientSubmissionDatabaseConnectionString))
             {
-                TransientDatabaseConnectionString = ConfigurationManager.AppSettings["TransientDatabaseConnectionString"];
+                TransientSubmissionDatabaseConnectionString = ConfigurationManager.AppSettings["TransientSubmissionDatabaseConnectionString"];
+            }
+
+            TransientPeriodEndDatabaseConnectionString = Environment.GetEnvironmentVariable("TransientPeriodEndDatabaseConnectionString");
+            if (string.IsNullOrEmpty(TransientPeriodEndDatabaseConnectionString))
+            {
+                TransientPeriodEndDatabaseConnectionString = ConfigurationManager.AppSettings["TransientPeriodEndDatabaseConnectionString"];
             }
 
             DedsDatabaseConnectionString = Environment.GetEnvironmentVariable("DedsDatabaseConnectionString");
@@ -47,8 +57,11 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.TestContext
 
         private void ExtractDatabaseNames()
         {
-            TransientDatabaseName = ExtractDatabaseNameFromConnectionString(TransientDatabaseConnectionString);
-            TransientDatabaseNameBracketed = $"[{TransientDatabaseName}]";
+            TransientSubmissionDatabaseName = ExtractDatabaseNameFromConnectionString(TransientSubmissionDatabaseConnectionString);
+            TransientSubmissionDatabaseNameBracketed = $"[{TransientSubmissionDatabaseName}]";
+
+            TransientPeriodEndDatabaseName = ExtractDatabaseNameFromConnectionString(TransientPeriodEndDatabaseConnectionString);
+            TransientPeriodEndDatabaseNameBracketed = $"[{TransientPeriodEndDatabaseName}]";
 
             DedsDatabaseName = ExtractDatabaseNameFromConnectionString(DedsDatabaseConnectionString);
             DedsDatabaseNameBracketed = $"[{DedsDatabaseName}]";

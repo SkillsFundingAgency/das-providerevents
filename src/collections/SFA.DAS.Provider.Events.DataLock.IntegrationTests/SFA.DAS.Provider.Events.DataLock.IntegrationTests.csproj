@@ -85,55 +85,49 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\DeployDataLock\sql\ddl\datalock.deds.ddl.tables.sql">
-      <Link>DbSetupScripts\datalock.deds.ddl.tables.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\DeployDataLock\sql\ddl\datalock.transient.ddl.tables.sql">
-      <Link>DbSetupScripts\datalock.transient.ddl.tables.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\DeployDataLock\sql\ddl\datalock.transient.ddl.views.sql">
-      <Link>DbSetupScripts\datalock.transient.ddl.views.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\DeployDataLock\sql\ddl\datalock.transient.reference.ddl.tables.sql">
-      <Link>DbSetupScripts\datalock.transient.reference.ddl.tables.sql</Link>
+    <Content Include="..\DeployDataLock\sql\ddl\datalockevents.deds.ddl.tables.sql">
+      <Link>DbSetupScripts\datalockevents.deds.ddl.tables.sql</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\DeployDataLock\sql\dml\01 datalock.populate.reference.provider.periodend.sql">
-      <Link>DbSetupScripts\Copy Reference Data\01 datalock.populate.reference.provider.periodend.sql</Link>
+    <Content Include="..\DeployDataLock\sql\ddl\datalockevents.transient.ddl.tables.sql">
+      <Link>DbSetupScripts\datalockevents.transient.ddl.tables.sql</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\DeployDataLock\sql\dml\01 datalock.populate.reference.provider.submission.sql">
-      <Link>DbSetupScripts\Copy Reference Data\01 datalock.populate.reference.provider.submission.sql</Link>
+    <Content Include="..\DeployDataLock\sql\ddl\datalockevents.transient.ddl.views.periodend.sql">
+      <Link>DbSetupScripts\datalockevents.transient.ddl.views.periodend.sql</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\DeployDataLock\sql\dml\02 datalock.populate.reference.input.periodend.sql">
-      <Link>DbSetupScripts\Copy Reference Data\02 datalock.populate.reference.input.periodend.sql</Link>
+    <Content Include="..\DeployDataLock\sql\ddl\datalockevents.transient.ddl.views.submission.sql">
+      <Link>DbSetupScripts\datalockevents.transient.ddl.views.submission.sql</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\DeployDataLock\sql\dml\02 datalock.populate.reference.input.submission.sql">
-      <Link>DbSetupScripts\Copy Reference Data\02 datalock.populate.reference.input.submission.sql</Link>
+    <Content Include="..\DeployDataLock\sql\ddl\datalockevents.transient.reference.ddl.tables.sql">
+      <Link>DbSetupScripts\datalockevents.transient.reference.ddl.tables.sql</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\DeployDataLock\sql\dml\03 datalock.populate.reference.history.sql">
-      <Link>DbSetupScripts\Copy Reference Data\03 datalock.populate.reference.history.sql</Link>
+    <Content Include="..\DeployDataLock\sql\dml\01 datalock.populate.reference.history.sql">
+      <Link>DbSetupScripts\Copy Reference Data\01 datalock.populate.reference.history.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DbSetupScripts\datalock.reference.transient.ddl.tables.periodend.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DbSetupScripts\datalock.transient.ddl.views.periodend.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DbSetupScripts\datalock.transient.ddl.views.submission.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DbSetupScripts\ilr.transient.ddl.tables.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="DbSetupScripts\Payments.deds.ddl.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="DbSetupScripts\DasCommitments.deds.ddl.sql">
+    <Content Include="DbSetupScripts\commitments.transient.reference.ddl.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="DbSetupScripts\DataLock.deds.ddl.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="DbSetupScripts\Ilr.deds.ddl.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="DbSetupScripts\Ilr.Earnings.deds.ddl.sql">
+    <Content Include="DbSetupScripts\datalock.transient.ddl.tables.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

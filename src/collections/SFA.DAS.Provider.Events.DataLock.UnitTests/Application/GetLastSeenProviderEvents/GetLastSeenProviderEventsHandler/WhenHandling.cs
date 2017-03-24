@@ -2,12 +2,12 @@
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.DCFS.Domain;
-using SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenEvents;
+using SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenProviderEvents;
 using SFA.DAS.Provider.Events.DataLock.Domain;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data.Entities;
 
-namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenEvents.GetLastSeenEventsHandler
+namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProviderEvents.GetLastSeenProviderEventsHandler
 {
     public class WhenHandling
     {
@@ -40,7 +40,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenEven
         private Mock<IDataLockEventCommitmentVersionRepository> _dataLockEventCommitmentVersionRepository;
         private Mock<IDataLockEventErrorRepository> _dataLockEventErrorRepository;
 
-        private DataLock.Application.GetLastSeenEvents.GetLastSeenEventsHandler _handler;
+        private DataLock.Application.GetLastSeenProviderEvents.GetLastSeenProviderEventsHandler _handler;
 
         private DataLockEventEntity _event;
         private DataLockEventPeriodEntity _eventPeriod;
@@ -109,7 +109,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenEven
             _dataLockEventCommitmentVersionRepository = new Mock<IDataLockEventCommitmentVersionRepository>();
             _dataLockEventErrorRepository = new Mock<IDataLockEventErrorRepository>();
 
-            _dataLockEventRepository.Setup(r => r.GetLastSeenEvents())
+            _dataLockEventRepository.Setup(r => r.GetProviderLastSeenEvents(It.IsAny<long>()))
                 .Returns(new[]
                 {
                     _event
@@ -133,7 +133,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenEven
                     _eventError
                 });
 
-            _handler = new DataLock.Application.GetLastSeenEvents.GetLastSeenEventsHandler(_dataLockEventRepository.Object,
+            _handler = new DataLock.Application.GetLastSeenProviderEvents.GetLastSeenProviderEventsHandler(_dataLockEventRepository.Object,
                 _dataLockEventPeriodRepository.Object,
                 _dataLockEventCommitmentVersionRepository.Object,
                 _dataLockEventErrorRepository.Object);
@@ -143,7 +143,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenEven
         public void ThenItShouldReturnLastSeenDataLockEventsFromRepository()
         {
             // Act
-            var response = _handler.Handle(new GetLastSeenEventsRequest());
+            var response = _handler.Handle(new GetLastSeenProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(response);
@@ -158,11 +158,11 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenEven
         public void ThenItShouldReturnEmptyArrayIfNoResultFromRepository(DataLockEventEntity[] entities)
         {
             // Arrange
-            _dataLockEventRepository.Setup(r => r.GetLastSeenEvents())
+            _dataLockEventRepository.Setup(r => r.GetProviderLastSeenEvents(It.IsAny<long>()))
                 .Returns(entities);
 
             // Act
-            var actual = _handler.Handle(new GetLastSeenEventsRequest());
+            var actual = _handler.Handle(new GetLastSeenProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(actual);
@@ -180,7 +180,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenEven
                 .Returns(entities);
 
             // Act
-            var actual = _handler.Handle(new GetLastSeenEventsRequest());
+            var actual = _handler.Handle(new GetLastSeenProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(actual);
@@ -199,7 +199,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenEven
                 .Returns(entities);
 
             // Act
-            var actual = _handler.Handle(new GetLastSeenEventsRequest());
+            var actual = _handler.Handle(new GetLastSeenProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(actual);
@@ -218,7 +218,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenEven
                 .Returns(entities);
 
             // Act
-            var actual = _handler.Handle(new GetLastSeenEventsRequest());
+            var actual = _handler.Handle(new GetLastSeenProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(actual);
@@ -232,11 +232,11 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenEven
         public void ThenItShouldReturnInvalidResponseIfEventRepositoryErrors()
         {
             // Arrange
-            _dataLockEventRepository.Setup(r => r.GetLastSeenEvents())
+            _dataLockEventRepository.Setup(r => r.GetProviderLastSeenEvents(It.IsAny<long>()))
                 .Throws(new Exception("Test"));
 
             // Act
-            var actual = _handler.Handle(new GetLastSeenEventsRequest());
+            var actual = _handler.Handle(new GetLastSeenProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(actual);
@@ -253,7 +253,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenEven
                 .Throws(new Exception("Test"));
 
             // Act
-            var actual = _handler.Handle(new GetLastSeenEventsRequest());
+            var actual = _handler.Handle(new GetLastSeenProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(actual);
@@ -270,7 +270,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenEven
                 .Throws(new Exception("Test"));
 
             // Act
-            var actual = _handler.Handle(new GetLastSeenEventsRequest());
+            var actual = _handler.Handle(new GetLastSeenProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(actual);
@@ -287,7 +287,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenEven
                 .Throws(new Exception("Test"));
 
             // Act
-            var actual = _handler.Handle(new GetLastSeenEventsRequest());
+            var actual = _handler.Handle(new GetLastSeenProviderEventsRequest());
 
             // Assert
             Assert.IsNotNull(actual);

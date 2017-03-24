@@ -6,23 +6,23 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
 {
     public class DcfsPriceEpisodeMatchRepository : DcfsRepository, IPriceEpisodeMatchRepository
     {
-        private const string Source = "Reference.PriceEpisodeMatch";
+        private const string Source = "DataLock.PriceEpisodeMatch";
         private const string Columns = "Ukprn," +
                                        "PriceEpisodeIdentifier," +
                                        "LearnRefNumber," +
                                        "AimSeqNumber," +
                                        "CommitmentId," +
                                        "IsSuccess";
-        private const string SelectCurrentPriceEpisodeMatches = "SELECT " + Columns + " FROM " + Source;
+        private const string SelectProviderPriceEpisodeMatches = "SELECT " + Columns + " FROM " + Source + " WHERE Ukprn = @ukprn";
 
         public DcfsPriceEpisodeMatchRepository(string connectionString)
             : base(connectionString)
         {
         }
 
-        public PriceEpisodeMatchEntity[] GetCurrentPriceEpisodeMatches()
+        public PriceEpisodeMatchEntity[] GetProviderPriceEpisodeMatches(long ukprn)
         {
-            return Query<PriceEpisodeMatchEntity>(SelectCurrentPriceEpisodeMatches);
+            return Query<PriceEpisodeMatchEntity>(SelectProviderPriceEpisodeMatches, new { ukprn });
         }
     }
 }
