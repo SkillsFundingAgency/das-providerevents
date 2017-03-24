@@ -84,7 +84,6 @@ $SN=$servername1.Replace('_','0')
 
 Rename-Computer "DAS-PAPI-$SN" -force -restart
 
-
 }  
 else  
 {  
