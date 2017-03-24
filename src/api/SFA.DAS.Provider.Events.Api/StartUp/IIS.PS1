@@ -76,12 +76,14 @@ $IIS=$IISName.name
 
 Set-ItemProperty iis:\apppools\$IIS -name processModel -value @{userName="$UserName";password="$Password";identitytype=3}
 
-
 $servernameNF=[Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::currentRoleinstance.id
 
-$servername1=$servernameNF.Replace('.','-')
+$servername1=$servernameNF.Substring($servernameNF.Length - 2)
 
-Rename-Computer $servername1.Replace('_','-') -force -restart
+$SN=$servername1.Replace('_','0') 
+
+Rename-Computer "DAS-PAPI-$SN" -force -restart
+
 
 }  
 else  
