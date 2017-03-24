@@ -17,33 +17,29 @@ DAS Data Lock Events Component - ILR Submission & DAS Period End
   - component\StructureMap.dll
  
  1.2 SQL scripts:
-  - sql\ddl\datalock.transient.ddl.tables.sql:
-   - transient database tables that need to be present when the component is executed
-  - sql\ddl\datalock.transient.ddl.views.sql:
-   - transient database views that need to be present when the component is executed
-  
-  - sql\ddl\datalock.transient.reference.ddl.tables.sql:
-   - transient database tables that need to be present when the component is executed
-  
-  - sql\ddl\datalock.deds.ddl.tables.sql:
+  - sql\ddl\datalockevents.deds.ddl.tables.sql:
    - deds database tables that need to be present when the component is executed
   
-  - for a post ILR Submission run:
-   - sql\dml\01 datalock.populate.reference.provider.submission.sql:
-    - populate reference providers data script
-   - sql\dml\02 datalock.populate.reference.input.submission.sql:
-    - populate reference input data script (ILR data lock results and price episode data and DAS Commitments data)
-   - sql\dml\03 datalock.populate.reference.history.sql:
+  - for an ILR Submission run:
+   - sql\ddl\datalockevents.transient.ddl.tables.sql:
+    - transient database tables that need to be present when the component is executed
+   - sql\ddl\datalockevents.transient.ddl.views.submission.sql:
+    - transient database views that need to be present when the component is executed
+   - sql\ddl\datalockevents.transient.reference.ddl.tables.sql:
+    - transient database tables that need to be present when the component is executed
+   - sql\dml\01 datalock.populate.reference.history.sql:
     - populate reference historical data (previous data lock events)
-  
-  - for a post DAS Period End run:
-   - sql\dml\01 datalock.populate.reference.provider.periodend.sql:
-    - populate reference providers data script
-   - sql\dml\02 datalock.populate.reference.input.periodend.sql:
-    - populate reference input data script (DAS Period End data lock results, ILR price episode data and DAS Commitments data)
-   - sql\dml\03 datalock.populate.reference.history.sql:
+
+  - for a DAS Period End run:
+   - sql\ddl\datalockevents.transient.ddl.tables.sql:
+    - transient database tables that need to be present when the component is executed
+   - sql\ddl\datalockevents.transient.ddl.views.periodend.sql:
+    - transient database views that need to be present when the component is executed
+   - sql\ddl\datalockevents.transient.reference.ddl.tables.sql:
+    - transient database tables that need to be present when the component is executed
+   - sql\dml\01 datalock.populate.reference.history.sql:
     - populate reference historical data (previous data lock events)
- 
+    
  1.3 Copy to deds mapping xml:
   - copy mappings\DasDataLockEventsCopyToDedsMapping.xml:
    - sql bulk copy binary task configuration file that copies data lock events from transient to deds
@@ -73,31 +69,23 @@ DAS Data Lock Events Component - ILR Submission & DAS Period End
 -------------------------------------------------------------------------------------
 3. Expected data set keys / properties in the manifest that runs the component
 -------------------------------------------------------------------------------------
- 3.1 Post ILR Submission run
-  3.1.1 ILR Collection: ${ILR_Deds.FQ}
-  3.1.2 ILR Collection: ${DataLock_Deds.FQ}
-  3.1.3 DAS Commitments Reference Data Collection: ${DAS_Commitments.FQ}
-  3.1.4 DAS Provider Events Collection: ${DAS_ProviderEvents.FQ}
- 3.2 Post DAS Period End run
-  3.2.1 ILR Collection: ${ILR_Deds.FQ}
-  3.2.2 DAS Period End Collection: ${DataLock_Deds.FQ}
-  3.2.3 DAS Period End Collection: ${DAS_PeriodEnd.FQ}
-  3.2.4 DAS Provider Events Collection: ${DAS_ProviderEvents.FQ}
-  3.2.5 Academic year of current ILR Collection: ${YearOfCollection}
+ 3.1 DAS Provider Events Collection: ${DAS_ProviderEvents.FQ}
 
 -------------------------------------------------------------------------------------
-4. Expected manifest steps for the post ilr submission process
+4. Expected manifest steps for the ilr submission process
 -------------------------------------------------------------------------------------
  4.1 Build the transient database.
- 4.2 Copy reference data to transient using the '01 datalock.populate.reference.provider.submission.sql', '02 datalock.populate.reference.input.submission.sql' and '03 datalock.populate.reference.history.sql' sql scripts.
+ 4.2 Copy reference data to transient using the '01 datalock.populate.reference.history.sql' sql script.
+ !!! Run the script only after all other populate reference data scripts related to DAS components have finished executing !!!
  4.3 Execute the 'DAS Data Lock Events Component' component
  4.4 Bulk copy the data lock events from transient to deds
 
 -------------------------------------------------------------------------------------
-5. Expected manifest steps for the post das period end process
+5. Expected manifest steps for the das period end process
 -------------------------------------------------------------------------------------
  5.1 Build the transient database.
- 5.2 Copy reference data to transient using the '01 datalock.populate.reference.provider.periodend.sql', '02 datalock.populate.reference.input.periodend.sql' and '03 datalock.populate.reference.history.sql' sql scripts.
+ 5.2 Copy reference data to transient using the '01 datalock.populate.reference.history.sql' sql script.
+ !!! Run the script only after all other populate reference data scripts related to DAS components have finished executing !!!
  5.3 Execute the 'DAS Data Lock Events Component' component
  5.4 Bulk copy the data lock events from transient to deds
 

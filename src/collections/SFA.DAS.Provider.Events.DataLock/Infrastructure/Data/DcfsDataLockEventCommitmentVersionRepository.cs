@@ -30,7 +30,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
 
         public void WriteDataLockEventCommitmentVersion(DataLockEventCommitmentVersionEntity version)
         {
-            Execute("INSERT INTO DataLock.DataLockEventCommitmentVersions " +
+            Execute("INSERT INTO DataLockEvents.DataLockEventCommitmentVersions " +
                     "(DataLockEventId, CommitmentVersion, CommitmentStartDate, CommitmentStandardCode, CommitmentProgrammeType, CommitmentFrameworkCode, " +
                     "CommitmentPathwayCode, CommitmentNegotiatedPrice, CommitmentEffectiveDate) " +
                     "VALUES " +

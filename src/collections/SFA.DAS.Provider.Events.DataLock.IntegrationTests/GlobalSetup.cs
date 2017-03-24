@@ -12,7 +12,8 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests
         public void BeforeAllTests()
         {
             SetupDedsDatabase();
-            SetupTransientDatabase();
+            SetupSubmissionTransientDatabase();
+            SetupPeriodEndTransientDatabase();
         }
 
 
@@ -20,23 +21,40 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests
         {
             using (var connection = new SqlConnection(GlobalTestContext.Current.DedsDatabaseConnectionString))
             {
-                connection.RunDbSetupSqlScriptFile("DasCommitments.deds.ddl.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
-                connection.RunDbSetupSqlScriptFile("DataLock.deds.ddl.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
-                connection.RunDbSetupSqlScriptFile("Ilr.deds.ddl.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
-                connection.RunDbSetupSqlScriptFile("Ilr.Earnings.deds.ddl.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
-                connection.RunDbSetupSqlScriptFile("Payments.deds.ddl.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
-
-                connection.RunDbSetupSqlScriptFile("datalock.deds.ddl.tables.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+                connection.RunDbSetupSqlScriptFile("datalockevents.deds.ddl.tables.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
             }   
         }
 
-        private void SetupTransientDatabase()
+        private void SetupSubmissionTransientDatabase()
         {
-            using (var connection = new SqlConnection(GlobalTestContext.Current.TransientDatabaseConnectionString))
+            using (var connection = new SqlConnection(GlobalTestContext.Current.TransientSubmissionDatabaseConnectionString))
             {
-                connection.RunDbSetupSqlScriptFile("datalock.transient.reference.ddl.tables.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+                connection.RunDbSetupSqlScriptFile("ilr.transient.ddl.tables.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+                connection.RunDbSetupSqlScriptFile("commitments.transient.reference.ddl.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
                 connection.RunDbSetupSqlScriptFile("datalock.transient.ddl.tables.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
-                connection.RunDbSetupSqlScriptFile("datalock.transient.ddl.views.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+                connection.RunDbSetupSqlScriptFile("datalock.transient.ddl.views.submission.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+
+                connection.RunDbSetupSqlScriptFile("datalockevents.transient.reference.ddl.tables.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+                connection.RunDbSetupSqlScriptFile("datalockevents.transient.ddl.tables.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+
+                connection.RunDbSetupSqlScriptFile("datalockevents.transient.ddl.views.submission.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+            }
+        }
+
+        private void SetupPeriodEndTransientDatabase()
+        {
+            using (var connection = new SqlConnection(GlobalTestContext.Current.TransientPeriodEndDatabaseConnectionString))
+            {
+                connection.RunDbSetupSqlScriptFile("ilr.transient.ddl.tables.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+                connection.RunDbSetupSqlScriptFile("commitments.transient.reference.ddl.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+                connection.RunDbSetupSqlScriptFile("datalock.transient.ddl.tables.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+                connection.RunDbSetupSqlScriptFile("datalock.reference.transient.ddl.tables.periodend.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+                connection.RunDbSetupSqlScriptFile("datalock.transient.ddl.views.periodend.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+
+                connection.RunDbSetupSqlScriptFile("datalockevents.transient.reference.ddl.tables.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+                connection.RunDbSetupSqlScriptFile("datalockevents.transient.ddl.tables.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+
+                connection.RunDbSetupSqlScriptFile("datalockevents.transient.ddl.views.periodend.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
             }
         }
     }

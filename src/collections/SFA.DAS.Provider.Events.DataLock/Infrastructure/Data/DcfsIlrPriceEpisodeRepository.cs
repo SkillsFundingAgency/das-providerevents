@@ -6,7 +6,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
 {
     public class DcfsIlrPriceEpisodeRepository : DcfsRepository, IIlrPriceEpisodeRepository
     {
-        private const string Source = "Reference.vw_IlrPriceEpisodes";
+        private const string Source = "DataLockEvents.vw_IlrPriceEpisodes";
         private const string Columns = "IlrFilename," +
                                        "SubmittedTime," +
                                        "Ukprn," +

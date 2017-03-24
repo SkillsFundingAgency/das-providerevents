@@ -7,9 +7,9 @@ using SFA.DAS.Provider.Events.DataLock.Domain;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data.Entities;
 
-namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentEvents
+namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents
 {
-    public class GetCurrentEventsHandler : IRequestHandler<GetCurrentEventsRequest, GetCurrentEventsResponse>
+    public class GetCurrentProviderEventsHandler : IRequestHandler<GetCurrentProviderEventsRequest, GetCurrentProviderEventsResponse>
     {
         private readonly IPriceEpisodeMatchRepository _priceEpisodeMatchRepository;
         private readonly IPriceEpisodePeriodMatchRepository _priceEpisodePeriodMatchRepository;
@@ -20,7 +20,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentEvents
         private readonly string _academicYear;
         private readonly EventSource _eventsSource;
 
-        public GetCurrentEventsHandler(IPriceEpisodeMatchRepository priceEpisodeMatchRepository,
+        public GetCurrentProviderEventsHandler(IPriceEpisodeMatchRepository priceEpisodeMatchRepository,
             IPriceEpisodePeriodMatchRepository priceEpisodePeriodMatchRepository,
             IValidationErrorRepository validationErrorRepository,
             IIlrPriceEpisodeRepository ilrPriceEpisodeRepository,
@@ -38,13 +38,13 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentEvents
             _eventsSource = eventsSource;
         }
 
-        public GetCurrentEventsResponse Handle(GetCurrentEventsRequest message)
+        public GetCurrentProviderEventsResponse Handle(GetCurrentProviderEventsRequest message)
         {
             try
             {
                 var currentEvents = new List<DataLockEvent>();
 
-                var priceEpisodeMatches = _priceEpisodeMatchRepository.GetCurrentPriceEpisodeMatches();
+                var priceEpisodeMatches = _priceEpisodeMatchRepository.GetProviderPriceEpisodeMatches(message.Ukprn);
 
                 if (priceEpisodeMatches != null)
                 {
@@ -95,7 +95,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentEvents
                     }
                 }
 
-                return new GetCurrentEventsResponse
+                return new GetCurrentProviderEventsResponse
                 {
                     IsValid = true,
                     Items = currentEvents.ToArray()
@@ -103,7 +103,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentEvents
             }
             catch (Exception ex)
             {
-                return new GetCurrentEventsResponse
+                return new GetCurrentProviderEventsResponse
                 {
                     IsValid = false,
                     Exception = ex

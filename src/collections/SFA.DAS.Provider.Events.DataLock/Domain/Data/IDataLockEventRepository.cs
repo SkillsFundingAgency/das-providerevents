@@ -4,7 +4,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Domain.Data
 {
     public interface IDataLockEventRepository
     {
-        DataLockEventEntity[] GetLastSeenEvents();
+        DataLockEventEntity[] GetProviderLastSeenEvents(long ukprn);
 
         long WriteDataLockEvent(DataLockEventEntity @event);
     }
