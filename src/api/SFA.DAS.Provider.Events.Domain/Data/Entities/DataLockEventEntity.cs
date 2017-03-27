@@ -23,6 +23,7 @@ namespace SFA.DAS.Provider.Events.Domain.Data.Entities
         public int? IlrPathwayCode { get; set; }
         public decimal? IlrTrainingPrice { get; set; }
         public decimal? IlrEndpointAssessorPrice { get; set; }
+        public DateTime? IlrPriceEffectiveDate { get; set; }
 
         public DataLockEventErrorEntity[] Errors { get; set; }
         public DataLockEventPeriodEntity[] Periods { get; set; }
