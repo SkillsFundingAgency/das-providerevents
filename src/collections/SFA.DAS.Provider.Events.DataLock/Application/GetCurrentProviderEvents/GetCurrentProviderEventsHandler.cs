@@ -86,6 +86,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents
                             IlrPathwayCode = ilrData.IlrPathwayCode,
                             IlrTrainingPrice = ilrData.IlrTrainingPrice,
                             IlrEndpointAssessorPrice = ilrData.IlrEndpointAssessorPrice,
+                            IlrPriceEffectiveDate = ilrData.IlrPriceEffectiveDate,
                             Errors = GetEventErrors(matchErrors),
                             Periods = GetEventPeriods(matchPeriods),
                             CommitmentVersions = GetEventCommitmentVersions(matchPeriods, commitmentVersions)

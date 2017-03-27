@@ -28,7 +28,7 @@ FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEvents
 INSERT INTO Reference.DataLockEvents
 (Id, ProcessDateTime, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, 
 PriceEpisodeIdentifier, CommitmentId, EmployerAccountId, EventSource, HasErrors, IlrStartDate, IlrStandardCode, 
-IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice)
+IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice, IlrPriceEffectiveDate)
 SELECT
 	dle.Id, 
 	dle.ProcessDateTime, 
@@ -50,7 +50,8 @@ SELECT
 	dle.IlrFrameworkCode, 
 	dle.IlrPathwayCode, 
 	dle.IlrTrainingPrice, 
-	dle.IlrEndpointAssessorPrice
+	dle.IlrEndpointAssessorPrice,
+	dle.IlrPriceEffectiveDate
 FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEvents dle
 INNER JOIN @LastestDataLockEvents le
 	ON dle.Id = le.EventId

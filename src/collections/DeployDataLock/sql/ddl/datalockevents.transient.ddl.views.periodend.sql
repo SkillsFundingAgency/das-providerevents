@@ -35,7 +35,12 @@ SELECT
 	CASE
 		WHEN ISNULL(dpe.Tnp1, 0) > 0 THEN dpe.Tnp2
 		ELSE dpe.Tnp4
-	END IlrEndpointAssessorPrice
+	END IlrEndpointAssessorPrice,
+	aec.EpisodeEffectiveTNPStartDate IlrPriceEffectiveDate
 FROM Reference.DataLockPriceEpisode dpe
-	JOIN Reference.Providers p ON dpe.Ukprn = p.Ukprn
+	JOIN Reference.Providers p 
+		ON dpe.Ukprn = p.Ukprn
+	JOIN Rulebase.AEC_ApprenticeshipPriceEpisode aec 
+		ON dpe.LearnRefNumber = aec.LearnRefNumber
+		AND dpe.PriceEpisodeIdentifier = aec.PriceEpisodeIdentifier
 GO

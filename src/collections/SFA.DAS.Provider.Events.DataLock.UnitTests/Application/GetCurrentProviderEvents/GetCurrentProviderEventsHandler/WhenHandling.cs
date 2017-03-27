@@ -101,7 +101,8 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentProvi
                 IlrStartDate = new DateTime(2017, 5, 1),
                 IlrStandardCode = 27,
                 IlrTrainingPrice = 12000,
-                IlrEndpointAssessorPrice = 3000
+                IlrEndpointAssessorPrice = 3000,
+                IlrPriceEffectiveDate = DateTime.Today
             };
 
             _commitment = new CommitmentEntity
@@ -415,6 +416,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentProvi
                    && @event.IlrPathwayCode == _ilrPriceEpisode.IlrPathwayCode
                    && @event.IlrTrainingPrice == _ilrPriceEpisode.IlrTrainingPrice
                    && @event.IlrEndpointAssessorPrice == _ilrPriceEpisode.IlrEndpointAssessorPrice
+                   && @event.IlrPriceEffectiveDate == _ilrPriceEpisode.IlrPriceEffectiveDate
                    && ErrorMatches(@event.Errors[0])
                    && PeriodMatches(@event.Periods[0])
                    && CommitmentVersionMatches(@event.CommitmentVersions[0]);

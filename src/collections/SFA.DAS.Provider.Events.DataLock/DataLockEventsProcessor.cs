@@ -158,6 +158,11 @@ namespace SFA.DAS.Provider.Events.DataLock
                 return true;
             }
 
+            if (current.IlrPriceEffectiveDate != lastSeen.IlrPriceEffectiveDate)
+            {
+                return true;
+            }
+
             if (ErrorsAreDifferent(current.Errors, lastSeen.Errors))
             {
                 return true;

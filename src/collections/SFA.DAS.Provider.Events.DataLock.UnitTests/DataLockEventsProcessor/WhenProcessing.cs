@@ -714,6 +714,42 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
         }
 
         [Test]
+        public void ThenItShouldWriteAnEventWhenIlrPriceEffectiveDateHasChanged()
+        {
+            // Arrange
+            var current = new DataLockEvent
+            {
+                IlrPriceEffectiveDate = DateTime.Today.AddDays(-10)
+            };
+
+            var last = new DataLockEvent
+            {
+                IlrPriceEffectiveDate = DateTime.Today.AddDays(-11)
+            };
+
+            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
+                .Returns(new GetCurrentProviderEventsResponse
+                {
+                    IsValid = true,
+                    Items = new[] { current }
+                });
+
+            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenProviderEventsRequest>()))
+                .Returns(new GetLastSeenProviderEventsResponse
+                {
+                    IsValid = true,
+                    Items = new[] { last }
+                });
+
+            // Act
+            _processor.Process();
+
+            // Assert
+            _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Event == current)));
+        }
+
+        [Test]
         [TestCaseSource(nameof(EventErrors))]
         public void ThenItShouldWriteAnEventWhenErrorsHaveChanged(DataLockEventError[] currentErrors, DataLockEventError[] lastSeenErrors)
         {

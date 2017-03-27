@@ -20,7 +20,8 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
                                        "IlrFrameworkCode," +
                                        "IlrPathwayCode," +
                                        "IlrTrainingPrice," +
-                                       "IlrEndpointAssessorPrice";
+                                       "IlrEndpointAssessorPrice," +
+                                       "IlrPriceEffectiveDate";
         private const string SelectPriceEpisodeIlrData = "SELECT " + Columns + " FROM " + Source +
             " WHERE Ukprn = @ukprn AND PriceEpisodeIdentifier = @priceEpisodeIdentifier AND LearnRefnumber = @learnRefnumber";
 
