@@ -104,7 +104,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Specs
             Assert.IsNotNull(eventCommitmentVersions);
 
             Assert.AreEqual(1, eventErrors.Length);
-            Assert.AreEqual(84, eventPeriods.Length);
+            Assert.AreEqual(180, eventPeriods.Length);
             Assert.AreEqual(1, eventCommitmentVersions.Length);
         }
 
@@ -147,7 +147,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Specs
             Assert.IsNotNull(eventCommitmentVersions);
 
             Assert.AreEqual(1, eventErrors.Length);
-            Assert.AreEqual(84, eventPeriods.Length);
+            Assert.AreEqual(180, eventPeriods.Length);
             Assert.AreEqual(1, eventCommitmentVersions.Length);
         }
     }
