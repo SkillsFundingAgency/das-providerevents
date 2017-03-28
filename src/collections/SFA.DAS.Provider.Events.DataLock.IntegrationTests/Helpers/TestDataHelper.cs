@@ -257,7 +257,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                     + "AgreedCost * 0.2 "
                     + "FROM Reference.DasCommitments "
                     + "WHERE CommitmentId = @commitmentId",
-                new {commitmentId, learnerRefNumber, aimSequenceNumber});
+                new { commitmentId, learnerRefNumber, aimSequenceNumber });
 
             Execute("INSERT INTO Valid.Learner "
                     + "(LearnRefNumber, ULN, Ethnicity, Sex, LLDDHealthProb) "
@@ -278,7 +278,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
         {
             Execute("INSERT INTO Reference.DataLockPriceEpisode "
                     + "(Ukprn, LearnRefNumber, Uln, AimSeqNumber, StandardCode, ProgrammeType, FrameworkCode, PathwayCode, "
-                    + "StartDate, NegotiatedPrice, PriceEpisodeIdentifier, EndDate, Tnp1, Tnp2) "
+                    + "StartDate, NegotiatedPrice, PriceEpisodeIdentifier, EndDate, Tnp1, Tnp2, LearningStartDate) "
                     + "SELECT "
                     + "Ukprn, "
                     + "@learnerRefNumber, "
@@ -293,7 +293,8 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                     + "'99-99-99-' + CONVERT(char(10), StartDate, 126), "
                     + "EndDate, "
                     + "AgreedCost * 0.8, "
-                    + "AgreedCost * 0.2 "
+                    + "AgreedCost * 0.2, "
+                    + "StartDate "
                     + "FROM Reference.DasCommitments "
                     + "WHERE CommitmentId = @commitmentId",
                 new { commitmentId, learnerRefNumber, aimSequenceNumber }, inSubmission: false);
@@ -307,6 +308,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                                             DateTime startDate = default(DateTime),
                                             DateTime endDate = default(DateTime),
                                             decimal agreedCost = 15000m,
+                                            DateTime priceEffectiveDate = default(DateTime),
                                             long? standardCode = null,
                                             int? programmeType = null,
                                             int? frameworkCode = null,
@@ -335,21 +337,40 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                 endDate = startDate.AddYears(1);
             }
 
+            if (priceEffectiveDate < startDate)
+            {
+                priceEffectiveDate = startDate;
+            }
+
             var priceEpisodeIdentifier = $"99-99-99-{startDate.ToString("yyyy-MM-dd")}";
 
             Execute("INSERT INTO DataLock.DataLockEvents "
                 + "(Id, ProcessDateTime, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, "
                 + "PriceEpisodeIdentifier, CommitmentId, EmployerAccountId, EventSource, HasErrors, IlrStartDate, IlrStandardCode, "
-                + "IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice) "
+                + "IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice, IlrPriceEffectiveDate) "
                 + "VALUES "
                 + $"(1, @processed, 'ILR-{ukprn}-1617-20161013-092500-98', @submittedDateTime, '1617', @ukprn, @uln, @learnerRefNumber, @aimSequenceNumber, "
                 + "@priceEpisodeIdentifier, @commitmentId, 123, 1, @hasErrors, @startDate, @standardCode, @programmeType, @frameworkCode, @pathwayCode, "
-                + "@trainingCost, @endpointCost)",
+                + "@trainingCost, @endpointCost, @priceEffectiveDate)",
                 new
                 {
-                    processed = DateTime.Today, submittedDateTime = DateTime.Now.AddDays(-1), ukprn, uln, learnerRefNumber, aimSequenceNumber,
-                    priceEpisodeIdentifier, commitmentId, hasErrors = !passedDataLock, startDate, standardCode, programmeType, frameworkCode, pathwayCode,
-                    trainingCost = agreedCost * 0.8m, endpointCost = agreedCost - agreedCost * 0.8m
+                    processed = DateTime.Today,
+                    submittedDateTime = DateTime.Now.AddDays(-1),
+                    ukprn,
+                    uln,
+                    learnerRefNumber,
+                    aimSequenceNumber,
+                    priceEpisodeIdentifier,
+                    commitmentId,
+                    hasErrors = !passedDataLock,
+                    startDate,
+                    standardCode,
+                    programmeType,
+                    frameworkCode,
+                    pathwayCode,
+                    trainingCost = agreedCost * 0.8m,
+                    endpointCost = agreedCost - agreedCost * 0.8m,
+                    priceEffectiveDate
                 }, false);
 
             var censusDate = startDate.LastDayOfMonth();

@@ -27,7 +27,8 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
                                        "IlrFrameworkCode," +
                                        "IlrPathwayCode," +
                                        "IlrTrainingPrice," +
-                                       "IlrEndpointAssessorPrice";
+                                       "IlrEndpointAssessorPrice," +
+                                       "IlrPriceEffectiveDate";
         private const string SelectLastSeenEvents = "SELECT " + Columns + " FROM " + Source;
         private const string SelectProviderLastSeenEvents = SelectLastSeenEvents + " WHERE Ukprn = @ukprn";
 
@@ -57,11 +58,11 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
             Execute("INSERT INTO DataLockEvents.DataLockEvents " +
                     "(Id, ProcessDateTime, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, " +
                     "PriceEpisodeIdentifier, CommitmentId, EmployerAccountId, EventSource, HasErrors, IlrStartDate, IlrStandardCode, " +
-                    "IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice) " +
+                    "IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice, IlrPriceEffectiveDate) " +
                     "VALUES " +
                     "(@Id, @ProcessDateTime, @IlrFileName, @SubmittedDateTime, @AcademicYear, @UKPRN, @ULN, @LearnRefNumber, @AimSeqNumber, " +
                     "@PriceEpisodeIdentifier, @CommitmentId, @EmployerAccountId, @EventSource, @HasErrors, @IlrStartDate, @IlrStandardCode, " +
-                    "@IlrProgrammeType, @IlrFrameworkCode, @IlrPathwayCode, @IlrTrainingPrice, @IlrEndpointAssessorPrice)",
+                    "@IlrProgrammeType, @IlrFrameworkCode, @IlrPathwayCode, @IlrTrainingPrice, @IlrEndpointAssessorPrice, @IlrPriceEffectiveDate)",
                     @event);
 
             return @event.Id;

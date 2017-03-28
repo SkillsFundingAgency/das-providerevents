@@ -23,7 +23,7 @@ SELECT
     dpe.PriceEpisodeIdentifier,
     dpe.LearnRefNumber,
     dpe.AimSeqNumber,
-    dpe.StartDate IlrStartDate,
+    dpe.LearningStartDate IlrStartDate,
     dpe.StandardCode IlrStandardCode,
     dpe.ProgrammeType IlrProgrammeType,
     dpe.FrameworkCode IlrFrameworkCode,
@@ -35,7 +35,9 @@ SELECT
 	CASE
 		WHEN ISNULL(dpe.Tnp1, 0) > 0 THEN dpe.Tnp2
 		ELSE dpe.Tnp4
-	END IlrEndpointAssessorPrice
+	END IlrEndpointAssessorPrice,
+	dpe.StartDate IlrPriceEffectiveDate
 FROM Reference.DataLockPriceEpisode dpe
-	JOIN Reference.Providers p ON dpe.Ukprn = p.Ukprn
+	JOIN Reference.Providers p 
+		ON dpe.Ukprn = p.Ukprn
 GO
