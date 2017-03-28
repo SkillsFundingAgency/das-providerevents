@@ -276,26 +276,9 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                                                      string learnerRefNumber,
                                                      int aimSequenceNumber = 1)
         {
-            Execute("INSERT INTO Rulebase.AEC_ApprenticeshipPriceEpisode "
-                    + "(LearnRefNumber, PriceEpisodeIdentifier, EpisodeEffectiveTNPStartDate, EpisodeStartDate, "
-                    + "PriceEpisodeAimSeqNumber, PriceEpisodePlannedEndDate, PriceEpisodeTotalTNPPrice, TNP1, TNP2) "
-                    + "SELECT "
-                    + "@learnerRefNumber, "
-                    + "'99-99-99-' + CONVERT(char(10), StartDate, 126), "
-                    + "StartDate, "
-                    + "StartDate, "
-                    + "@aimSequenceNumber, "
-                    + "EndDate, "
-                    + "AgreedCost, "
-                    + "AgreedCost * 0.8, "
-                    + "AgreedCost * 0.2 "
-                    + "FROM Reference.DasCommitments "
-                    + "WHERE CommitmentId = @commitmentId",
-                new { commitmentId, learnerRefNumber, aimSequenceNumber }, inSubmission: false);
-
             Execute("INSERT INTO Reference.DataLockPriceEpisode "
                     + "(Ukprn, LearnRefNumber, Uln, AimSeqNumber, StandardCode, ProgrammeType, FrameworkCode, PathwayCode, "
-                    + "StartDate, NegotiatedPrice, PriceEpisodeIdentifier, EndDate, Tnp1, Tnp2) "
+                    + "StartDate, NegotiatedPrice, PriceEpisodeIdentifier, EndDate, Tnp1, Tnp2, LearningStartDate) "
                     + "SELECT "
                     + "Ukprn, "
                     + "@learnerRefNumber, "
@@ -310,7 +293,8 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                     + "'99-99-99-' + CONVERT(char(10), StartDate, 126), "
                     + "EndDate, "
                     + "AgreedCost * 0.8, "
-                    + "AgreedCost * 0.2 "
+                    + "AgreedCost * 0.2, "
+                    + "StartDate "
                     + "FROM Reference.DasCommitments "
                     + "WHERE CommitmentId = @commitmentId",
                 new { commitmentId, learnerRefNumber, aimSequenceNumber }, inSubmission: false);
