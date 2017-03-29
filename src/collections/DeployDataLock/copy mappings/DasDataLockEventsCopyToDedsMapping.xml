@@ -92,6 +92,10 @@
           <Source>IlrEndpointAssessorPrice</Source>
           <Destination>IlrEndpointAssessorPrice</Destination>
         </ColumnMapping>
+        <ColumnMapping>
+          <Source>IlrPriceEffectiveDate</Source>
+          <Destination>IlrPriceEffectiveDate</Destination>
+        </ColumnMapping>
       </ColumnMappings>
     </TableMapping>
     <TableMapping>
