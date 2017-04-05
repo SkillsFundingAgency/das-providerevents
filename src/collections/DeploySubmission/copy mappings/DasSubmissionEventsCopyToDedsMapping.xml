@@ -4,7 +4,7 @@
   <DestinationConnectionString>DestinationConnectionString</DestinationConnectionString>
   <TableMappings>
     <TableMapping>
-      <Source>[Submissions].[SubmissionEvents]</Source>
+      <Source>[Submissions].[vw_SubmissionEvents]</Source>
       <Destination>[Submissions].[SubmissionEvents]</Destination>
       <Ordinal>1</Ordinal>
       <ColumnMappings>
