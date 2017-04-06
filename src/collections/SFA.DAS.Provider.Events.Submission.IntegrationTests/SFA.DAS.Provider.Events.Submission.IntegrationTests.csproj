@@ -131,6 +131,10 @@
       <Link>DbSetupScripts\dml\01 submissions.populate.submissions.sql</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\DeploySubmission\sql\dml\02 Submissions.Cleanup.Deds.DML.sql">
+      <Link>DbSetupScripts\dml\02 Submissions.Cleanup.Deds.DML.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="DbSetupScripts\datalock.transient.ddl.tables.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
