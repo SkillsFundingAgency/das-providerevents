@@ -65,5 +65,6 @@ DAS Submission Events Component
  4.1 Build the transient database.
  4.2 Copy reference data to transient using the '01 submissions.populate.submissions.sql' sql script.
  4.3 Execute the 'DAS Submission Events Component' component
- 4.4 Bulk copy the submission events from transient to deds
+ 4.4 Cleanup the deds data lock results using the '02 Submissions.Cleanup.Deds.DML.sql' sql script
+ 4.5 Bulk copy the submission events from transient to deds
 
