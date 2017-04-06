@@ -4,14 +4,10 @@
   <DestinationConnectionString>DestinationConnectionString</DestinationConnectionString>
   <TableMappings>
     <TableMapping>
-      <Source>[Submissions].[vw_SubmissionEvents]</Source>
+      <Source>[Submissions].[SubmissionEvents]</Source>
       <Destination>[Submissions].[SubmissionEvents]</Destination>
       <Ordinal>1</Ordinal>
       <ColumnMappings>
-        <ColumnMapping>
-          <Source>Id</Source>
-          <Destination>Id</Destination>
-        </ColumnMapping>
         <ColumnMapping>
           <Source>IlrFileName</Source>
           <Destination>IlrFileName</Destination>
