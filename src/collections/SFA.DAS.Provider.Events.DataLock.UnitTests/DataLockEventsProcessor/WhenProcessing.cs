@@ -1,6 +1,7 @@
 ﻿using System;
 using MediatR;
 using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.Payments.DCFS.Domain;
 using SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents;
@@ -57,6 +58,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
         private DataLockEvent _currentFirstEvent;
         private DataLockEvent _currentUpdatedEvent;
         private DataLockEvent _lastSeenOriginalEvent;
+        private Mock<ILogger> _logger;
 
         [SetUp]
         public void Arrange()
@@ -238,6 +240,8 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 }
             };
 
+            _logger = new Mock<ILogger>();
+
             _mediator = new Mock<IMediator>();
 
             _mediator.Setup(m => m.Send(It.IsAny<GetProvidersQueryRequest>()))
@@ -271,7 +275,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                     }
                 });
 
-            _processor = new DataLock.DataLockEventsProcessor(_mediator.Object);
+            _processor = new DataLock.DataLockEventsProcessor(_logger.Object, _mediator.Object);
         }
 
         [Test]

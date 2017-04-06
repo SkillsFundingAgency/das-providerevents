@@ -10,7 +10,7 @@ namespace SFA.DAS.Provider.Events.DataLock
 {
     public class DataLockEventsTask : DcfsTask
     {
-        private const string SubmissionsSchema = "DataLock";
+        private const string SubmissionsSchema = "DataLockEvents";
 
         private readonly IDependencyResolver _dependencyResolver;
 

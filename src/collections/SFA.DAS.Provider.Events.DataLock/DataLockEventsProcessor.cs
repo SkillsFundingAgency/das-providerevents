@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using MediatR;
+using NLog;
 using SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents;
 using SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenProviderEvents;
 using SFA.DAS.Provider.Events.DataLock.Application.GetProviders;
@@ -11,10 +12,12 @@ namespace SFA.DAS.Provider.Events.DataLock
 {
     public class DataLockEventsProcessor
     {
+        private readonly ILogger _logger;
         private readonly IMediator _mediator;
 
-        public DataLockEventsProcessor(IMediator mediator)
+        public DataLockEventsProcessor(ILogger logger, IMediator mediator)
         {
+            _logger = logger;
             _mediator = mediator;
         }
         protected DataLockEventsProcessor()
@@ -24,28 +27,35 @@ namespace SFA.DAS.Provider.Events.DataLock
 
         public virtual void Process()
         {
+            _logger.Info("Started data lock events processor");
+
             var providersResponse = ReturnValidGetProvidersQueryResponseOrThrow();
+            _logger.Info($"Found {providersResponse.Items?.Length} providers to process");
 
             if (providersResponse.HasAnyItems())
             {
                 foreach (var provider in providersResponse.Items)
                 {
+                    _logger.Info($"Starting to process provider {provider.Ukprn}");
                     var currentEventsResponse = ReturnValidGetCurrentProviderEventsResponseOrThrow(provider.Ukprn);
                     var lastSeenEventsResponse = ReturnValidGetLastSeenProviderEventsResponseOrThrow(provider.Ukprn);
 
                     if (!currentEventsResponse.HasAnyItems())
                     {
+                        _logger.Info("Provider does not have any current events. Skipping");
                         continue;
                     }
 
                     foreach (var current in currentEventsResponse.Items)
                     {
+                        _logger.Info($"Found event. Price episode = {current.PriceEpisodeIdentifier}, Uln = {current.Uln}");
                         var lastSeen = lastSeenEventsResponse.Items?.SingleOrDefault(ev => ev.Ukprn == current.Ukprn &&
                                                                                            ev.PriceEpisodeIdentifier == current.PriceEpisodeIdentifier &&
                                                                                            ev.Uln == current.Uln);
 
                         if (EventsAreDifferent(current, lastSeen))
                         {
+                            _logger.Info("Event has changed");
                             current.Id = 0;
                             current.ProcessDateTime = DateTime.Now;
 
@@ -53,6 +63,10 @@ namespace SFA.DAS.Provider.Events.DataLock
                             {
                                 Event = current
                             });
+                        }
+                        else
+                        {
+                            _logger.Info("Event is same as previous");
                         }
                     }
                 }
