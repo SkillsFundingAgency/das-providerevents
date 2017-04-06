@@ -136,3 +136,46 @@ INNER JOIN Submissions.vw_PriceEpisodes pe
 	ON ld.UKPRN = pe.Ukprn
 	AND ld.LearnRefNumber = pe.LearnRefNumber
 	AND ld.AimSeqNumber = pe.PriceEpisodeAimSeqNumber
+
+
+GO
+	
+-----------------------------------------------------------------------------------------------------------------------------------------------
+-- vw_SubmissionEvents
+-----------------------------------------------------------------------------------------------------------------------------------------------
+IF EXISTS(SELECT [object_id] FROM sys.views WHERE [name]='vw_SubmissionEvents' AND [schema_id] = SCHEMA_ID('Submissions'))
+BEGIN
+    DROP VIEW Submissions.vw_SubmissionEvents
+END
+GO
+
+CREATE VIEW Submissions.vw_SubmissionEvents
+AS
+	--This is needed to avoid the duplicate entries being created in Deds : DPP-692
+	SELECT 
+	   (Id - (IsNull((SELECT MaxIdInDeds FROM Reference.IdentifierSeed WHERE IdentifierName = 'SubmissionEvents' ),0))
+		+ ISNULL((SELECT Max(Id) FROM ${DAS_ProviderEvents.FQ}.Submissions.SubmissionEvents),0))  As Id
+      ,[IlrFileName]
+      ,[FileDateTime]
+      ,[SubmittedDateTime]
+      ,[ComponentVersionNumber]
+      ,[UKPRN]
+      ,[ULN]
+      ,[LearnRefNumber]
+      ,[AimSeqNumber]
+      ,[PriceEpisodeIdentifier]
+      ,[StandardCode]
+      ,[ProgrammeType]
+      ,[FrameworkCode]
+      ,[PathwayCode]
+      ,[ActualStartDate]
+      ,[PlannedEndDate]
+      ,[ActualEndDate]
+      ,[OnProgrammeTotalPrice]
+      ,[CompletionTotalPrice]
+      ,[NINumber]
+      ,[CommitmentId]
+      ,[AcademicYear]
+      ,[EmployerReferenceNumber]
+  FROM [Submissions].[SubmissionEvents]
+  Go
