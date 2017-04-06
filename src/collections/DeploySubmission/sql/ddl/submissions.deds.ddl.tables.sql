@@ -15,7 +15,7 @@ GO
 
 CREATE TABLE [Submissions].[SubmissionEvents]
 (
-	Id						bigint			PRIMARY KEY,
+	Id						bigint			PRIMARY KEY IDENTITY(1,1),
 	IlrFileName				nvarchar(50)	NOT NULL,
 	FileDateTime			datetime		NOT NULL,
 	SubmittedDateTime		datetime		NOT NULL,

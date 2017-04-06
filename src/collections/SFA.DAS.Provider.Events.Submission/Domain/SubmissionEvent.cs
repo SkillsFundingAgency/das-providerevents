@@ -4,7 +4,6 @@ namespace SFA.DAS.Provider.Events.Submission.Domain
 {
     public class SubmissionEvent
     {
-        public long Id { get; set; }
         public string IlrFileName { get; set; }
         public DateTime FileDateTime { get; set; }
         public DateTime SubmittedDateTime { get; set; }
