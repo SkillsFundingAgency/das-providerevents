@@ -4,7 +4,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Domain
 {
     public class DataLockEventCommitmentVersion
     {
-        public long DataLockEventId { get; set; }
+        public Guid DataLockEventId { get; set; }
         public long CommitmentVersion { get; set; }
         public DateTime CommitmentStartDate { get; set; }
         public long? CommitmentStandardCode { get; set; }

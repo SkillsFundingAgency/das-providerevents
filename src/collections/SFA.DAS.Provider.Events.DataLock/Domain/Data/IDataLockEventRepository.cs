@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Provider.Events.DataLock.Domain.Data.Entities;
+using System;
 
 namespace SFA.DAS.Provider.Events.DataLock.Domain.Data
 {
@@ -6,6 +7,6 @@ namespace SFA.DAS.Provider.Events.DataLock.Domain.Data
     {
         DataLockEventEntity[] GetProviderLastSeenEvents(long ukprn);
 
-        long WriteDataLockEvent(DataLockEventEntity @event);
+        Guid WriteDataLockEvent(DataLockEventEntity @event);
     }
 }

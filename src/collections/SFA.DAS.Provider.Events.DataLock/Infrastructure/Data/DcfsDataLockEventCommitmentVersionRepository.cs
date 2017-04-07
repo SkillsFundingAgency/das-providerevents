@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.Payments.DCFS.Infrastructure.Data;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data.Entities;
+using System;
 
 namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
 {
@@ -23,7 +24,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
         {
         }
 
-        public DataLockEventCommitmentVersionEntity[] GetDataLockEventCommitmentVersions(long eventId)
+        public DataLockEventCommitmentVersionEntity[] GetDataLockEventCommitmentVersions(Guid eventId)
         {
             return Query<DataLockEventCommitmentVersionEntity>(SelectEventCommitmentVersions, new { eventId });
         }

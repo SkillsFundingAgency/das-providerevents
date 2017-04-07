@@ -12,25 +12,16 @@ SELECT
 FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEvents
 GROUP BY UKPRN, LearnRefNumber, PriceEpisodeIdentifier
 
---------------------------------------------------------------------------------------
--- IdentifierSeed
---------------------------------------------------------------------------------------
-INSERT INTO Reference.IdentifierSeed
-(IdentifierName, MaxIdInDeds)
-SELECT
-	'DataLockEvents',
-	ISNULL(MAX(Id), 0)
-FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEvents
-
 ---------------------------------------------------------------
 -- DataLockEvents
 ---------------------------------------------------------------
 INSERT INTO Reference.DataLockEvents
-(Id, ProcessDateTime, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, 
+(Id,DataLockEventId, ProcessDateTime, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, 
 PriceEpisodeIdentifier, CommitmentId, EmployerAccountId, EventSource, HasErrors, IlrStartDate, IlrStandardCode, 
 IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice, IlrPriceEffectiveDate)
 SELECT
-	dle.Id, 
+	dle.Id,
+	dle.DataLockEventId,
 	dle.ProcessDateTime, 
 	dle.IlrFileName, 
     dle.SubmittedDateTime, 
@@ -52,9 +43,11 @@ SELECT
 	dle.IlrTrainingPrice, 
 	dle.IlrEndpointAssessorPrice,
 	dle.IlrPriceEffectiveDate
+	
 FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEvents dle
 INNER JOIN @LastestDataLockEvents le
 	ON dle.Id = le.EventId
+
 
 ---------------------------------------------------------------
 -- DataLockEventPeriods
@@ -70,8 +63,8 @@ SELECT
 	dlep.IsPayable,
     dlep.TransactionType
 FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEventPeriods dlep
-INNER JOIN @LastestDataLockEvents le
-	ON dlep.DataLockEventId = le.EventId
+INNER JOIN Reference.DataLockEvents dle 
+On dle.DataLockEventId = dlep.DataLockEventId 
 
 ---------------------------------------------------------------
 -- DataLockEventErrors
@@ -83,8 +76,9 @@ SELECT
 	dlee.ErrorCode, 
 	dlee.SystemDescription
 FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEventErrors dlee
-INNER JOIN @LastestDataLockEvents le
-	ON dlee.DataLockEventId = le.EventId
+INNER JOIN Reference.DataLockEvents dle 
+On dle.DataLockEventId = dlee.DataLockEventId 
+
 
 ---------------------------------------------------------------
 -- DataLockEventCommitmentVersions
@@ -103,5 +97,6 @@ SELECT
 	dlecv.CommitmentNegotiatedPrice, 
 	dlecv.CommitmentEffectiveDate
 FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEventCommitmentVersions dlecv
-INNER JOIN @LastestDataLockEvents le
-	ON dlecv.DataLockEventId = le.EventId
+INNER JOIN Reference.DataLockEvents dle 
+On dle.DataLockEventId = dlecv.DataLockEventId 
+

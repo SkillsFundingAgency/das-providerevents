@@ -2,6 +2,7 @@
 using SFA.DAS.Provider.Events.DataLock.Domain;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data.Entities;
+using System;
 
 namespace SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent
 {
@@ -58,7 +59,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent
             return Unit.Value;
         }
 
-        private void WriteEventErrors(long eventId, DataLockEventError[] errors)
+        private void WriteEventErrors(Guid eventId, DataLockEventError[] errors)
         {
             if (errors == null)
             {
@@ -78,7 +79,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent
             }
         }
 
-        private void WriteEventPeriods(long eventId, DataLockEventPeriod[] periods)
+        private void WriteEventPeriods(Guid eventId, DataLockEventPeriod[] periods)
         {
             if (periods == null)
             {
@@ -102,7 +103,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent
             }
         }
 
-        private void WriteEventCommitmentVersions(long eventId, DataLockEventCommitmentVersion[] versions)
+        private void WriteEventCommitmentVersions(Guid eventId, DataLockEventCommitmentVersion[] versions)
         {
             if (versions == null)
             {

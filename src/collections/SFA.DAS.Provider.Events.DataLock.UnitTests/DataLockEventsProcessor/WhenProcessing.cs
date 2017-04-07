@@ -182,7 +182,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
 
             _lastSeenOriginalEvent = new DataLockEvent
             {
-                Id = 15,
+                DataLockEventId = Guid.NewGuid(),
                 ProcessDateTime = new DateTime(2017, 2, 12, 9, 15, 23),
                 IlrFileName = "ILR-1617-10000534-15.xml",
                 SubmittedDateTime = new DateTime(2017, 2, 12, 9, 15, 23),

@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.Payments.DCFS.Infrastructure.Data;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data.Entities;
+using System;
 
 namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
 {
@@ -8,6 +9,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
     {
         private const string Source = "Reference.DataLockEvents";
         private const string Columns = "Id," +
+                                       "DataLockEventId," +
                                        "ProcessDateTime," +
                                        "IlrFileName," +
                                        "SubmittedDateTime," +
@@ -43,29 +45,21 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
             return Query<DataLockEventEntity>(SelectProviderLastSeenEvents, new { ukprn });
         }
 
-        public long WriteDataLockEvent(DataLockEventEntity @event)
+        public Guid WriteDataLockEvent(DataLockEventEntity @event)
         {
-            if (@event.Id < 1)
-            {
-                @event.Id = QuerySingle<int>("SELECT ISNULL(MAX(Id), 0) FROM DataLockEvents.DataLockEvents") + 1;
-
-                if (@event.Id == 1)
-                {
-                    @event.Id = QuerySingle<int>("SELECT ISNULL(MaxIdInDeds, 0) FROM Reference.IdentifierSeed WHERE IdentifierName = 'DataLockEvents'") + 1;
-                }
-            }
+            @event.DataLockEventId = Guid.NewGuid();
 
             Execute("INSERT INTO DataLockEvents.DataLockEvents " +
-                    "(Id, ProcessDateTime, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, " +
+                    "(DataLockEventId, ProcessDateTime, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, " +
                     "PriceEpisodeIdentifier, CommitmentId, EmployerAccountId, EventSource, HasErrors, IlrStartDate, IlrStandardCode, " +
                     "IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice, IlrPriceEffectiveDate) " +
                     "VALUES " +
-                    "(@Id, @ProcessDateTime, @IlrFileName, @SubmittedDateTime, @AcademicYear, @UKPRN, @ULN, @LearnRefNumber, @AimSeqNumber, " +
+                    "(@dataLockEventId,@ProcessDateTime, @IlrFileName, @SubmittedDateTime, @AcademicYear, @UKPRN, @ULN, @LearnRefNumber, @AimSeqNumber, " +
                     "@PriceEpisodeIdentifier, @CommitmentId, @EmployerAccountId, @EventSource, @HasErrors, @IlrStartDate, @IlrStandardCode, " +
                     "@IlrProgrammeType, @IlrFrameworkCode, @IlrPathwayCode, @IlrTrainingPrice, @IlrEndpointAssessorPrice, @IlrPriceEffectiveDate)",
                     @event);
 
-            return @event.Id;
+            return @event.DataLockEventId;
         }
     }
 }

@@ -34,6 +34,7 @@ namespace SFA.DAS.Provider.Events.DataLock
 
             if (providersResponse.HasAnyItems())
             {
+
                 foreach (var provider in providersResponse.Items)
                 {
                     _logger.Info($"Starting to process provider {provider.Ukprn}");
@@ -56,7 +57,6 @@ namespace SFA.DAS.Provider.Events.DataLock
                         if (EventsAreDifferent(current, lastSeen))
                         {
                             _logger.Info("Event has changed");
-                            current.Id = 0;
                             current.ProcessDateTime = DateTime.Now;
 
                             _mediator.Send(new WriteDataLockEventCommandRequest
