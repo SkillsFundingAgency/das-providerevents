@@ -39,7 +39,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         {
         }
 
-        public async Task<PageOfEntities<SubmissionEventEntity>> GetSubmissionEventsSinceId(int eventId, int page, int pageSize)
+        public async Task<PageOfEntities<SubmissionEventEntity>> GetSubmissionEventsSinceId(long eventId, int page, int pageSize)
         {
             var whereClause = eventId > 0 ? $"WHERE se.Id > {eventId}" : string.Empty;
             return await GetPageOfSubmissionEvents(whereClause, page, pageSize);
@@ -50,7 +50,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             return await GetPageOfSubmissionEvents($"WHERE SubmittedDateTime > '{time:yyyy-MM-dd HH:mm:ss}'", page, pageSize);
         }
 
-        public async Task<PageOfEntities<SubmissionEventEntity>> GetSubmissionEventsForProviderSinceId(long ukprn, int eventId, int page, int pageSize)
+        public async Task<PageOfEntities<SubmissionEventEntity>> GetSubmissionEventsForProviderSinceId(long ukprn, long eventId, int page, int pageSize)
         {
             var whereClause = eventId > 0
                 ? $"WHERE se.Id > {eventId} AND se.UKPRN = '{ukprn}'"

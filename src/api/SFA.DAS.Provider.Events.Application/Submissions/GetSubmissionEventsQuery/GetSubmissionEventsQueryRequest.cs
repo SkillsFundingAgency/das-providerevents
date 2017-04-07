@@ -5,7 +5,7 @@ namespace SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsQue
 {
     public class GetSubmissionEventsQueryRequest : IAsyncRequest<GetSubmissionEventsQueryResponse>
     {
-        public int SinceEventId { get; set; }
+        public long SinceEventId { get; set; }
         public DateTime? SinceTime { get; set; }
         public long Ukprn { get; set; }
         public int PageNumber { get; set; }
