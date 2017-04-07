@@ -69,7 +69,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Specs
 
             dedsConnection.Execute(command, new
             {
-                IlrFileName = $"ILR-{Ukprn}-{AcademicYear}-{FilePrepDate.AddDays(-1).ToString("yyyyMMdd-HHmmss")}-01",
+                IlrFileName = $"ILR-{Ukprn}-{AcademicYear}-{FilePrepDate.AddDays(-1).ToString("yyyyMMdd-HHmmss")}-01.xml",
                 FileDateTime = FilePrepDate.AddDays(-1),
                 SubmittedDateTime = SubmissionTime.AddDays(-1),
                 ComponentVersionNumber = 1,
@@ -94,7 +94,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Specs
 
             Assert.AreEqual(1, lastSeen.Length);
 
-            Assert.AreEqual($"ILR-{Ukprn}-{AcademicYear}-{FilePrepDate.AddDays(-1).ToString("yyyyMMdd-HHmmss")}-01", lastSeen[0].IlrFileName);
+            Assert.AreEqual($"ILR-{Ukprn}-{AcademicYear}-{FilePrepDate.AddDays(-1).ToString("yyyyMMdd-HHmmss")}-01.xml", lastSeen[0].IlrFileName);
             Assert.AreEqual(FilePrepDate.AddDays(-1), lastSeen[0].FileDateTime);
             Assert.AreEqual(SubmissionTime.AddDays(-1), lastSeen[0].SubmittedDateTime);
             Assert.AreEqual(1, lastSeen[0].ComponentVersionNumber);

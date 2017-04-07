@@ -11,7 +11,7 @@ CREATE FUNCTION Submissions.ExtractDateFromFileName
 RETURNS datetime
 AS
 BEGIN
-	DECLARE @FileDateStr varchar(8) = RIGHT(LEFT(@Filename,26),8)
+	DECLARE @FileDateStr varchar(8) = LEFT(RIGHT(@FileName,22),8)
 	IF(LEN(@FileDateStr)<8)
 		BEGIN
 			RETURN null

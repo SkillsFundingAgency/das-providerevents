@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using MediatR;
+using NLog;
 using SFA.DAS.Provider.Events.Submission.Application.GetCurrentVersions;
 using SFA.DAS.Provider.Events.Submission.Application.GetLastSeenVersions;
 using SFA.DAS.Provider.Events.Submission.Application.WriteLastSeenIlrDetails;
@@ -10,11 +11,13 @@ namespace SFA.DAS.Provider.Events.Submission
 {
     public class SubmissionEventsProcessor
     {
+        private readonly ILogger _logger;
         private readonly IMediator _mediator;
         private readonly string _yearOfCollection;
 
-        public SubmissionEventsProcessor(IMediator mediator, string yearOfCollection)
+        public SubmissionEventsProcessor(ILogger logger, IMediator mediator, string yearOfCollection)
         {
+            _logger = logger;
             _mediator = mediator;
             _yearOfCollection = yearOfCollection;
         }
@@ -25,11 +28,27 @@ namespace SFA.DAS.Provider.Events.Submission
 
         public virtual void Process()
         {
+            _logger.Info("Started submission events processor");
+
             var currentVersions = _mediator.Send(new GetCurrentVersionsQuery());
+            if (!currentVersions.IsValid)
+            {
+                _logger.Error(currentVersions.Exception, "Error getting current versions");
+                throw currentVersions.Exception;
+            }
+            if (!currentVersions.HasAnyItems())
+            {
+                _logger.Info("Did not find any current versions. Exiting");
+            }
+            _logger.Info($"Found {currentVersions.Items.Length} current versions");
+
             var lastSeenVersions = _mediator.Send(new GetLastSeenVersionsQuery());
+            _logger.Info($"Found {lastSeenVersions.Items.Length} previous versions");
 
             foreach (var currentIlr in currentVersions.Items)
             {
+                _logger.Info($"Starting to compare {currentIlr.PriceEpisodeIdentifier} for uln {currentIlr.Uln}");
+
                 var lastSeenIlr = lastSeenVersions.Items.SingleOrDefault(ilr => ilr.Ukprn == currentIlr.Ukprn
                                                                              && ilr.Uln == currentIlr.Uln
                                                                              && ilr.PriceEpisodeIdentifier == currentIlr.PriceEpisodeIdentifier);
@@ -37,16 +56,21 @@ namespace SFA.DAS.Provider.Events.Submission
                 var @event = CalculateDelta(currentIlr, lastSeenIlr);
                 if (@event != null)
                 {
+                    _logger.Info("Current version has changed");
                     _mediator.Send(new WriteSubmissionEventCommand
                     {
                         Event = @event
                     });
                 }
+                else
+                {
+                    _logger.Info("Current version has not changed");
+                }
 
                 _mediator.Send(new WriteLastSeenIlrDetailsCommand
                 {
                     LastSeenIlr = currentIlr
-                   
+
                 });
             }
         }
@@ -116,7 +140,7 @@ namespace SFA.DAS.Provider.Events.Submission
             {
                 (@event = @event ?? new SubmissionEvent()).EmployerReferenceNumber = currentIlr.EmployerReferenceNumber;
             }
-          
+
 
             // If there have been changes then set the standard properties
             if (@event != null)

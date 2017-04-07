@@ -1,6 +1,7 @@
 ﻿using System;
 using MediatR;
 using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Submission.Application.GetCurrentVersions;
 using SFA.DAS.Provider.Events.Submission.Application.GetLastSeenVersions;
@@ -14,13 +15,16 @@ namespace SFA.DAS.Provider.Events.Submission.UnitTests.SubmissionEventsProcessor
     {
         private Mock<IMediator> _mediator;
         private SubmissionEventsProcessor _processor;
+        private Mock<ILogger> _logger;
 
         [SetUp]
         public void Arrange()
         {
+            _logger = new Mock<ILogger>();
+
             _mediator = new Mock<IMediator>();
 
-            _processor = new SubmissionEventsProcessor(_mediator.Object,"1617");
+            _processor = new SubmissionEventsProcessor(_logger.Object, _mediator.Object,"1617");
         }
 
         [Test]
@@ -29,7 +33,7 @@ namespace SFA.DAS.Provider.Events.Submission.UnitTests.SubmissionEventsProcessor
             // Arrange
             var ilrForFirstSubmission = new IlrDetails
             {
-                IlrFileName = "ILR-123456-1617-20170101-000000-01",
+                IlrFileName = "ILR-123456-1617-20170101-000000-01.xml",
                 FileDateTime = new DateTime(2017, 1, 1),
                 SubmittedDateTime = new DateTime(2017, 1, 1, 12, 36, 23),
                 Ukprn = 123456,
@@ -46,7 +50,7 @@ namespace SFA.DAS.Provider.Events.Submission.UnitTests.SubmissionEventsProcessor
             };
             var updatedSubmissionOriginal = new IlrDetails
             {
-                IlrFileName = "ILR-123456-1617-20170101-000000-01",
+                IlrFileName = "ILR-123456-1617-20170101-000000-01.xml",
                 FileDateTime = new DateTime(2017, 1, 1),
                 SubmittedDateTime = new DateTime(2017, 1, 1, 12, 36, 23),
                 Ukprn = 654789,
@@ -63,7 +67,7 @@ namespace SFA.DAS.Provider.Events.Submission.UnitTests.SubmissionEventsProcessor
             };
             var updatedSubmissionChanged = new IlrDetails
             {
-                IlrFileName = "ILR-123456-1617-20170101-000000-01",
+                IlrFileName = "ILR-123456-1617-20170101-000000-01.xml",
                 FileDateTime = new DateTime(2017, 1, 1),
                 SubmittedDateTime = new DateTime(2017, 1, 1, 12, 36, 23),
                 Ukprn = 654789,
@@ -154,7 +158,7 @@ namespace SFA.DAS.Provider.Events.Submission.UnitTests.SubmissionEventsProcessor
             // Arrange
             var ilrForFirstSubmission = new IlrDetails
             {
-                IlrFileName = "ILR-123456-1617-20170101-000000-01",
+                IlrFileName = "ILR-123456-1617-20170101-000000-01.xml",
                 FileDateTime = new DateTime(2017, 1, 1),
                 SubmittedDateTime = new DateTime(2017, 1, 1, 12, 36, 23),
                 Ukprn = 123456,
