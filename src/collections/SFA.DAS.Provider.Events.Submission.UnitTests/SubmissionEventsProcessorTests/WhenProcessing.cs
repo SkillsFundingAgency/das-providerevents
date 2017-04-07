@@ -1,6 +1,7 @@
 ﻿using System;
 using MediatR;
 using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Submission.Application.GetCurrentVersions;
 using SFA.DAS.Provider.Events.Submission.Application.GetLastSeenVersions;
@@ -14,13 +15,16 @@ namespace SFA.DAS.Provider.Events.Submission.UnitTests.SubmissionEventsProcessor
     {
         private Mock<IMediator> _mediator;
         private SubmissionEventsProcessor _processor;
+        private Mock<ILogger> _logger;
 
         [SetUp]
         public void Arrange()
         {
+            _logger = new Mock<ILogger>();
+
             _mediator = new Mock<IMediator>();
 
-            _processor = new SubmissionEventsProcessor(_mediator.Object,"1617");
+            _processor = new SubmissionEventsProcessor(_logger.Object, _mediator.Object,"1617");
         }
 
         [Test]
