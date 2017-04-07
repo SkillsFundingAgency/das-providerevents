@@ -349,7 +349,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                 + "PriceEpisodeIdentifier, CommitmentId, EmployerAccountId, EventSource, HasErrors, IlrStartDate, IlrStandardCode, "
                 + "IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice, IlrPriceEffectiveDate) "
                 + "VALUES "
-                + $"(1, @processed, 'ILR-{ukprn}-1617-20161013-092500-98', @submittedDateTime, '1617', @ukprn, @uln, @learnerRefNumber, @aimSequenceNumber, "
+                + $"(1, @processed, 'ILR-{ukprn}-1617-20161013-092500-98.xml', @submittedDateTime, '1617', @ukprn, @uln, @learnerRefNumber, @aimSequenceNumber, "
                 + "@priceEpisodeIdentifier, @commitmentId, 123, 1, @hasErrors, @startDate, @standardCode, @programmeType, @frameworkCode, @pathwayCode, "
                 + "@trainingCost, @endpointCost, @priceEffectiveDate)",
                 new

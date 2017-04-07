@@ -110,7 +110,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
                     new FileDetailsEntity
                     {
                         Ukprn = ukprn,
-                        FileName = $"ILR-{ukprn}-{academicYear}-{prepDateTime.ToString("yyyyMMdd-HHmmss")}-01",
+                        FileName = $"ILR-{ukprn}-{academicYear}-{prepDateTime.ToString("yyyyMMdd-HHmmss")}-01.xml",
                         SubmittedTime = DateTime.Now.AddMinutes(-1)
                     }
                 },
@@ -245,7 +245,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
         }
         private static DateTime ExtractPrepDateFromFileName(string fileName)
         {
-            var match = Regex.Match(fileName, @"^ILR\-[0-9]{8,12}\-[0-9]{4}\-([0-9]{4})([0-9]{2})([0-9]{2})\-([0-9]{2})([0-9]{2})([0-9]{2})\-[0-9]{2}$");
+            var match = Regex.Match(fileName, @"^ILR\-[0-9]{8,12}\-[0-9]{4}\-([0-9]{4})([0-9]{2})([0-9]{2})\-([0-9]{2})([0-9]{2})([0-9]{2})\-[0-9]{2}.xml$");
             if (!match.Success)
             {
                 throw new ArgumentOutOfRangeException($"{nameof(fileName)} is not in a recognised format. {nameof(fileName)} = '{fileName}'");

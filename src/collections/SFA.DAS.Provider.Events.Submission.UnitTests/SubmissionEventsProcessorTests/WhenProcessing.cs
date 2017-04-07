@@ -33,7 +33,7 @@ namespace SFA.DAS.Provider.Events.Submission.UnitTests.SubmissionEventsProcessor
             // Arrange
             var ilrForFirstSubmission = new IlrDetails
             {
-                IlrFileName = "ILR-123456-1617-20170101-000000-01",
+                IlrFileName = "ILR-123456-1617-20170101-000000-01.xml",
                 FileDateTime = new DateTime(2017, 1, 1),
                 SubmittedDateTime = new DateTime(2017, 1, 1, 12, 36, 23),
                 Ukprn = 123456,
@@ -50,7 +50,7 @@ namespace SFA.DAS.Provider.Events.Submission.UnitTests.SubmissionEventsProcessor
             };
             var updatedSubmissionOriginal = new IlrDetails
             {
-                IlrFileName = "ILR-123456-1617-20170101-000000-01",
+                IlrFileName = "ILR-123456-1617-20170101-000000-01.xml",
                 FileDateTime = new DateTime(2017, 1, 1),
                 SubmittedDateTime = new DateTime(2017, 1, 1, 12, 36, 23),
                 Ukprn = 654789,
@@ -67,7 +67,7 @@ namespace SFA.DAS.Provider.Events.Submission.UnitTests.SubmissionEventsProcessor
             };
             var updatedSubmissionChanged = new IlrDetails
             {
-                IlrFileName = "ILR-123456-1617-20170101-000000-01",
+                IlrFileName = "ILR-123456-1617-20170101-000000-01.xml",
                 FileDateTime = new DateTime(2017, 1, 1),
                 SubmittedDateTime = new DateTime(2017, 1, 1, 12, 36, 23),
                 Ukprn = 654789,
@@ -158,7 +158,7 @@ namespace SFA.DAS.Provider.Events.Submission.UnitTests.SubmissionEventsProcessor
             // Arrange
             var ilrForFirstSubmission = new IlrDetails
             {
-                IlrFileName = "ILR-123456-1617-20170101-000000-01",
+                IlrFileName = "ILR-123456-1617-20170101-000000-01.xml",
                 FileDateTime = new DateTime(2017, 1, 1),
                 SubmittedDateTime = new DateTime(2017, 1, 1, 12, 36, 23),
                 Ukprn = 123456,
