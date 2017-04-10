@@ -37,7 +37,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                                            + "SystemDescription";
 
         private const string PeriodsSource = "DataLock.DataLockEventPeriods pe JOIN DataLock.DataLockEvents ev " +
-                                            " ON ev.DataLockEventId = pv.DataLockEventId ";
+                                            " ON ev.DataLockEventId = pe.DataLockEventId ";
         private const string PeriodsColumns = "CollectionPeriodName AS CollectionPeriodId, "
                                               + "CollectionPeriodMonth, "
                                               + "CollectionPeriodYear, "
