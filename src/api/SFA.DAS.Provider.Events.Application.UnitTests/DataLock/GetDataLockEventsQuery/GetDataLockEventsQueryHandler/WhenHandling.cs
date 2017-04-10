@@ -30,7 +30,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
 
             _dataLockEventsRepository = new Mock<IDataLockRepository>();
             _dataLockEventsRepository
-                .Setup(r => r.GetDataLockEventsSinceId(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+                .Setup(r => r.GetDataLockEventsSinceId(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(new PageOfEntities<DataLockEventEntity>
                 {
                     PageNumber = 1,
@@ -39,6 +39,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
                     {
                         new DataLockEventEntity { Id = 1, HasErrors = true }
                     }
+                    
                 });
 
             _dataLockEventsRepository
@@ -54,7 +55,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
                 });
 
             _dataLockEventsRepository
-                .Setup(r => r.GetDataLockEventsForAccountSinceId(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+                .Setup(r => r.GetDataLockEventsForAccountSinceId(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(new PageOfEntities<DataLockEventEntity>
                 {
                     PageNumber = 3,
@@ -78,7 +79,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
                 });
 
             _dataLockEventsRepository
-                .Setup(r => r.GetDataLockEventsForProviderSinceId(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+                .Setup(r => r.GetDataLockEventsForProviderSinceId(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(new PageOfEntities<DataLockEventEntity>
                 {
                     PageNumber = 5,
@@ -102,7 +103,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
                 });
 
             _dataLockEventsRepository
-                .Setup(r => r.GetDataLockEventsForAccountAndProviderSinceId(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+                .Setup(r => r.GetDataLockEventsForAccountAndProviderSinceId(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(new PageOfEntities<DataLockEventEntity>
                 {
                     PageNumber = 7,
@@ -209,7 +210,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
 
         [TestCase(0)]
         [TestCase(1)]
-        public async Task ThenItShouldReturnResultsBasedOnEmployerAccountAndUkprnAndEventIdIfFilterSpecified(int eventId)
+        public async Task ThenItShouldReturnResultsBasedOnEmployerAccountAndUkprnAndEventIdIfFilterSpecified(long eventId)
         {
             // Arrange
             _request.EmployerAccountId = "Acc";
@@ -347,7 +348,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
         public async Task ThenItShouldReturnInvalidResponseIfExceptionOccurs()
         {
             // Arrange
-            _dataLockEventsRepository.Setup(r => r.GetDataLockEventsSinceId(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+            _dataLockEventsRepository.Setup(r => r.GetDataLockEventsSinceId(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
                 .ThrowsAsync(new Exception("Test"));
 
             // Act
