@@ -15,7 +15,8 @@ GO
 
 CREATE TABLE [DataLock].[DataLockEvents]
 (
-	Id							bigint			PRIMARY KEY,
+	Id							bigint			PRIMARY KEY IDENTITY(1,1),
+	DataLockEventId				uniqueidentifier			NOT NULL,
 	ProcessDateTime				datetime		NOT NULL,
 	IlrFileName					nvarchar(50)	NOT NULL,
 	SubmittedDateTime		    datetime		NOT NULL,
@@ -37,6 +38,7 @@ CREATE TABLE [DataLock].[DataLockEvents]
 	IlrTrainingPrice			decimal(12,5)	NULL,
 	IlrEndpointAssessorPrice	decimal(12,5)	NULL,
 	IlrPriceEffectiveDate		date			NULL
+	
 )
 GO
 
@@ -51,7 +53,7 @@ GO
 
 CREATE TABLE [DataLock].[DataLockEventPeriods]
 (
-	DataLockEventId			bigint			NOT NULL,
+	DataLockEventId			uniqueidentifier			NOT NULL,
 	CollectionPeriodName	varchar(8)		NOT NULL,
 	CollectionPeriodMonth	int				NOT NULL,
 	CollectionPeriodYear	int				NOT NULL,
@@ -72,7 +74,7 @@ GO
 
 CREATE TABLE [DataLock].[DataLockEventCommitmentVersions]
 (
-	DataLockEventId				bigint			NOT NULL,
+	DataLockEventId				uniqueidentifier			NOT NULL,
 	CommitmentVersion			bigint			NOT NULL,
 	CommitmentStartDate			date			NOT NULL,
 	CommitmentStandardCode		bigint			NULL,
@@ -95,7 +97,7 @@ GO
 
 CREATE TABLE [DataLock].[DataLockEventErrors]
 (
-	DataLockEventId			bigint			NOT NULL,
+	DataLockEventId			uniqueidentifier			NOT NULL,
 	ErrorCode				varchar(15)		NOT NULL,
 	SystemDescription		nvarchar(255)	NOT NULL,
 	PRIMARY KEY (DataLockEventId, ErrorCode)

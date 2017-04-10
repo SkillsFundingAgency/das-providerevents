@@ -96,6 +96,10 @@
           <Source>IlrPriceEffectiveDate</Source>
           <Destination>IlrPriceEffectiveDate</Destination>
         </ColumnMapping>
+        <ColumnMapping>
+          <Source>DataLockEventId</Source>
+          <Destination>DataLockEventId</Destination>
+        </ColumnMapping>
       </ColumnMappings>
     </TableMapping>
     <TableMapping>

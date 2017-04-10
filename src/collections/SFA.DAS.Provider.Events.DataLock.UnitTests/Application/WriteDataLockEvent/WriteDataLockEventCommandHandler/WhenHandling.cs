@@ -22,10 +22,13 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
         private DataLockEventPeriod _eventPeriod;
         private DataLockEventCommitmentVersion _eventCommitmentVersion;
         private DataLockEventError _eventError;
+        private Guid EventId;
 
         [SetUp]
         public void Arrange()
         {
+            EventId = Guid.NewGuid();
+
             _eventPeriod = new DataLockEventPeriod
             {
                 CollectionPeriod = new CollectionPeriod
@@ -56,6 +59,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
 
             _event = new DataLockEvent
             {
+                DataLockEventId = EventId,
                 IlrFileName = "ILR-1617-10000534-75.xml",
                 SubmittedDateTime = new DateTime(2017, 2, 14, 9, 15, 23),
                 AcademicYear = "1617",
@@ -92,7 +96,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
             _dataLockEventErrorRepository = new Mock<IDataLockEventErrorRepository>();
 
             _dataLockEventRepository.Setup(r => r.WriteDataLockEvent(It.IsAny<DataLockEventEntity>()))
-                .Returns(15);
+                .Returns(EventId);
 
             _handler = new DataLock.Application.WriteDataLockEvent.WriteDataLockEventCommandHandler(_dataLockEventRepository.Object,
                 _dataLockEventPeriodRepository.Object,
@@ -186,14 +190,14 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
 
         private bool ErrorsMatch(DataLockEventErrorEntity entity, DataLockEventError error)
         {
-            return entity.DataLockEventId == 15
+            return entity.DataLockEventId == EventId
                    && entity.ErrorCode == error.ErrorCode
                    && entity.SystemDescription == error.SystemDescription;
         }
 
         private bool PeriodsMatch(DataLockEventPeriodEntity entity, DataLockEventPeriod period)
         {
-            return entity.DataLockEventId == 15
+            return entity.DataLockEventId == EventId
                    && entity.CollectionPeriodName == period.CollectionPeriod.Name
                    && entity.CollectionPeriodMonth == period.CollectionPeriod.Month
                    && entity.CollectionPeriodYear == period.CollectionPeriod.Year
@@ -204,7 +208,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
 
         private bool CommitmentVersionsMatch(DataLockEventCommitmentVersionEntity entity, DataLockEventCommitmentVersion version)
         {
-            return entity.DataLockEventId == 15
+            return entity.DataLockEventId == EventId
                    && entity.CommitmentVersion == version.CommitmentVersion
                    && entity.CommitmentStartDate == version.CommitmentStartDate
                    && entity.CommitmentStandardCode == version.CommitmentStandardCode

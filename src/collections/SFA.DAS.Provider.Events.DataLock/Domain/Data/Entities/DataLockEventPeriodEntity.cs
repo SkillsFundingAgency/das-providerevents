@@ -1,8 +1,10 @@
-﻿namespace SFA.DAS.Provider.Events.DataLock.Domain.Data.Entities
+﻿using System;
+
+namespace SFA.DAS.Provider.Events.DataLock.Domain.Data.Entities
 {
     public class DataLockEventPeriodEntity
     {
-        public long DataLockEventId { get; set; }
+        public Guid DataLockEventId { get; set; }
         public string CollectionPeriodName { get; set; }
         public int CollectionPeriodMonth { get; set; }
         public int CollectionPeriodYear { get; set; }

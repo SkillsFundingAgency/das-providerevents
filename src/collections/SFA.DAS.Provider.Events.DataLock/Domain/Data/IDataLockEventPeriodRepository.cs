@@ -1,10 +1,11 @@
 ﻿using SFA.DAS.Provider.Events.DataLock.Domain.Data.Entities;
+using System;
 
 namespace SFA.DAS.Provider.Events.DataLock.Domain.Data
 {
     public interface IDataLockEventPeriodRepository
     {
-        DataLockEventPeriodEntity[] GetDataLockEventPeriods(long eventId);
+        DataLockEventPeriodEntity[] GetDataLockEventPeriods(Guid eventId);
 
         void WriteDataLockEventPeriod(DataLockEventPeriodEntity period);
     }

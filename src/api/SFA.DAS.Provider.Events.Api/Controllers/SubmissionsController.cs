@@ -29,7 +29,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
 
         [Route("", Name = "SubmissionEventsList")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetSubmissionEvents(int sinceEventId = 0, DateTime? sinceTime = null, long ukprn = 0, int pageNumber = 1)
+        public async Task<IHttpActionResult> GetSubmissionEvents(long sinceEventId = 0, DateTime? sinceTime = null, long ukprn = 0, int pageNumber = 1)
         {
             try
             {

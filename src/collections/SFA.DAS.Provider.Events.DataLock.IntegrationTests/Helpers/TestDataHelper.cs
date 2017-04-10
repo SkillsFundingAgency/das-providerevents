@@ -343,17 +343,19 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
             }
 
             var priceEpisodeIdentifier = $"99-99-99-{startDate.ToString("yyyy-MM-dd")}";
+            var eventId = Guid.NewGuid();
 
             Execute("INSERT INTO DataLock.DataLockEvents "
-                + "(Id, ProcessDateTime, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, "
+                + "(DataLockEventId,ProcessDateTime, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, "
                 + "PriceEpisodeIdentifier, CommitmentId, EmployerAccountId, EventSource, HasErrors, IlrStartDate, IlrStandardCode, "
                 + "IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice, IlrPriceEffectiveDate) "
                 + "VALUES "
-                + $"(1, @processed, 'ILR-{ukprn}-1617-20161013-092500-98.xml', @submittedDateTime, '1617', @ukprn, @uln, @learnerRefNumber, @aimSequenceNumber, "
+                + $"(@eventId, @processed, 'ILR-{ukprn}-1617-20161013-092500-98.xml', @submittedDateTime, '1617', @ukprn, @uln, @learnerRefNumber, @aimSequenceNumber, "
                 + "@priceEpisodeIdentifier, @commitmentId, 123, 1, @hasErrors, @startDate, @standardCode, @programmeType, @frameworkCode, @pathwayCode, "
                 + "@trainingCost, @endpointCost, @priceEffectiveDate)",
                 new
                 {
+                    eventId,
                     processed = DateTime.Today,
                     submittedDateTime = DateTime.Now.AddDays(-1),
                     ukprn,
@@ -380,7 +382,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
             {
                 foreach (var traxType in Enum.GetValues(typeof(TransactionType)))
                 {
-                    AddDataLockEventPeriod(period, (int)traxType, passedDataLock);
+                    AddDataLockEventPeriod(period, (int)traxType, passedDataLock, eventId);
                 }
 
                 censusDate = censusDate.AddMonths(1).LastDayOfMonth();
@@ -391,7 +393,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
             {
                 foreach (var traxType in Enum.GetValues(typeof(TransactionType)))
                 {
-                    AddDataLockEventPeriod(period, (int)traxType, passedDataLock);
+                    AddDataLockEventPeriod(period, (int)traxType, passedDataLock, eventId);
                 }
             }
 
@@ -400,28 +402,29 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                 Execute("INSERT INTO DataLock.DataLockEventErrors "
                       + "(DataLockEventId, ErrorCode, SystemDescription) "
                       + "VALUES "
-                      + "(1, 'DLOCK_07', 'No matching record found in the employer digital account for the negotiated cost of training')", inTransient: false);
+                      + "(@eventId, 'DLOCK_07', 'No matching record found in the employer digital account for the negotiated cost of training')",new { eventId }, inTransient: false);
             }
 
             Execute("INSERT INTO DataLock.DataLockEventCommitmentVersions "
                 + "(DataLockEventId, CommitmentVersion, CommitmentStartDate, CommitmentStandardCode, CommitmentProgrammeType, "
                 + "CommitmentFrameworkCode, CommitmentPathwayCode, CommitmentNegotiatedPrice, CommitmentEffectiveDate) "
                 + "VALUES "
-                + "(1, 1, @startDate, @standardCode, @programmeType, @frameworkCode, @pathwayCode, @agreedCost, @startDate)",
-                new { startDate, standardCode, programmeType, frameworkCode, pathwayCode, agreedCost }, false);
+                + "(@eventId, 1, @startDate, @standardCode, @programmeType, @frameworkCode, @pathwayCode, @agreedCost, @startDate)",
+                new { startDate, standardCode, programmeType, frameworkCode, pathwayCode, agreedCost, eventId }, false);
         }
 
         private static void AddDataLockEventPeriod(int period,
                                                 int transactionType,
-                                                bool payable)
+                                                bool payable,
+                                                Guid dataLockEventId)
         {
             var collectionPeriod = GetCollectionPeriod(period);
 
             Execute("INSERT INTO DataLock.DataLockEventPeriods "
                 + "(DataLockEventId, CollectionPeriodName, CollectionPeriodMonth, CollectionPeriodYear, CommitmentVersion, IsPayable, TransactionType) "
                 + "VALUES "
-                + "(1, @name, @month, @year, 1, @payable, @transactionType)",
-                new { name = collectionPeriod.Name, month = collectionPeriod.Month, year = collectionPeriod.Year, payable, transactionType }, false);
+                + "(@dataLockEventId, @name, @month, @year, 1, @payable, @transactionType)",
+                new { name = collectionPeriod.Name, month = collectionPeriod.Month, year = collectionPeriod.Year, payable, transactionType, dataLockEventId }, false);
         }
 
         private static CollectionPeriod GetCollectionPeriod(int period)
@@ -502,17 +505,17 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
             return Query<DataLockEvent>("SELECT * FROM DataLockEvents.DataLockEvents", inSubmission: inSubmission);
         }
 
-        internal static DataLockEventError[] GetAllEventErrors(long eventId, bool inSubmission = true)
+        internal static DataLockEventError[] GetAllEventErrors(Guid eventId, bool inSubmission = true)
         {
             return Query<DataLockEventError>("SELECT * FROM DataLockEvents.DataLockEventErrors WHERE DataLockEventId = @eventId", new { eventId }, inSubmission);
         }
 
-        internal static DataLockEventPeriod[] GetAllEventPeriods(long eventId, bool inSubmission = true)
+        internal static DataLockEventPeriod[] GetAllEventPeriods(Guid eventId, bool inSubmission = true)
         {
             return Query<DataLockEventPeriod>("SELECT * FROM DataLockEvents.DataLockEventPeriods WHERE DataLockEventId = @eventId", new { eventId }, inSubmission);
         }
 
-        internal static DataLockEventCommitmentVersion[] GetAllEventCommitmentVersions(long eventId, bool inSubmission = true)
+        internal static DataLockEventCommitmentVersion[] GetAllEventCommitmentVersions(Guid eventId, bool inSubmission = true)
         {
             return Query<DataLockEventCommitmentVersion>("SELECT * FROM DataLockEvents.DataLockEventCommitmentVersions WHERE DataLockEventId = @eventId", new { eventId }, inSubmission);
         }

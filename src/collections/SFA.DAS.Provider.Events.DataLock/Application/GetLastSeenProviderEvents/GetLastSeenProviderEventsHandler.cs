@@ -36,7 +36,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenProviderEvents
                     : lastSeenEventEntities
                         .Select(e => new DataLockEvent
                         {
-                            Id = e.Id,
+                            
                             ProcessDateTime = e.ProcessDateTime,
                             IlrFileName = e.IlrFileName,
                             SubmittedDateTime = e.SubmittedDateTime,
@@ -58,9 +58,9 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenProviderEvents
                             IlrTrainingPrice = e.IlrTrainingPrice,
                             IlrEndpointAssessorPrice = e.IlrEndpointAssessorPrice,
                             IlrPriceEffectiveDate = e.IlrPriceEffectiveDate,
-                            Errors = GetEventErrors(e.Id),
-                            Periods = GetEventPeriods(e.Id),
-                            CommitmentVersions = GetEventCommitmentVersions(e.Id)
+                            Errors = GetEventErrors(e.DataLockEventId),
+                            Periods = GetEventPeriods(e.DataLockEventId),
+                            CommitmentVersions = GetEventCommitmentVersions(e.DataLockEventId)
                         })
                         .ToArray();
 
@@ -80,7 +80,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenProviderEvents
             }
         }
 
-        private DataLockEventError[] GetEventErrors(long eventId)
+        private DataLockEventError[] GetEventErrors(Guid eventId)
         {
             var errorEnities = _dataLockEventErrorRepository.GetDatalockEventErrors(eventId);
 
@@ -96,7 +96,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenProviderEvents
                     .ToArray();
         }
 
-        private DataLockEventPeriod[] GetEventPeriods(long eventId)
+        private DataLockEventPeriod[] GetEventPeriods(Guid eventId)
         {
             var periodEntities = _dataLockEventPeriodRepository.GetDataLockEventPeriods(eventId);
 
@@ -119,7 +119,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenProviderEvents
                     .ToArray();
         }
 
-        private DataLockEventCommitmentVersion[] GetEventCommitmentVersions(long eventId)
+        private DataLockEventCommitmentVersion[] GetEventCommitmentVersions(Guid eventId)
         {
             var commitmentVersionEntities = _dataLockEventCommitmentVersionRepository.GetDataLockEventCommitmentVersions(eventId);
 

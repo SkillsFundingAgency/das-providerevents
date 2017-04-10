@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.Payments.DCFS.Infrastructure.Data;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data.Entities;
+using System;
 
 namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
 {
@@ -17,7 +18,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
         {
         }
 
-        public DataLockEventErrorEntity[] GetDatalockEventErrors(long eventId)
+        public DataLockEventErrorEntity[] GetDatalockEventErrors(Guid eventId)
         {
             return Query<DataLockEventErrorEntity>(SelectEventErrors, new { eventId });
         }

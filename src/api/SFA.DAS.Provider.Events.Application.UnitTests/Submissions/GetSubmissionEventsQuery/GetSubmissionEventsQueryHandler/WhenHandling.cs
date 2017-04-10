@@ -28,7 +28,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetSubmissio
 
             _submissionEventsRepository = new Mock<ISubmissionEventsRepository>();
             _submissionEventsRepository
-                .Setup(r => r.GetSubmissionEventsSinceId(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+                .Setup(r => r.GetSubmissionEventsSinceId(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(new PageOfEntities<SubmissionEventEntity>
                 {
                     PageNumber = 1,
@@ -50,7 +50,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetSubmissio
                     }
                 });
             _submissionEventsRepository
-                .Setup(r => r.GetSubmissionEventsForProviderSinceId(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+                .Setup(r => r.GetSubmissionEventsForProviderSinceId(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(new PageOfEntities<SubmissionEventEntity>
                 {
                     PageNumber = 3,
@@ -161,7 +161,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetSubmissio
 
         [TestCase(0)]
         [TestCase(1)]
-        public async Task ThenItShouldReturnResultsBasedOnUkprnAndEventIdIfBothFiltersArePresentAndTimeFilterNotSpecified(int eventId)
+        public async Task ThenItShouldReturnResultsBasedOnUkprnAndEventIdIfBothFiltersArePresentAndTimeFilterNotSpecified(long eventId)
         {
             // Arrange
             _request.Ukprn = 10000534;
@@ -176,7 +176,6 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetSubmissio
             Assert.AreEqual(3, actual.Result.PageNumber);
             Assert.AreEqual(4, actual.Result.TotalNumberOfPages);
             Assert.AreEqual(1, actual.Result.Items.Length);
-            Assert.AreEqual(3, actual.Result.Items[0].Id);
         }
 
         [Test]
@@ -202,7 +201,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetSubmissio
         public async Task ThenItShouldReturnInvalidResponseIfExceptionOccurs()
         {
             // Arrange
-            _submissionEventsRepository.Setup(r => r.GetSubmissionEventsSinceId(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
+            _submissionEventsRepository.Setup(r => r.GetSubmissionEventsSinceId(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
                 .ThrowsAsync(new Exception("Test"));
 
             // Act

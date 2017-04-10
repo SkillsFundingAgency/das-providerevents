@@ -29,7 +29,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
 
         [Route("", Name = "DataLockEventsList")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetDataLockEvents(int sinceEventId = 0, DateTime? sinceTime = null, string employerAccountId = null, long ukprn = 0, int pageNumber = 1)
+        public async Task<IHttpActionResult> GetDataLockEvents(long sinceEventId = 0, DateTime? sinceTime = null, string employerAccountId = null, long ukprn = 0, int pageNumber = 1)
         {
             try
             {

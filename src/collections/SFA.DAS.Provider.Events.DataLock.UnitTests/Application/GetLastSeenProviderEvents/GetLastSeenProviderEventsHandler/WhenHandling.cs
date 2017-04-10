@@ -46,13 +46,16 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
         private DataLockEventPeriodEntity _eventPeriod;
         private DataLockEventCommitmentVersionEntity _eventCommitmentVersion;
         private DataLockEventErrorEntity _eventError;
+        private Guid EventId;
+
 
         [SetUp]
         public void Arrange()
         {
+            EventId = Guid.NewGuid();
             _event = new DataLockEventEntity
             {
-                Id = 1,
+                DataLockEventId = EventId,
                 ProcessDateTime = DateTime.Now,
                 IlrFileName = "ILR-1617-10000534.xml",
                 SubmittedDateTime = new DateTime(2017, 2, 14, 9, 15, 23),
@@ -77,7 +80,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
 
             _eventPeriod = new DataLockEventPeriodEntity
             {
-                DataLockEventId = 1,
+                DataLockEventId = EventId,
                 CollectionPeriodName = "1617-R09",
                 CollectionPeriodMonth = 4,
                 CollectionPeriodYear = 2017,
@@ -88,7 +91,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
 
             _eventCommitmentVersion = new DataLockEventCommitmentVersionEntity
             {
-                DataLockEventId = 1,
+                DataLockEventId = EventId,
                 CommitmentVersion = 1,
                 CommitmentStartDate = new DateTime(2017, 5, 1),
                 CommitmentProgrammeType = 20,
@@ -100,7 +103,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
 
             _eventError = new DataLockEventErrorEntity
             {
-                DataLockEventId = 1,
+                DataLockEventId = EventId,
                 ErrorCode = "DLOCK_07",
                 SystemDescription = "DLOCK_07"
             };
@@ -116,19 +119,19 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
                     _event
                 });
 
-            _dataLockEventPeriodRepository.Setup(r => r.GetDataLockEventPeriods(1))
+            _dataLockEventPeriodRepository.Setup(r => r.GetDataLockEventPeriods(EventId))
                 .Returns(new[]
                 {
                     _eventPeriod
                 });
 
-            _dataLockEventCommitmentVersionRepository.Setup(r => r.GetDataLockEventCommitmentVersions(1))
+            _dataLockEventCommitmentVersionRepository.Setup(r => r.GetDataLockEventCommitmentVersions(EventId))
                 .Returns(new[]
                 {
                     _eventCommitmentVersion
                 });
 
-            _dataLockEventErrorRepository.Setup(r => r.GetDatalockEventErrors(1))
+            _dataLockEventErrorRepository.Setup(r => r.GetDatalockEventErrors(EventId))
                 .Returns(new[]
                 {
                     _eventError
@@ -177,7 +180,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
         public void ThenItShouldReturnEventWithNoPeriodsIfEmptyArrayReturnedFromPeriodsRepository(DataLockEventPeriodEntity[] entities)
         {
             // Arrange
-            _dataLockEventPeriodRepository.Setup(r => r.GetDataLockEventPeriods(1))
+            _dataLockEventPeriodRepository.Setup(r => r.GetDataLockEventPeriods(EventId))
                 .Returns(entities);
 
             // Act
@@ -196,7 +199,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
         public void ThenItShouldReturnEventWithNoCommitmentVersionsIfEmptyArrayReturnedFromCommitmentsRepository(DataLockEventCommitmentVersionEntity[] entities)
         {
             // Arrange
-            _dataLockEventCommitmentVersionRepository.Setup(r => r.GetDataLockEventCommitmentVersions(1))
+            _dataLockEventCommitmentVersionRepository.Setup(r => r.GetDataLockEventCommitmentVersions(EventId))
                 .Returns(entities);
 
             // Act
@@ -215,7 +218,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
         public void ThenItShouldReturnEventWithNoErrorsIfEmptyArrayReturnedFromErrorsRepository(DataLockEventErrorEntity[] entities)
         {
             // Arrange
-            _dataLockEventErrorRepository.Setup(r => r.GetDatalockEventErrors(1))
+            _dataLockEventErrorRepository.Setup(r => r.GetDatalockEventErrors(EventId))
                 .Returns(entities);
 
             // Act
@@ -250,7 +253,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
         public void ThenItShouldReturnInvalidResponseIfEventPeriodsRepositoryErrors()
         {
             // Arrange
-            _dataLockEventPeriodRepository.Setup(r => r.GetDataLockEventPeriods(1))
+            _dataLockEventPeriodRepository.Setup(r => r.GetDataLockEventPeriods(EventId))
                 .Throws(new Exception("Test"));
 
             // Act
@@ -267,7 +270,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
         public void ThenItShouldReturnInvalidResponseIfEventCommitmentVersionsRepositoryErrors()
         {
             // Arrange
-            _dataLockEventCommitmentVersionRepository.Setup(r => r.GetDataLockEventCommitmentVersions(1))
+            _dataLockEventCommitmentVersionRepository.Setup(r => r.GetDataLockEventCommitmentVersions(EventId))
                 .Throws(new Exception("Test"));
 
             // Act
@@ -284,7 +287,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
         public void ThenItShouldReturnInvalidResponseIfEventErrorsRepositoryErrors()
         {
             // Arrange
-            _dataLockEventErrorRepository.Setup(r => r.GetDatalockEventErrors(1))
+            _dataLockEventErrorRepository.Setup(r => r.GetDatalockEventErrors(EventId))
                 .Throws(new Exception("Test"));
 
             // Act
@@ -299,8 +302,8 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
 
         private bool EventMatches(DataLockEvent @event)
         {
-            return @event.Id == _event.Id
-                   && @event.ProcessDateTime == _event.ProcessDateTime
+            return 
+                    @event.ProcessDateTime == _event.ProcessDateTime
                    && @event.IlrFileName == _event.IlrFileName
                    && @event.SubmittedDateTime == _event.SubmittedDateTime
                    && @event.AcademicYear == _event.AcademicYear
