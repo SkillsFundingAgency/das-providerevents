@@ -6,7 +6,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
 {
     public class DcfsPriceEpisodePeriodMatchRepository : DcfsRepository, IPriceEpisodePeriodMatchRepository
     {
-        private const string Source = "DataLock.PriceEpisodePeriodMatch";
+        private const string Source = "DataLockEvents.vw_PriceEpisodePeriodMatch";
         private const string Columns = "Ukprn," +
                                        "PriceEpisodeIdentifier," +
                                        "LearnRefnumber," +

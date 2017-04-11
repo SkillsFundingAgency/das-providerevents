@@ -41,3 +41,32 @@ FROM Reference.DataLockPriceEpisode dpe
 	JOIN Reference.Providers p 
 		ON dpe.Ukprn = p.Ukprn
 GO
+
+--------------------------------------------------------------------------------------
+-- vw_PriceEpisodePeriodMatch
+--------------------------------------------------------------------------------------
+IF EXISTS(SELECT [object_id] FROM sys.views WHERE [name]='vw_PriceEpisodePeriodMatch' AND [schema_id] = SCHEMA_ID('DataLockEvents'))
+BEGIN
+    DROP VIEW DataLockEvents.vw_PriceEpisodePeriodMatch
+END
+GO
+
+CREATE VIEW DataLockEvents.vw_PriceEpisodePeriodMatch
+AS
+SELECT
+    pepm.Ukprn, 
+	pepm.PriceEpisodeIdentifier, 
+	pepm.LearnRefnumber, 
+	pepm.AimSeqNumber, 
+	pepm.CommitmentId, 
+	pepm.VersionId, 
+	pepm.Period, 
+	CASE WHEN pem.IsSuccess = 1 And pepm.Payable = 1 Then 1 ELSE 0 END As Payable , 
+	pepm.TransactionType
+	FROM DataLock.PriceEpisodePeriodMatch pepm 
+	LEFT JOIN DataLock.PriceEpisodeMatch pem on 
+		pem.Ukprn = pepm.Ukprn AND
+		pem.LearnRefnumber= pepm.LearnRefnumber AND
+		pem.AimSeqNumber = pepm.AimSeqNumber AND
+		pem.PriceEpisodeIdentifier = pepm.PriceEpisodeIdentifier 
+GO
