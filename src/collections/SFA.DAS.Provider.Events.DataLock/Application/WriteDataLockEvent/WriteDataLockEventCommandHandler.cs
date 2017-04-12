@@ -47,7 +47,8 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent
                 IlrFrameworkCode = message.Event.IlrFrameworkCode,
                 IlrPathwayCode = message.Event.IlrPathwayCode,
                 IlrTrainingPrice = message.Event.IlrTrainingPrice,
-                IlrEndpointAssessorPrice = message.Event.IlrEndpointAssessorPrice
+                IlrEndpointAssessorPrice = message.Event.IlrEndpointAssessorPrice,
+                IlrPriceEffectiveDate = message.Event.IlrPriceEffectiveDate
             };
 
             var eventId = _dataLockEventRepository.WriteDataLockEvent(eventEntity);
