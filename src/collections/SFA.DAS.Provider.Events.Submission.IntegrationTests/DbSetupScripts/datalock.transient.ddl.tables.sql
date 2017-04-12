@@ -35,11 +35,14 @@ GO
 
 CREATE TABLE DataLock.ValidationError
 (
-    [Ukprn] bigint,
-    [LearnRefNumber] varchar(100),
-    [AimSeqNumber] bigint,
-    [RuleId] varchar(50),
-    [PriceEpisodeIdentifier] varchar(25) NOT NULL
+    [Ukprn] [bigint] NULL,
+	[LearnRefNumber] [varchar](100) NULL,
+	[AimSeqNumber] [bigint] NULL,
+	[RuleId] [varchar](50) NULL,
+	[PriceEpisodeIdentifier] [varchar](25) NOT NULL,
+	[CollectionPeriodName] [varchar](8) NOT NULL,
+	[CollectionPeriodMonth] [int] NOT NULL,
+	[CollectionPeriodYear] [int] NOT NULL
 )
 GO
 
@@ -88,9 +91,12 @@ CREATE TABLE DataLock.PriceEpisodePeriodMatch
     [VersionId] bigint NOT NULL,
     [Period] int NOT NULL,
     [Payable] bit NOT NULL,
-	[TransactionType] int NOT NULL
+	[TransactionType] int NOT NULL,
+	[CollectionPeriodName] [varchar](8) NOT NULL
+
 )
 GO
 
 CREATE CLUSTERED INDEX [IDX_PriceEpisodePeriodMatch_1] ON DataLock.PriceEpisodePeriodMatch ([Ukprn], [PriceEpisodeIdentifier], [LearnRefNumber], [AimSeqNumber], [Period])
 GO
+
