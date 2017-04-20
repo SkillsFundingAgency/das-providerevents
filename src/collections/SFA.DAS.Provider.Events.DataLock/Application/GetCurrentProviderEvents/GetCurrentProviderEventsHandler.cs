@@ -203,6 +203,8 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents
                     return "The start date for this negotiated price is before the corresponding price start date in the employer digital account";
                 case "DLOCK_10":
                     return "The employer has stopped payments for this apprentice";
+                case "DLOCK_11":
+                    return "The employer is non levy payer";
                 default:
                     return errorCode;
             }
