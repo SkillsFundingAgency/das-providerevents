@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using SFA.DAS.Provider.Events.DataLock.Domain;
 using SFA.DAS.Provider.Events.DataLock.IntegrationTests.Execution;
 using SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers;
@@ -95,5 +96,32 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Specs
             Assert.AreEqual(180, eventPeriods.Length);
             Assert.AreEqual(1, eventCommitmentVersions.Length);
         }
+
+        [Test, Explicit]
+        public void ThenItShouldCompleteInAnAcceptableTime()
+        {
+            // Arrange
+            var ukprn = 10000534;
+            var numberOfLearners = 250;
+
+            TestDataHelper.AddLearningProvider(ukprn);
+            TestDataHelper.AddFileDetails(ukprn);
+            for (var i = 1; i <= numberOfLearners; i++)
+            {
+                var learnRefNumber = $"Lrn-{i:0000}";
+                TestDataHelper.AddCommitment(i, ukprn, learnRefNumber, passedDataLock: false);
+                TestDataHelper.AddIlrDataForCommitment(i, learnRefNumber);
+            }
+            TestDataHelper.SubmissionCopyReferenceData();
+
+            // Act
+            var startTime = DateTime.Now;
+            TaskRunner.RunTask();
+
+            // Assert
+            var duration = DateTime.Now - startTime;
+            Assert.IsTrue(duration.TotalSeconds < 10, $"Expected to complete in less than 10 seconds but took {duration.TotalSeconds:0.0}");
+        }
+
     }
 }
