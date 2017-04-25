@@ -52,7 +52,7 @@ namespace SFA.DAS.Provider.Events.DataLock
                         _logger.Info($"Found event. Price episode = {current.PriceEpisodeIdentifier}, Uln = {current.Uln}");
                         var lastSeen = lastSeenEventsResponse.Items?.SingleOrDefault(ev => ev.Ukprn == current.Ukprn &&
                                                                                            ev.PriceEpisodeIdentifier == current.PriceEpisodeIdentifier &&
-                                                                                           ev.Uln == current.Uln);
+                                                                                           ev.LearnRefnumber == current.LearnRefnumber);
 
                         if (EventsAreDifferent(current, lastSeen))
                         {
