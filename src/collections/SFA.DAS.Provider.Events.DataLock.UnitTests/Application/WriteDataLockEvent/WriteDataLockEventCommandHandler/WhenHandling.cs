@@ -95,9 +95,6 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
             _dataLockEventCommitmentVersionRepository = new Mock<IDataLockEventCommitmentVersionRepository>();
             _dataLockEventErrorRepository = new Mock<IDataLockEventErrorRepository>();
 
-            _dataLockEventRepository.Setup(r => r.WriteDataLockEvent(It.IsAny<DataLockEventEntity>()))
-                .Returns(EventId);
-
             _handler = new DataLock.Application.WriteDataLockEvent.WriteDataLockEventCommandHandler(_dataLockEventRepository.Object,
                 _dataLockEventPeriodRepository.Object,
                 _dataLockEventCommitmentVersionRepository.Object,

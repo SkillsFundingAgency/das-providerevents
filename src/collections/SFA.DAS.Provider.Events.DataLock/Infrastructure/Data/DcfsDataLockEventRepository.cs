@@ -50,23 +50,6 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
             return Query<DataLockEventEntity>(SelectProviderLastSeenEvents, new { ukprn });
         }
 
-        public Guid WriteDataLockEvent(DataLockEventEntity @event)
-        {
-            @event.DataLockEventId = Guid.NewGuid();
-
-            Execute("INSERT INTO DataLockEvents.DataLockEvents " +
-                    "(DataLockEventId, ProcessDateTime, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, " +
-                    "PriceEpisodeIdentifier, CommitmentId, EmployerAccountId, EventSource, HasErrors, IlrStartDate, IlrStandardCode, " +
-                    "IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice, IlrPriceEffectiveDate) " +
-                    "VALUES " +
-                    "(@dataLockEventId,@ProcessDateTime, @IlrFileName, @SubmittedDateTime, @AcademicYear, @UKPRN, @ULN, @LearnRefNumber, @AimSeqNumber, " +
-                    "@PriceEpisodeIdentifier, @CommitmentId, @EmployerAccountId, @EventSource, @HasErrors, @IlrStartDate, @IlrStandardCode, " +
-                    "@IlrProgrammeType, @IlrFrameworkCode, @IlrPathwayCode, @IlrTrainingPrice, @IlrEndpointAssessorPrice, @IlrPriceEffectiveDate)",
-                    @event);
-
-            return @event.DataLockEventId;
-        }
-
         public void BulkWriteDataLockEvents(DataLockEventEntity[] events)
         {
             const int batchSize = 100;

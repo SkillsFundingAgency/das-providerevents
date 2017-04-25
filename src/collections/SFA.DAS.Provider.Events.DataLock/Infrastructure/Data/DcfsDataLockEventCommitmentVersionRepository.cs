@@ -33,17 +33,6 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
             return Query<DataLockEventCommitmentVersionEntity>(SelectEventCommitmentVersions, new { eventId });
         }
 
-        public void WriteDataLockEventCommitmentVersion(DataLockEventCommitmentVersionEntity version)
-        {
-            Execute("INSERT INTO DataLockEvents.DataLockEventCommitmentVersions " +
-                    "(DataLockEventId, CommitmentVersion, CommitmentStartDate, CommitmentStandardCode, CommitmentProgrammeType, CommitmentFrameworkCode, " +
-                    "CommitmentPathwayCode, CommitmentNegotiatedPrice, CommitmentEffectiveDate) " +
-                    "VALUES " +
-                    "(@DataLockEventId, @CommitmentVersion, @CommitmentStartDate, @CommitmentStandardCode, @CommitmentProgrammeType, @CommitmentFrameworkCode, " +
-                    "@CommitmentPathwayCode, @CommitmentNegotiatedPrice, @CommitmentEffectiveDate) ",
-                    version);
-        }
-
         public void BulkWriteDataLockEventCommitmentVersion(DataLockEventCommitmentVersionEntity[] versions)
         {
             const int batchSize = 100;

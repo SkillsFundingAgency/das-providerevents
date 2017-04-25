@@ -31,15 +31,6 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
             return Query<DataLockEventPeriodEntity>(SelectEventPeriods, new { eventId });
         }
 
-        public void WriteDataLockEventPeriod(DataLockEventPeriodEntity period)
-        {
-            Execute("INSERT INTO DataLockEvents.DataLockEventPeriods " +
-                    "(DataLockEventId, CollectionPeriodName, CollectionPeriodMonth, CollectionPeriodYear, CommitmentVersion, IsPayable, TransactionType) " +
-                    "VALUES " +
-                    "(@DataLockEventId, @CollectionPeriodName, @CollectionPeriodMonth, @CollectionPeriodYear, @CommitmentVersion, @IsPayable, @TransactionType)",
-                    period);
-        }
-
         public void BulkWriteDataLockEventPeriods(DataLockEventPeriodEntity[] periods)
         {
             const int batchSize = 100;

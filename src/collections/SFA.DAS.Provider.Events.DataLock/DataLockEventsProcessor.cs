@@ -60,7 +60,6 @@ namespace SFA.DAS.Provider.Events.DataLock
                             current.ProcessDateTime = DateTime.Now;
 
                             eventsToStore.Add(current);
-
                         }
                         else
                         {
