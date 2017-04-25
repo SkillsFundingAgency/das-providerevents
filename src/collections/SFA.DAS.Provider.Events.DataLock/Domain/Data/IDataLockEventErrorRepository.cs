@@ -8,5 +8,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Domain.Data
         DataLockEventErrorEntity[] GetDatalockEventErrors(Guid eventId);
 
         void WriteDataLockEventError(DataLockEventErrorEntity error);
+
+        void BulkWriteDataLockEventError(DataLockEventErrorEntity[] errors);
     }
 }

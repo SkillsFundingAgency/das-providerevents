@@ -2,11 +2,15 @@
 using SFA.DAS.Provider.Events.DataLock.Domain.Data;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data.Entities;
 using System;
+using System.Data.SqlClient;
+using System.Linq;
+using SFA.DAS.Provider.Events.DataLock.Domain;
 
 namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
 {
     public class DcfsDataLockEventRepository : DcfsRepository, IDataLockEventRepository
     {
+        private readonly string _connectionString;
         private const string Source = "Reference.DataLockEvents";
         private const string Columns = "Id," +
                                        "DataLockEventId," +
@@ -38,6 +42,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
         public DcfsDataLockEventRepository(string connectionString)
             : base(connectionString)
         {
+            _connectionString = connectionString;
         }
 
         public DataLockEventEntity[] GetProviderLastSeenEvents(long ukprn)
@@ -60,6 +65,33 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
                     @event);
 
             return @event.DataLockEventId;
+        }
+
+        public void BulkWriteDataLockEvents(DataLockEventEntity[] events)
+        {
+            const int batchSize = 100;
+            var skip = 0;
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                while (skip < events.Length)
+                {
+                    var batch = events.Skip(skip).Take(batchSize)
+                        .Select(x => $"('{x.DataLockEventId}','{x.ProcessDateTime:yyyy-MM-dd HH:mm:ss}', '{x.IlrFileName}', '{x.SubmittedDateTime:yyyy-MM-dd HH:mm:ss}', " +
+                                     $"'{x.AcademicYear}', '{x.Ukprn}', '{x.Uln}', '{x.LearnRefnumber}', '{x.AimSeqNumber}', '{x.PriceEpisodeIdentifier}', " +
+                                     $"'{x.CommitmentId}', '{x.EmployerAccountId}', '{(int)x.EventSource}', '{x.HasErrors}', '{x.IlrStartDate}', " +
+                                     $"'{x.IlrStandardCode}', '{x.IlrProgrammeType}', '{x.IlrFrameworkCode}', '{x.IlrPathwayCode}', '{x.IlrTrainingPrice}', " +
+                                     $"'{x.IlrEndpointAssessorPrice}', '{x.IlrPriceEffectiveDate:yyyy-MM-dd HH:mm:ss}')")
+                        .Aggregate((x, y) => $"{x}, {y}");
+                    using (var command = connection.CreateCommand())
+                    {
+                        command.CommandText = $"INSERT INTO DataLockEvents.DataLockEvents ({Columns.Substring(3)}) VALUES {batch}";
+                        command.ExecuteNonQuery();
+                    }
+
+                    skip += batchSize;
+                }
+            }
         }
     }
 }

@@ -102,7 +102,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Specs
         {
             // Arrange
             var ukprn = 10000534;
-            var numberOfLearners = 250;
+            var numberOfLearners = 1000;
 
             TestDataHelper.AddLearningProvider(ukprn);
             TestDataHelper.AddFileDetails(ukprn);
@@ -120,6 +120,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Specs
 
             // Assert
             var duration = DateTime.Now - startTime;
+            Console.WriteLine($"Execution took {duration.TotalSeconds:0.0}");
             Assert.IsTrue(duration.TotalSeconds < 10, $"Expected to complete in less than 10 seconds but took {duration.TotalSeconds:0.0}");
         }
 

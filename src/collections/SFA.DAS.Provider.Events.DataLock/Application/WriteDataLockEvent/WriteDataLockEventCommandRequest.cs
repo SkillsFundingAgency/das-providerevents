@@ -5,6 +5,6 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent
 {
     public class WriteDataLockEventCommandRequest : IRequest
     {
-        public DataLockEvent Event { get; set; }
+        public DataLockEvent[] Events { get; set; }
     }
 }

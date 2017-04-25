@@ -8,5 +8,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Domain.Data
         DataLockEventCommitmentVersionEntity[] GetDataLockEventCommitmentVersions(Guid eventId);
 
         void WriteDataLockEventCommitmentVersion(DataLockEventCommitmentVersionEntity version);
+
+        void BulkWriteDataLockEventCommitmentVersion(DataLockEventCommitmentVersionEntity[] versions);
     }
 }

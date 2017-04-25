@@ -8,5 +8,8 @@ namespace SFA.DAS.Provider.Events.DataLock.Domain.Data
         DataLockEventEntity[] GetProviderLastSeenEvents(long ukprn);
 
         Guid WriteDataLockEvent(DataLockEventEntity @event);
+
+
+        void BulkWriteDataLockEvents(DataLockEventEntity[] events);
     }
 }

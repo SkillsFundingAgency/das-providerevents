@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using MediatR;
 using Moq;
 using NLog;
@@ -248,7 +249,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 .Returns(new GetProvidersQueryResponse
                 {
                     IsValid = true,
-                    Items = new []
+                    Items = new[]
                     {
                         _provider
                     }
@@ -258,7 +259,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 .Returns(new GetCurrentProviderEventsResponse
                 {
                     IsValid = true,
-                    Items = new []
+                    Items = new[]
                     {
                         _currentFirstEvent,
                         _currentUpdatedEvent
@@ -269,7 +270,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 .Returns(new GetLastSeenProviderEventsResponse
                 {
                     IsValid = true,
-                    Items = new []
+                    Items = new[]
                     {
                         _lastSeenOriginalEvent
                     }
@@ -348,13 +349,13 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
             _processor.Process();
 
             // Assert
-            _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(2));
+            _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
 
             // First data lock event
-            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Event == _currentFirstEvent)));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events.Any(e => e == _currentFirstEvent))));
 
             // Updated data lock event
-            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Event == _currentUpdatedEvent)));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events.Any(e => e == _currentUpdatedEvent))));
         }
 
         [Test]
@@ -390,7 +391,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
 
             // Assert
             _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
-            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Event == current)));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events[0] == current)));
         }
 
         [Test]
@@ -426,7 +427,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
 
             // Assert
             _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
-            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Event == current)));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events[0] == current)));
         }
 
         [Test]
@@ -462,7 +463,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
 
             // Assert
             _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
-            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Event == current)));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events[0] == current)));
         }
 
         [Test]
@@ -498,7 +499,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
 
             // Assert
             _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
-            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Event == current)));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events[0] == current)));
         }
 
         [Test]
@@ -534,7 +535,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
 
             // Assert
             _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
-            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Event == current)));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events[0] == current)));
         }
 
         [Test]
@@ -570,7 +571,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
 
             // Assert
             _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
-            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Event == current)));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events[0] == current)));
         }
 
         [Test]
@@ -606,7 +607,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
 
             // Assert
             _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
-            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Event == current)));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events[0] == current)));
         }
 
         [Test]
@@ -642,7 +643,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
 
             // Assert
             _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
-            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Event == current)));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events[0] == current)));
         }
 
         [Test]
@@ -678,7 +679,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
 
             // Assert
             _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
-            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Event == current)));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events[0] == current)));
         }
 
         [Test]
@@ -714,7 +715,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
 
             // Assert
             _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
-            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Event == current)));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events[0] == current)));
         }
 
         [Test]
@@ -750,7 +751,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
 
             // Assert
             _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
-            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Event == current)));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events[0] == current)));
         }
 
         [Test]
@@ -787,7 +788,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
 
             // Assert
             _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
-            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Event == current)));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events[0] == current)));
         }
 
         [Test]
@@ -824,7 +825,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
 
             // Assert
             _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
-            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Event == current)));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events[0] == current)));
         }
 
         [Test]
@@ -861,7 +862,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
 
             // Assert
             _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
-            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Event == current)));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events[0] == current)));
         }
     }
 }
