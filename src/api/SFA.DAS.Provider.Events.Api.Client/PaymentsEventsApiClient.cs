@@ -45,7 +45,7 @@ namespace SFA.DAS.Provider.Events.Api.Client
 
 
 
-        public async Task<PageOfResults<SubmissionEvent>> GetSubmissionEvents(int sinceEventId = 0, DateTime? sinceTime = null, long ukprn = 0, int page = 1)
+        public async Task<PageOfResults<SubmissionEvent>> GetSubmissionEvents(long sinceEventId = 0, DateTime? sinceTime = null, long ukprn = 0, int page = 1)
         {
             var url = $"{BaseUrl}api/submissions?page={page}";
             if (sinceEventId > 0)
@@ -65,7 +65,7 @@ namespace SFA.DAS.Provider.Events.Api.Client
             return JsonConvert.DeserializeObject<PageOfResults<SubmissionEvent>>(response);
         }
 
-        public async Task<PageOfResults<DataLockEvent>> GetDataLockEvents(int sinceEventId = 0, DateTime? sinceTime = null, string employerAccountId = null, long  ukprn = 0, int page = 1)
+        public async Task<PageOfResults<DataLockEvent>> GetDataLockEvents(long sinceEventId = 0, DateTime? sinceTime = null, string employerAccountId = null, long  ukprn = 0, int page = 1)
         {
             var url = $"{BaseUrl}api/datalock?page={page}";
             if (sinceEventId > 0)
