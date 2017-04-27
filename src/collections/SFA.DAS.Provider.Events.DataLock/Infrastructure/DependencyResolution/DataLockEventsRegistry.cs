@@ -33,6 +33,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.DependencyResolution
             For<IPriceEpisodePeriodMatchRepository>().Use<DcfsPriceEpisodePeriodMatchRepository>();
             For<IValidationErrorRepository>().Use<DcfsValidationErrorRepository>();
             For<IProviderRepository>().Use<DcfsProviderRepository>();
+            For<IDataLockEventDataRepository>().Use<DcfsDataLockEventDataRepository>();
 
             For<IRequestHandler<GetCurrentProviderEventsRequest, GetCurrentProviderEventsResponse>>().Use<GetCurrentProviderEventsHandler>();
 
