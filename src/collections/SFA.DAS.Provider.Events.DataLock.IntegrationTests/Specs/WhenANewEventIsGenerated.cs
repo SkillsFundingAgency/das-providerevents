@@ -98,7 +98,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Specs
         }
 
         [Test, Explicit]
-        public void ThenItShouldCompleteInAnAcceptableTime()
+        public void ThenItShouldCompleteInAnAcceptableTimeInASubmissionRun()
         {
             // Arrange
             var ukprn = 10000534;
@@ -121,7 +121,34 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Specs
             // Assert
             var duration = DateTime.Now - startTime;
             Console.WriteLine($"Execution took {duration.TotalSeconds:0.0}");
-            Assert.IsTrue(duration.TotalSeconds < 30, $"Expected to complete in less than 10 seconds but took {duration.TotalSeconds:0.0}");
+            Assert.IsTrue(duration.TotalSeconds < 30, $"Expected to complete in less than 30 seconds but took {duration.TotalSeconds:0.0}");
+        }
+
+        [Test]
+        public void ThenItShouldCompleteInAnAcceptableTimeInAPeriodEndRun()
+        {
+            // Arrange
+            var ukprn = 10000534;
+            var numberOfLearners = 20000;
+
+            TestDataHelper.PeriodEndAddLearningProvider(ukprn);
+            for (var i = 1; i <= numberOfLearners; i++)
+            {
+                var learnRefNumber = $"Lrn-{i:0000}";
+                TestDataHelper.PeriodEndAddCommitment(i, ukprn, learnRefNumber, passedDataLock: false);
+                TestDataHelper.PeriodEndAddIlrDataForCommitment(i, learnRefNumber);
+            }
+
+            TestDataHelper.PeriodEndCopyReferenceData();
+
+            // Act
+            var startTime = DateTime.Now;
+            TaskRunner.RunTask(eventsSource: EventSource.PeriodEnd);
+
+            // Assert
+            var duration = DateTime.Now - startTime;
+            Console.WriteLine($"Execution took {duration.TotalSeconds:0.0}");
+            Assert.IsTrue(duration.TotalSeconds < 600, $"Expected to complete in less than 300 seconds but took {duration.TotalSeconds:0.0}");
         }
 
     }
