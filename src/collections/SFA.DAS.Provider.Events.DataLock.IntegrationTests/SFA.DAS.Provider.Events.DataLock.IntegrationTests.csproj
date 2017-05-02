@@ -89,6 +89,10 @@
       <Link>DbSetupScripts\datalockevents.deds.ddl.tables.sql</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\DeployDataLock\sql\ddl\datalockevents.transient.ddl.procedures.sql">
+      <Link>DbSetupScripts\datalockevents.transient.ddl.procedures.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\DeployDataLock\sql\ddl\datalockevents.transient.ddl.tables.sql">
       <Link>DbSetupScripts\datalockevents.transient.ddl.tables.sql</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

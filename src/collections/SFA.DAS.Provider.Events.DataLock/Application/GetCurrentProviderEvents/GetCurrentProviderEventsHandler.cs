@@ -11,28 +11,16 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents
 {
     public class GetCurrentProviderEventsHandler : IRequestHandler<GetCurrentProviderEventsRequest, GetCurrentProviderEventsResponse>
     {
-        private readonly IPriceEpisodeMatchRepository _priceEpisodeMatchRepository;
-        private readonly IPriceEpisodePeriodMatchRepository _priceEpisodePeriodMatchRepository;
-        private readonly IValidationErrorRepository _validationErrorRepository;
-        private readonly IIlrPriceEpisodeRepository _ilrPriceEpisodeRepository;
-        private readonly ICommitmentRepository _commitmentRepository;
+        private readonly IDataLockEventDataRepository _dataLockEventDataRepository;
 
         private readonly string _academicYear;
         private readonly EventSource _eventsSource;
 
-        public GetCurrentProviderEventsHandler(IPriceEpisodeMatchRepository priceEpisodeMatchRepository,
-            IPriceEpisodePeriodMatchRepository priceEpisodePeriodMatchRepository,
-            IValidationErrorRepository validationErrorRepository,
-            IIlrPriceEpisodeRepository ilrPriceEpisodeRepository,
-            ICommitmentRepository commitmentRepository,
+        public GetCurrentProviderEventsHandler(IDataLockEventDataRepository dataLockEventDataRepository,
             string yearOfCollection,
             EventSource eventsSource)
         {
-            _priceEpisodeMatchRepository = priceEpisodeMatchRepository;
-            _priceEpisodePeriodMatchRepository = priceEpisodePeriodMatchRepository;
-            _validationErrorRepository = validationErrorRepository;
-            _ilrPriceEpisodeRepository = ilrPriceEpisodeRepository;
-            _commitmentRepository = commitmentRepository;
+            _dataLockEventDataRepository = dataLockEventDataRepository;
 
             _academicYear = yearOfCollection;
             _eventsSource = eventsSource;
@@ -44,55 +32,97 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents
             {
                 var currentEvents = new List<DataLockEvent>();
 
-                var priceEpisodeMatches = _priceEpisodeMatchRepository.GetProviderPriceEpisodeMatches(message.Ukprn);
-
-                if (priceEpisodeMatches != null)
+                var entities = _dataLockEventDataRepository.GetCurrentEvents(message.Ukprn);
+                if (entities != null)
                 {
-                    foreach (var match in priceEpisodeMatches)
+                    DataLockEvent currentEvent = null;
+                    var errors = new List<DataLockEventError>();
+                    var periods = new List<DataLockEventPeriod>();
+                    var commitmentVersions = new List<DataLockEventCommitmentVersion>();
+                    foreach (var entity in entities)
                     {
-                        var matchPeriods = _priceEpisodePeriodMatchRepository.GetPriceEpisodePeriodMatches(match.Ukprn, match.PriceEpisodeIdentifier, match.LearnRefnumber);
-                        var matchErrors = _validationErrorRepository.GetPriceEpisodeValidationErrors(match.Ukprn, match.PriceEpisodeIdentifier, match.LearnRefnumber);
-                        var ilrData = _ilrPriceEpisodeRepository.GetPriceEpisodeIlrData(match.Ukprn, match.PriceEpisodeIdentifier, match.LearnRefnumber);
-                        var commitmentVersions = _commitmentRepository.GetCommitmentVersions(match.CommitmentId);
-
-                        if (ilrData == null)
+                        if (currentEvent == null || entity.LearnRefNumber != currentEvent.LearnRefnumber || entity.PriceEpisodeIdentifier != currentEvent.PriceEpisodeIdentifier)
                         {
-                            throw new Exception($"Could not find ILR data for price episode with ukprn {match.Ukprn}, identifier {match.PriceEpisodeIdentifier}, learner reference number {match.LearnRefnumber}");
+                            if (currentEvent != null)
+                            {
+                                currentEvent.Errors = errors.ToArray();
+                                currentEvent.Periods = periods.ToArray();
+                                currentEvent.CommitmentVersions = commitmentVersions.ToArray();
+                                currentEvents.Add(currentEvent);
+                            }
+
+                            errors.Clear();
+                            periods.Clear();
+                            commitmentVersions.Clear();
+                            currentEvent = new DataLockEvent
+                            {
+                                IlrFileName = entity.IlrFilename,
+                                SubmittedDateTime = entity.SubmittedTime,
+                                AcademicYear = _academicYear,
+                                Ukprn = entity.Ukprn,
+                                Uln = entity.Uln,
+                                LearnRefnumber = entity.LearnRefNumber,
+                                AimSeqNumber = entity.AimSeqNumber,
+                                PriceEpisodeIdentifier = entity.PriceEpisodeIdentifier,
+                                CommitmentId = entity.CommitmentId,
+                                EmployerAccountId = entity.EmployerAccountId,
+                                EventSource = _eventsSource,
+                                HasErrors = !entity.IsSuccess,
+                                IlrStartDate = entity.IlrStartDate,
+                                IlrStandardCode = entity.IlrStandardCode,
+                                IlrProgrammeType = entity.IlrProgrammeType,
+                                IlrFrameworkCode = entity.IlrFrameworkCode,
+                                IlrPathwayCode = entity.IlrPathwayCode,
+                                IlrTrainingPrice = entity.IlrTrainingPrice,
+                                IlrEndpointAssessorPrice = entity.IlrEndpointAssessorPrice,
+                                IlrPriceEffectiveDate = entity.IlrPriceEffectiveDate
+                            };
                         }
 
-                        if (commitmentVersions == null || commitmentVersions.Length == 0)
+                        var collectionPeriod = GetCollectionPeriod(entity.Period);
+                        if (!periods.Any(p => p.CollectionPeriod.Month == collectionPeriod.Month
+                                           && p.CollectionPeriod.Year == collectionPeriod.Year
+                                           && (int)p.TransactionType == entity.TransactionType))
                         {
-                            throw new Exception($"Could not find any versions for commitment with id {match.CommitmentId}");
+                            periods.Add(new DataLockEventPeriod
+                            {
+                                CollectionPeriod = collectionPeriod,
+                                CommitmentVersion = entity.CommitmentVersionId,
+                                IsPayable = entity.Payable,
+                                TransactionType = (TransactionType)entity.TransactionType
+                            });
                         }
 
-                        var @event = new DataLockEvent
+                        if (!errors.Any(e => e.ErrorCode == entity.RuleId))
                         {
-                            IlrFileName = ilrData.IlrFileName,
-                            SubmittedDateTime = ilrData.SubmittedTime,
-                            AcademicYear = _academicYear,
-                            Ukprn = match.Ukprn,
-                            Uln = ilrData.Uln,
-                            LearnRefnumber = match.LearnRefnumber,
-                            AimSeqNumber = match.AimSeqNumber,
-                            PriceEpisodeIdentifier = match.PriceEpisodeIdentifier,
-                            CommitmentId = match.CommitmentId,
-                            EmployerAccountId = commitmentVersions[0].EmployerAccountId,
-                            EventSource = _eventsSource,
-                            HasErrors = !match.IsSuccess,
-                            IlrStartDate = ilrData.IlrStartDate,
-                            IlrStandardCode = ilrData.IlrStandardCode,
-                            IlrProgrammeType = ilrData.IlrProgrammeType,
-                            IlrFrameworkCode = ilrData.IlrFrameworkCode,
-                            IlrPathwayCode = ilrData.IlrPathwayCode,
-                            IlrTrainingPrice = ilrData.IlrTrainingPrice,
-                            IlrEndpointAssessorPrice = ilrData.IlrEndpointAssessorPrice,
-                            IlrPriceEffectiveDate = ilrData.IlrPriceEffectiveDate,
-                            Errors = GetEventErrors(matchErrors),
-                            Periods = GetEventPeriods(matchPeriods),
-                            CommitmentVersions = GetEventCommitmentVersions(matchPeriods, commitmentVersions)
-                        };
+                            errors.Add(new DataLockEventError
+                            {
+                                ErrorCode = entity.RuleId,
+                                SystemDescription = GetErrorDescription(entity.RuleId)
+                            });
+                        }
 
-                        currentEvents.Add(@event);
+                        if (!commitmentVersions.Any(v => v.CommitmentVersion == entity.CommitmentVersionId))
+                        {
+                            commitmentVersions.Add(new DataLockEventCommitmentVersion
+                            {
+                                CommitmentVersion = entity.CommitmentVersionId,
+                                CommitmentStandardCode = entity.CommitmentStandardCode,
+                                CommitmentProgrammeType = entity.CommitmentProgrammeType,
+                                CommitmentFrameworkCode = entity.CommitmentFrameworkCode,
+                                CommitmentPathwayCode = entity.CommitmentPathwayCode,
+                                CommitmentStartDate = entity.CommitmentStartDate,
+                                CommitmentNegotiatedPrice = entity.CommitmentNegotiatedPrice,
+                                CommitmentEffectiveDate = entity.CommitmentEffectiveDate
+                            });
+                        }
+                    }
+                    if (currentEvent != null)
+                    {
+                        currentEvent.Errors = errors.ToArray();
+                        currentEvent.Periods = periods.ToArray();
+                        currentEvent.CommitmentVersions = commitmentVersions.ToArray();
+                        currentEvents.Add(currentEvent);
                     }
                 }
 
@@ -110,73 +140,6 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents
                     Exception = ex
                 };
             }
-        }
-
-        private DataLockEventError[] GetEventErrors(ValidationErrorEntity[] validationErrors)
-        {
-            if (validationErrors == null)
-            {
-                return new DataLockEventError[0];
-            }
-
-            return validationErrors
-                .Select(ve => new DataLockEventError
-                {
-                    ErrorCode = ve.RuleId,
-                    SystemDescription = GetErrorDescription(ve.RuleId)
-                })
-                .ToArray();
-        }
-
-        private DataLockEventPeriod[] GetEventPeriods(PriceEpisodePeriodMatchEntity[] periodMatches)
-        {
-            if (periodMatches == null)
-            {
-                return new DataLockEventPeriod[0];
-            }
-
-            return periodMatches
-                .Select(p => new DataLockEventPeriod
-                {
-                    CollectionPeriod = GetCollectionPeriod(p.Period),
-                    CommitmentVersion = p.VersionId,
-                    IsPayable = p.Payable,
-                    TransactionType = (TransactionType) p.TransactionType
-                })
-                .ToArray();
-        }
-
-        private DataLockEventCommitmentVersion[] GetEventCommitmentVersions(PriceEpisodePeriodMatchEntity[] periodMatches, CommitmentEntity[] commitmentVersions)
-        {
-            var versions = new List<DataLockEventCommitmentVersion>();
-
-            if (periodMatches == null || commitmentVersions == null)
-            {
-                return new DataLockEventCommitmentVersion[0];
-            }
-
-            foreach (var version in commitmentVersions)
-            {
-                var period = periodMatches
-                    .FirstOrDefault(p => p.CommitmentId == version.CommitmentId && p.VersionId == version.CommitmentVersion);
-
-                if (period != null)
-                {
-                    versions.Add(new DataLockEventCommitmentVersion
-                    {
-                        CommitmentVersion = version.CommitmentVersion,
-                        CommitmentStartDate = version.StartDate,
-                        CommitmentStandardCode = version.StandardCode,
-                        CommitmentProgrammeType = version.ProgrammeType,
-                        CommitmentFrameworkCode = version.FrameworkCode,
-                        CommitmentPathwayCode = version.PathwayCode,
-                        CommitmentNegotiatedPrice = version.NegotiatedPrice,
-                        CommitmentEffectiveDate = version.EffectiveDate
-                    });
-                }
-            }
-
-            return versions.ToArray();
         }
 
         private string GetErrorDescription(string errorCode)

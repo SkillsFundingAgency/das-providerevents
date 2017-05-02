@@ -95,9 +95,6 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
             _dataLockEventCommitmentVersionRepository = new Mock<IDataLockEventCommitmentVersionRepository>();
             _dataLockEventErrorRepository = new Mock<IDataLockEventErrorRepository>();
 
-            _dataLockEventRepository.Setup(r => r.WriteDataLockEvent(It.IsAny<DataLockEventEntity>()))
-                .Returns(EventId);
-
             _handler = new DataLock.Application.WriteDataLockEvent.WriteDataLockEventCommandHandler(_dataLockEventRepository.Object,
                 _dataLockEventPeriodRepository.Object,
                 _dataLockEventCommitmentVersionRepository.Object,
@@ -108,13 +105,13 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
         public void ThenItShouldStoreEventInRepository()
         {
             // Act
-            _handler.Handle(new WriteDataLockEventCommandRequest { Event = _event });
+            _handler.Handle(new WriteDataLockEventCommandRequest { Events = new[] { _event } });
 
             // Assert
-            _dataLockEventRepository.Verify(r => r.WriteDataLockEvent(It.Is<DataLockEventEntity>(e => EventsMatch(e, _event))), Times.Once);
-            _dataLockEventErrorRepository.Verify(r => r.WriteDataLockEventError(It.Is<DataLockEventErrorEntity>(e => ErrorsMatch(e, _eventError))));
-            _dataLockEventPeriodRepository.Verify(r => r.WriteDataLockEventPeriod(It.Is<DataLockEventPeriodEntity>(e => PeriodsMatch(e, _eventPeriod))));
-            _dataLockEventCommitmentVersionRepository.Verify(r => r.WriteDataLockEventCommitmentVersion(It.Is<DataLockEventCommitmentVersionEntity>(e => CommitmentVersionsMatch(e, _eventCommitmentVersion))));
+            _dataLockEventRepository.Verify(r => r.BulkWriteDataLockEvents(It.Is<DataLockEventEntity[]>(e => EventsMatch(e[0], _event))));
+            _dataLockEventErrorRepository.Verify(r => r.BulkWriteDataLockEventError(It.Is<DataLockEventErrorEntity[]>(e => ErrorsMatch(e[0], _eventError))));
+            _dataLockEventPeriodRepository.Verify(r => r.BulkWriteDataLockEventPeriods(It.Is<DataLockEventPeriodEntity[]>(e => PeriodsMatch(e[0], _eventPeriod))));
+            _dataLockEventCommitmentVersionRepository.Verify(r => r.BulkWriteDataLockEventCommitmentVersion(It.Is<DataLockEventCommitmentVersionEntity[]>(e => CommitmentVersionsMatch(e[0], _eventCommitmentVersion))));
         }
 
         [Test]
@@ -124,13 +121,13 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
             _event.Errors = null;
 
             // Act
-            _handler.Handle(new WriteDataLockEventCommandRequest { Event = _event });
+            _handler.Handle(new WriteDataLockEventCommandRequest { Events = new[] { _event } });
 
             // Assert
-            _dataLockEventRepository.Verify(r => r.WriteDataLockEvent(It.Is<DataLockEventEntity>(e => EventsMatch(e, _event))), Times.Once);
-            _dataLockEventErrorRepository.Verify(r => r.WriteDataLockEventError(It.IsAny<DataLockEventErrorEntity>()), Times.Never);
-            _dataLockEventPeriodRepository.Verify(r => r.WriteDataLockEventPeriod(It.Is<DataLockEventPeriodEntity>(e => PeriodsMatch(e, _eventPeriod))));
-            _dataLockEventCommitmentVersionRepository.Verify(r => r.WriteDataLockEventCommitmentVersion(It.Is<DataLockEventCommitmentVersionEntity>(e => CommitmentVersionsMatch(e, _eventCommitmentVersion))));
+            _dataLockEventRepository.Verify(r => r.BulkWriteDataLockEvents(It.Is<DataLockEventEntity[]>(e => EventsMatch(e[0], _event))), Times.Once);
+            _dataLockEventErrorRepository.Verify(r => r.BulkWriteDataLockEventError(It.IsAny<DataLockEventErrorEntity[]>()), Times.Never);
+            _dataLockEventPeriodRepository.Verify(r => r.BulkWriteDataLockEventPeriods(It.Is<DataLockEventPeriodEntity[]>(e => PeriodsMatch(e[0], _eventPeriod))));
+            _dataLockEventCommitmentVersionRepository.Verify(r => r.BulkWriteDataLockEventCommitmentVersion(It.Is<DataLockEventCommitmentVersionEntity[]>(e => CommitmentVersionsMatch(e[0], _eventCommitmentVersion))));
         }
 
         [Test]
@@ -140,13 +137,13 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
             _event.Periods = null;
 
             // Act
-            _handler.Handle(new WriteDataLockEventCommandRequest { Event = _event });
+            _handler.Handle(new WriteDataLockEventCommandRequest { Events = new[] { _event } });
 
             // Assert
-            _dataLockEventRepository.Verify(r => r.WriteDataLockEvent(It.Is<DataLockEventEntity>(e => EventsMatch(e, _event))), Times.Once);
-            _dataLockEventErrorRepository.Verify(r => r.WriteDataLockEventError(It.Is<DataLockEventErrorEntity>(e => ErrorsMatch(e, _eventError))));
-            _dataLockEventPeriodRepository.Verify(r => r.WriteDataLockEventPeriod(It.IsAny<DataLockEventPeriodEntity>()), Times.Never);
-            _dataLockEventCommitmentVersionRepository.Verify(r => r.WriteDataLockEventCommitmentVersion(It.Is<DataLockEventCommitmentVersionEntity>(e => CommitmentVersionsMatch(e, _eventCommitmentVersion))));
+            _dataLockEventRepository.Verify(r => r.BulkWriteDataLockEvents(It.Is<DataLockEventEntity[]>(e => EventsMatch(e[0], _event))), Times.Once);
+            _dataLockEventErrorRepository.Verify(r => r.BulkWriteDataLockEventError(It.Is<DataLockEventErrorEntity[]>(e => ErrorsMatch(e[0], _eventError))));
+            _dataLockEventPeriodRepository.Verify(r => r.BulkWriteDataLockEventPeriods(It.IsAny<DataLockEventPeriodEntity[]>()), Times.Never);
+            _dataLockEventCommitmentVersionRepository.Verify(r => r.BulkWriteDataLockEventCommitmentVersion(It.Is<DataLockEventCommitmentVersionEntity[]>(e => CommitmentVersionsMatch(e[0], _eventCommitmentVersion))));
         }
 
         [Test]
@@ -156,13 +153,13 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
             _event.CommitmentVersions = null;
 
             // Act
-            _handler.Handle(new WriteDataLockEventCommandRequest { Event = _event });
+            _handler.Handle(new WriteDataLockEventCommandRequest { Events = new[] { _event } });
 
             // Assert
-            _dataLockEventRepository.Verify(r => r.WriteDataLockEvent(It.Is<DataLockEventEntity>(e => EventsMatch(e, _event))), Times.Once);
-            _dataLockEventErrorRepository.Verify(r => r.WriteDataLockEventError(It.Is<DataLockEventErrorEntity>(e => ErrorsMatch(e, _eventError))));
-            _dataLockEventPeriodRepository.Verify(r => r.WriteDataLockEventPeriod(It.Is<DataLockEventPeriodEntity>(e => PeriodsMatch(e, _eventPeriod))));
-            _dataLockEventCommitmentVersionRepository.Verify(r => r.WriteDataLockEventCommitmentVersion(It.IsAny<DataLockEventCommitmentVersionEntity>()), Times.Never);
+            _dataLockEventRepository.Verify(r => r.BulkWriteDataLockEvents(It.Is<DataLockEventEntity[]>(e => EventsMatch(e[0], _event))), Times.Once);
+            _dataLockEventErrorRepository.Verify(r => r.BulkWriteDataLockEventError(It.Is<DataLockEventErrorEntity[]>(e => ErrorsMatch(e[0], _eventError))));
+            _dataLockEventPeriodRepository.Verify(r => r.BulkWriteDataLockEventPeriods(It.Is<DataLockEventPeriodEntity[]>(e => PeriodsMatch(e[0], _eventPeriod))));
+            _dataLockEventCommitmentVersionRepository.Verify(r => r.BulkWriteDataLockEventCommitmentVersion(It.IsAny<DataLockEventCommitmentVersionEntity[]>()), Times.Never);
         }
 
         private bool EventsMatch(DataLockEventEntity entity, DataLockEvent @event)
@@ -177,7 +174,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
                 && entity.PriceEpisodeIdentifier == @event.PriceEpisodeIdentifier
                 && entity.CommitmentId == @event.CommitmentId
                 && entity.EmployerAccountId == @event.EmployerAccountId
-                && entity.EventSource == (int) @event.EventSource
+                && entity.EventSource == (int)@event.EventSource
                 && entity.HasErrors == @event.HasErrors
                 && entity.IlrStartDate == @event.IlrStartDate
                 && entity.IlrStandardCode == @event.IlrStandardCode
@@ -203,7 +200,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
                    && entity.CollectionPeriodYear == period.CollectionPeriod.Year
                    && entity.CommitmentVersion == period.CommitmentVersion
                    && entity.IsPayable == period.IsPayable
-                   && entity.TransactionType == (int) period.TransactionType;
+                   && entity.TransactionType == (int)period.TransactionType;
         }
 
         private bool CommitmentVersionsMatch(DataLockEventCommitmentVersionEntity entity, DataLockEventCommitmentVersion version)

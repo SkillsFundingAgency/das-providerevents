@@ -39,6 +39,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ddl", "ddl", "{8DB91691-7F7A-424C-86F2-BE76A6FD5B0F}"
 	ProjectSection(SolutionItems) = preProject
 		DeployDataLock\sql\ddl\datalockevents.deds.ddl.tables.sql = DeployDataLock\sql\ddl\datalockevents.deds.ddl.tables.sql
+		DeployDataLock\sql\ddl\datalockevents.transient.ddl.procedures.sql = DeployDataLock\sql\ddl\datalockevents.transient.ddl.procedures.sql
 		DeployDataLock\sql\ddl\datalockevents.transient.ddl.tables.sql = DeployDataLock\sql\ddl\datalockevents.transient.ddl.tables.sql
 		DeployDataLock\sql\ddl\datalockevents.transient.ddl.views.periodend.sql = DeployDataLock\sql\ddl\datalockevents.transient.ddl.views.periodend.sql
 		DeployDataLock\sql\ddl\datalockevents.transient.ddl.views.submission.sql = DeployDataLock\sql\ddl\datalockevents.transient.ddl.views.submission.sql
