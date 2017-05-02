@@ -38,6 +38,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests
                 connection.RunDbSetupSqlScriptFile("datalockevents.transient.ddl.tables.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
 
                 connection.RunDbSetupSqlScriptFile("datalockevents.transient.ddl.views.submission.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+                connection.RunDbSetupSqlScriptFile("datalockevents.transient.ddl.procedures.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
             }
         }
 
@@ -55,6 +56,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests
                 connection.RunDbSetupSqlScriptFile("datalockevents.transient.ddl.tables.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
 
                 connection.RunDbSetupSqlScriptFile("datalockevents.transient.ddl.views.periodend.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+                connection.RunDbSetupSqlScriptFile("datalockevents.transient.ddl.procedures.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
             }
         }
     }

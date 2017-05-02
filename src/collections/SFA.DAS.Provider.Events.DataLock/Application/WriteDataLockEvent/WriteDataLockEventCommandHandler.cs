@@ -3,6 +3,8 @@ using SFA.DAS.Provider.Events.DataLock.Domain;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data.Entities;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent
 {
@@ -26,108 +28,100 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent
 
         public Unit Handle(WriteDataLockEventCommandRequest message)
         {
-            var eventEntity = new DataLockEventEntity
+            var events = new List<DataLockEventEntity>();
+            var errors = new List<DataLockEventErrorEntity>();
+            var periods = new List<DataLockEventPeriodEntity>();
+            var commitmentVersions = new List<DataLockEventCommitmentVersionEntity>();
+
+            ExtractEntityFromEvents(message.Events, events, errors, periods, commitmentVersions);
+
+            _dataLockEventRepository.BulkWriteDataLockEvents(events.ToArray());
+            if (periods.Any())
             {
-                ProcessDateTime = message.Event.ProcessDateTime,
-                IlrFileName = message.Event.IlrFileName,
-                SubmittedDateTime = message.Event.SubmittedDateTime,
-                AcademicYear = message.Event.AcademicYear,
-                Ukprn = message.Event.Ukprn,
-                Uln = message.Event.Uln,
-                LearnRefnumber = message.Event.LearnRefnumber,
-                AimSeqNumber = message.Event.AimSeqNumber,
-                PriceEpisodeIdentifier = message.Event.PriceEpisodeIdentifier,
-                CommitmentId = message.Event.CommitmentId,
-                EmployerAccountId = message.Event.EmployerAccountId,
-                EventSource = (int) message.Event.EventSource,
-                HasErrors = message.Event.HasErrors,
-                IlrStartDate = message.Event.IlrStartDate,
-                IlrStandardCode = message.Event.IlrStandardCode,
-                IlrProgrammeType = message.Event.IlrProgrammeType,
-                IlrFrameworkCode = message.Event.IlrFrameworkCode,
-                IlrPathwayCode = message.Event.IlrPathwayCode,
-                IlrTrainingPrice = message.Event.IlrTrainingPrice,
-                IlrEndpointAssessorPrice = message.Event.IlrEndpointAssessorPrice,
-                IlrPriceEffectiveDate = message.Event.IlrPriceEffectiveDate
-            };
-
-            var eventId = _dataLockEventRepository.WriteDataLockEvent(eventEntity);
-
-            WriteEventErrors(eventId, message.Event.Errors);
-            WriteEventPeriods(eventId, message.Event.Periods);
-            WriteEventCommitmentVersions(eventId, message.Event.CommitmentVersions);
+                _dataLockEventPeriodRepository.BulkWriteDataLockEventPeriods(periods.ToArray());
+            }
+            if (commitmentVersions.Any())
+            {
+                _dataLockEventCommitmentVersionRepository.BulkWriteDataLockEventCommitmentVersion(commitmentVersions.ToArray());
+            }
+            if (errors.Any())
+            {
+                _dataLockEventErrorRepository.BulkWriteDataLockEventError(errors.ToArray());
+            }
 
             return Unit.Value;
         }
 
-        private void WriteEventErrors(Guid eventId, DataLockEventError[] errors)
+
+        private void ExtractEntityFromEvents(DataLockEvent[] sourceEvents, List<DataLockEventEntity> events, List<DataLockEventErrorEntity> errors, List<DataLockEventPeriodEntity> periods, List<DataLockEventCommitmentVersionEntity> commitmentVersions)
         {
-            if (errors == null)
+            foreach (var @event in sourceEvents)
             {
-                return;
-            }
-
-            foreach (var error in errors)
-            {
-                var errorEntity = new DataLockEventErrorEntity
+                var id = @event.DataLockEventId == default(Guid) ? Guid.NewGuid() : @event.DataLockEventId;
+                events.Add(new DataLockEventEntity
                 {
-                    DataLockEventId = eventId,
-                    ErrorCode = error.ErrorCode,
-                    SystemDescription = error.SystemDescription
-                };
-
-                _dataLockEventErrorRepository.WriteDataLockEventError(errorEntity);
+                    DataLockEventId = id,
+                    ProcessDateTime = @event.ProcessDateTime,
+                    IlrFileName = @event.IlrFileName,
+                    SubmittedDateTime = @event.SubmittedDateTime,
+                    AcademicYear = @event.AcademicYear,
+                    Ukprn = @event.Ukprn,
+                    Uln = @event.Uln,
+                    LearnRefnumber = @event.LearnRefnumber,
+                    AimSeqNumber = @event.AimSeqNumber,
+                    PriceEpisodeIdentifier = @event.PriceEpisodeIdentifier,
+                    CommitmentId = @event.CommitmentId,
+                    EmployerAccountId = @event.EmployerAccountId,
+                    EventSource = (int)@event.EventSource,
+                    HasErrors = @event.HasErrors,
+                    IlrStartDate = @event.IlrStartDate,
+                    IlrStandardCode = @event.IlrStandardCode,
+                    IlrProgrammeType = @event.IlrProgrammeType,
+                    IlrFrameworkCode = @event.IlrFrameworkCode,
+                    IlrPathwayCode = @event.IlrPathwayCode,
+                    IlrTrainingPrice = @event.IlrTrainingPrice,
+                    IlrEndpointAssessorPrice = @event.IlrEndpointAssessorPrice,
+                    IlrPriceEffectiveDate = @event.IlrPriceEffectiveDate
+                });
+                if (@event.Errors != null && @event.Errors.Any())
+                {
+                    errors.AddRange(@event.Errors.Select(x => new DataLockEventErrorEntity
+                    {
+                        DataLockEventId = id,
+                        ErrorCode = x.ErrorCode,
+                        SystemDescription = x.SystemDescription
+                    }));
+                }
+                if (@event.Periods != null && @event.Periods.Any())
+                {
+                    periods.AddRange(@event.Periods.Select(x => new DataLockEventPeriodEntity
+                    {
+                        DataLockEventId = id,
+                        CollectionPeriodName = x.CollectionPeriod.Name,
+                        CollectionPeriodMonth = x.CollectionPeriod.Month,
+                        CollectionPeriodYear = x.CollectionPeriod.Year,
+                        CommitmentVersion = x.CommitmentVersion,
+                        IsPayable = x.IsPayable,
+                        TransactionType = (int)x.TransactionType
+                    }));
+                }
+                if (@event.CommitmentVersions != null && @event.CommitmentVersions.Any())
+                {
+                    commitmentVersions.AddRange(@event.CommitmentVersions.Select(x => new DataLockEventCommitmentVersionEntity
+                    {
+                        DataLockEventId = id,
+                        CommitmentVersion = x.CommitmentVersion,
+                        CommitmentStartDate = x.CommitmentStartDate,
+                        CommitmentStandardCode = x.CommitmentStandardCode,
+                        CommitmentProgrammeType = x.CommitmentProgrammeType,
+                        CommitmentFrameworkCode = x.CommitmentFrameworkCode,
+                        CommitmentPathwayCode = x.CommitmentPathwayCode,
+                        CommitmentNegotiatedPrice = x.CommitmentNegotiatedPrice,
+                        CommitmentEffectiveDate = x.CommitmentEffectiveDate
+                    }));
+                }
             }
         }
 
-        private void WriteEventPeriods(Guid eventId, DataLockEventPeriod[] periods)
-        {
-            if (periods == null)
-            {
-                return;
-            }
-
-            foreach (var period in periods)
-            {
-                var periodEntity = new DataLockEventPeriodEntity
-                {
-                    DataLockEventId = eventId,
-                    CollectionPeriodName = period.CollectionPeriod.Name,
-                    CollectionPeriodMonth = period.CollectionPeriod.Month,
-                    CollectionPeriodYear = period.CollectionPeriod.Year,
-                    CommitmentVersion = period.CommitmentVersion,
-                    IsPayable = period.IsPayable,
-                    TransactionType = (int)period.TransactionType
-                };
-
-                _dataLockEventPeriodRepository.WriteDataLockEventPeriod(periodEntity);
-            }
-        }
-
-        private void WriteEventCommitmentVersions(Guid eventId, DataLockEventCommitmentVersion[] versions)
-        {
-            if (versions == null)
-            {
-                return;
-            }
-
-            foreach (var version in versions)
-            {
-                var versionEntity = new DataLockEventCommitmentVersionEntity
-                {
-                    DataLockEventId = eventId,
-                    CommitmentVersion = version.CommitmentVersion,
-                    CommitmentStartDate = version.CommitmentStartDate,
-                    CommitmentStandardCode = version.CommitmentStandardCode,
-                    CommitmentProgrammeType = version.CommitmentProgrammeType,
-                    CommitmentFrameworkCode = version.CommitmentFrameworkCode,
-                    CommitmentPathwayCode = version.CommitmentPathwayCode,
-                    CommitmentNegotiatedPrice = version.CommitmentNegotiatedPrice,
-                    CommitmentEffectiveDate = version.CommitmentEffectiveDate
-                };
-
-                _dataLockEventCommitmentVersionRepository.WriteDataLockEventCommitmentVersion(versionEntity);
-            }
-        }
     }
 }

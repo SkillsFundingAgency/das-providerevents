@@ -7,6 +7,6 @@ namespace SFA.DAS.Provider.Events.DataLock.Domain.Data
     {
         DataLockEventPeriodEntity[] GetDataLockEventPeriods(Guid eventId);
 
-        void WriteDataLockEventPeriod(DataLockEventPeriodEntity period);
+        void BulkWriteDataLockEventPeriods(DataLockEventPeriodEntity[] periods);
     }
 }

@@ -11,443 +11,346 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentProvi
 {
     public class WhenHandling
     {
-        private static readonly object[] EmptyPriceEpisodeMatches =
+        private static readonly object[] EventConsolidationCases =
         {
-            new object[] { null },
-            new object[] { new PriceEpisodeMatchEntity[] {} }
+            new object[] { new[] { MakeDataLockEntity(), MakeDataLockEntity(commitmentVersionId: 2) }, 1 },
+            new object[] { new[] { MakeDataLockEntity(), MakeDataLockEntity(learnRefNumber: "Lrn-002") }, 2 },
+            new object[] { new[] { MakeDataLockEntity(), MakeDataLockEntity(priceEpisodeIdentifier: "25-22-0/05/2017") }, 2 },
         };
 
-        private static readonly object[] EmptyPriceEpisodePeriodMatches =
+        private static readonly object[] PeriodCases =
         {
-            new object[] { null },
-            new object[] { new PriceEpisodePeriodMatchEntity[] {} }
+            new object[] {new[] {MakeDataLockEntity(), MakeDataLockEntity(period: 2)}, 2},
+            new object[] {new[] {MakeDataLockEntity(), MakeDataLockEntity(period: 2), MakeDataLockEntity(period: 3) }, 3},
+            new object[] {new[] {MakeDataLockEntity(), MakeDataLockEntity(period: 2), MakeDataLockEntity(period: 2) }, 2},
+            new object[] {new[] {MakeDataLockEntity(), MakeDataLockEntity(period: 2), MakeDataLockEntity(period: 2, transactionType: 2) }, 3},
+        };
+        private static readonly object[] ErrorCases =
+        {
+            new object[] {new[] {MakeDataLockEntity(), MakeDataLockEntity(ruleId: "DLOCK_08")}, 2},
+            new object[] {new[] {MakeDataLockEntity(), MakeDataLockEntity(ruleId: "DLOCK_08"), MakeDataLockEntity(ruleId: "DLOCK_08") }, 2},
+        };
+        private static readonly object[] CommitmentVersionCases =
+        {
+            new object[] {new[] {MakeDataLockEntity(), MakeDataLockEntity(commitmentVersionId: 2)}, 2},
+            new object[] {new[] {MakeDataLockEntity(), MakeDataLockEntity(commitmentVersionId: 2), MakeDataLockEntity(commitmentVersionId: 2) }, 2},
         };
 
-        private static readonly object[] EmptyValidationErrors =
-        {
-            new object[] { null },
-            new object[] { new ValidationErrorEntity[] {} }
-        };
-
-        private static readonly object[] EmptyCommitmentVersions =
-        {
-            new object[] { null },
-            new object[] { new CommitmentEntity[] {} }
-        };
-
-        private Mock<IPriceEpisodeMatchRepository> _priceEpisodeMatchRepository;
-        private Mock<IPriceEpisodePeriodMatchRepository> _priceEpisodePeriodMatchRepository;
-        private Mock<IValidationErrorRepository> _validationErrorRepository;
-        private Mock<IIlrPriceEpisodeRepository> _ilrPriceEpisodeRepository;
-        private Mock<ICommitmentRepository> _commitmentRepository;
+        private Mock<IDataLockEventDataRepository> _dataLockEventDataRepository;
 
         private DataLock.Application.GetCurrentProviderEvents.GetCurrentProviderEventsHandler _handler;
-
-        private PriceEpisodeMatchEntity _priceEpisodeMatch;
-        private PriceEpisodePeriodMatchEntity _priceEpisodePeriodMatch;
-        private ValidationErrorEntity _validationError;
-        private IlrPriceEpisodeEntity _ilrPriceEpisode;
-        private CommitmentEntity _commitment;
 
         private string _academicYear = "1617";
         private EventSource _eventsSource = EventSource.Submission;
 
-        private readonly string _expectedErrorDescription = "No matching record found in the employer digital account for the negotiated cost of training";
-
         [SetUp]
         public void Arrange()
         {
-            _priceEpisodeMatch = new PriceEpisodeMatchEntity
-            {
-                Ukprn = 10000534,
-                PriceEpisodeIdentifier = "25-27-01/05/2017",
-                LearnRefnumber = "Lrn-001",
-                AimSeqNumber = 1,
-                CommitmentId = 99,
-                IsSuccess = false
-            };
+            //_priceEpisodeMatch = new PriceEpisodeMatchEntity
+            //{
+            //    Ukprn = 10000534,
+            //    PriceEpisodeIdentifier = "25-27-01/05/2017",
+            //    LearnRefnumber = "Lrn-001",
+            //    AimSeqNumber = 1,
+            //    CommitmentId = 99,
+            //    IsSuccess = false
+            //};
 
-            _priceEpisodePeriodMatch = new PriceEpisodePeriodMatchEntity
-            {
-                Ukprn = 10000534,
-                PriceEpisodeIdentifier = "25-27-01/05/2017",
-                LearnRefnumber = "Lrn-001",
-                AimSeqNumber = 1,
-                CommitmentId = 99,
-                VersionId = 1,
-                Period = 9,
-                Payable = false,
-                TransactionType = 1
-            };
+            //_priceEpisodePeriodMatch = new PriceEpisodePeriodMatchEntity
+            //{
+            //    Ukprn = 10000534,
+            //    PriceEpisodeIdentifier = "25-27-01/05/2017",
+            //    LearnRefnumber = "Lrn-001",
+            //    AimSeqNumber = 1,
+            //    CommitmentId = 99,
+            //    VersionId = 1,
+            //    Period = 9,
+            //    Payable = false,
+            //    TransactionType = 1
+            //};
 
-            _validationError = new ValidationErrorEntity
-            {
-                Ukprn = 10000534,
-                PriceEpisodeIdentifier = "25-27-01/05/2017",
-                LearnRefnumber = "Lrn-001",
-                AimSeqNumber = 1,
-                RuleId = "DLOCK_07"
-            };
+            //_validationError = new ValidationErrorEntity
+            //{
+            //    Ukprn = 10000534,
+            //    PriceEpisodeIdentifier = "25-27-01/05/2017",
+            //    LearnRefnumber = "Lrn-001",
+            //    AimSeqNumber = 1,
+            //    RuleId = "DLOCK_07"
+            //};
 
-            _ilrPriceEpisode = new IlrPriceEpisodeEntity
-            {
-                IlrFileName = "ILR-1617-10000534.xml",
-                SubmittedTime = new DateTime(2017, 2, 14, 9, 15,23),
-                Ukprn = 10000534,
-                Uln = 1000000019,
-                PriceEpisodeIdentifier = "25-27-01/05/2017",
-                LearnRefnumber = "Lrn-001",
-                AimSeqNumber = 1,
-                IlrStartDate = new DateTime(2017, 5, 1),
-                IlrStandardCode = 27,
-                IlrTrainingPrice = 12000,
-                IlrEndpointAssessorPrice = 3000,
-                IlrPriceEffectiveDate = DateTime.Today
-            };
+            //_ilrPriceEpisode = new IlrPriceEpisodeEntity
+            //{
+            //    IlrFileName = "ILR-1617-10000534.xml",
+            //    SubmittedTime = new DateTime(2017, 2, 14, 9, 15,23),
+            //    Ukprn = 10000534,
+            //    Uln = 1000000019,
+            //    PriceEpisodeIdentifier = "25-27-01/05/2017",
+            //    LearnRefnumber = "Lrn-001",
+            //    AimSeqNumber = 1,
+            //    IlrStartDate = new DateTime(2017, 5, 1),
+            //    IlrStandardCode = 27,
+            //    IlrTrainingPrice = 12000,
+            //    IlrEndpointAssessorPrice = 3000,
+            //    IlrPriceEffectiveDate = DateTime.Today
+            //};
 
-            _commitment = new CommitmentEntity
-            {
-                CommitmentId = 99,
-                CommitmentVersion = 1,
-                EmployerAccountId = 10,
-                StartDate = new DateTime(2017, 5, 1),
-                StandardCode = 27,
-                NegotiatedPrice = 17500,
-                EffectiveDate = new DateTime(2017, 5, 1)
-            };
+            //_commitment = new CommitmentEntity
+            //{
+            //    CommitmentId = 99,
+            //    CommitmentVersion = 1,
+            //    EmployerAccountId = 10,
+            //    StartDate = new DateTime(2017, 5, 1),
+            //    StandardCode = 27,
+            //    NegotiatedPrice = 17500,
+            //    EffectiveDate = new DateTime(2017, 5, 1)
+            //};
 
-            _priceEpisodeMatchRepository = new Mock<IPriceEpisodeMatchRepository>();
-            _priceEpisodePeriodMatchRepository = new Mock<IPriceEpisodePeriodMatchRepository>();
-            _validationErrorRepository = new Mock<IValidationErrorRepository>();
-            _ilrPriceEpisodeRepository = new Mock<IIlrPriceEpisodeRepository>();
-            _commitmentRepository = new Mock<ICommitmentRepository>();
+            _dataLockEventDataRepository = new Mock<IDataLockEventDataRepository>();
 
-            _priceEpisodeMatchRepository.Setup(r => r.GetProviderPriceEpisodeMatches(It.IsAny<long>()))
-                .Returns(new[]
-                {
-                    _priceEpisodeMatch
-                });
-
-            _priceEpisodePeriodMatchRepository.Setup(r => r.GetPriceEpisodePeriodMatches(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(new[]
-                {
-                    _priceEpisodePeriodMatch
-                });
-
-            _validationErrorRepository.Setup(r => r.GetPriceEpisodeValidationErrors(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(new[]
-                {
-                    _validationError
-                });
-
-            _ilrPriceEpisodeRepository.Setup(r => r.GetPriceEpisodeIlrData(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(_ilrPriceEpisode);
-
-            _commitmentRepository.Setup(r => r.GetCommitmentVersions(It.IsAny<long>()))
-                .Returns(new[]
-                {
-                    _commitment
-                });
-
-            _handler = new DataLock.Application.GetCurrentProviderEvents.GetCurrentProviderEventsHandler(_priceEpisodeMatchRepository.Object,
-                _priceEpisodePeriodMatchRepository.Object,
-                _validationErrorRepository.Object,
-                _ilrPriceEpisodeRepository.Object,
-                _commitmentRepository.Object,
+            _handler = new DataLock.Application.GetCurrentProviderEvents.GetCurrentProviderEventsHandler(_dataLockEventDataRepository.Object,
                 _academicYear,
                 _eventsSource);
         }
 
         [Test]
-        public void ThenItShouldReturnCurrentDataLockEventsFromRepository()
+        [TestCaseSource(nameof(EventConsolidationCases))]
+        public void ThenItShouldReturnAnEventPerChangeInLearnerRefOrPriceEpisode(DataLockEventDataEntity[] entities, int expectedNumberOfEvents)
         {
+            // Arrange
+            _dataLockEventDataRepository.Setup(r => r.GetCurrentEvents(It.IsAny<long>()))
+                .Returns(entities);
+
             // Act
-            var response = _handler.Handle(new GetCurrentProviderEventsRequest());
+            var response = _handler.Handle(new GetCurrentProviderEventsRequest { Ukprn = 10000534 });
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.IsTrue(response.IsValid);
+            Assert.IsNotNull(response.Items);
+            Assert.AreEqual(expectedNumberOfEvents, response.Items.Length);
+        }
+
+        [Test]
+        public void ThenItShouldMapEntityToDomainModelCorrectly()
+        {
+            // Arrange
+            var entities = new[]
+            {
+                MakeDataLockEntity(),
+                MakeDataLockEntity(ruleId: "DLOCK_08"),
+                MakeDataLockEntity(period: 2, commitmentVersionId: 2, payable: false, commitmentStandardCode: 22, commitmentNegotiatedPrice: 16000, commitmentEffectiveDate: new DateTime(2017, 5, 1))
+            };
+            _dataLockEventDataRepository.Setup(r => r.GetCurrentEvents(10000534))
+                .Returns(entities);
+
+            // Act
+            var response = _handler.Handle(new GetCurrentProviderEventsRequest { Ukprn = 10000534 });
 
             // Assert
             Assert.IsNotNull(response);
             Assert.IsTrue(response.IsValid);
             Assert.IsNotNull(response.Items);
             Assert.AreEqual(1, response.Items.Length);
-            Assert.IsTrue(EventMatches(response.Items[0]));
+
+            // Main event
+            var actualEvent = response.Items[0];
+            Assert.AreEqual(entities[0].IlrFilename, actualEvent.IlrFileName);
+            Assert.AreEqual(entities[0].SubmittedTime, actualEvent.SubmittedDateTime);
+            Assert.AreEqual(_academicYear, actualEvent.AcademicYear);
+            Assert.AreEqual(entities[0].Ukprn, actualEvent.Ukprn);
+            Assert.AreEqual(entities[0].Uln, actualEvent.Uln);
+            Assert.AreEqual(entities[0].LearnRefNumber, actualEvent.LearnRefnumber);
+            Assert.AreEqual(entities[0].AimSeqNumber, actualEvent.AimSeqNumber);
+            Assert.AreEqual(entities[0].PriceEpisodeIdentifier, actualEvent.PriceEpisodeIdentifier);
+            Assert.AreEqual(entities[0].CommitmentId, actualEvent.CommitmentId);
+            Assert.AreEqual(entities[0].EmployerAccountId, actualEvent.EmployerAccountId);
+            Assert.AreEqual(_eventsSource, actualEvent.EventSource);
+            Assert.AreEqual(!entities[0].IsSuccess, actualEvent.HasErrors);
+            Assert.AreEqual(entities[0].IlrStartDate, actualEvent.IlrStartDate);
+            Assert.AreEqual(entities[0].IlrStandardCode, actualEvent.IlrStandardCode);
+            Assert.AreEqual(entities[0].IlrProgrammeType, actualEvent.IlrProgrammeType);
+            Assert.AreEqual(entities[0].IlrFrameworkCode, actualEvent.IlrFrameworkCode);
+            Assert.AreEqual(entities[0].IlrPathwayCode, actualEvent.IlrPathwayCode);
+            Assert.AreEqual(entities[0].IlrTrainingPrice, actualEvent.IlrTrainingPrice);
+            Assert.AreEqual(entities[0].IlrEndpointAssessorPrice, actualEvent.IlrEndpointAssessorPrice);
+            Assert.AreEqual(entities[0].IlrPriceEffectiveDate, actualEvent.IlrPriceEffectiveDate);
+
+            // Errors
+            Assert.IsNotNull(actualEvent.Errors);
+            Assert.AreEqual(2, actualEvent.Errors.Length);
+
+            Assert.AreEqual("DLOCK_07", actualEvent.Errors[0].ErrorCode);
+            Assert.AreEqual("No matching record found in the employer digital account for the negotiated cost of training", actualEvent.Errors[0].SystemDescription);
+
+            Assert.AreEqual("DLOCK_08", actualEvent.Errors[1].ErrorCode);
+            Assert.AreEqual("Multiple matching records found in the employer digital account", actualEvent.Errors[1].SystemDescription);
+
+            // Periods
+            Assert.IsNotNull(actualEvent.Periods);
+            Assert.AreEqual(2, actualEvent.Periods.Length);
+
+            Assert.AreEqual(8, actualEvent.Periods[0].CollectionPeriod.Month);
+            Assert.AreEqual(2016, actualEvent.Periods[0].CollectionPeriod.Year);
+            Assert.AreEqual("1617-R01", actualEvent.Periods[0].CollectionPeriod.Name);
+            Assert.AreEqual(1, actualEvent.Periods[0].CommitmentVersion);
+            Assert.AreEqual(true, actualEvent.Periods[0].IsPayable);
+            Assert.AreEqual(TransactionType.Learning, actualEvent.Periods[0].TransactionType);
+
+            Assert.AreEqual(9, actualEvent.Periods[1].CollectionPeriod.Month);
+            Assert.AreEqual(2016, actualEvent.Periods[1].CollectionPeriod.Year);
+            Assert.AreEqual("1617-R02", actualEvent.Periods[1].CollectionPeriod.Name);
+            Assert.AreEqual(2, actualEvent.Periods[1].CommitmentVersion);
+            Assert.AreEqual(false, actualEvent.Periods[1].IsPayable);
+            Assert.AreEqual(TransactionType.Learning, actualEvent.Periods[1].TransactionType);
+
+            // Commitment versions
+            Assert.IsNotNull(actualEvent.CommitmentVersions);
+            Assert.AreEqual(2, actualEvent.CommitmentVersions.Length);
+
+            Assert.AreEqual(entities[0].CommitmentVersionId, actualEvent.CommitmentVersions[0].CommitmentVersion);
+            Assert.AreEqual(entities[0].CommitmentStandardCode, actualEvent.CommitmentVersions[0].CommitmentStandardCode);
+            Assert.AreEqual(entities[0].CommitmentProgrammeType, actualEvent.CommitmentVersions[0].CommitmentProgrammeType);
+            Assert.AreEqual(entities[0].CommitmentFrameworkCode, actualEvent.CommitmentVersions[0].CommitmentFrameworkCode);
+            Assert.AreEqual(entities[0].CommitmentPathwayCode, actualEvent.CommitmentVersions[0].CommitmentPathwayCode);
+            Assert.AreEqual(entities[0].CommitmentStartDate, actualEvent.CommitmentVersions[0].CommitmentStartDate);
+            Assert.AreEqual(entities[0].CommitmentNegotiatedPrice, actualEvent.CommitmentVersions[0].CommitmentNegotiatedPrice);
+            Assert.AreEqual(entities[0].CommitmentEffectiveDate, actualEvent.CommitmentVersions[0].CommitmentEffectiveDate);
+
+            Assert.AreEqual(entities[2].CommitmentVersionId, actualEvent.CommitmentVersions[1].CommitmentVersion);
+            Assert.AreEqual(entities[2].CommitmentStandardCode, actualEvent.CommitmentVersions[1].CommitmentStandardCode);
+            Assert.AreEqual(entities[2].CommitmentProgrammeType, actualEvent.CommitmentVersions[1].CommitmentProgrammeType);
+            Assert.AreEqual(entities[2].CommitmentFrameworkCode, actualEvent.CommitmentVersions[1].CommitmentFrameworkCode);
+            Assert.AreEqual(entities[2].CommitmentPathwayCode, actualEvent.CommitmentVersions[1].CommitmentPathwayCode);
+            Assert.AreEqual(entities[2].CommitmentStartDate, actualEvent.CommitmentVersions[1].CommitmentStartDate);
+            Assert.AreEqual(entities[2].CommitmentNegotiatedPrice, actualEvent.CommitmentVersions[1].CommitmentNegotiatedPrice);
+            Assert.AreEqual(entities[2].CommitmentEffectiveDate, actualEvent.CommitmentVersions[1].CommitmentEffectiveDate);
         }
 
         [Test]
-        [TestCaseSource(nameof(EmptyPriceEpisodeMatches))]
-        public void ThenItShouldReturnEmptyArrayIfNoResultFromRepository(PriceEpisodeMatchEntity[] entities)
+        public void ThenItShouldReturnValidResponseWithEmptyItemArrayIfNoEventsInRepository()
+        {
+            // Act
+            var response = _handler.Handle(new GetCurrentProviderEventsRequest { Ukprn = 10000534 });
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.IsTrue(response.IsValid);
+            Assert.IsNotNull(response.Items);
+            Assert.AreEqual(0, response.Items.Length);
+        }
+
+        [Test]
+        public void ThenItShouldReturnInvalidResponseWithExceptionIfRepositoryThrowsException()
         {
             // Arrange
-            _priceEpisodeMatchRepository.Setup(r => r.GetProviderPriceEpisodeMatches(It.IsAny<long>()))
+            _dataLockEventDataRepository.Setup(r => r.GetCurrentEvents(It.IsAny<long>()))
+                .Throws(new FormatException("XYZ"));
+
+            // Act
+            var response = _handler.Handle(new GetCurrentProviderEventsRequest { Ukprn = 10000534 });
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.IsFalse(response.IsValid);
+            Assert.IsNotNull(response.Exception);
+            Assert.IsInstanceOf<FormatException>(response.Exception);
+            Assert.AreEqual("XYZ", response.Exception.Message);
+        }
+
+        [Test]
+        [TestCaseSource(nameof(PeriodCases))]
+        public void ThenItShouldReturnADistinctListOfPeriodsForAnEvent(DataLockEventDataEntity[] entities, int expectedNumberOfPeriods)
+        {
+            // Arrange
+            _dataLockEventDataRepository.Setup(r => r.GetCurrentEvents(It.IsAny<long>()))
                 .Returns(entities);
 
             // Act
-            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
+            var response = _handler.Handle(new GetCurrentProviderEventsRequest { Ukprn = 10000534 });
 
             // Assert
-            Assert.IsNotNull(actual);
-            Assert.IsTrue(actual.IsValid);
-            Assert.IsNotNull(actual.Items);
-            Assert.AreEqual(0, actual.Items.Length);
+            var actual = response.Items[0];
+            Assert.IsNotNull(actual.Periods);
+            Assert.AreEqual(expectedNumberOfPeriods, actual.Periods.Length);
         }
 
         [Test]
-        [TestCaseSource(nameof(EmptyPriceEpisodePeriodMatches))]
-        public void ThenItShouldReturnEventWithNoPeriodsIfEmptyArrayReturnedFromPeriodsRepository(PriceEpisodePeriodMatchEntity[] entities)
+        [TestCaseSource(nameof(ErrorCases))]
+        public void ThenItShouldReturnADistinctListOfErrorCodesForAnEvent(DataLockEventDataEntity[] entities, int expectedNumberOfErrors)
         {
             // Arrange
-            _priceEpisodePeriodMatchRepository.Setup(r => r.GetPriceEpisodePeriodMatches(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()))
+            _dataLockEventDataRepository.Setup(r => r.GetCurrentEvents(It.IsAny<long>()))
                 .Returns(entities);
 
             // Act
-            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
+            var response = _handler.Handle(new GetCurrentProviderEventsRequest { Ukprn = 10000534 });
 
             // Assert
-            Assert.IsNotNull(actual);
-            Assert.IsTrue(actual.IsValid);
-            Assert.IsNotNull(actual.Items);
-            Assert.AreEqual(1, actual.Items.Length);
-            Assert.AreEqual(0, actual.Items[0].Periods.Length);
+            var actual = response.Items[0];
+            Assert.IsNotNull(actual.Errors);
+            Assert.AreEqual(expectedNumberOfErrors, actual.Errors.Length);
         }
 
         [Test]
-        [TestCaseSource(nameof(EmptyValidationErrors))]
-        public void ThenItShouldReturnEventWithNoErrorsIfEmptyArrayReturnedFromErrorsRepository(ValidationErrorEntity[] entities)
+        [TestCaseSource(nameof(CommitmentVersionCases))]
+        public void ThenItShouldReturnADistinctListOfCommitmentVersionsForAnEvent(DataLockEventDataEntity[] entities, int expectedNumberOfVersions)
         {
             // Arrange
-            _validationErrorRepository.Setup(r => r.GetPriceEpisodeValidationErrors(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()))
+            _dataLockEventDataRepository.Setup(r => r.GetCurrentEvents(It.IsAny<long>()))
                 .Returns(entities);
 
             // Act
-            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
+            var response = _handler.Handle(new GetCurrentProviderEventsRequest { Ukprn = 10000534 });
 
             // Assert
-            Assert.IsNotNull(actual);
-            Assert.IsTrue(actual.IsValid);
-            Assert.IsNotNull(actual.Items);
-            Assert.AreEqual(1, actual.Items.Length);
-            Assert.AreEqual(0, actual.Items[0].Errors.Length);
+            var actual = response.Items[0];
+            Assert.IsNotNull(actual.CommitmentVersions);
+            Assert.AreEqual(expectedNumberOfVersions, actual.CommitmentVersions.Length);
         }
 
-        [Test]
-        public void ThenItShouldReturnInvalidResponseIfPriceEpisodeMatchRepositoryErrors()
+
+        private static DataLockEventDataEntity MakeDataLockEntity(long ukprn = 10000534, string priceEpisodeIdentifier = "25-21-0/05/2017", string learnRefNumber = "Lrn-001",
+            int aimSeqNumber = 1, long commitmentId = 1, bool isSuccess = true, string ilrFileName = "something", DateTime submittedTime = default(DateTime),
+            long uln = 1532456, DateTime ilrStartDate = default(DateTime), long? ilrStandardCode = 21, int? ilrProgrammeType = null, int? ilrFrameworkCode = null,
+            int? ilrPathwayCode = null, decimal ilrTrainingPrice = 12000, decimal ilrEndpointAssessorPrice = 3000, DateTime ilrPriceEffectiveDate = default(DateTime),
+            long commitmentVersionId = 1, int period = 1, bool payable = true, int transactionType = 1, long employerAccountId = 1, DateTime commitmentStartDate = default(DateTime),
+            long? commitmentStandardCode = 21, int? commitmentProgrammeType = null, int? commitmentFrameworkCode = null, int? commitmentPathwayCode = null,
+            decimal commitmentNegotiatedPrice = 16000, DateTime commitmentEffectiveDate = default(DateTime), string ruleId = "DLOCK_07")
         {
-            // Arrange
-            _priceEpisodeMatchRepository.Setup(r => r.GetProviderPriceEpisodeMatches(It.IsAny<long>()))
-                .Throws(new Exception("Test"));
-
-            // Act
-            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
-
-            // Assert
-            Assert.IsNotNull(actual);
-            Assert.IsFalse(actual.IsValid);
-            Assert.IsNotNull(actual.Exception);
-            Assert.AreEqual("Test", actual.Exception.Message);
-        }
-
-        [Test]
-        public void ThenItShouldReturnInvalidResponseIfPriceEpisodePeriodMatchRepositoryErrors()
-        {
-            // Arrange
-            _priceEpisodePeriodMatchRepository.Setup(r => r.GetPriceEpisodePeriodMatches(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Throws(new Exception("Test"));
-
-            // Act
-            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
-
-            // Assert
-            Assert.IsNotNull(actual);
-            Assert.IsFalse(actual.IsValid);
-            Assert.IsNotNull(actual.Exception);
-            Assert.AreEqual("Test", actual.Exception.Message);
-        }
-
-        [Test]
-        public void ThenItShouldReturnInvalidResponseIfValidationErrorRepositoryErrors()
-        {
-            // Arrange
-            _validationErrorRepository.Setup(r => r.GetPriceEpisodeValidationErrors(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Throws(new Exception("Test"));
-
-            // Act
-            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
-
-            // Assert
-            Assert.IsNotNull(actual);
-            Assert.IsFalse(actual.IsValid);
-            Assert.IsNotNull(actual.Exception);
-            Assert.AreEqual("Test", actual.Exception.Message);
-        }
-
-        [Test]
-        public void ThenItShouldReturnInvalidResponseIfIlrPriceEpisodeRepositoryErrors()
-        {
-            // Arrange
-            _ilrPriceEpisodeRepository.Setup(r => r.GetPriceEpisodeIlrData(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Throws(new Exception("Test"));
-
-            // Act
-            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
-
-            // Assert
-            Assert.IsNotNull(actual);
-            Assert.IsFalse(actual.IsValid);
-            Assert.IsNotNull(actual.Exception);
-            Assert.AreEqual("Test", actual.Exception.Message);
-        }
-
-        [Test]
-        public void ThenItShouldReturnInvalidResponseIfCommitmentRepositoryErrors()
-        {
-            // Arrange
-            _commitmentRepository.Setup(r => r.GetCommitmentVersions(It.IsAny<long>()))
-                .Throws(new Exception("Test"));
-
-            // Act
-            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
-
-            // Assert
-            Assert.IsNotNull(actual);
-            Assert.IsFalse(actual.IsValid);
-            Assert.IsNotNull(actual.Exception);
-            Assert.AreEqual("Test", actual.Exception.Message);
-        }
-
-        [Test]
-        public void ThenItShouldReturnInvalidResponseIfNoIlrDataFound()
-        {
-            // Arrange
-            _ilrPriceEpisodeRepository.Setup(r => r.GetPriceEpisodeIlrData(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns((IlrPriceEpisodeEntity)null);
-
-            // Act
-            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
-
-            // Assert
-            Assert.IsNotNull(actual);
-            Assert.IsFalse(actual.IsValid);
-            Assert.IsNotNull(actual.Exception);
-        }
-
-        [Test]
-        [TestCaseSource(nameof(EmptyCommitmentVersions))]
-        public void ThenItShouldReturnInvalidResponseIfNoCommitmentVersionsFound(CommitmentEntity[] entities)
-        {
-            // Arrange
-            _commitmentRepository.Setup(r => r.GetCommitmentVersions(It.IsAny<long>()))
-                .Returns(entities);
-
-            // Act
-            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
-
-            // Assert
-            Assert.IsNotNull(actual);
-            Assert.IsFalse(actual.IsValid);
-            Assert.IsNotNull(actual.Exception);
-        }
-
-        [Test]
-        [TestCase(1, "1617-R01", 8, 2016)]
-        [TestCase(2, "1617-R02", 9, 2016)]
-        [TestCase(3, "1617-R03", 10, 2016)]
-        [TestCase(4, "1617-R04", 11, 2016)]
-        [TestCase(5, "1617-R05", 12, 2016)]
-        [TestCase(6, "1617-R06", 1, 2017)]
-        [TestCase(7, "1617-R07", 2, 2017)]
-        [TestCase(8, "1617-R08", 3, 2017)]
-        [TestCase(9, "1617-R09", 4, 2017)]
-        [TestCase(10, "1617-R10", 5, 2017)]
-        [TestCase(11, "1617-R11", 6, 2017)]
-        [TestCase(12, "1617-R12", 7, 2017)]
-        public void ThenItShouldReturnTheCorrectPeriodInformation(int period, string name, int month, int year)
-        {
-            // Arrange
-            _priceEpisodePeriodMatch = new PriceEpisodePeriodMatchEntity
+            return new DataLockEventDataEntity
             {
-                Ukprn = 10000534,
-                PriceEpisodeIdentifier = "25-27-01/05/2017",
-                LearnRefnumber = "Lrn-001",
-                AimSeqNumber = 1,
-                CommitmentId = 99,
-                VersionId = 1,
+                Ukprn = ukprn,
+                PriceEpisodeIdentifier = priceEpisodeIdentifier,
+                LearnRefNumber = learnRefNumber,
+                AimSeqNumber = aimSeqNumber,
+                CommitmentId = commitmentId,
+                IsSuccess = isSuccess,
+                IlrFilename = ilrFileName,
+                SubmittedTime = submittedTime,
+                Uln = uln,
+                IlrStartDate = ilrStartDate,
+                IlrStandardCode = ilrStandardCode,
+                IlrProgrammeType = ilrProgrammeType,
+                IlrFrameworkCode = ilrFrameworkCode,
+                IlrPathwayCode = ilrPathwayCode,
+                IlrTrainingPrice = ilrTrainingPrice,
+                IlrEndpointAssessorPrice = ilrEndpointAssessorPrice,
+                IlrPriceEffectiveDate = ilrPriceEffectiveDate,
+                CommitmentVersionId = commitmentVersionId,
                 Period = period,
-                Payable = false,
-                TransactionType = 1
+                Payable = payable,
+                TransactionType = transactionType,
+                EmployerAccountId = employerAccountId,
+                CommitmentStartDate = commitmentStartDate,
+                CommitmentStandardCode = commitmentStandardCode,
+                CommitmentProgrammeType = commitmentProgrammeType,
+                CommitmentFrameworkCode = commitmentFrameworkCode,
+                CommitmentPathwayCode = commitmentPathwayCode,
+                CommitmentNegotiatedPrice = commitmentNegotiatedPrice,
+                CommitmentEffectiveDate = commitmentEffectiveDate,
+                RuleId = ruleId
             };
-
-            _priceEpisodePeriodMatchRepository.Setup(r => r.GetPriceEpisodePeriodMatches(It.IsAny<long>(), It.IsAny<string>(), It.IsAny<string>()))
-               .Returns(new[]
-               {
-                    _priceEpisodePeriodMatch
-               });
-
-            // Act
-            var actual = _handler.Handle(new GetCurrentProviderEventsRequest());
-
-            // Assert
-            Assert.IsNotNull(actual);
-            Assert.IsTrue(actual.IsValid);
-
-            var actualPeriod = actual.Items[0].Periods[0].CollectionPeriod;
-
-            Assert.AreEqual(name, actualPeriod.Name);
-            Assert.AreEqual(month, actualPeriod.Month);
-            Assert.AreEqual(year, actualPeriod.Year);
         }
-
-        private bool EventMatches(DataLockEvent @event)
-        {
-            return @event.IlrFileName == _ilrPriceEpisode.IlrFileName
-                   && @event.SubmittedDateTime == _ilrPriceEpisode.SubmittedTime
-                   && @event.AcademicYear == _academicYear
-                   && @event.Ukprn == _priceEpisodeMatch.Ukprn
-                   && @event.Uln == _ilrPriceEpisode.Uln
-                   && @event.LearnRefnumber == _priceEpisodeMatch.LearnRefnumber
-                   && @event.AimSeqNumber == _priceEpisodeMatch.AimSeqNumber
-                   && @event.PriceEpisodeIdentifier == _priceEpisodeMatch.PriceEpisodeIdentifier
-                   && @event.CommitmentId == _priceEpisodeMatch.CommitmentId
-                   && @event.EmployerAccountId == _commitment.EmployerAccountId
-                   && @event.EventSource == _eventsSource
-                   && @event.HasErrors == !_priceEpisodeMatch.IsSuccess
-                   && @event.IlrStartDate == _ilrPriceEpisode.IlrStartDate
-                   && @event.IlrStandardCode == _ilrPriceEpisode.IlrStandardCode
-                   && @event.IlrProgrammeType == _ilrPriceEpisode.IlrProgrammeType
-                   && @event.IlrFrameworkCode == _ilrPriceEpisode.IlrFrameworkCode
-                   && @event.IlrPathwayCode == _ilrPriceEpisode.IlrPathwayCode
-                   && @event.IlrTrainingPrice == _ilrPriceEpisode.IlrTrainingPrice
-                   && @event.IlrEndpointAssessorPrice == _ilrPriceEpisode.IlrEndpointAssessorPrice
-                   && @event.IlrPriceEffectiveDate == _ilrPriceEpisode.IlrPriceEffectiveDate
-                   && ErrorMatches(@event.Errors[0])
-                   && PeriodMatches(@event.Periods[0])
-                   && CommitmentVersionMatches(@event.CommitmentVersions[0]);
-        }
-
-        private bool ErrorMatches(DataLockEventError error)
-        {
-            return error.ErrorCode == _validationError.RuleId
-                   && error.SystemDescription == _expectedErrorDescription;
-        }
-
-        private bool PeriodMatches(DataLockEventPeriod period)
-        {
-            return period.CollectionPeriod.Name == "1617-R09"
-                   && period.CollectionPeriod.Month == 4
-                   && period.CollectionPeriod.Year == 2017
-                   && period.CommitmentVersion == _priceEpisodePeriodMatch.VersionId
-                   && period.IsPayable == _priceEpisodePeriodMatch.Payable
-                   && period.TransactionType == (TransactionType) _priceEpisodePeriodMatch.TransactionType;
-        }
-
-        private bool CommitmentVersionMatches(DataLockEventCommitmentVersion version)
-        {
-            return version.CommitmentVersion == _commitment.CommitmentVersion
-                   && version.CommitmentStartDate == _commitment.StartDate
-                   && version.CommitmentStandardCode == _commitment.StandardCode
-                   && version.CommitmentProgrammeType == _commitment.ProgrammeType
-                   && version.CommitmentFrameworkCode == _commitment.FrameworkCode
-                   && version.CommitmentPathwayCode == _commitment.PathwayCode
-                   && version.CommitmentNegotiatedPrice == _commitment.NegotiatedPrice
-                   && version.CommitmentEffectiveDate == _commitment.EffectiveDate;
-        }
+        
     }
 }

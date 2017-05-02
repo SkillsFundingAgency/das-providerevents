@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MediatR;
 using NLog;
@@ -34,7 +35,7 @@ namespace SFA.DAS.Provider.Events.DataLock
 
             if (providersResponse.HasAnyItems())
             {
-
+                var eventsToStore = new List<DataLockEvent>();
                 foreach (var provider in providersResponse.Items)
                 {
                     _logger.Info($"Starting to process provider {provider.Ukprn}");
@@ -46,29 +47,33 @@ namespace SFA.DAS.Provider.Events.DataLock
                         _logger.Info("Provider does not have any current events. Skipping");
                         continue;
                     }
-
                     foreach (var current in currentEventsResponse.Items)
                     {
                         _logger.Info($"Found event. Price episode = {current.PriceEpisodeIdentifier}, Uln = {current.Uln}");
                         var lastSeen = lastSeenEventsResponse.Items?.SingleOrDefault(ev => ev.Ukprn == current.Ukprn &&
                                                                                            ev.PriceEpisodeIdentifier == current.PriceEpisodeIdentifier &&
-                                                                                           ev.Uln == current.Uln);
+                                                                                           ev.LearnRefnumber == current.LearnRefnumber);
 
                         if (EventsAreDifferent(current, lastSeen))
                         {
                             _logger.Info("Event has changed");
                             current.ProcessDateTime = DateTime.Now;
 
-                            _mediator.Send(new WriteDataLockEventCommandRequest
-                            {
-                                Event = current
-                            });
+                            eventsToStore.Add(current);
                         }
                         else
                         {
                             _logger.Info("Event is same as previous");
                         }
                     }
+                }
+
+                if (eventsToStore.Any())
+                {
+                    _mediator.Send(new WriteDataLockEventCommandRequest
+                    {
+                        Events = eventsToStore.ToArray()
+                    });
                 }
             }
         }
