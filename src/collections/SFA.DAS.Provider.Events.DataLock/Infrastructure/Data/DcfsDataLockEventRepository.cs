@@ -62,7 +62,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
                     var batch = events.Skip(skip).Take(batchSize)
                         .Select(x => $"('{x.DataLockEventId}','{x.ProcessDateTime:yyyy-MM-dd HH:mm:ss}', '{x.IlrFileName}', '{x.SubmittedDateTime:yyyy-MM-dd HH:mm:ss}', " +
                                      $"'{x.AcademicYear}', '{x.Ukprn}', '{x.Uln}', '{x.LearnRefnumber}', '{x.AimSeqNumber}', '{x.PriceEpisodeIdentifier}', " +
-                                     $"'{x.CommitmentId}', '{x.EmployerAccountId}', '{(int)x.EventSource}', '{x.HasErrors}', '{x.IlrStartDate}', " +
+                                     $"'{x.CommitmentId}', '{x.EmployerAccountId}', '{(int)x.EventSource}', '{x.HasErrors}', '{x.IlrStartDate:yyyy-MM-dd HH:mm:ss}', " +
                                      $"'{x.IlrStandardCode}', '{x.IlrProgrammeType}', '{x.IlrFrameworkCode}', '{x.IlrPathwayCode}', '{x.IlrTrainingPrice}', " +
                                      $"'{x.IlrEndpointAssessorPrice}', '{x.IlrPriceEffectiveDate:yyyy-MM-dd HH:mm:ss}')")
                         .Aggregate((x, y) => $"{x}, {y}");
