@@ -204,7 +204,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents
                 case "DLOCK_10":
                     return "The employer has stopped payments for this apprentice";
                 case "DLOCK_11":
-                    return "The employer is non levy payer";
+                    return "The employer is not currently a levy payer";
                 default:
                     return errorCode;
             }
