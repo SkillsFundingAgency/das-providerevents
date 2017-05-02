@@ -124,7 +124,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Specs
             Assert.IsTrue(duration.TotalSeconds < 30, $"Expected to complete in less than 30 seconds but took {duration.TotalSeconds:0.0}");
         }
 
-        [Test]
+        [Test, Explicit]
         public void ThenItShouldCompleteInAnAcceptableTimeInAPeriodEndRun()
         {
             // Arrange
