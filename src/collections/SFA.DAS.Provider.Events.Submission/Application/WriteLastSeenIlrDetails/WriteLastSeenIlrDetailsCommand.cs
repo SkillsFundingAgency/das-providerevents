@@ -5,6 +5,6 @@ namespace SFA.DAS.Provider.Events.Submission.Application.WriteLastSeenIlrDetails
 {
     public class WriteLastSeenIlrDetailsCommand : IRequest
     {
-        public IlrDetails LastSeenIlr { get; set; }
+        public IlrDetails[] LastSeenIlrs { get; set; }
     }
 }

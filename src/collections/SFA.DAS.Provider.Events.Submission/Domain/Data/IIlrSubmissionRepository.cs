@@ -7,6 +7,6 @@
 
         IlrDetails[] GetLastSeenVersions();
 
-        void StoreLastSeenVersion(IlrDetails details);
+        void StoreLastSeenVersions(IlrDetails[] details);
     }
 }

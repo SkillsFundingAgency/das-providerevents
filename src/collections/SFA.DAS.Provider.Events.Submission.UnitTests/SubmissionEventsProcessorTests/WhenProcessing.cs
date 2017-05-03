@@ -107,49 +107,49 @@ namespace SFA.DAS.Provider.Events.Submission.UnitTests.SubmissionEventsProcessor
             _processor.Process();
 
             // Assert
-            _mediator.Verify(m => m.Send(It.IsAny<WriteSubmissionEventCommand>()), Times.Exactly(2));
+            _mediator.Verify(m => m.Send(It.IsAny<WriteSubmissionEventCommand>()), Times.Exactly(1));
 
             // Provider with first submission
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.IlrFileName == ilrForFirstSubmission.IlrFileName)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.FileDateTime == ilrForFirstSubmission.FileDateTime)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.SubmittedDateTime == ilrForFirstSubmission.SubmittedDateTime)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.ComponentVersionNumber == SubmissionEventsTask.ComponentVersion)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.Ukprn == ilrForFirstSubmission.Ukprn)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.Uln == ilrForFirstSubmission.Uln)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.LearnRefNumber == ilrForFirstSubmission.LearnRefNumber)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.AimSeqNumber == ilrForFirstSubmission.AimSeqNumber)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.PriceEpisodeIdentifier == ilrForFirstSubmission.PriceEpisodeIdentifier)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.StandardCode == ilrForFirstSubmission.StandardCode)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.ProgrammeType == ilrForFirstSubmission.ProgrammeType)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.FrameworkCode == ilrForFirstSubmission.FrameworkCode)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.PathwayCode == ilrForFirstSubmission.PathwayCode)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.ActualStartDate == ilrForFirstSubmission.ActualStartDate)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.PlannedEndDate == ilrForFirstSubmission.PlannedEndDate)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.ActualEndDate == ilrForFirstSubmission.ActualEndDate)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.OnProgrammeTotalPrice == ilrForFirstSubmission.OnProgrammeTotalPrice)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.CompletionTotalPrice == ilrForFirstSubmission.CompletionTotalPrice)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.NiNumber == ilrForFirstSubmission.NiNumber)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[0].IlrFileName == ilrForFirstSubmission.IlrFileName)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[0].FileDateTime == ilrForFirstSubmission.FileDateTime)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[0].SubmittedDateTime == ilrForFirstSubmission.SubmittedDateTime)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[0].ComponentVersionNumber == SubmissionEventsTask.ComponentVersion)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[0].Ukprn == ilrForFirstSubmission.Ukprn)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[0].Uln == ilrForFirstSubmission.Uln)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[0].LearnRefNumber == ilrForFirstSubmission.LearnRefNumber)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[0].AimSeqNumber == ilrForFirstSubmission.AimSeqNumber)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[0].PriceEpisodeIdentifier == ilrForFirstSubmission.PriceEpisodeIdentifier)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[0].StandardCode == ilrForFirstSubmission.StandardCode)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[0].ProgrammeType == ilrForFirstSubmission.ProgrammeType)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[0].FrameworkCode == ilrForFirstSubmission.FrameworkCode)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[0].PathwayCode == ilrForFirstSubmission.PathwayCode)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[0].ActualStartDate == ilrForFirstSubmission.ActualStartDate)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[0].PlannedEndDate == ilrForFirstSubmission.PlannedEndDate)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[0].ActualEndDate == ilrForFirstSubmission.ActualEndDate)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[0].OnProgrammeTotalPrice == ilrForFirstSubmission.OnProgrammeTotalPrice)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[0].CompletionTotalPrice == ilrForFirstSubmission.CompletionTotalPrice)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[0].NiNumber == ilrForFirstSubmission.NiNumber)));
 
             // Provider with updated submission
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.IlrFileName == updatedSubmissionChanged.IlrFileName)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.FileDateTime == updatedSubmissionChanged.FileDateTime)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.SubmittedDateTime == updatedSubmissionChanged.SubmittedDateTime)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.ComponentVersionNumber == SubmissionEventsTask.ComponentVersion)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.Ukprn == updatedSubmissionChanged.Ukprn)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.Uln == updatedSubmissionChanged.Uln)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.LearnRefNumber == updatedSubmissionChanged.LearnRefNumber)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.AimSeqNumber == updatedSubmissionChanged.AimSeqNumber)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.PriceEpisodeIdentifier == updatedSubmissionChanged.PriceEpisodeIdentifier)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.StandardCode == updatedSubmissionChanged.StandardCode)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.ProgrammeType == null)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.FrameworkCode == null)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.PathwayCode == null)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.ActualStartDate == null)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.PlannedEndDate == updatedSubmissionChanged.PlannedEndDate)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.ActualEndDate == null)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.OnProgrammeTotalPrice == updatedSubmissionChanged.OnProgrammeTotalPrice)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.CompletionTotalPrice == updatedSubmissionChanged.CompletionTotalPrice)));
-            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Event.NiNumber == null)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[1].IlrFileName == updatedSubmissionChanged.IlrFileName)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[1].FileDateTime == updatedSubmissionChanged.FileDateTime)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[1].SubmittedDateTime == updatedSubmissionChanged.SubmittedDateTime)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[1].ComponentVersionNumber == SubmissionEventsTask.ComponentVersion)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[1].Ukprn == updatedSubmissionChanged.Ukprn)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[1].Uln == updatedSubmissionChanged.Uln)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[1].LearnRefNumber == updatedSubmissionChanged.LearnRefNumber)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[1].AimSeqNumber == updatedSubmissionChanged.AimSeqNumber)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[1].PriceEpisodeIdentifier == updatedSubmissionChanged.PriceEpisodeIdentifier)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[1].StandardCode == updatedSubmissionChanged.StandardCode)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[1].ProgrammeType == null)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[1].FrameworkCode == null)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[1].PathwayCode == null)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[1].ActualStartDate == null)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[1].PlannedEndDate == updatedSubmissionChanged.PlannedEndDate)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[1].ActualEndDate == null)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[1].OnProgrammeTotalPrice == updatedSubmissionChanged.OnProgrammeTotalPrice)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[1].CompletionTotalPrice == updatedSubmissionChanged.CompletionTotalPrice)));
+            _mediator.Verify(m => m.Send(It.Is<WriteSubmissionEventCommand>(c => c.Events[1].NiNumber == null)));
         }
 
         [Test]
@@ -195,23 +195,23 @@ namespace SFA.DAS.Provider.Events.Submission.UnitTests.SubmissionEventsProcessor
 
             // Assert
             _mediator.Verify(m => m.Send(It.IsAny<WriteLastSeenIlrDetailsCommand>()), Times.Once);
-            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlr.IlrFileName == ilrForFirstSubmission.IlrFileName)), Times.Once);
-            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlr.FileDateTime == ilrForFirstSubmission.FileDateTime)), Times.Once);
-            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlr.SubmittedDateTime == ilrForFirstSubmission.SubmittedDateTime)), Times.Once);
-            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlr.Ukprn == ilrForFirstSubmission.Ukprn)), Times.Once);
-            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlr.Uln == ilrForFirstSubmission.Uln)), Times.Once);
-            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlr.LearnRefNumber == ilrForFirstSubmission.LearnRefNumber)), Times.Once);
-            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlr.AimSeqNumber == ilrForFirstSubmission.AimSeqNumber)), Times.Once);
-            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlr.PriceEpisodeIdentifier == ilrForFirstSubmission.PriceEpisodeIdentifier)), Times.Once);
-            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlr.StandardCode == ilrForFirstSubmission.StandardCode)), Times.Once);
-            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlr.ProgrammeType == ilrForFirstSubmission.ProgrammeType)), Times.Once);
-            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlr.FrameworkCode == ilrForFirstSubmission.FrameworkCode)), Times.Once);
-            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlr.PathwayCode == ilrForFirstSubmission.PathwayCode)), Times.Once);
-            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlr.ActualEndDate == ilrForFirstSubmission.ActualEndDate)), Times.Once);
-            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlr.PlannedEndDate == ilrForFirstSubmission.PlannedEndDate)), Times.Once);
-            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlr.OnProgrammeTotalPrice == ilrForFirstSubmission.OnProgrammeTotalPrice)), Times.Once);
-            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlr.CompletionTotalPrice == ilrForFirstSubmission.CompletionTotalPrice)), Times.Once);
-            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlr.NiNumber == ilrForFirstSubmission.NiNumber)), Times.Once);
+            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlrs[0].IlrFileName == ilrForFirstSubmission.IlrFileName)), Times.Once);
+            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlrs[0].FileDateTime == ilrForFirstSubmission.FileDateTime)), Times.Once);
+            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlrs[0].SubmittedDateTime == ilrForFirstSubmission.SubmittedDateTime)), Times.Once);
+            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlrs[0].Ukprn == ilrForFirstSubmission.Ukprn)), Times.Once);
+            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlrs[0].Uln == ilrForFirstSubmission.Uln)), Times.Once);
+            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlrs[0].LearnRefNumber == ilrForFirstSubmission.LearnRefNumber)), Times.Once);
+            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlrs[0].AimSeqNumber == ilrForFirstSubmission.AimSeqNumber)), Times.Once);
+            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlrs[0].PriceEpisodeIdentifier == ilrForFirstSubmission.PriceEpisodeIdentifier)), Times.Once);
+            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlrs[0].StandardCode == ilrForFirstSubmission.StandardCode)), Times.Once);
+            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlrs[0].ProgrammeType == ilrForFirstSubmission.ProgrammeType)), Times.Once);
+            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlrs[0].FrameworkCode == ilrForFirstSubmission.FrameworkCode)), Times.Once);
+            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlrs[0].PathwayCode == ilrForFirstSubmission.PathwayCode)), Times.Once);
+            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlrs[0].ActualEndDate == ilrForFirstSubmission.ActualEndDate)), Times.Once);
+            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlrs[0].PlannedEndDate == ilrForFirstSubmission.PlannedEndDate)), Times.Once);
+            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlrs[0].OnProgrammeTotalPrice == ilrForFirstSubmission.OnProgrammeTotalPrice)), Times.Once);
+            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlrs[0].CompletionTotalPrice == ilrForFirstSubmission.CompletionTotalPrice)), Times.Once);
+            _mediator.Verify(m => m.Send(It.Is<WriteLastSeenIlrDetailsCommand>(c => c.LastSeenIlrs[0].NiNumber == ilrForFirstSubmission.NiNumber)), Times.Once);
 
         }
 

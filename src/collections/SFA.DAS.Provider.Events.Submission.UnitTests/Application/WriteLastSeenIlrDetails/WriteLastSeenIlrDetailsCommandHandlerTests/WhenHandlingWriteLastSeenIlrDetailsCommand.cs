@@ -26,10 +26,10 @@ namespace SFA.DAS.Provider.Events.Submission.UnitTests.Application.WriteLastSeen
         public void ThenItShouldStoreDetailsInRepository()
         {
             // Act
-            _handler.Handle(new WriteLastSeenIlrDetailsCommand { LastSeenIlr = _ilr });
+            _handler.Handle(new WriteLastSeenIlrDetailsCommand { LastSeenIlrs = new[] { _ilr } });
 
             // Assert
-            _ilrSubmissionRepository.Verify(r => r.StoreLastSeenVersion(_ilr), Times.Once);
+            _ilrSubmissionRepository.Verify(r => r.StoreLastSeenVersions(It.Is<IlrDetails[]>(x => x[0] == _ilr)), Times.Once);
         }
     }
 }

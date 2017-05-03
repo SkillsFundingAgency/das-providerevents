@@ -26,10 +26,10 @@ namespace SFA.DAS.Provider.Events.Submission.UnitTests.Application.WriteSubmissi
         public void ThenItShouldStoreEventInRepository()
         {
             // Act
-            _handler.Handle(new WriteSubmissionEventCommand { Event = _event });
+            _handler.Handle(new WriteSubmissionEventCommand { Events = new[] { _event } });
 
             // Assert
-            _submissionEventRepository.Verify(r => r.StoreSubmissionEvent(_event), Times.Once);
+            _submissionEventRepository.Verify(r => r.StoreSubmissionEvents(It.Is<SubmissionEvent[]>(x => x[0] == _event)), Times.Once);
         }
     }
 }

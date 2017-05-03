@@ -14,7 +14,7 @@ namespace SFA.DAS.Provider.Events.Submission.Application.WriteSubmissionEvent
 
         public Unit Handle(WriteSubmissionEventCommand message)
         {
-            _submissionEventRepository.StoreSubmissionEvent(message.Event);
+            _submissionEventRepository.StoreSubmissionEvents(message.Events);
             return Unit.Value;
         }
     }
