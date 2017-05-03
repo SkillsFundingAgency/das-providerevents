@@ -2,6 +2,6 @@
 {
     public interface ISubmissionEventRepository
     {
-        void StoreSubmissionEvent(SubmissionEvent @event);
+        void StoreSubmissionEvents(SubmissionEvent[] events);
     }
 }

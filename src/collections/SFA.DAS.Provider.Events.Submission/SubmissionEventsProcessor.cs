@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using MediatR;
 using NLog;
 using SFA.DAS.Provider.Events.Submission.Application.GetCurrentVersions;
@@ -45,6 +46,8 @@ namespace SFA.DAS.Provider.Events.Submission
             var lastSeenVersions = _mediator.Send(new GetLastSeenVersionsQuery());
             _logger.Info($"Found {lastSeenVersions.Items.Length} previous versions");
 
+            var changedSubmissions = new List<IlrDetails>();
+            var events = new List<SubmissionEvent>();
             foreach (var currentIlr in currentVersions.Items)
             {
                 _logger.Info($"Starting to compare {currentIlr.PriceEpisodeIdentifier} for uln {currentIlr.Uln}");
@@ -56,23 +59,25 @@ namespace SFA.DAS.Provider.Events.Submission
                 var @event = CalculateDelta(currentIlr, lastSeenIlr);
                 if (@event != null)
                 {
+                    events.Add(@event);
                     _logger.Info("Current version has changed");
-                    _mediator.Send(new WriteSubmissionEventCommand
-                    {
-                        Event = @event
-                    });
                 }
                 else
                 {
                     _logger.Info("Current version has not changed");
                 }
 
-                _mediator.Send(new WriteLastSeenIlrDetailsCommand
-                {
-                    LastSeenIlr = currentIlr
-
-                });
+                changedSubmissions.Add(currentIlr);
             }
+
+            _mediator.Send(new WriteSubmissionEventCommand
+            {
+                Events = events.ToArray()
+            });
+            _mediator.Send(new WriteLastSeenIlrDetailsCommand
+            {
+                LastSeenIlrs = changedSubmissions.ToArray()
+            });
         }
 
 
