@@ -41,14 +41,35 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents
                     var commitmentVersions = new List<DataLockEventCommitmentVersion>();
                     foreach (var entity in entities)
                     {
+
                         if (currentEvent == null || entity.LearnRefNumber != currentEvent.LearnRefnumber || entity.PriceEpisodeIdentifier != currentEvent.PriceEpisodeIdentifier)
+                            
                         {
                             if (currentEvent != null)
                             {
-                                currentEvent.Errors = errors.ToArray();
-                                currentEvent.Periods = periods.ToArray();
-                                currentEvent.CommitmentVersions = commitmentVersions.ToArray();
-                                currentEvents.Add(currentEvent);
+                                
+                                var existingEvent = currentEvents.FirstOrDefault(x => x.LearnRefnumber == currentEvent.LearnRefnumber && x.PriceEpisodeIdentifier == currentEvent.PriceEpisodeIdentifier);
+                                if (existingEvent == null)
+                                {
+                                    currentEvent.Errors = errors.ToArray();
+                                    currentEvent.Periods = periods.ToArray();
+                                    currentEvent.CommitmentVersions = commitmentVersions.ToArray();
+                                    currentEvents.Add(currentEvent);
+                                }
+                                else
+                                {
+                                    var existingErrors = existingEvent.Errors.ToList();
+                                    existingErrors.AddRange(errors);
+                                    existingEvent.Errors = existingErrors.ToArray();
+
+                                    var existingPeriods = existingEvent.Periods.ToList();
+                                    existingPeriods.AddRange(periods);
+                                    existingEvent.Periods = existingPeriods.ToArray();
+
+                                    var existingCommitments = existingEvent.CommitmentVersions.ToList();
+                                    existingCommitments.AddRange(commitmentVersions);
+                                    existingEvent.CommitmentVersions = existingCommitments.ToArray();
+                                }
                             }
 
                             errors.Clear();
@@ -166,6 +187,8 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents
                     return "The start date for this negotiated price is before the corresponding price start date in the employer digital account";
                 case "DLOCK_10":
                     return "The employer has stopped payments for this apprentice";
+                case "DLOCK_11":
+                    return "The employer is not currently a levy payer";
                 default:
                     return errorCode;
             }
