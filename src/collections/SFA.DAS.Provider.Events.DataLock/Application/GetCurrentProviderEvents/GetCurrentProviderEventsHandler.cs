@@ -114,7 +114,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents
                             });
                         }
 
-                        if (!errors.Any(e => e.ErrorCode == entity.RuleId))
+                        if (entity.RuleId != null && !errors.Any(e => e.ErrorCode == entity.RuleId))
                         {
                             errors.Add(new DataLockEventError
                             {
