@@ -60,7 +60,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents
                                 {
                                     var existingErrors = existingEvent.Errors.ToList();
                                     existingErrors.AddRange(errors);
-                                    existingEvent.Errors = existingErrors.ToArray();
+                                    existingEvent.Errors = existingErrors.GroupBy(g => g.ErrorCode).Select(x => x.FirstOrDefault()).ToArray();
 
                                     var existingPeriods = existingEvent.Periods.ToList();
                                     existingPeriods.AddRange(periods);
