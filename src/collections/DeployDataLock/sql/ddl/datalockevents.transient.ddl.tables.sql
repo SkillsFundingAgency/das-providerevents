@@ -122,3 +122,61 @@ CREATE TABLE [DataLockEvents].[DataLockEventErrors]
 	PRIMARY KEY (DataLockEventId, ErrorCode)
 )
 GO
+
+
+
+--------------------------------------------------------------------------------------
+-- DataLockEventErrors
+--------------------------------------------------------------------------------------
+IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'DataLockEventsData' AND [schema_id] = SCHEMA_ID('DataLockEvents'))
+	BEGIN
+		DROP TABLE [DataLockEvents].[DataLockEventsData]
+	END
+GO
+
+CREATE TABLE [DataLockEvents].[DataLockEventsData]
+(
+	
+	Ukprn bigint  NOT NULL,
+	PriceEpisodeIdentifier varchar(25)  NULL,
+	LearnRefNumber varchar(100)  NULL,
+	AimSeqNumber bigint  NULL,
+	CommitmentId bigint  NULL,
+	IsSuccess bit  NULL,
+	IlrFilename		nvarchar(50)	NULL,
+	SubmittedTime	datetime NULL,	
+	Uln	bigint	NULL,
+	IlrStartDate				date			NULL,
+	IlrStandardCode				bigint			NULL,
+	IlrProgrammeType			int				NULL,
+	IlrFrameworkCode			int				NULL,
+	IlrPathwayCode				int				NULL,
+	IlrTrainingPrice			decimal(12,5)	NULL,
+	IlrEndpointAssessorPrice	decimal(12,5)	NULL,
+	IlrPriceEffectiveDate		date			NULL,
+	CommitmentVersionId bigint NULL,
+	Period int NULL,
+	Payable bit NULL,
+	TransactionType int NULL,
+	EmployerAccountId bigint  NULL,
+	CommitmentStartDate date  NULL,
+	CommitmentStandardCode bigint NULL,
+	CommitmentProgrammeType int NULL,
+	CommitmentFrameworkCode int NULL,
+	CommitmentPathwayCode int NULL,
+	CommitmentNegotiatedPrice decimal(15, 2) NULL,
+	CommitmentEffectiveDate date  NULL,
+	RuleId varchar(50) NULL
+
+)
+GO
+
+
+IF EXISTS(SELECT [object_id] FROM sys.indexes WHERE [name]='IX_DataLockEventsData_UKPRN')
+BEGIN
+		DROP INDEX [IX_DataLockEventsData_UKPRN] ON [DataLockEvents].[DataLockEventsData]
+END
+GO
+ 
+CREATE INDEX [IX_DataLockEventsData_UKPRN] ON [DataLockEvents].[DataLockEventsData] (UKPRN)
+GO
