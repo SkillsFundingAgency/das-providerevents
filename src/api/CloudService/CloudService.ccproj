@@ -34,8 +34,8 @@
   <ItemGroup>
     <ServiceDefinition Include="ServiceDefinition.csdef" />
     <None Include="Configuration\ServiceDefinition.PreProd.csdef" />
-    <None Include="Configuration\ServiceDefinition.POC.csdef" />
-    <ServiceConfiguration Include="ServiceConfiguration.POC.cscfg" />
+    <None Include="Configuration\ServiceDefinition.Prod.csdef" />
+    <ServiceConfiguration Include="ServiceConfiguration.Prod.cscfg" />
     <ServiceConfiguration Include="ServiceConfiguration.PreProd.cscfg" />
     <ServiceConfiguration Include="ServiceConfiguration.Local.cscfg" />
     <ServiceConfiguration Include="ServiceConfiguration.Cloud.cscfg" />

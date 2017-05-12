@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ServiceConfiguration serviceName="CloudService" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="4" osVersion="*" schemaVersion="2015-04.2.6">
-  <Role name="SFA.DAS.Provider.Events.Api" vmName="SFATESTAPI">
-    <Instances count="1" />
+  <Role name="SFA.DAS.Provider.Events.Api" vmName="DAS-PAPI-0">
+    <Instances count="3" />
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
       <Setting name="LogLevel" value="__LogLevel__" />
@@ -15,5 +15,23 @@
       <Setting name="LoggingRedisConnectionString" value="__LoggingRedisConnectionString__" />
       <Setting name="LoggingRedisKey" value="__LoggingRedisKey__" />
     </ConfigurationSettings>
+  <Certificates>
+    <Certificate name="WebSslCert" thumbprint="‎603ba9416d01c9c18f379c8a8742f8c861b79c17" thumbprintAlgorithm="sha1" />
+  </Certificates>
   </Role>
+  <NetworkConfiguration>
+    <VirtualNetworkSite name="__Vnet__" />
+    <AddressAssignments>
+      <InstanceAddress roleName="SFA.DAS.Provider.Events.Api">
+        <Subnets>
+          <Subnet name="__Subnet__" />
+        </Subnets>
+      </InstanceAddress>
+    </AddressAssignments>
+    <LoadBalancers>
+      <LoadBalancer name="__ilbname__">
+        <FrontendIPConfiguration type="private" subnet="__subnet__" staticVirtualNetworkIPAddress="10.78.125.247" />
+      </LoadBalancer>
+    </LoadBalancers>
+  </NetworkConfiguration>
 </ServiceConfiguration>
