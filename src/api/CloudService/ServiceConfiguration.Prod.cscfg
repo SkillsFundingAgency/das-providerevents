@@ -12,12 +12,15 @@
       <Setting name="ApiTokenSecret" value="__ApiTokenSecret__" />
       <Setting name="ApiIssuer" value="__ApiIssuer__" />
       <Setting name="ApiAudiences" value="__ApiAudiences__" />
+      <Setting name="ConfigurationStorageConnectionString" value="__ConfigurationStorageConnectionString__" />
       <Setting name="LoggingRedisConnectionString" value="__LoggingRedisConnectionString__" />
       <Setting name="LoggingRedisKey" value="__LoggingRedisKey__" />
     </ConfigurationSettings>
-  <Certificates>
-    <Certificate name="WebSslCert" thumbprint="‎603ba9416d01c9c18f379c8a8742f8c861b79c17" thumbprintAlgorithm="sha1" />
-  </Certificates>
+
+    <Certificates>
+      <Certificate name="WebSslCert" thumbprint="603BA9416D01C9C18F379C8A8742F8C861B79C17" thumbprintAlgorithm="sha1" />
+    </Certificates>
+  
   </Role>
   <NetworkConfiguration>
     <VirtualNetworkSite name="__Vnet__" />
