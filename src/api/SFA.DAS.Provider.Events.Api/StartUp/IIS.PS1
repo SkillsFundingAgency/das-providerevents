@@ -68,32 +68,10 @@ if(Get-Module -ListAvailable | Where-Object{ $_.Name -eq $Azure })
 $logger.Error("Azure MSI Installed Getting AppPool Data")
 [Reflection.Assembly]::LoadWithPartialName("Microsoft.WindowsAzure.ServiceRuntime")
 
-$ConfigurationStorageConnectionString = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("ConfigurationStorageConnectionString")
-$logger.Error("$ConfigurationStorageConnectionString")
-#Query
-$Ctx = New-AzureStorageContext -ConnectionString $ConfigurationStorageConnectionString
-$TableName = "Configuration"
 
-$table = Get-AzureStorageTable –Name $TableName -Context $Ctx
-$query = New-Object Microsoft.WindowsAzure.Storage.Table.TableQuery
+	$Username = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("dmuser")
+	$Password = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("dmpwd")
 
-#Define columns to select.
-$list = New-Object System.Collections.Generic.List[string]
-$list.Add("PartitionKey")
-$list.Add("RowKey")
-$list.Add("Data")
-
-$query.FilterString =  "RowKey eq 'PAPI App Pool Connection'"
-$query.SelectColumns = $list
-
-$entities = $table.CloudTable.ExecuteQuery($query)
-
-$Data1=$entities.Properties
-$Data2=$Data1.Values
-$String=$Data2.PropertyAsObject
-	$logger.Error("$String")
-Write-Host "Assigning AppPool"
-$UserName,$Password = $string.split(' ',2)
 
 Import-Module WebAdministration -Force
 
