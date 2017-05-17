@@ -68,10 +68,8 @@ if(Get-Module -ListAvailable | Where-Object{ $_.Name -eq $Azure })
 $logger.Error("Azure MSI Installed Getting AppPool Data")
 [Reflection.Assembly]::LoadWithPartialName("Microsoft.WindowsAzure.ServiceRuntime")
 
-
-	$Username = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("dmuser")
-	$Password = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("dmpwd")
-
+$Username = "__dmuser__"
+$Password = "__dmpassword__"
 
 Import-Module WebAdministration -Force
 
