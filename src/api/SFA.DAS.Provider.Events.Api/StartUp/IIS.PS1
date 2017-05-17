@@ -69,7 +69,7 @@ $logger.Error("Azure MSI Installed Getting AppPool Data")
 [Reflection.Assembly]::LoadWithPartialName("Microsoft.WindowsAzure.ServiceRuntime")
 
 $ConfigurationStorageConnectionString = [Microsoft.WindowsAzure.ServiceRuntime.RoleEnvironment]::GetConfigurationSettingValue("ConfigurationStorageConnectionString")
-
+$logger.Error("$ConfigurationStorageConnectionString")
 #Query
 $Ctx = New-AzureStorageContext -ConnectionString $ConfigurationStorageConnectionString
 $TableName = "Configuration"
@@ -91,6 +91,7 @@ $entities = $table.CloudTable.ExecuteQuery($query)
 $Data1=$entities.Properties
 $Data2=$Data1.Values
 $String=$Data2.PropertyAsObject
+	$logger.Error("$String")
 Write-Host "Assigning AppPool"
 $UserName,$Password = $string.split(' ',2)
 
