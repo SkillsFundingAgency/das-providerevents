@@ -15,6 +15,8 @@
        <Setting name="ConfigurationStorageConnectionString" value="__ConfigurationStorageConnectionString__" />
       <Setting name="LoggingRedisConnectionString" value="__LoggingRedisConnectionString__" />
       <Setting name="LoggingRedisKey" value="__LoggingRedisKey__" />
+      <Setting name="dmuser" value="__dmuser__" />
+      <Setting name="dmpwd" value="__dmpwd__" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="WebSslCert" thumbprint="B16394AF94AFE1FBBB39687A512F52EF6D4ED041" thumbprintAlgorithm="sha1" />
