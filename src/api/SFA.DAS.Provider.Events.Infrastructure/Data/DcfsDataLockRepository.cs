@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.Provider.Events.Domain.Data;
 using SFA.DAS.Provider.Events.Domain.Data.Entities;
@@ -9,6 +10,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
     {
         private const string Source = "DataLock.DataLockEvents ev";
         private const string Columns = "Id, "
+                                     + "DataLockEventId, "
                                      + "ProcessDateTime, "
                                      + "IlrFileName,  "
                                      + "UKPRN, "
@@ -31,23 +33,23 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         private const string CountColumn = "COUNT(ev.Id)";
         private const string Pagination = "ORDER BY ev.Id OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY";
 
-        private const string ErrorsSource = "DataLock.DataLockEventErrors er JOIN DataLock.DataLockEvents ev " +
-                                            " ON ev.DataLockEventId = er.DataLockEventId ";
-        private const string ErrorsColumns = "ErrorCode, "
+        private const string ErrorsSource = "DataLock.DataLockEventErrors ";
+        private const string ErrorsColumns = "DataLockEventId,"
+                                           + "ErrorCode, "
                                            + "SystemDescription";
 
-        private const string PeriodsSource = "DataLock.DataLockEventPeriods pe JOIN DataLock.DataLockEvents ev " +
-                                            " ON ev.DataLockEventId = pe.DataLockEventId ";
-        private const string PeriodsColumns = "CollectionPeriodName AS CollectionPeriodId, "
+        private const string PeriodsSource = "DataLock.DataLockEventPeriods ";
+        private const string PeriodsColumns = "DataLockEventId,"
+                                              + "CollectionPeriodName AS CollectionPeriodId, "
                                               + "CollectionPeriodMonth, "
                                               + "CollectionPeriodYear, "
                                               + "CommitmentVersion AS ApprenticeshipVersion, "
                                               + "IsPayable, "
                                               + "TransactionType";
 
-        private const string ApprenticeshipsSource = "DataLock.DataLockEventCommitmentVersions cv JOIN DataLock.DataLockEvents ev " +
-                                                    " ON ev.DataLockEventId = cv.DataLockEventId ";
-        private const string ApprenticeshipsColumns = "CommitmentVersion AS Version, "
+        private const string ApprenticeshipsSource = "DataLock.DataLockEventCommitmentVersions ";
+        private const string ApprenticeshipsColumns = "DataLockEventId,"
+                                                      + "CommitmentVersion AS Version, "
                                                       + "CommitmentStartDate AS StartDate, "
                                                       + "CommitmentStandardCode AS StandardCode, "
                                                       + "CommitmentProgrammeType AS ProgrammeType, "
@@ -118,22 +120,40 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             return await GetPageOfDataLockEvents(whereClause, page, pageSize);
         }
 
-        public async Task<DataLockEventErrorEntity[]> GetDataLockErrorsForEvent(long eventId)
+        public async Task<DataLockEventErrorEntity[]> GetDataLockErrorsForEvents(string[] eventIds)
         {
-            var command = $"SELECT {ErrorsColumns} FROM {ErrorsSource} WHERE ev.Id = @eventId";
-            return await Query<DataLockEventErrorEntity>(command, new { eventId });
+            if (!eventIds.Any())
+            {
+                return new DataLockEventErrorEntity[0];
+            }
+
+            var where = eventIds.Select(x => $"'{x}'").Aggregate((x, y) => $"{x}, {y}");
+            var command = $"SELECT {ErrorsColumns} FROM {ErrorsSource} WHERE DataLockEventId IN ({where})";
+            return await Query<DataLockEventErrorEntity>(command);
         }
 
-        public async Task<DataLockEventPeriodEntity[]> GetDataLockPeriodsForEvent(long eventId)
+        public async Task<DataLockEventPeriodEntity[]> GetDataLockPeriodsForEvent(string[] eventIds)
         {
-            var command = $"SELECT {PeriodsColumns} FROM {PeriodsSource} WHERE ev.Id = @eventId";
-            return await Query<DataLockEventPeriodEntity>(command, new { eventId });
+            if (!eventIds.Any())
+            {
+                return new DataLockEventPeriodEntity[0];
+            }
+
+            var where = eventIds.Select(x => $"'{x}'").Aggregate((x, y) => $"{x}, {y}");
+            var command = $"SELECT {PeriodsColumns} FROM {PeriodsSource} WHERE DataLockEventId IN ({where})";
+            return await Query<DataLockEventPeriodEntity>(command);
         }
 
-        public async Task<DataLockEventApprenticeshipEntity[]> GetDataLockApprenticeshipsForEvent(long eventId)
+        public async Task<DataLockEventApprenticeshipEntity[]> GetDataLockApprenticeshipsForEvent(string[] eventIds)
         {
-            var command = $"SELECT {ApprenticeshipsColumns} FROM {ApprenticeshipsSource} WHERE ev.Id = @eventId";
-            return await Query<DataLockEventApprenticeshipEntity>(command, new { eventId });
+            if (!eventIds.Any())
+            {
+                return new DataLockEventApprenticeshipEntity[0];
+            }
+
+            var where = eventIds.Select(x => $"'{x}'").Aggregate((x, y) => $"{x}, {y}");
+            var command = $"SELECT {ApprenticeshipsColumns} FROM {ApprenticeshipsSource} WHERE DataLockEventId IN ({where})";
+            return await Query<DataLockEventApprenticeshipEntity>(command);
         }
 
         private async Task<PageOfEntities<DataLockEventEntity>> GetPageOfDataLockEvents(string whereClause, int page, int pageSize)
