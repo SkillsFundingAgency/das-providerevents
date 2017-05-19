@@ -42,8 +42,9 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents
                     foreach (var entity in entities)
                     {
 
-                        if (currentEvent == null || entity.LearnRefNumber != currentEvent.LearnRefnumber || entity.PriceEpisodeIdentifier != currentEvent.PriceEpisodeIdentifier)
-                            
+                        if (currentEvent == null 
+                            || entity.LearnRefNumber != currentEvent.LearnRefnumber || entity.PriceEpisodeIdentifier != currentEvent.PriceEpisodeIdentifier
+                            || entity.CommitmentId != currentEvent.CommitmentId)
                         {
                             if (currentEvent != null)
                             {
