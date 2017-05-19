@@ -4,6 +4,7 @@ namespace SFA.DAS.Provider.Events.Domain.Data.Entities
 {
     public class DataLockEventApprenticeshipEntity
     {
+        public Guid DataLockEventId { get; set; }
         public long Version { get; set; }
         public DateTime StartDate { get; set; }
         public long? StandardCode { get; set; }

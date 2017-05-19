@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Provider.Events.Application.Validation;
@@ -83,15 +84,16 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.GetDataLockEventsQuery
                     pageOfEntities = await _dataLockEventsRepository.GetDataLockEventsSinceId(message.SinceEventId, message.PageNumber, message.PageSize);
                 }
 
+                var eventIds = pageOfEntities.Items.Select(x => x.DataLockEventId.ToString()).Distinct().ToArray();
+
+                var errors = await _dataLockEventsRepository.GetDataLockErrorsForEvents(eventIds);
+                var periods = await _dataLockEventsRepository.GetDataLockPeriodsForEvent(eventIds);
+                var apprenticeships = await _dataLockEventsRepository.GetDataLockApprenticeshipsForEvent(eventIds);
                 foreach (var entity in pageOfEntities.Items)
                 {
-                    if (entity.HasErrors)
-                    {
-                        entity.Errors = await _dataLockEventsRepository.GetDataLockErrorsForEvent(entity.Id);
-                    }
-
-                    entity.Periods = await _dataLockEventsRepository.GetDataLockPeriodsForEvent(entity.Id);
-                    entity.Apprenticeships = await _dataLockEventsRepository.GetDataLockApprenticeshipsForEvent(entity.Id);
+                    entity.Errors = errors.Where(x => x.DataLockEventId == entity.DataLockEventId).ToArray();
+                    entity.Periods = periods.Where(x => x.DataLockEventId == entity.DataLockEventId).ToArray();
+                    entity.Apprenticeships = apprenticeships.Where(x => x.DataLockEventId == entity.DataLockEventId).ToArray();
                 }
 
                 return new GetDataLockEventsQueryResponse
