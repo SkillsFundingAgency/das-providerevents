@@ -14,7 +14,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
     [Authorize(Roles = "ReadDataLock")]
     public class DataLockController : ApiController
     {
-        private const int PageSize = 1000;
+        private const int PageSize = 250;
 
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
