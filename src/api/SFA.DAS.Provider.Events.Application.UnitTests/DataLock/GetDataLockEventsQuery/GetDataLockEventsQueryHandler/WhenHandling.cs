@@ -127,7 +127,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
                 });
 
             _dataLockEventsRepository
-                .Setup(r => r.GetDataLockErrorsForEvent(It.IsAny<long>()))
+                .Setup(r => r.GetDataLockErrorsForEvents(It.IsAny<string[]>()))
                 .ReturnsAsync(new[]
                 {
                     new DataLockEventErrorEntity
