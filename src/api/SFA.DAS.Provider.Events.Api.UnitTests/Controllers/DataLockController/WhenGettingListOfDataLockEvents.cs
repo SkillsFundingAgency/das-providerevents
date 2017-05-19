@@ -187,7 +187,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController
             await _controller.GetDataLockEvents(pageNumber: pageNumber);
 
             // Assert
-            _mediator.Verify(m => m.SendAsync(It.Is<GetDataLockEventsQueryRequest>(r => r.PageNumber == pageNumber && r.PageSize == 1000)), Times.Once);
+            _mediator.Verify(m => m.SendAsync(It.Is<GetDataLockEventsQueryRequest>(r => r.PageNumber == pageNumber && r.PageSize == 250)), Times.Once);
         }
 
         [Test]
