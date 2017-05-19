@@ -122,8 +122,8 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Specs
 
             Assert.IsNotNull(events);
             Assert.AreEqual(2, events.Length);
-            Assert.AreEqual(1, events.Count(x => x.CommitmentId == commitmentId1));
-            Assert.AreEqual(1, events.Count(x => x.CommitmentId == commitmentId2));
+            Assert.AreEqual(1, events.Count(x => x.CommitmentId == commitmentId1), "More than 1 event for commitment 1");
+            Assert.AreEqual(1, events.Count(x => x.CommitmentId == commitmentId2), "More than 1 event for commitment 2");
         }
 
         [Test, Explicit]
