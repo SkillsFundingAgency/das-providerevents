@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.DataLock.Domain;
 using SFA.DAS.Provider.Events.DataLock.IntegrationTests.Execution;
@@ -95,6 +96,34 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Specs
             Assert.AreEqual(1, eventErrors.Length);
             Assert.AreEqual(180, eventPeriods.Length);
             Assert.AreEqual(1, eventCommitmentVersions.Length);
+        }
+
+        [Test]
+        public void ThenItShouldWriteMultipleEventsWhenErrorsForMultipleCommitmentsOnTheSamePriceEpisodeAreProduced()
+        {
+            // Arrange
+            var ukprn = 10000534;
+            var commitmentId1 = 1;
+            var commitmentId2 = 2;
+
+            TestDataHelper.AddLearningProvider(ukprn);
+            TestDataHelper.AddFileDetails(ukprn);
+            TestDataHelper.AddCommitment(commitmentId1, ukprn, "Lrn-001", passedDataLock: false);
+            TestDataHelper.AddCommitment(commitmentId2, ukprn, "Lrn-001", passedDataLock: false);
+            TestDataHelper.AddIlrDataForCommitment(commitmentId1, "Lrn-001");
+
+            TestDataHelper.SubmissionCopyReferenceData();
+
+            // Act
+            TaskRunner.RunTask();
+
+            // Assert
+            var events = TestDataHelper.GetAllEvents();
+
+            Assert.IsNotNull(events);
+            Assert.AreEqual(2, events.Length);
+            Assert.AreEqual(1, events.Count(x => x.CommitmentId == commitmentId1));
+            Assert.AreEqual(1, events.Count(x => x.CommitmentId == commitmentId2));
         }
 
         [Test, Explicit]
