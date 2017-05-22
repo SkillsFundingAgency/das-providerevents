@@ -41,36 +41,13 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents
                     var commitmentVersions = new List<DataLockEventCommitmentVersion>();
                     foreach (var entity in entities)
                     {
-
-                        if (currentEvent == null 
+                        if (currentEvent == null
                             || entity.LearnRefNumber != currentEvent.LearnRefnumber || entity.PriceEpisodeIdentifier != currentEvent.PriceEpisodeIdentifier
                             || entity.CommitmentId != currentEvent.CommitmentId)
                         {
                             if (currentEvent != null)
                             {
-                                
-                                var existingEvent = currentEvents.FirstOrDefault(x => x.LearnRefnumber == currentEvent.LearnRefnumber && x.PriceEpisodeIdentifier == currentEvent.PriceEpisodeIdentifier);
-                                if (existingEvent == null)
-                                {
-                                    currentEvent.Errors = errors.ToArray();
-                                    currentEvent.Periods = periods.ToArray();
-                                    currentEvent.CommitmentVersions = commitmentVersions.ToArray();
-                                    currentEvents.Add(currentEvent);
-                                }
-                                else
-                                {
-                                    var existingErrors = existingEvent.Errors.ToList();
-                                    existingErrors.AddRange(errors);
-                                    existingEvent.Errors = existingErrors.GroupBy(g => g.ErrorCode).Select(x => x.FirstOrDefault()).ToArray();
-
-                                    var existingPeriods = existingEvent.Periods.ToList();
-                                    existingPeriods.AddRange(periods);
-                                    existingEvent.Periods = existingPeriods.ToArray();
-
-                                    var existingCommitments = existingEvent.CommitmentVersions.ToList();
-                                    existingCommitments.AddRange(commitmentVersions);
-                                    existingEvent.CommitmentVersions = existingCommitments.ToArray();
-                                }
+                                AddEventToList(currentEvent, errors, periods, commitmentVersions, currentEvents);
                             }
 
                             errors.Clear();
@@ -141,10 +118,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents
                     }
                     if (currentEvent != null)
                     {
-                        currentEvent.Errors = errors.ToArray();
-                        currentEvent.Periods = periods.ToArray();
-                        currentEvent.CommitmentVersions = commitmentVersions.ToArray();
-                        currentEvents.Add(currentEvent);
+                        AddEventToList(currentEvent, errors, periods, commitmentVersions, currentEvents);
                     }
                 }
 
@@ -271,6 +245,35 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents
                 Month = month,
                 Year = year
             };
+        }
+
+        private void AddEventToList(DataLockEvent currentEvent, List<DataLockEventError> errors, List<DataLockEventPeriod> periods, List<DataLockEventCommitmentVersion> commitmentVersions,
+            List<DataLockEvent> currentEvents)
+        {
+            var existingEvent = currentEvents.FirstOrDefault(x => x.LearnRefnumber == currentEvent.LearnRefnumber
+                                                               && x.PriceEpisodeIdentifier == currentEvent.PriceEpisodeIdentifier
+                                                               && x.CommitmentId == currentEvent.CommitmentId);
+            if (existingEvent == null)
+            {
+                currentEvent.Errors = errors.ToArray();
+                currentEvent.Periods = periods.ToArray();
+                currentEvent.CommitmentVersions = commitmentVersions.ToArray();
+                currentEvents.Add(currentEvent);
+            }
+            else
+            {
+                var existingErrors = existingEvent.Errors.ToList();
+                existingErrors.AddRange(errors);
+                existingEvent.Errors = existingErrors.GroupBy(g => g.ErrorCode).Select(x => x.FirstOrDefault()).ToArray();
+
+                var existingPeriods = existingEvent.Periods.ToList();
+                existingPeriods.AddRange(periods);
+                existingEvent.Periods = existingPeriods.ToArray();
+
+                var existingCommitments = existingEvent.CommitmentVersions.ToList();
+                existingCommitments.AddRange(commitmentVersions);
+                existingEvent.CommitmentVersions = existingCommitments.ToArray();
+            }
         }
     }
 }
