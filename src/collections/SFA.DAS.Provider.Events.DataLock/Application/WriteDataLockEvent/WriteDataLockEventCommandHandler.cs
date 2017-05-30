@@ -81,7 +81,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent
                     IlrPathwayCode = @event.IlrPathwayCode,
                     IlrTrainingPrice = @event.IlrTrainingPrice,
                     IlrEndpointAssessorPrice = @event.IlrEndpointAssessorPrice,
-                    IlrPriceEffectiveDate = @event.IlrPriceEffectiveDate
+                    IlrPriceEffectiveFromDate = @event.IlrPriceEffectiveFromDate
                 });
                 if (@event.Errors != null && @event.Errors.Any())
                 {

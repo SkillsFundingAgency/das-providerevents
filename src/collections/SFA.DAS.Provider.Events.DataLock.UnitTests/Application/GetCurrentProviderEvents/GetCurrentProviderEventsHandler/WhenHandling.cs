@@ -173,7 +173,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentProvi
             Assert.AreEqual(entities[0].IlrPathwayCode, actualEvent.IlrPathwayCode);
             Assert.AreEqual(entities[0].IlrTrainingPrice, actualEvent.IlrTrainingPrice);
             Assert.AreEqual(entities[0].IlrEndpointAssessorPrice, actualEvent.IlrEndpointAssessorPrice);
-            Assert.AreEqual(entities[0].IlrPriceEffectiveDate, actualEvent.IlrPriceEffectiveDate);
+            Assert.AreEqual(entities[0].IlrPriceEffectiveFromDate, actualEvent.IlrPriceEffectiveFromDate);
 
             // Errors
             Assert.IsNotNull(actualEvent.Errors);
@@ -335,7 +335,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetCurrentProvi
                 IlrPathwayCode = ilrPathwayCode,
                 IlrTrainingPrice = ilrTrainingPrice,
                 IlrEndpointAssessorPrice = ilrEndpointAssessorPrice,
-                IlrPriceEffectiveDate = ilrPriceEffectiveDate,
+                IlrPriceEffectiveFromDate = ilrPriceEffectiveDate,
                 CommitmentVersionId = commitmentVersionId,
                 Period = period,
                 Payable = payable,

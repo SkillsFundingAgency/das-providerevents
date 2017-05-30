@@ -36,7 +36,7 @@ SELECT
 		WHEN ISNULL(pe.TNP1, 0) > 0 THEN pe.TNP2
 		ELSE pe.TNP4
 	END IlrEndpointAssessorPrice,
-	pe.EpisodeEffectiveTNPStartDate IlrPriceEffectiveDate
+	pe.EpisodeEffectiveTNPStartDate IlrPriceEffectiveFromDate
 FROM Rulebase.AEC_ApprenticeshipPriceEpisode pe
 	JOIN Valid.Learner l ON pe.LearnRefNumber = l.LearnRefNumber
 	JOIN Valid.LearningDelivery ld ON pe.LearnRefNumber = ld.LearnRefNumber

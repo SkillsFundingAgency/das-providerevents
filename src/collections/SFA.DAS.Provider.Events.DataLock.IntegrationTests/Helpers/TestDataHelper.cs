@@ -310,7 +310,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                                             DateTime startDate = default(DateTime),
                                             DateTime endDate = default(DateTime),
                                             decimal agreedCost = 15000m,
-                                            DateTime priceEffectiveDate = default(DateTime),
+                                            DateTime priceEffectiveFromDate = default(DateTime),
                                             long? standardCode = null,
                                             int? programmeType = null,
                                             int? frameworkCode = null,
@@ -339,9 +339,9 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                 endDate = startDate.AddYears(1);
             }
 
-            if (priceEffectiveDate < startDate)
+            if (priceEffectiveFromDate < startDate)
             {
-                priceEffectiveDate = startDate;
+                priceEffectiveFromDate = startDate;
             }
 
             var priceEpisodeIdentifier = $"99-99-99-{startDate.ToString("yyyy-MM-dd")}";
@@ -350,11 +350,11 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
             Execute("INSERT INTO DataLock.DataLockEvents "
                 + "(DataLockEventId,ProcessDateTime, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, "
                 + "PriceEpisodeIdentifier, CommitmentId, EmployerAccountId, EventSource, HasErrors, IlrStartDate, IlrStandardCode, "
-                + "IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice, IlrPriceEffectiveDate) "
+                + "IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice, IlrPriceEffectiveFromDate) "
                 + "VALUES "
                 + $"(@eventId, @processed, 'ILR-{ukprn}-1617-20161013-092500-98.xml', @submittedDateTime, '1617', @ukprn, @uln, @learnerRefNumber, @aimSequenceNumber, "
                 + "@priceEpisodeIdentifier, @commitmentId, 123, 1, @hasErrors, @startDate, @standardCode, @programmeType, @frameworkCode, @pathwayCode, "
-                + "@trainingCost, @endpointCost, @priceEffectiveDate)",
+                + "@trainingCost, @endpointCost, @priceEffectiveFromDate)",
                 new
                 {
                     eventId,
@@ -374,7 +374,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                     pathwayCode,
                     trainingCost = agreedCost * 0.8m,
                     endpointCost = agreedCost - agreedCost * 0.8m,
-                    priceEffectiveDate
+                    priceEffectiveFromDate
                 }, false);
 
             var censusDate = startDate.LastDayOfMonth();

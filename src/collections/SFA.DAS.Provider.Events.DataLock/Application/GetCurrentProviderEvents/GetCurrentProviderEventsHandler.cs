@@ -96,7 +96,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents
                                 IlrPathwayCode = entity.IlrPathwayCode,
                                 IlrTrainingPrice = entity.IlrTrainingPrice,
                                 IlrEndpointAssessorPrice = entity.IlrEndpointAssessorPrice,
-                                IlrPriceEffectiveDate = entity.IlrPriceEffectiveDate
+                                IlrPriceEffectiveFromDate = entity.IlrPriceEffectiveFromDate
                             };
                         }
 

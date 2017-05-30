@@ -18,7 +18,7 @@ GROUP BY UKPRN, LearnRefNumber, PriceEpisodeIdentifier
 INSERT INTO Reference.DataLockEvents
 (Id,DataLockEventId, ProcessDateTime, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, 
 PriceEpisodeIdentifier, CommitmentId, EmployerAccountId, EventSource, HasErrors, IlrStartDate, IlrStandardCode, 
-IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice, IlrPriceEffectiveDate)
+IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice, IlrPriceEffectiveFromDate)
 SELECT
 	dle.Id,
 	dle.DataLockEventId,
@@ -42,7 +42,7 @@ SELECT
 	dle.IlrPathwayCode, 
 	dle.IlrTrainingPrice, 
 	dle.IlrEndpointAssessorPrice,
-	dle.IlrPriceEffectiveDate
+	dle.IlrPriceEffectiveFromDate
 	
 FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEvents dle
 INNER JOIN @LastestDataLockEvents le

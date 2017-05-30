@@ -36,7 +36,7 @@ SELECT
 		WHEN ISNULL(dpe.Tnp1, 0) > 0 THEN dpe.Tnp2
 		ELSE dpe.Tnp4
 	END IlrEndpointAssessorPrice,
-	dpe.StartDate IlrPriceEffectiveDate
+	dpe.StartDate IlrPriceEffectiveFromDate
 FROM Reference.DataLockPriceEpisode dpe
 	JOIN Reference.Providers p 
 		ON dpe.Ukprn = p.Ukprn

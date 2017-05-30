@@ -57,7 +57,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenProviderEvents
                             IlrPathwayCode = e.IlrPathwayCode,
                             IlrTrainingPrice = e.IlrTrainingPrice,
                             IlrEndpointAssessorPrice = e.IlrEndpointAssessorPrice,
-                            IlrPriceEffectiveDate = e.IlrPriceEffectiveDate,
+                            IlrPriceEffectiveFromDate = e.IlrPriceEffectiveFromDate,
                             Errors = GetEventErrors(e.DataLockEventId),
                             Periods = GetEventPeriods(e.DataLockEventId),
                             CommitmentVersions = GetEventCommitmentVersions(e.DataLockEventId)

@@ -177,7 +177,7 @@ namespace SFA.DAS.Provider.Events.DataLock
                 return true;
             }
 
-            if (current.IlrPriceEffectiveDate != lastSeen.IlrPriceEffectiveDate)
+            if (current.IlrPriceEffectiveFromDate != lastSeen.IlrPriceEffectiveFromDate)
             {
                 return true;
             }

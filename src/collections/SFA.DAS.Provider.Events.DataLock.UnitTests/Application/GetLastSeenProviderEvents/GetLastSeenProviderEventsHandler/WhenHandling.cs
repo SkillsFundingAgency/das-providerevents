@@ -75,7 +75,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
                 IlrPathwayCode = 6,
                 IlrTrainingPrice = 12000,
                 IlrEndpointAssessorPrice = 3000,
-                IlrPriceEffectiveDate = DateTime.Today
+                IlrPriceEffectiveFromDate = DateTime.Today
             };
 
             _eventPeriod = new DataLockEventPeriodEntity
@@ -323,7 +323,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
                    && @event.IlrPathwayCode == _event.IlrPathwayCode
                    && @event.IlrTrainingPrice == _event.IlrTrainingPrice
                    && @event.IlrEndpointAssessorPrice == _event.IlrEndpointAssessorPrice
-                   && @event.IlrPriceEffectiveDate == _event.IlrPriceEffectiveDate
+                   && @event.IlrPriceEffectiveFromDate == _event.IlrPriceEffectiveFromDate
                    && ErrorMatches(@event.Errors[0])
                    && PeriodMatches(@event.Periods[0])
                    && CommitmentVersionMatches(@event.CommitmentVersions[0]);
