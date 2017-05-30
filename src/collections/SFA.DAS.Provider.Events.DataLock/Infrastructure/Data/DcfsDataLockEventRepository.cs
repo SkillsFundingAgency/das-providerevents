@@ -12,6 +12,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
     {
         private readonly string _connectionString;
         private const string Source = "Reference.DataLockEvents";
+
         private const string Columns = "Id," +
                                        "DataLockEventId," +
                                        "ProcessDateTime," +
@@ -34,7 +35,8 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
                                        "IlrPathwayCode," +
                                        "IlrTrainingPrice," +
                                        "IlrEndpointAssessorPrice," +
-                                       "IlrPriceEffectiveFromDate";
+                                       "IlrPriceEffectiveFromDate," +
+                                       "IlrPriceEffectiveToDate";
         private const string SelectLastSeenEvents = "SELECT " + Columns + " FROM " + Source;
         private const string SelectProviderLastSeenEvents = SelectLastSeenEvents + " WHERE Ukprn = @ukprn";
 
@@ -64,7 +66,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
                                      $"'{x.AcademicYear}', '{x.Ukprn}', '{x.Uln}', '{x.LearnRefnumber}', '{x.AimSeqNumber}', '{x.PriceEpisodeIdentifier}', " +
                                      $"'{x.CommitmentId}', '{x.EmployerAccountId}', '{(int)x.EventSource}', '{x.HasErrors}', '{x.IlrStartDate:yyyy-MM-dd HH:mm:ss}', " +
                                      $"'{x.IlrStandardCode}', '{x.IlrProgrammeType}', '{x.IlrFrameworkCode}', '{x.IlrPathwayCode}', '{x.IlrTrainingPrice}', " +
-                                     $"'{x.IlrEndpointAssessorPrice}', '{x.IlrPriceEffectiveFromDate:yyyy-MM-dd HH:mm:ss}')")
+                                     $"'{x.IlrEndpointAssessorPrice}', '{x.IlrPriceEffectiveFromDate:yyyy-MM-dd HH:mm:ss}', '{x.IlrPriceEffectiveToDate:yyyy-MM-dd HH:mm:ss}')")
                         .Aggregate((x, y) => $"{x}, {y}");
                     using (var command = connection.CreateCommand())
                     {

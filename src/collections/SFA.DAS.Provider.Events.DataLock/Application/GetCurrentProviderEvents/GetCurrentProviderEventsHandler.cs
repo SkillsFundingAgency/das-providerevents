@@ -41,13 +41,10 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents
                     var commitmentVersions = new List<DataLockEventCommitmentVersion>();
                     foreach (var entity in entities)
                     {
-
                         if (currentEvent == null || entity.LearnRefNumber != currentEvent.LearnRefnumber || entity.PriceEpisodeIdentifier != currentEvent.PriceEpisodeIdentifier)
-                            
                         {
                             if (currentEvent != null)
                             {
-                                
                                 var existingEvent = currentEvents.FirstOrDefault(x => x.LearnRefnumber == currentEvent.LearnRefnumber && x.PriceEpisodeIdentifier == currentEvent.PriceEpisodeIdentifier);
                                 if (existingEvent == null)
                                 {
@@ -96,7 +93,8 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents
                                 IlrPathwayCode = entity.IlrPathwayCode,
                                 IlrTrainingPrice = entity.IlrTrainingPrice,
                                 IlrEndpointAssessorPrice = entity.IlrEndpointAssessorPrice,
-                                IlrPriceEffectiveFromDate = entity.IlrPriceEffectiveFromDate
+                                IlrPriceEffectiveFromDate = entity.IlrPriceEffectiveFromDate,
+                                IlrPriceEffectiveToDate = entity.IlrPriceEffectiveToDate
                             };
                         }
 

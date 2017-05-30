@@ -37,7 +37,8 @@ CREATE TABLE [DataLock].[DataLockEvents]
 	IlrPathwayCode				int					NULL,
 	IlrTrainingPrice			decimal(12,5)		NULL,
 	IlrEndpointAssessorPrice	decimal(12,5)		NULL,
-	IlrPriceEffectiveFromDate	date				NULL
+	IlrPriceEffectiveFromDate	date				NULL,
+	IlrPriceEffectiveToDate		date				NULL
 )
 GO
 
