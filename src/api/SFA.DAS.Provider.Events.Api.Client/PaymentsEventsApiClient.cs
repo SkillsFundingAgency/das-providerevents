@@ -37,9 +37,9 @@ namespace SFA.DAS.Provider.Events.Api.Client
             return JsonConvert.DeserializeObject<PeriodEnd[]>(response);
         }
 
-        public async Task<PageOfResults<Payment>> GetPayments(string periodId = null, string employerAccountId = null, int page = 1)
+        public async Task<PageOfResults<Payment>> GetPayments(string periodId = null, string employerAccountId = null, int page = 1, long? ukprn = null)
         {
-            var response = await _httpClient.GetAsync($"{BaseUrl}api/payments?page={page}&periodId={periodId}&employerAccountId={employerAccountId}");
+            var response = await _httpClient.GetAsync($"{BaseUrl}api/payments?page={page}&periodId={periodId}&employerAccountId={employerAccountId}&ukprn={ukprn}");
             return JsonConvert.DeserializeObject<PageOfResults<Payment>>(response);
         }
 

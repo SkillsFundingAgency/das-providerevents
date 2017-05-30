@@ -49,7 +49,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 
             if (ukprn.HasValue)
             {
-                whereClause = $" rp.Ukprn = {ukprn.Value}' AND";
+                whereClause = $" rp.Ukprn = {ukprn.Value} AND";
             }
 
             if (!string.IsNullOrEmpty(whereClause))

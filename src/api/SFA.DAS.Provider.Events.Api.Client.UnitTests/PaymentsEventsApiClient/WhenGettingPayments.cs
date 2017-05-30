@@ -99,8 +99,19 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             await _client.GetPayments("XXX", "YYY", 2);
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("some-url/api/payments?page=2&periodId=XXX&employerAccountId=YYY"), Times.Once);
+            _httpClient.Verify(c => c.GetAsync("some-url/api/payments?page=2&periodId=XXX&employerAccountId=YYY&ukprn="), Times.Once);
         }
+
+        [Test]
+        public async Task ThenItShouldCallTheCorrectUrlForUkprnFilter()
+        {
+            // Act
+            await _client.GetPayments("XXX", "YYY", 2,100);
+
+            // Assert
+            _httpClient.Verify(c => c.GetAsync("some-url/api/payments?page=2&periodId=XXX&employerAccountId=YYY&ukprn=100"), Times.Once);
+        }
+
 
         [Test]
         public async Task ThenItShouldReturnResultFromApi()

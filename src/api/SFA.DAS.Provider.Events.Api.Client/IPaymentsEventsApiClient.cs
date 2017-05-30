@@ -18,8 +18,9 @@ namespace SFA.DAS.Provider.Events.Api.Client
         /// <param name="periodId">The period identifier to filter by, i.e. 1617-R01. Default is null for no filter</param>
         /// <param name="employerAccountId">The employer account identifier to filter by, i.e. 12345. Default is null for no filter</param>
         /// <param name="page">The page number to view. Default is 1</param>
+        /// <param name="ukprn">ukprn to filter by, default value is null </param>
         /// <returns>A task that yields a page of payments</returns>
-        Task<PageOfResults<Payment>> GetPayments(string periodId = null, string employerAccountId = null, int page = 1);
+        Task<PageOfResults<Payment>> GetPayments(string periodId = null, string employerAccountId = null, int page = 1, long? ukprn = null);
 
         /// <summary>
         /// Get a page of submissions
