@@ -31,7 +31,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
 
         [Route("", Name = "PaymentsList")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetListOfPayments(string periodId = null, string employerAccountId = null, int page = 1)
+        public async Task<IHttpActionResult> GetListOfPayments(string periodId = null, string employerAccountId = null, int page = 1, long? ukprn = null)
         {
             try
             {
@@ -60,7 +60,8 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
                     Period = period,
                     EmployerAccountId = employerAccountId,
                     PageNumber = page,
-                    PageSize = PageSize
+                    PageSize = PageSize,
+                    Ukprn = ukprn
                 });
                 if (!paymentsResponse.IsValid)
                 {

@@ -76,14 +76,9 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Payments.GetPaymentsQuer
             };
 
             _paymentRepository = new Mock<IPaymentRepository>();
-            _paymentRepository.Setup(r => r.GetPayments(It.IsAny<int>(), It.IsAny<int>()))
+            _paymentRepository.Setup(r => r.GetPayments(It.IsAny<int>(), It.IsAny<int>(),It.IsAny<string>(),It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<long?>()))
                 .Returns(Task.FromResult(_pageOfEntities));
-            _paymentRepository.Setup(r => r.GetPaymentsForAccount(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
-                .Returns(Task.FromResult(_pageOfEntities));
-            _paymentRepository.Setup(r => r.GetPaymentsForPeriod(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
-                .Returns(Task.FromResult(_pageOfEntities));
-            _paymentRepository.Setup(r => r.GetPaymentsForAccountInPeriod(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
-                .Returns(Task.FromResult(_pageOfEntities));
+          
 
             _mapper = new Mock<IMapper>();
             _mapper.Setup(m => m.Map<PageOfResults<Payment>>(It.IsAny<PageOfEntities<PaymentEntity>>()))
@@ -152,7 +147,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Payments.GetPaymentsQuer
             await _handler.Handle(_request);
 
             // Assert
-            _paymentRepository.Verify(r => r.GetPayments(_request.PageNumber, _request.PageSize), Times.Once);
+            _paymentRepository.Verify(r => r.GetPayments(_request.PageNumber, _request.PageSize,null,null,null,null), Times.Once);
         }
 
         [Test]
@@ -170,8 +165,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Payments.GetPaymentsQuer
             await _handler.Handle(_request);
 
             // Assert
-            _paymentRepository.Verify(r => r.GetPaymentsForPeriod(_request.Period.CalendarYear, _request.Period.CalendarMonth,
-                _request.PageNumber, _request.PageSize), Times.Once);
+            _paymentRepository.Verify(r => r.GetPayments(_request.PageNumber, _request.PageSize,null, _request.Period.CalendarYear, _request.Period.CalendarMonth,null), Times.Once);
         }
 
         [Test]
@@ -184,7 +178,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Payments.GetPaymentsQuer
             await _handler.Handle(_request);
 
             // Assert
-            _paymentRepository.Verify(r => r.GetPaymentsForAccount(_request.EmployerAccountId, _request.PageNumber, _request.PageSize), Times.Once);
+            _paymentRepository.Verify(r => r.GetPayments(_request.PageNumber, _request.PageSize, _request.EmployerAccountId,null,null,null ), Times.Once);
         }
 
         [Test]
@@ -203,8 +197,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Payments.GetPaymentsQuer
             await _handler.Handle(_request);
 
             // Assert
-            _paymentRepository.Verify(r => r.GetPaymentsForAccountInPeriod(_request.EmployerAccountId, _request.Period.CalendarYear, _request.Period.CalendarMonth,
-                _request.PageNumber, _request.PageSize), Times.Once);
+            _paymentRepository.Verify(r => r.GetPayments(_request.PageNumber, _request.PageSize,_request.EmployerAccountId, _request.Period.CalendarYear, _request.Period.CalendarMonth,null), Times.Once);
         }
 
         [Test]
@@ -222,7 +215,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Payments.GetPaymentsQuer
         {
             // Arrange
             var ex = new Exception();
-            _paymentRepository.Setup(r => r.GetPayments(It.IsAny<int>(), It.IsAny<int>()))
+            _paymentRepository.Setup(r => r.GetPayments(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<long?>()))
                 .Throws(ex);
 
             // Act

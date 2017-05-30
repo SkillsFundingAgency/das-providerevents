@@ -24,26 +24,12 @@ namespace SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery
             try
             {
                 PageOfEntities<PaymentEntity> payments;
-                if (message.Period != null && !string.IsNullOrEmpty(message.EmployerAccountId))
-                {
-                    payments = await _paymentRepository.GetPaymentsForAccountInPeriod(message.EmployerAccountId,
-                        message.Period.CalendarYear, message.Period.CalendarMonth, message.PageNumber, message.PageSize);
-                }
-                else if (message.Period != null)
-                {
-                    payments = await _paymentRepository.GetPaymentsForPeriod(message.Period.CalendarYear,
-                                    message.Period.CalendarMonth,
-                                    message.PageNumber, message.PageSize);
-                }
-                else if (!string.IsNullOrEmpty(message.EmployerAccountId))
-                {
-                    payments = await _paymentRepository.GetPaymentsForAccount(message.EmployerAccountId,
-                        message.PageNumber, message.PageSize);
-                }
-                else
-                {
-                    payments = await _paymentRepository.GetPayments(message.PageNumber, message.PageSize);
-                }
+                payments = await _paymentRepository.GetPayments(message.PageNumber, 
+                                                                message.PageSize,
+                                                                message.EmployerAccountId,
+                                                               message.Period == null ? null :(int?) message.Period.CalendarYear, 
+                                                               message.Period == null ? null : (int?) message.Period.CalendarMonth,
+                                                               message.Ukprn );
 
                 return new GetPaymentsQueryResponse
                 {

@@ -32,32 +32,36 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         private const string CountColumn = "COUNT(p.PaymentId)";
         private const string Pagination = "ORDER BY p.CollectionPeriodYear, p.CollectionPeriodMonth OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY";
 
-        public async Task<PageOfEntities<PaymentEntity>> GetPayments(int page, int pageSize)
+   
+        public async Task<PageOfEntities<PaymentEntity>> GetPayments(int page, int pageSize, string employerAccountId, int? collectionPeriodYear, int? collectionPeriodMonth, long? ukprn)
         {
-            return await GetPageOfPayments(string.Empty, page, pageSize);
-        }
+            string whereClause = "";
 
-        public async Task<PageOfEntities<PaymentEntity>> GetPaymentsForPeriod(int collectionPeriodYear, int collectionPeriodMonth, int page, int pageSize)
-        {
-            var whereClause = $"WHERE p.CollectionPeriodYear = {collectionPeriodYear} AND p.CollectionPeriodMonth = {collectionPeriodMonth}";
+            if (collectionPeriodMonth.HasValue && collectionPeriodYear.HasValue)
+            {
+                whereClause = $" p.CollectionPeriodYear = {collectionPeriodYear} AND p.CollectionPeriodMonth = {collectionPeriodMonth} AND";
+            }
+
+            if (string.IsNullOrEmpty(employerAccountId))
+            {
+                whereClause = $" rp.AccountId = '{employerAccountId.Replace("'", "''")}' AND";
+            }
+
+            if (ukprn.HasValue)
+            {
+                whereClause = $" rp.Ukprn = {ukprn.Value}' AND";
+            }
+
+            if (!string.IsNullOrEmpty(whereClause))
+            {
+                whereClause = " WHERE " + whereClause.Substring(1, whereClause.Length - 4);
+            }
 
             return await GetPageOfPayments(whereClause, page, pageSize);
+
+
         }
 
-        public async Task<PageOfEntities<PaymentEntity>> GetPaymentsForAccount(string employerAccountId, int page, int pageSize)
-        {
-            var whereClause = $"WHERE rp.AccountId = '{employerAccountId.Replace("'", "''")}'";
-
-            return await GetPageOfPayments(whereClause, page, pageSize);
-        }
-
-        public async Task<PageOfEntities<PaymentEntity>> GetPaymentsForAccountInPeriod(string employerAccountId, int collectionPeriodYear, int collectionPeriodMonth,
-            int page, int pageSize)
-        {
-            var whereClause = $"WHERE rp.AccountId = '{employerAccountId.Replace("'", "''")}' AND p.CollectionPeriodYear = {collectionPeriodYear} AND p.CollectionPeriodMonth = {collectionPeriodMonth}";
-
-            return await GetPageOfPayments(whereClause, page, pageSize);
-        }
 
 
         private async Task<PageOfEntities<PaymentEntity>> GetPageOfPayments(string whereClause, int page, int pageSize)

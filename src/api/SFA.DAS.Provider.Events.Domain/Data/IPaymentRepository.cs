@@ -5,9 +5,7 @@ namespace SFA.DAS.Provider.Events.Domain.Data
 {
     public interface IPaymentRepository
     {
-        Task<PageOfEntities<PaymentEntity>> GetPayments(int page, int pageSize);
-        Task<PageOfEntities<PaymentEntity>> GetPaymentsForPeriod(int collectionPeriodYear, int collectionPeriodMonth, int page, int pageSize);
-        Task<PageOfEntities<PaymentEntity>> GetPaymentsForAccount(string employerAccountId, int page, int pageSize);
-        Task<PageOfEntities<PaymentEntity>> GetPaymentsForAccountInPeriod(string employerAccountId, int collectionPeriodYear, int collectionPeriodMonth, int page, int pageSize);
+        Task<PageOfEntities<PaymentEntity>> GetPayments(int page, int pageSize, string employerAccountId= null, int? collectionPeriodYear = null, int? collectionPeriodMonth = null, long? ukprn = null);
+
     }
 }
