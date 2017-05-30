@@ -42,7 +42,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                 whereClause = $" p.CollectionPeriodYear = {collectionPeriodYear} AND p.CollectionPeriodMonth = {collectionPeriodMonth} AND";
             }
 
-            if (string.IsNullOrEmpty(employerAccountId))
+            if (!string.IsNullOrEmpty(employerAccountId))
             {
                 whereClause = $" rp.AccountId = '{employerAccountId.Replace("'", "''")}' AND";
             }
