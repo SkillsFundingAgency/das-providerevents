@@ -23,7 +23,7 @@ SELECT
     pe.PriceEpisodeIdentifier,
     pe.LearnRefNumber,
     pe.PriceEpisodeAimSeqNumber AimSeqNumber,
-    pe.EpisodeEffectiveTNPStartDate IlrStartDate,
+    ld.LearnStartDate IlrStartDate,
     ld.StdCode IlrStandardCode,
     ld.ProgType IlrProgrammeType,
     ld.FworkCode IlrFrameworkCode,
@@ -36,7 +36,8 @@ SELECT
 		WHEN ISNULL(pe.TNP1, 0) > 0 THEN pe.TNP2
 		ELSE pe.TNP4
 	END IlrEndpointAssessorPrice,
-	pe.EpisodeEffectiveTNPStartDate IlrPriceEffectiveDate
+	pe.EpisodeEffectiveTNPStartDate IlrPriceEffectiveFromDate,
+	et.EffectiveTo IlrPriceEffectiveToDate
 FROM Rulebase.AEC_ApprenticeshipPriceEpisode pe
 	JOIN Valid.Learner l ON pe.LearnRefNumber = l.LearnRefNumber
 	JOIN Valid.LearningDelivery ld ON pe.LearnRefNumber = ld.LearnRefNumber
@@ -45,6 +46,17 @@ FROM Rulebase.AEC_ApprenticeshipPriceEpisode pe
 		SELECT TOP 1 *
 		FROM dbo.FileDetails
 	) fd
+	LEFT JOIN (
+		SELECT x.PriceEpisodeIdentifier, x.LearnRefNumber, x.PriceEpisodeAimSeqNumber, DATEADD(DD,-1,MIN(y.EpisodeEffectiveTNPStartDate)) EffectiveTo
+		FROM [Rulebase].[AEC_ApprenticeshipPriceEpisode] x
+		LEFT OUTER JOIN [Rulebase].[AEC_ApprenticeshipPriceEpisode] y
+			ON x.LearnRefNumber = y.LearnRefNumber
+			AND y.EpisodeEffectiveTNPStartDate > x.EpisodeEffectiveTNPStartDate
+		GROUP BY x.PriceEpisodeIdentifier,x.LearnRefNumber, x.PriceEpisodeAimSeqNumber, x.EpisodeEffectiveTNPStartDate
+	) et
+		ON pe.PriceEpisodeIdentifier = et.PriceEpisodeIdentifier
+		AND pe.LearnRefNumber = et.LearnRefNumber
+		AND pe.PriceEpisodeAimSeqNumber = et.PriceEpisodeAimSeqNumber
 GO
 
 

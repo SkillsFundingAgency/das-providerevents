@@ -724,12 +724,12 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
             // Arrange
             var current = new DataLockEvent
             {
-                IlrPriceEffectiveDate = DateTime.Today.AddDays(-10)
+                IlrPriceEffectiveFromDate = DateTime.Today.AddDays(-10)
             };
 
             var last = new DataLockEvent
             {
-                IlrPriceEffectiveDate = DateTime.Today.AddDays(-11)
+                IlrPriceEffectiveFromDate = DateTime.Today.AddDays(-11)
             };
 
             _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
