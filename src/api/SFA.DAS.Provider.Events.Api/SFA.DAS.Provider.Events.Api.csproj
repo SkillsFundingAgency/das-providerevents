@@ -192,6 +192,7 @@
     </Compile>
     <Compile Include="Plumbing\Json\StrictEnumConverter.cs" />
     <Compile Include="Plumbing\Mapping\AutoMapperConfigurationFactory.cs" />
+    <Compile Include="Plumbing\WebApi\AuthorizeRemoteOnlyAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
