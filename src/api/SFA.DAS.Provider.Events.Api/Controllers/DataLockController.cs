@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Results;
 using MediatR;
 using NLog;
+using SFA.DAS.Provider.Events.Api.ObsoleteModels;
 using SFA.DAS.Provider.Events.Api.Plumbing.WebApi;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.DataLock.GetDataLockEventsQuery;
@@ -33,7 +35,18 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         public async Task<IHttpActionResult> GetDataLockEventsV1(long sinceEventId = 0, DateTime? sinceTime = null, string employerAccountId = null, long ukprn = 0, int pageNumber = 1)
         {
             var result = await GetDataLockEventsV2(sinceEventId, sinceTime, employerAccountId, ukprn, pageNumber);
-            return result;
+            if (result.GetType() != typeof(OkNegotiatedContentResult<PageOfResults<DataLockEvent>>))
+            {
+                return result;
+            }
+
+            var v2Result = ((OkNegotiatedContentResult<PageOfResults<DataLockEvent>>)result).Content;
+            return Ok(new PageOfResults<DataLockEventV1>
+            {
+                PageNumber = v2Result.PageNumber,
+                TotalNumberOfPages = v2Result.TotalNumberOfPages,
+                Items = _mapper.Map<DataLockEventV1[]>(v2Result.Items)
+            });
         }
 
         [VersionedRoute("api/datalock", 2, Name = "DataLockEventsListV2H")]

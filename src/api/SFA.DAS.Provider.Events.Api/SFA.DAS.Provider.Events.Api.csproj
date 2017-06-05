@@ -180,6 +180,7 @@
     <Compile Include="Controllers\PaymentsController.cs" />
     <Compile Include="Controllers\PeriodEndsController.cs" />
     <Compile Include="Controllers\SubmissionsController.cs" />
+    <Compile Include="ObsoleteModels\DataLockEventV1.cs" />
     <Compile Include="Plumbing\DependencyResolution\DefaultRegistry.cs" />
     <Compile Include="Plumbing\DependencyResolution\IoC.cs" />
     <Compile Include="Plumbing\DependencyResolution\Policies\LoggingPolicy.cs" />
