@@ -47,15 +47,16 @@ FROM Rulebase.AEC_ApprenticeshipPriceEpisode pe
 		FROM dbo.FileDetails
 	) fd
 	LEFT JOIN (
-		SELECT x.PriceEpisodeIdentifier, x.LearnRefNumber, DATEADD(DD,-1,MIN(y.EpisodeEffectiveTNPStartDate)) EffectiveTo
+		SELECT x.PriceEpisodeIdentifier, x.LearnRefNumber, x.PriceEpisodeAimSeqNumber, DATEADD(DD,-1,MIN(y.EpisodeEffectiveTNPStartDate)) EffectiveTo
 		FROM [Rulebase].[AEC_ApprenticeshipPriceEpisode] x
 		LEFT OUTER JOIN [Rulebase].[AEC_ApprenticeshipPriceEpisode] y
 			ON x.LearnRefNumber = y.LearnRefNumber
 			AND y.EpisodeEffectiveTNPStartDate > x.EpisodeEffectiveTNPStartDate
-		GROUP BY x.PriceEpisodeIdentifier,x.LearnRefNumber, x.EpisodeEffectiveTNPStartDate
+		GROUP BY x.PriceEpisodeIdentifier,x.LearnRefNumber, x.PriceEpisodeAimSeqNumber, x.EpisodeEffectiveTNPStartDate
 	) et
 		ON pe.PriceEpisodeIdentifier = et.PriceEpisodeIdentifier
 		AND pe.LearnRefNumber = et.LearnRefNumber
+		AND pe.PriceEpisodeAimSeqNumber = et.PriceEpisodeAimSeqNumber
 GO
 
 
