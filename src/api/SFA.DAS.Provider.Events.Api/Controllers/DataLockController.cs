@@ -11,7 +11,6 @@ using SFA.DAS.Provider.Events.Domain.Mapping;
 
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
-    [RoutePrefix("api/datalock")]
     [AuthorizeRemoteOnly(Roles = "ReadDataLock")]
     public class DataLockController : ApiController
     {
@@ -28,9 +27,19 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             _logger = logger;
         }
 
-        [Route("", Name = "DataLockEventsList")]
+        [VersionedRoute("api/datalock", 1, Name = "DataLockEventsList")]
+        [Route("api/v1/datalock", Name = "DataLockEventsListV1")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetDataLockEvents(long sinceEventId = 0, DateTime? sinceTime = null, string employerAccountId = null, long ukprn = 0, int pageNumber = 1)
+        public async Task<IHttpActionResult> GetDataLockEventsV1(long sinceEventId = 0, DateTime? sinceTime = null, string employerAccountId = null, long ukprn = 0, int pageNumber = 1)
+        {
+            var result = await GetDataLockEventsV2(sinceEventId, sinceTime, employerAccountId, ukprn, pageNumber);
+            return result;
+        }
+
+        [VersionedRoute("api/datalock", 2, Name = "DataLockEventsListV2H")]
+        [Route("api/v2/datalock", Name = "DataLockEventsListV2")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetDataLockEventsV2(long sinceEventId = 0, DateTime? sinceTime = null, string employerAccountId = null, long ukprn = 0, int pageNumber = 1)
         {
             try
             {
