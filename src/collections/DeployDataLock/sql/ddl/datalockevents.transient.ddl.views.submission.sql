@@ -23,7 +23,7 @@ SELECT
     pe.PriceEpisodeIdentifier,
     pe.LearnRefNumber,
     pe.PriceEpisodeAimSeqNumber AimSeqNumber,
-    pe.EpisodeEffectiveTNPStartDate IlrStartDate,
+    ld.LearnStartDate IlrStartDate,
     ld.StdCode IlrStandardCode,
     ld.ProgType IlrProgrammeType,
     ld.FworkCode IlrFrameworkCode,
@@ -47,7 +47,7 @@ FROM Rulebase.AEC_ApprenticeshipPriceEpisode pe
 		FROM dbo.FileDetails
 	) fd
 	LEFT JOIN (
-		SELECT x.PriceEpisodeIdentifier, x.LearnRefNumber, MIN(y.EpisodeEffectiveTNPStartDate) EffectiveTo
+		SELECT x.PriceEpisodeIdentifier, x.LearnRefNumber, DATEADD(DD,-1,MIN(y.EpisodeEffectiveTNPStartDate)) EffectiveTo
 		FROM [Rulebase].[AEC_ApprenticeshipPriceEpisode] x
 		LEFT OUTER JOIN [Rulebase].[AEC_ApprenticeshipPriceEpisode] y
 			ON x.LearnRefNumber = y.LearnRefNumber
