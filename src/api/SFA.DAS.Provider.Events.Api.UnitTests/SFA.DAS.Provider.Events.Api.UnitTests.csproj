@@ -86,19 +86,19 @@
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Provider.Events.Api.Types\SFA.DAS.Provider.Events.Api.Types.csproj">
       <Project>{A557E17C-EB78-4F2E-AC2A-CCACDC2C3172}</Project>
-      <Name>SFA.DAS.Payments.Events.Api.Types</Name>
+      <Name>SFA.DAS.Provider.Events.Api.Types</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Provider.Events.Api\SFA.DAS.Provider.Events.Api.csproj">
       <Project>{d1f5fbbb-3e25-44aa-9d4e-4f822edfc767}</Project>
-      <Name>SFA.DAS.Payments.Events.Api</Name>
+      <Name>SFA.DAS.Provider.Events.Api</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Provider.Events.Application\SFA.DAS.Provider.Events.Application.csproj">
       <Project>{5DF95FFE-D3ED-4EB9-9797-8056142E7591}</Project>
-      <Name>SFA.DAS.Payments.Events.Application</Name>
+      <Name>SFA.DAS.Provider.Events.Application</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Provider.Events.Domain\SFA.DAS.Provider.Events.Domain.csproj">
       <Project>{CFBF1C38-4E74-4DD7-AA90-FEAB37B85FD7}</Project>
-      <Name>SFA.DAS.Payments.Events.Domain</Name>
+      <Name>SFA.DAS.Provider.Events.Domain</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

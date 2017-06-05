@@ -68,11 +68,11 @@
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Provider.Events.Api.Client\SFA.DAS.Provider.Events.Api.Client.csproj">
       <Project>{6D476BEC-D466-43D8-BAA9-683A68B41DCA}</Project>
-      <Name>SFA.DAS.Payments.Events.Api.Client</Name>
+      <Name>SFA.DAS.Provider.Events.Api.Client</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Provider.Events.Api.Types\SFA.DAS.Provider.Events.Api.Types.csproj">
       <Project>{a557e17c-eb78-4f2e-ac2a-ccacdc2c3172}</Project>
-      <Name>SFA.DAS.Payments.Events.Api.Types</Name>
+      <Name>SFA.DAS.Provider.Events.Api.Types</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
