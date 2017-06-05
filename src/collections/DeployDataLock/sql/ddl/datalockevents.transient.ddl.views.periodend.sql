@@ -37,7 +37,7 @@ SELECT
 		ELSE dpe.Tnp4
 	END IlrEndpointAssessorPrice,
 	dpe.StartDate IlrPriceEffectiveFromDate,
-	GETDATE() IlrPriceEffectiveToDate
+	dpe.EffectiveToDate IlrPriceEffectiveToDate
 FROM Reference.DataLockPriceEpisode dpe
 	JOIN Reference.Providers p 
 		ON dpe.Ukprn = p.Ukprn

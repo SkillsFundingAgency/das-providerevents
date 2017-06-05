@@ -52,7 +52,8 @@ CREATE TABLE Reference.DataLockPriceEpisode (
 	[Tnp2] decimal(15,5) NULL,
 	[Tnp3] decimal(15,5) NULL,
 	[Tnp4] decimal(15,5) NULL,
-	[LearningStartDate] date NULL
+	[LearningStartDate] date NULL,
+	[EffectiveToDate] date NULL
 )
 GO
 
