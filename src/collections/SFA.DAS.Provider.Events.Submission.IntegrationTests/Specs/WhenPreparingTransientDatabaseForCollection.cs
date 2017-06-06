@@ -5,6 +5,8 @@ using Dapper;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Submission.IntegrationTests.Data.Entities;
 using SFA.DAS.Provider.Events.Submission.IntegrationTests.TestContext;
+using SFA.DAS.Provider.Events.Submission.IntegrationTests.Helpers;
+using SFA.DAS.Provider.Events.Submission.Domain;
 
 namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Specs
 {
@@ -60,21 +62,13 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Specs
         }
         private void PopulateLastSeen(SqlConnection dedsConnection)
         {
-            var command = "INSERT INTO Submissions.LastSeenVersion " +
-                      "(IlrFileName,FileDateTime,SubmittedDateTime,ComponentVersionNumber,UKPRN,ULN,LearnRefNumber,AimSeqNumber,PriceEpisodeIdentifier," +
-                      "StandardCode,ActualStartDate,PlannedEndDate,OnProgrammeTotalPrice,CompletionTotalPrice,AcademicYear) " +
-                      "VALUES " +
-                      "(@IlrFileName,@FileDateTime,@SubmittedDateTime,@ComponentVersionNumber,@UKPRN,@ULN,@LearnRefNumber,@AimSeqNumber,@PriceEpisodeIdentifier," +
-                      "@StandardCode,@ActualStartDate,@PlannedEndDate,@OnProgrammeTotalPrice,@CompletionTotalPrice,@AcademicYear)";
-
-            dedsConnection.Execute(command, new
-            {
+            var ilrDetails = new IlrDetails {
                 IlrFileName = $"ILR-{Ukprn}-{AcademicYear}-{FilePrepDate.AddDays(-1).ToString("yyyyMMdd-HHmmss")}-01.xml",
                 FileDateTime = FilePrepDate.AddDays(-1),
                 SubmittedDateTime = SubmissionTime.AddDays(-1),
                 ComponentVersionNumber = 1,
-                UKPRN = Ukprn,
-                ULN = Uln,
+                Ukprn = Ukprn,
+                Uln = Uln,
                 LearnRefNumber = "1",
                 AimSeqNumber = 1,
                 PriceEpisodeIdentifier = $"00-34-01/{StartDate.ToString("MM/yyyy")}",
@@ -84,7 +78,10 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Specs
                 OnProgrammeTotalPrice = OnProgPrice * 0.8m,
                 CompletionTotalPrice = EndpointPrice * 0.8m,
                 AcademicYear = AcademicYear
-            });
+            };
+
+            TestDataHelper.PopulateLastSeen(dedsConnection, ilrDetails);
+            
         }
 
         
