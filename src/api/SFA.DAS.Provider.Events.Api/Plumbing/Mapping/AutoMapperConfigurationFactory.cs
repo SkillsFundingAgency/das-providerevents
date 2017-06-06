@@ -64,6 +64,9 @@ namespace SFA.DAS.Provider.Events.Api.Plumbing.Mapping
                 cfg.CreateMap<Domain.DataLockEventError, Types.DataLockEventError>();
                 cfg.CreateMap<Domain.DataLockEventPeriod, Types.DataLockEventPeriod>();
                 cfg.CreateMap<Domain.DataLockEventApprenticeship, Types.DataLockEventApprenticeship>();
+
+                cfg.CreateMap<Types.DataLockEvent, ObsoleteModels.DataLockEventV1>()
+                    .ForMember(dst => dst.IlrPriceEffectiveDate, opt => opt.MapFrom(src => src.IlrPriceEffectiveFromDate));
             });
         }
     }

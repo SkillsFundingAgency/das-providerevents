@@ -136,7 +136,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController
         public async Task ThenItShouldReturnAnOkResult()
         {
             // Act
-            var actual = await _controller.GetDataLockEvents();
+            var actual = await _controller.GetDataLockEventsV2();
 
             // Assert
             Assert.IsNotNull(actual);
@@ -147,7 +147,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController
         public async Task ThenItShouldReturnCorrectPageInformation()
         {
             // Act
-            var actual = ((OkNegotiatedContentResult<PageOfResults<DataLockEvent>>)await _controller.GetDataLockEvents()).Content;
+            var actual = ((OkNegotiatedContentResult<PageOfResults<DataLockEvent>>)await _controller.GetDataLockEventsV2()).Content;
 
             // Assert
             Assert.IsNotNull(actual);
@@ -159,7 +159,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController
         public async Task ThenItShouldReturnCorrectListOfEvents()
         {
             // Act
-            var actual = ((OkNegotiatedContentResult<PageOfResults<DataLockEvent>>)await _controller.GetDataLockEvents()).Content;
+            var actual = ((OkNegotiatedContentResult<PageOfResults<DataLockEvent>>)await _controller.GetDataLockEventsV2()).Content;
 
             // Assert
             Assert.IsNotNull(actual);
@@ -172,7 +172,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController
         public async Task ThenItShouldQueryWithTheRequestedFilters(int sinceEventId, DateTime? sinceTime, string employerAccountId, long ukprn)
         {
             // Act
-            await _controller.GetDataLockEvents(sinceEventId, sinceTime, employerAccountId, ukprn);
+            await _controller.GetDataLockEventsV2(sinceEventId, sinceTime, employerAccountId, ukprn);
 
             // Assert
             _mediator.Verify(m => m.SendAsync(It.Is<GetDataLockEventsQueryRequest>(r => r.SinceEventId == sinceEventId && r.SinceTime == sinceTime && r.EmployerAccountId == employerAccountId && r.Ukprn == ukprn)), Times.Once);
@@ -184,7 +184,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController
         public async Task ThenItShouldQueryWithCorrectPageInfo(int pageNumber)
         {
             // Act
-            await _controller.GetDataLockEvents(pageNumber: pageNumber);
+            await _controller.GetDataLockEventsV2(pageNumber: pageNumber);
 
             // Assert
             _mediator.Verify(m => m.SendAsync(It.Is<GetDataLockEventsQueryRequest>(r => r.PageNumber == pageNumber && r.PageSize == 250)), Times.Once);
@@ -203,7 +203,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController
                 });
 
             // Act
-            var actual = await _controller.GetDataLockEvents();
+            var actual = await _controller.GetDataLockEventsV2();
 
             // Assert
             Assert.IsNotNull(actual);
@@ -219,7 +219,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController
                 .ThrowsAsync(new Exception("Something really bad happened"));
 
             // Act
-            var actual = await _controller.GetDataLockEvents();
+            var actual = await _controller.GetDataLockEventsV2();
 
             // Assert
             Assert.IsNotNull(actual);

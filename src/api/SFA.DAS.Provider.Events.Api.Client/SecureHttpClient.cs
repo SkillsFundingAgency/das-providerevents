@@ -25,8 +25,12 @@ namespace SFA.DAS.Provider.Events.Api.Client
             {
                 using (var client = new HttpClient())
                 {
-                    client.DefaultRequestHeaders.Authorization =
-                        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _clientToken);
+                    if (!string.IsNullOrEmpty(_clientToken))
+                    {
+                        client.DefaultRequestHeaders.Authorization =
+                            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _clientToken);
+                    }
+                    client.DefaultRequestHeaders.Add("api-version", "2");
 
                     var response = await client.GetAsync(url);
                     response.EnsureSuccessStatusCode();
@@ -42,10 +46,10 @@ namespace SFA.DAS.Provider.Events.Api.Client
             {
                 if (ex.InnerException != null && ex.InnerException is WebException)
                 {
-                    var webEx = (WebException) ex.InnerException;
+                    var webEx = (WebException)ex.InnerException;
                     if (webEx.InnerException != null && webEx.InnerException is SocketException)
                     {
-                        var sockEx = (SocketException) webEx.InnerException;
+                        var sockEx = (SocketException)webEx.InnerException;
 
                         throw new ServerUnavailableException(ex, sockEx.SocketErrorCode);
                     }
