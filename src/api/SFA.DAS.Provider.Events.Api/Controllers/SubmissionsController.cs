@@ -11,7 +11,6 @@ using SFA.DAS.Provider.Events.Domain.Mapping;
 
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
-    [RoutePrefix("api/submissions")]
     [AuthorizeRemoteOnly(Roles = "ReadSubmissions")]
     public class SubmissionsController : ApiController
     {
@@ -28,7 +27,9 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             _logger = logger;
         }
 
-        [Route("", Name = "SubmissionEventsList")]
+        [VersionedRoute("api/submissions", 1, Name = "SubmissionEventsList")]
+        [VersionedRoute("api/submissions", 2, Name = "SubmissionEventsListV2H")]
+        [Route("api/v2/submissions", Name = "SubmissionEventsListV2")]
         [HttpGet]
         public async Task<IHttpActionResult> GetSubmissionEvents(long sinceEventId = 0, DateTime? sinceTime = null, long ukprn = 0, int pageNumber = 1)
         {

@@ -13,7 +13,6 @@ using Payment = SFA.DAS.Provider.Events.Api.Types.Payment;
 
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
-    [RoutePrefix("api/payments")]
     [AuthorizeRemoteOnly(Roles = "ReadPayments")]
     public class PaymentsController : ApiController
     {
@@ -30,7 +29,9 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             _logger = logger;
         }
 
-        [Route("", Name = "PaymentsList")]
+        [VersionedRoute("api/payments", 1, Name = "PaymentsList")]
+        [VersionedRoute("api/payments", 2, Name = "PaymentsListV2H")]
+        [Route("api/v2/payments", Name = "PaymentsListV2")]
         [HttpGet]
         public async Task<IHttpActionResult> GetListOfPayments(string periodId = null, string employerAccountId = null, int page = 1)
         {

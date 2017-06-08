@@ -11,7 +11,6 @@ using SFA.DAS.Provider.Events.Domain.Mapping;
 
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
-    [RoutePrefix("api/periodends")]
     [AuthorizeRemoteOnly(Roles = "ReadPayments")]
     public class PeriodEndsController : ApiController
     {
@@ -26,7 +25,9 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             _logger = logger;
         }
 
-        [Route("", Name = "PeriodEndList")]
+        [VersionedRoute("api/periodends", 1, Name = "PeriodEndList")]
+        [VersionedRoute("api/periodends", 2, Name = "PeriodEndListV2H")]
+        [Route("api/v2/periodends", Name = "PeriodEndListV2")]
         [HttpGet]
         public async Task<IHttpActionResult> ListPeriodEnds()
         {
