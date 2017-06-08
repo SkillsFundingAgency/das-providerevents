@@ -94,7 +94,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
             var prepDateTime = DateTime.Now.AddMinutes(-5);
             var academicYear = GetAcademicYear(prepDateTime);
             var startDate = DateTime.Today.AddMonths(3);
-            var learnRefNumber = "1";
+            var learnRefNumber = rdm.Next(100, 999).ToString();
             return new TestDataSet
             {
                 AcademicYear = academicYear,
@@ -120,7 +120,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
                     {
                         Ukprn = ukprn,
                         LearnRefNumber = learnRefNumber,
-                        Uln = rdm.Next(1000000000, int.MaxValue),
+                        Uln = 1000000000,
                         NiNumber = "AB123456A"
                     }
                 },
