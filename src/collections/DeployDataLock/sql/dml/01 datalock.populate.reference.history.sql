@@ -10,6 +10,7 @@ INSERT INTO @LastestDataLockEvents
 SELECT
 	MAX(Id)
 FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEvents
+WHERE UKPRN IN (SELECT UKPRN FROM @ProvidersToProcess)
 GROUP BY UKPRN, LearnRefNumber, PriceEpisodeIdentifier
 
 ---------------------------------------------------------------
