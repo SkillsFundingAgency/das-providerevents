@@ -6,6 +6,7 @@ namespace SFA.DAS.Provider.Events.Domain
     {
         public long Id { get; set; }
         public DateTime ProcessDateTime { get; set; }
+        public EventStatus Status { get; set; }
         public string IlrFileName { get; set; }
         public long Ukprn { get; set; }
         public long Uln { get; set; }

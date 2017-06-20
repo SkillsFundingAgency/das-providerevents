@@ -12,6 +12,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         private const string Columns = "Id, "
                                      + "DataLockEventId, "
                                      + "ProcessDateTime, "
+                                     + "Status, "
                                      + "IlrFileName,  "
                                      + "UKPRN, "
                                      + "ULN, "
