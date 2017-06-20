@@ -118,6 +118,10 @@
       <Link>DbSetupScripts\Copy Reference Data\01 datalock.PreRun.DataLockEvents.PopulateDataLockEventsData.sql</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\DeployDataLock\sql\migration\001_DataLockEvents_Add_EventStatus.sql">
+      <Link>DbSetupScripts\Migration\001_DataLockEvents_Add_EventStatus.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="DbSetupScripts\datalock.reference.transient.ddl.tables.periodend.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
