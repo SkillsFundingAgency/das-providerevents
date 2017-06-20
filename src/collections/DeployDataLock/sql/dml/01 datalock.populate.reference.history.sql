@@ -11,6 +11,7 @@ SELECT
 	MAX(Id)
 FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEvents
 WHERE UKPRN IN (SELECT UKPRN FROM @ProvidersToProcess)
+AND Status <> 3 -- Do not read removed as anything from here will be new again
 GROUP BY UKPRN, LearnRefNumber, PriceEpisodeIdentifier
 
 ---------------------------------------------------------------
