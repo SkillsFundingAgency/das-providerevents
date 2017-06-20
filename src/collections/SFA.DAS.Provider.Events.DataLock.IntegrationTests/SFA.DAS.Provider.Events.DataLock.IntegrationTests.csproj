@@ -76,6 +76,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specs\WhenAnExistingEventIsFound.cs" />
     <Compile Include="Specs\WhenANewEventIsGenerated.cs" />
+    <Compile Include="Specs\WhenAnExistingEventIsNonLongerFound.cs" />
     <Compile Include="SqlExtensions.cs" />
     <Compile Include="TestContext\GlobalTestContext.cs" />
     <Compile Include="TestContext\GlobalTestContextSetupException.cs" />
@@ -115,6 +116,10 @@
     </Content>
     <Content Include="..\DeployDataLock\sql\dml\01 datalock.PreRun.DataLockEvents.PopulateDataLockEventsData.sql">
       <Link>DbSetupScripts\Copy Reference Data\01 datalock.PreRun.DataLockEvents.PopulateDataLockEventsData.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\DeployDataLock\sql\migration\001_DataLockEvents_Add_EventStatus.sql">
+      <Link>DbSetupScripts\Migration\001_DataLockEvents_Add_EventStatus.sql</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="DbSetupScripts\datalock.reference.transient.ddl.tables.periodend.sql">

@@ -57,9 +57,11 @@ namespace SFA.DAS.Provider.Events.Api.Plumbing.Mapping
                 cfg.CreateMap<Domain.PageOfResults<Domain.DataLockEvent>, Types.PageOfResults<Types.DataLockEvent>>();
                 cfg.CreateMap<Domain.DataLockEvent, Types.DataLockEvent>()
                     .ForMember(dst => dst.EventSource, opt => opt.Ignore())
+                    .ForMember(dst => dst.Status, opt => opt.Ignore())
                     .AfterMap((src, dst) =>
                     {
                         dst.EventSource = (Types.EventSource)(int)src.EventSource;
+                        dst.Status = (Types.EventStatus)(int)src.Status;
                     });
                 cfg.CreateMap<Domain.DataLockEventError, Types.DataLockEventError>();
                 cfg.CreateMap<Domain.DataLockEventPeriod, Types.DataLockEventPeriod>();

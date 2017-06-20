@@ -7,6 +7,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Domain
         public Guid DataLockEventId { get; set; }
 
         public DateTime ProcessDateTime { get; set; }
+        public EventStatus Status { get; set; }
 
         public string IlrFileName { get; set; }
         public DateTime SubmittedDateTime { get; set; }

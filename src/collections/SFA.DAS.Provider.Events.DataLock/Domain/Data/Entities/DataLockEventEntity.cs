@@ -5,6 +5,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Domain.Data.Entities
     public class DataLockEventEntity
     {
         public DateTime ProcessDateTime { get; set; }
+        public int Status { get; set; }
         public string IlrFileName { get; set; }
         public DateTime SubmittedDateTime { get; set; }
         public string AcademicYear { get; set; }

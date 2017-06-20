@@ -72,6 +72,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "copy mappings", "copy mappi
 		DeploySubmission\copy mappings\DasSubmissionEventsCopyToDedsMapping.xml = DeploySubmission\copy mappings\DasSubmissionEventsCopyToDedsMapping.xml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "migration", "migration", "{03D62B67-F79F-4684-A364-3A4F706A6041}"
+	ProjectSection(SolutionItems) = preProject
+		DeployDataLock\sql\migration\001_DataLockEvents_Add_EventStatus.sql = DeployDataLock\sql\migration\001_DataLockEvents_Add_EventStatus.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,5 +128,6 @@ Global
 		{2A595E5F-955C-4B4A-B99F-36F6F4E7D076} = {144D3C62-D0BE-4650-8569-604103E07345}
 		{0DEC15D4-26C4-4051-B046-944D243B5A29} = {004E9717-B703-46BF-BBCC-FE390CE0192D}
 		{8C307202-6D98-4C22-88F5-06BF50C8E8CA} = {E10D1710-C31E-4738-8693-885EA1D3ECE4}
+		{03D62B67-F79F-4684-A364-3A4F706A6041} = {9DB243FF-B759-44BA-B214-0883F1DF420D}
 	EndGlobalSection
 EndGlobal

@@ -17,8 +17,9 @@ GO
 
 CREATE TABLE [Reference].[DataLockEvents]
 (
-	Id							bigint				PRIMARY KEY,
+	Id							bigint				NOT NULL,
 	ProcessDateTime				datetime			NOT NULL,
+	Status						int					NOT NULL,
 	IlrFileName					nvarchar(50)		NOT NULL,
 	SubmittedDateTime		    datetime			NOT NULL,
 	AcademicYear				varchar(4)    		NOT NULL,
@@ -41,7 +42,8 @@ CREATE TABLE [Reference].[DataLockEvents]
 	IlrPriceEffectiveFromDate	date				NULL,
 	IlrPriceEffectiveToDate		date				NULL,
 	DataLockEventId				uniqueidentifier	NOT NULL
-
+	CONSTRAINT [PK_Reference_DataLockEvents] PRIMARY KEY NONCLUSTERED (Id),
+	INDEX [IX_Reference_DataLockEvents_UKPRN]  CLUSTERED (UKPRN)
 )
 GO
 
@@ -62,7 +64,8 @@ CREATE TABLE [Reference].[DataLockEventPeriods]
 	CollectionPeriodYear	int				NOT NULL,
 	CommitmentVersion		bigint			NOT NULL,
 	IsPayable				bit				NOT NULL,
-	TransactionType			int				NOT NULL
+	TransactionType			int				NOT NULL,
+	INDEX [IX_Reference_DataLockEventPeriods_DataLockEventId] CLUSTERED (DataLockEventId)
 )
 GO
 
@@ -85,7 +88,8 @@ CREATE TABLE [Reference].[DataLockEventCommitmentVersions]
 	CommitmentFrameworkCode		int				NULL,
 	CommitmentPathwayCode		int				NULL,
 	CommitmentNegotiatedPrice	decimal(12,5)	NOT NULL,
-	CommitmentEffectiveDate		date			NOT NULL
+	CommitmentEffectiveDate		date			NOT NULL,
+	INDEX [IX_Reference_DataLockEventCommitmentVersions_DataLockEventId] CLUSTERED (DataLockEventId)
 )
 GO
 
@@ -103,7 +107,8 @@ CREATE TABLE [Reference].[DataLockEventErrors]
 	DataLockEventId			uniqueidentifier			NOT NULL,
 	ErrorCode				varchar(15)		NOT NULL,
 	SystemDescription		nvarchar(255)	NOT NULL,
-	PRIMARY KEY (DataLockEventId, ErrorCode)
+	PRIMARY KEY NONCLUSTERED (DataLockEventId, ErrorCode),
+	INDEX [IX_Reference_DataLockEventErrors_DataLockEventId] CLUSTERED (DataLockEventId)
 )
 GO
 

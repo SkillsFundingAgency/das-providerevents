@@ -17,6 +17,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
         private const string Columns = "Id," +
                                        "DataLockEventId," +
                                        "ProcessDateTime," +
+                                       "Status," +
                                        "IlrFileName," +
                                        "SubmittedDateTime," +
                                        "AcademicYear," +
@@ -63,7 +64,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
                 while (skip < events.Length)
                 {
                     var batch = events.Skip(skip).Take(batchSize)
-                        .Select(x => $"('{x.DataLockEventId}','{x.ProcessDateTime:yyyy-MM-dd HH:mm:ss}', '{x.IlrFileName}', '{x.SubmittedDateTime:yyyy-MM-dd HH:mm:ss}', " +
+                        .Select(x => $"('{x.DataLockEventId}','{x.ProcessDateTime:yyyy-MM-dd HH:mm:ss}', {x.Status}, '{x.IlrFileName}', '{x.SubmittedDateTime:yyyy-MM-dd HH:mm:ss}', " +
                                      $"'{x.AcademicYear}', '{x.Ukprn}', '{x.Uln}', '{x.LearnRefnumber}', '{x.AimSeqNumber}', '{x.PriceEpisodeIdentifier}', " +
                                      $"'{x.CommitmentId}', '{x.EmployerAccountId}', '{(int)x.EventSource}', '{x.HasErrors}', {ConvertNullableToInsertValue(x.IlrStartDate)}, " +
                                      $"{ConvertNullableToInsertValue(x.IlrStandardCode)}, {ConvertNullableToInsertValue(x.IlrProgrammeType)}, " +

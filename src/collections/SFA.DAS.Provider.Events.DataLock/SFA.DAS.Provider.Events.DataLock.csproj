@@ -113,6 +113,7 @@
     <Compile Include="Domain\DataLockEvent.cs" />
     <Compile Include="Domain\DataLockEventPeriod.cs" />
     <Compile Include="Domain\EventSource.cs" />
+    <Compile Include="Domain\EventStatus.cs" />
     <Compile Include="Domain\Provider.cs" />
     <Compile Include="Infrastructure\Context\DataLockContextPropertyKeys.cs" />
     <Compile Include="Infrastructure\Data\DcfsCommitmentRepository.cs" />
