@@ -76,6 +76,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specs\WhenAnExistingEventIsFound.cs" />
     <Compile Include="Specs\WhenANewEventIsGenerated.cs" />
+    <Compile Include="Specs\WhenAnExistingEventIsNonLongerFound.cs" />
     <Compile Include="SqlExtensions.cs" />
     <Compile Include="TestContext\GlobalTestContext.cs" />
     <Compile Include="TestContext\GlobalTestContextSetupException.cs" />

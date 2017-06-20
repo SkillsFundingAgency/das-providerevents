@@ -38,6 +38,7 @@ CREATE TABLE [DataLockEvents].[DataLockEvents]
 	Id							bigint				PRIMARY KEY IDENTITY(1,1),
 	DataLockEventId				uniqueidentifier	NOT NULL,
 	ProcessDateTime				datetime			NOT NULL,
+	Status						int					NOT NULL,
 	IlrFileName					nvarchar(50)		NOT NULL,
 	SubmittedDateTime		    datetime			NOT NULL,
 	AcademicYear				varchar(4)    		NOT NULL,

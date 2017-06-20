@@ -42,28 +42,52 @@ namespace SFA.DAS.Provider.Events.DataLock
                     var currentEventsResponse = ReturnValidGetCurrentProviderEventsResponseOrThrow(provider.Ukprn);
                     var lastSeenEventsResponse = ReturnValidGetLastSeenProviderEventsResponseOrThrow(provider.Ukprn);
 
-                    if (!currentEventsResponse.HasAnyItems())
+                    if (!currentEventsResponse.HasAnyItems() && !lastSeenEventsResponse.HasAnyItems())
                     {
-                        _logger.Info("Provider does not have any current events. Skipping");
+                        _logger.Info("Provider does not have any current or existing events. Skipping");
                         continue;
                     }
-                    foreach (var current in currentEventsResponse.Items)
+
+                    // Look for events that are no longer in system
+                    if (lastSeenEventsResponse.HasAnyItems())
                     {
-                        _logger.Info($"Found event. Price episode = {current.PriceEpisodeIdentifier}, Uln = {current.Uln}");
-                        var lastSeen = lastSeenEventsResponse.Items?.SingleOrDefault(ev => ev.Ukprn == current.Ukprn &&
-                                                                                           ev.PriceEpisodeIdentifier == current.PriceEpisodeIdentifier &&
-                                                                                           ev.LearnRefnumber == current.LearnRefnumber);
-
-                        if (EventsAreDifferent(current, lastSeen))
+                        for (var i = lastSeenEventsResponse.Items.Length - 1; i >= 0; i--)
                         {
-                            _logger.Info("Event has changed");
-                            current.ProcessDateTime = DateTime.Now;
-
-                            eventsToStore.Add(current);
+                            var lastSeen = lastSeenEventsResponse.Items[i];
+                            var current = currentEventsResponse.Items?.SingleOrDefault(ev => ev.Ukprn == lastSeen.Ukprn &&
+                                                                                             ev.PriceEpisodeIdentifier == lastSeen.PriceEpisodeIdentifier &&
+                                                                                             ev.LearnRefnumber == lastSeen.LearnRefnumber);
+                            if (current == null)
+                            {
+                                lastSeen.DataLockEventId = Guid.Empty;
+                                lastSeen.Status = EventStatus.Removed;
+                                eventsToStore.Add(lastSeen);
+                            }
                         }
-                        else
+                    }
+
+                    // Look for new and updated events
+                    if (currentEventsResponse.HasAnyItems())
+                    {
+                        foreach (var current in currentEventsResponse.Items)
                         {
-                            _logger.Info("Event is same as previous");
+                            _logger.Info($"Found event. Price episode = {current.PriceEpisodeIdentifier}, Uln = {current.Uln}");
+                            var lastSeen = lastSeenEventsResponse.Items?.SingleOrDefault(ev => ev.Ukprn == current.Ukprn &&
+                                                                                               ev.PriceEpisodeIdentifier == current.PriceEpisodeIdentifier &&
+                                                                                               ev.LearnRefnumber == current.LearnRefnumber);
+
+                            if (EventsAreDifferent(current, lastSeen))
+                            {
+                                _logger.Info("Event has changed");
+                                current.ProcessDateTime = DateTime.Now;
+                                current.Status = lastSeen == null ? EventStatus.New : EventStatus.Updated;
+
+                                eventsToStore.Add(current);
+                            }
+                            else
+                            {
+                                _logger.Info("Event is same as previous");
+                            }
                         }
                     }
                 }

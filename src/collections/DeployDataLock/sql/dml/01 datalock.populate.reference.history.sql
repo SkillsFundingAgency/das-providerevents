@@ -16,13 +16,14 @@ GROUP BY UKPRN, LearnRefNumber, PriceEpisodeIdentifier
 -- DataLockEvents
 ---------------------------------------------------------------
 INSERT INTO Reference.DataLockEvents
-(Id,DataLockEventId, ProcessDateTime, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, 
+(Id,DataLockEventId, ProcessDateTime, Status, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, 
 PriceEpisodeIdentifier, CommitmentId, EmployerAccountId, EventSource, HasErrors, IlrStartDate, IlrStandardCode, 
 IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice, IlrPriceEffectiveFromDate, IlrPriceEffectiveToDate)
 SELECT
 	dle.Id,
 	dle.DataLockEventId,
 	dle.ProcessDateTime, 
+	dle.Status,
 	dle.IlrFileName, 
     dle.SubmittedDateTime, 
     dle.AcademicYear, 

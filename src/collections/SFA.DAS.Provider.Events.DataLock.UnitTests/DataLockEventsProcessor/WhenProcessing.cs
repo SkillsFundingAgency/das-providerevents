@@ -334,6 +334,12 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                     IsValid = true,
                     Items = new DataLockEvent[0]
                 });
+            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenProviderEventsRequest>()))
+                 .Returns(new GetLastSeenProviderEventsResponse
+                 {
+                     IsValid = true,
+                     Items = new DataLockEvent[0]
+                 });
 
             // Act
             _processor.Process();
@@ -863,6 +869,30 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
             // Assert
             _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
             _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events[0] == current)));
+        }
+
+
+        [Test]
+        public void ThenItShouldWriteAnEventWhenLastSeenEventNotInCurrentEvents()
+        {
+            // Arrange
+            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
+                .Returns(new GetCurrentProviderEventsResponse
+                {
+                    IsValid = true,
+                    Items = new DataLockEvent[0]
+                });
+            _lastSeenOriginalEvent.PriceEpisodeIdentifier += "a";
+
+            // Act
+            _processor.Process();
+
+            // Assert
+            _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(r => r.Events != null
+                                                                                   && r.Events.Length == 1
+                                                                                   && r.Events[0].PriceEpisodeIdentifier == _lastSeenOriginalEvent.PriceEpisodeIdentifier
+                                                                                   && r.Events[0].Status == EventStatus.Removed)));
         }
     }
 }

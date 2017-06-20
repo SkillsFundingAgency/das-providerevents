@@ -19,6 +19,7 @@ CREATE TABLE [Reference].[DataLockEvents]
 (
 	Id							bigint				PRIMARY KEY,
 	ProcessDateTime				datetime			NOT NULL,
+	Status						int					NOT NULL,
 	IlrFileName					nvarchar(50)		NOT NULL,
 	SubmittedDateTime		    datetime			NOT NULL,
 	AcademicYear				varchar(4)    		NOT NULL,

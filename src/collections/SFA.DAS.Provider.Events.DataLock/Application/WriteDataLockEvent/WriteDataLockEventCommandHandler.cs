@@ -62,6 +62,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent
                 {
                     DataLockEventId = id,
                     ProcessDateTime = @event.ProcessDateTime,
+                    Status = (int)@event.Status,
                     IlrFileName = @event.IlrFileName,
                     SubmittedDateTime = @event.SubmittedDateTime,
                     AcademicYear = @event.AcademicYear,

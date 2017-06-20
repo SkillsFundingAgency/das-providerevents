@@ -94,6 +94,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Specs
            // Assert.AreEqual(2, @event.Id);
             Assert.AreEqual(ukprn, @event.Ukprn);
             Assert.AreEqual(commitmentId, @event.CommitmentId);
+            Assert.AreEqual(EventStatus.Updated, @event.Status);
 
             var eventErrors = TestDataHelper.GetAllEventErrors(@event.DataLockEventId);
             var eventPeriods = TestDataHelper.GetAllEventPeriods(@event.DataLockEventId);
@@ -137,6 +138,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Specs
             //Assert.AreEqual(2, @event.Id);
             Assert.AreEqual(ukprn, @event.Ukprn);
             Assert.AreEqual(commitmentId, @event.CommitmentId);
+            Assert.AreEqual(EventStatus.Updated, @event.Status);
 
             var eventErrors = TestDataHelper.GetAllEventErrors(@event.DataLockEventId, false);
             var eventPeriods = TestDataHelper.GetAllEventPeriods(@event.DataLockEventId, false);
