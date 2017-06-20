@@ -871,7 +871,6 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
             _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events[0] == current)));
         }
 
-
         [Test]
         public void ThenItShouldWriteAnEventWhenLastSeenEventNotInCurrentEvents()
         {
@@ -894,5 +893,6 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                                                                                    && r.Events[0].PriceEpisodeIdentifier == _lastSeenOriginalEvent.PriceEpisodeIdentifier
                                                                                    && r.Events[0].Status == EventStatus.Removed)));
         }
+
     }
 }

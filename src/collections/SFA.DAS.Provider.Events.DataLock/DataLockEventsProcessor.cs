@@ -42,53 +42,56 @@ namespace SFA.DAS.Provider.Events.DataLock
                     var currentEventsResponse = ReturnValidGetCurrentProviderEventsResponseOrThrow(provider.Ukprn);
                     var lastSeenEventsResponse = ReturnValidGetLastSeenProviderEventsResponseOrThrow(provider.Ukprn);
 
-                    if (!currentEventsResponse.HasAnyItems() && !lastSeenEventsResponse.HasAnyItems())
+                    var currentEvents = currentEventsResponse.HasAnyItems() ? currentEventsResponse.Items.ToList() : new List<DataLockEvent>();
+                    var lastSeenEvents = lastSeenEventsResponse.HasAnyItems() ? lastSeenEventsResponse.Items.ToList() : new List<DataLockEvent>();
+
+                    if (!currentEvents.Any() && !lastSeenEvents.Any())
                     {
                         _logger.Info("Provider does not have any current or existing events. Skipping");
                         continue;
                     }
 
                     // Look for events that are no longer in system
-                    if (lastSeenEventsResponse.HasAnyItems())
+                    foreach (var lastSeen in lastSeenEvents)
                     {
-                        for (var i = lastSeenEventsResponse.Items.Length - 1; i >= 0; i--)
+                        _logger.Info($"Looking at last seen event for price episode = {lastSeen.PriceEpisodeIdentifier}, Uln = {lastSeen.Uln}");
+                        var current = currentEvents.SingleOrDefault(ev => ev.Ukprn == lastSeen.Ukprn &&
+                                                                            ev.PriceEpisodeIdentifier == lastSeen.PriceEpisodeIdentifier &&
+                                                                            ev.LearnRefnumber == lastSeen.LearnRefnumber);
+                        if (current == null)
                         {
-                            var lastSeen = lastSeenEventsResponse.Items[i];
-                            var current = currentEventsResponse.Items?.SingleOrDefault(ev => ev.Ukprn == lastSeen.Ukprn &&
-                                                                                             ev.PriceEpisodeIdentifier == lastSeen.PriceEpisodeIdentifier &&
-                                                                                             ev.LearnRefnumber == lastSeen.LearnRefnumber);
-                            if (current == null)
-                            {
-                                lastSeen.DataLockEventId = Guid.Empty;
-                                lastSeen.Status = EventStatus.Removed;
-                                eventsToStore.Add(lastSeen);
-                            }
+                            _logger.Info("Event has been removed");
+                            lastSeen.DataLockEventId = Guid.Empty;
+                            lastSeen.Status = EventStatus.Removed;
+                            eventsToStore.Add(lastSeen);
+                        }
+                        else if (EventsAreDifferent(current, lastSeen))
+                        {
+                            _logger.Info("Event has changed");
+                            current.ProcessDateTime = DateTime.Now;
+                            current.Status = EventStatus.Updated;
+
+                            eventsToStore.Add(current);
+                            currentEvents.Remove(current);
+                        }
+                        else
+                        {
+                            currentEvents.Remove(current);
+                            _logger.Info("Event has not changed");
                         }
                     }
 
-                    // Look for new and updated events
-                    if (currentEventsResponse.HasAnyItems())
+                    // Process new events
+                    foreach (var current in currentEvents)
                     {
-                        foreach (var current in currentEventsResponse.Items)
-                        {
-                            _logger.Info($"Found event. Price episode = {current.PriceEpisodeIdentifier}, Uln = {current.Uln}");
-                            var lastSeen = lastSeenEventsResponse.Items?.SingleOrDefault(ev => ev.Ukprn == current.Ukprn &&
-                                                                                               ev.PriceEpisodeIdentifier == current.PriceEpisodeIdentifier &&
-                                                                                               ev.LearnRefnumber == current.LearnRefnumber);
+                        _logger.Info($"Found new event. Price episode = {current.PriceEpisodeIdentifier}, Uln = {current.Uln}");
 
-                            if (EventsAreDifferent(current, lastSeen))
-                            {
-                                _logger.Info("Event has changed");
-                                current.ProcessDateTime = DateTime.Now;
-                                current.Status = lastSeen == null ? EventStatus.New : EventStatus.Updated;
 
-                                eventsToStore.Add(current);
-                            }
-                            else
-                            {
-                                _logger.Info("Event is same as previous");
-                            }
-                        }
+                        _logger.Info("Event has changed");
+                        current.ProcessDateTime = DateTime.Now;
+                        current.Status = EventStatus.New;
+
+                        eventsToStore.Add(current);
                     }
                 }
 
