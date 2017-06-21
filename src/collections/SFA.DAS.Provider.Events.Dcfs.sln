@@ -72,9 +72,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "copy mappings", "copy mappi
 		DeploySubmission\copy mappings\DasSubmissionEventsCopyToDedsMapping.xml = DeploySubmission\copy mappings\DasSubmissionEventsCopyToDedsMapping.xml
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "migration", "migration", "{03D62B67-F79F-4684-A364-3A4F706A6041}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "migrationscripts", "migrationscripts", "{03D62B67-F79F-4684-A364-3A4F706A6041}"
 	ProjectSection(SolutionItems) = preProject
-		DeployDataLock\sql\migration\001_DataLockEvents_Add_EventStatus.sql = DeployDataLock\sql\migration\001_DataLockEvents_Add_EventStatus.sql
+		DeployDataLock\sql\migrationscripts\001_DataLockEvents_Add_EventStatus.sql = DeployDataLock\sql\migrationscripts\001_DataLockEvents_Add_EventStatus.sql
 	EndProjectSection
 EndProject
 Global
