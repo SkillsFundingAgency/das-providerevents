@@ -22,7 +22,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests
             using (var connection = new SqlConnection(GlobalTestContext.Current.DedsDatabaseConnectionString))
             {
                 connection.RunDbSetupSqlScriptFile("datalockevents.deds.ddl.tables.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
-                connection.RunDbSetupSqlScriptFile("Migration\\001_DataLockEvents_Add_EventStatus.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+                connection.RunDbSetupSqlScriptFile("MigrationScripts\\001_DataLockEvents_Add_EventStatus.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
             }   
         }
 
