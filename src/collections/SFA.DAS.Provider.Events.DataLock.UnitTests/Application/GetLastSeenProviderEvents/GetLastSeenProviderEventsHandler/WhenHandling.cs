@@ -84,7 +84,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
                 CollectionPeriodName = "1617-R09",
                 CollectionPeriodMonth = 4,
                 CollectionPeriodYear = 2017,
-                CommitmentVersion = 15,
+                CommitmentVersion = "99-015",
                 IsPayable = false,
                 TransactionType = 1
             };
@@ -92,7 +92,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
             _eventCommitmentVersion = new DataLockEventCommitmentVersionEntity
             {
                 DataLockEventId = EventId,
-                CommitmentVersion = 1,
+                CommitmentVersion = "99-001",
                 CommitmentStartDate = new DateTime(2017, 5, 1),
                 CommitmentProgrammeType = 20,
                 CommitmentFrameworkCode = 550,

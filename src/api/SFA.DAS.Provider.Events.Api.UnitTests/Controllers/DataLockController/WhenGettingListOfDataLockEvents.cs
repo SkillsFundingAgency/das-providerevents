@@ -49,7 +49,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController
                                 {
                                     new Domain.DataLockEventPeriod
                                     {
-                                        ApprenticeshipVersion = 15,
+                                        ApprenticeshipVersion = "1-015",
                                         Period = new Domain.NamedCalendarPeriod
                                         {
                                             Id = "1617-R09",

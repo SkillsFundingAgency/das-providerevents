@@ -156,7 +156,7 @@ CREATE TABLE [DataLockEvents].[DataLockEventsData]
 	IlrEndpointAssessorPrice	decimal(12,5)	NULL,
 	IlrPriceEffectiveFromDate	date			NULL,
 	IlrPriceEffectiveToDate		date			NULL,
-	CommitmentVersionId			bigint			NULL,
+	CommitmentVersionId			varchar(25)			NULL,
 	Period						int				NULL,
 	Payable						bit				NULL,
 	TransactionType				int				NULL,

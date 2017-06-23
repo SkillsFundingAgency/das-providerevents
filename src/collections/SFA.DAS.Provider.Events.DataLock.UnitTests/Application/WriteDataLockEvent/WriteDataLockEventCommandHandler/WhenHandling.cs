@@ -37,14 +37,14 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
                     Month = 4,
                     Year = 2017
                 },
-                CommitmentVersion = 1,
+                CommitmentVersion = "1-001",
                 IsPayable = false,
                 TransactionType = TransactionType.Learning
             };
 
             _eventCommitmentVersion = new DataLockEventCommitmentVersion
             {
-                CommitmentVersion = 1,
+                CommitmentVersion = "1-001",
                 CommitmentStartDate = new DateTime(2017, 4, 1),
                 CommitmentStandardCode = 27,
                 CommitmentNegotiatedPrice = 17500,

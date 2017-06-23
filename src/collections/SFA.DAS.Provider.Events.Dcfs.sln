@@ -38,6 +38,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{144D3C62
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ddl", "ddl", "{8DB91691-7F7A-424C-86F2-BE76A6FD5B0F}"
 	ProjectSection(SolutionItems) = preProject
+		DeployDataLock\sql\migrationscripts\002_DataLockEvents_Change_Commitment_Verion.sql = DeployDataLock\sql\migrationscripts\002_DataLockEvents_Change_Commitment_Verion.sql
 		DeployDataLock\sql\ddl\datalockevents.deds.ddl.tables.sql = DeployDataLock\sql\ddl\datalockevents.deds.ddl.tables.sql
 		DeployDataLock\sql\ddl\datalockevents.transient.ddl.procedures.sql = DeployDataLock\sql\ddl\datalockevents.transient.ddl.procedures.sql
 		DeployDataLock\sql\ddl\datalockevents.transient.ddl.tables.sql = DeployDataLock\sql\ddl\datalockevents.transient.ddl.tables.sql
@@ -75,6 +76,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "migrationscripts", "migrationscripts", "{03D62B67-F79F-4684-A364-3A4F706A6041}"
 	ProjectSection(SolutionItems) = preProject
 		DeployDataLock\sql\migrationscripts\001_DataLockEvents_Add_EventStatus.sql = DeployDataLock\sql\migrationscripts\001_DataLockEvents_Add_EventStatus.sql
+		DeployDataLock\sql\migrationscripts\002_DataLockEvents_Change_Commitment_Verion.sql = DeployDataLock\sql\migrationscripts\002_DataLockEvents_Change_Commitment_Verion.sql
 	EndProjectSection
 EndProject
 Global
