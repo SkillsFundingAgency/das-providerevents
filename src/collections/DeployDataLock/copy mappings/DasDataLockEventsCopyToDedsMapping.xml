@@ -104,6 +104,10 @@
           <Source>DataLockEventId</Source>
           <Destination>DataLockEventId</Destination>
         </ColumnMapping>
+ 	      <ColumnMapping>
+          <Source>Status</Source>
+          <Destination>Status</Destination>
+        </ColumnMapping>
       </ColumnMappings>
     </TableMapping>
     <TableMapping>
