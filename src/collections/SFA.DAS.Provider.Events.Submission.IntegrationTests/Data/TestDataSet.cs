@@ -194,6 +194,14 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
 
             return dataset;
         }
+        public static TestDataSet GetUpdateSubmissionDatasetWithUpdatedUln()
+        {
+            var dataset = GetUpdatedSubmissionDataSet();
+
+            dataset.PreviousVersions.First().Uln += 1234;
+
+            return dataset;
+        }
 
 
         private static List<LastSeenVersionEntity> GetPreviousVersionsFromSubmissions(TestDataSet dataset)
