@@ -6,6 +6,7 @@ using SFA.DAS.Payments.DCFS.Domain;
 using SFA.DAS.Provider.Events.DataLock.Domain;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data;
 using SFA.DAS.Provider.Events.DataLock.Domain.Data.Entities;
+using System.Diagnostics;
 
 namespace SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents
 {

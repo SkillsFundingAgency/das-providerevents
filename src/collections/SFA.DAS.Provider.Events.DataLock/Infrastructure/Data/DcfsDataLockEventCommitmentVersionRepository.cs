@@ -43,7 +43,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
                 while (skip < versions.Length)
                 {
                     var batch = versions.Skip(skip).Take(batchSize)
-                        .Select(x => $"('{x.DataLockEventId}', {x.CommitmentVersion}, '{x.CommitmentStartDate:yyyy-MM-dd HH:mm:ss}', " +
+                        .Select(x => $"('{x.DataLockEventId}', '{x.CommitmentVersion}', '{x.CommitmentStartDate:yyyy-MM-dd HH:mm:ss}', " +
                                      $"{(x.CommitmentStandardCode.HasValue ? x.CommitmentStandardCode.ToString() : "NULL")}, " +
                                      $"{(x.CommitmentProgrammeType.HasValue ? x.CommitmentProgrammeType.ToString() : "NULL")}, " +
                                      $"{(x.CommitmentFrameworkCode.HasValue ? x.CommitmentFrameworkCode.ToString() : "NULL")}, " +
