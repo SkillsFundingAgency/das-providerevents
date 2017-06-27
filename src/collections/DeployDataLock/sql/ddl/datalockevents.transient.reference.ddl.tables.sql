@@ -62,7 +62,7 @@ CREATE TABLE [Reference].[DataLockEventPeriods]
 	CollectionPeriodName	varchar(8)		NOT NULL,
 	CollectionPeriodMonth	int				NOT NULL,
 	CollectionPeriodYear	int				NOT NULL,
-	CommitmentVersion		bigint			NOT NULL,
+	CommitmentVersion		varchar(25)		NOT NULL,
 	IsPayable				bit				NOT NULL,
 	TransactionType			int				NOT NULL,
 	INDEX [IX_Reference_DataLockEventPeriods_DataLockEventId] CLUSTERED (DataLockEventId)
@@ -81,7 +81,7 @@ GO
 CREATE TABLE [Reference].[DataLockEventCommitmentVersions]
 (
 	DataLockEventId				uniqueidentifier			NOT NULL,
-	CommitmentVersion			bigint			NOT NULL,
+	CommitmentVersion			varchar(25)		NOT NULL,
 	CommitmentStartDate			date			NOT NULL,
 	CommitmentStandardCode		bigint			NULL,
 	CommitmentProgrammeType		int				NULL,
