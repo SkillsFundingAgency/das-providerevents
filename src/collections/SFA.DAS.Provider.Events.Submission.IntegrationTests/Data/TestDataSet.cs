@@ -94,7 +94,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
             var prepDateTime = DateTime.Now.AddMinutes(-5);
             var academicYear = GetAcademicYear(prepDateTime);
             var startDate = DateTime.Today.AddMonths(3);
-            var learnRefNumber = rdm.Next(100, 999).ToString();
+            var learnRefNumber ="REF" + rdm.Next(100, 999).ToString();
             return new TestDataSet
             {
                 AcademicYear = academicYear,
