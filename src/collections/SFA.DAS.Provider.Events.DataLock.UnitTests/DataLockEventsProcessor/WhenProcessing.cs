@@ -32,7 +32,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
             new object[] { new [] { new DataLockEventPeriod { CollectionPeriod = new CollectionPeriod {Name = "1"} } }, new [] { new DataLockEventPeriod { CollectionPeriod = new CollectionPeriod {Name = "2"} } } },
             new object[] { new [] { new DataLockEventPeriod { CollectionPeriod = new CollectionPeriod {Month = 1} } }, new [] { new DataLockEventPeriod { CollectionPeriod = new CollectionPeriod {Month = 2} } } },
             new object[] { new [] { new DataLockEventPeriod { CollectionPeriod = new CollectionPeriod {Year = 1} } }, new [] { new DataLockEventPeriod { CollectionPeriod = new CollectionPeriod {Year = 2} } } },
-            new object[] { new [] { new DataLockEventPeriod { CommitmentVersion = 1 } }, new [] { new DataLockEventPeriod { CommitmentVersion = 2 } } },
+            new object[] { new [] { new DataLockEventPeriod { CommitmentVersion = "1-001" } }, new [] { new DataLockEventPeriod { CommitmentVersion = "1-002" } } },
             new object[] { new [] { new DataLockEventPeriod { IsPayable = true } }, new [] { new DataLockEventPeriod { IsPayable = false } } },
             new object[] { new [] { new DataLockEventPeriod { TransactionType = TransactionType.Balancing } }, new [] { new DataLockEventPeriod { TransactionType = TransactionType.Learning } } }
         };
@@ -42,7 +42,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
             new object[] { null, new DataLockEventCommitmentVersion[0] },
             new object[] { new DataLockEventCommitmentVersion[0], null },
             new object[] { new DataLockEventCommitmentVersion[0], new DataLockEventCommitmentVersion[1] },
-            new object[] { new [] { new DataLockEventCommitmentVersion { CommitmentVersion = 1 } }, new [] { new DataLockEventCommitmentVersion { CommitmentVersion = 2 } } },
+            new object[] { new [] { new DataLockEventCommitmentVersion { CommitmentVersion = "1-001" } }, new [] { new DataLockEventCommitmentVersion { CommitmentVersion = "1-002" } } },
             new object[] { new [] { new DataLockEventCommitmentVersion { CommitmentStartDate = DateTime.MinValue } }, new [] { new DataLockEventCommitmentVersion { CommitmentStartDate = DateTime.MaxValue } } },
             new object[] { new [] { new DataLockEventCommitmentVersion { CommitmentStandardCode = 1 } }, new [] { new DataLockEventCommitmentVersion { CommitmentStandardCode = 2 } } },
             new object[] { new [] { new DataLockEventCommitmentVersion { CommitmentProgrammeType = 1 } }, new [] { new DataLockEventCommitmentVersion { CommitmentProgrammeType = 2 } } },
@@ -97,7 +97,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                             Month = 4,
                             Year = 2017
                         },
-                        CommitmentVersion = 1,
+                        CommitmentVersion = "75-001",
                         IsPayable = false,
                         TransactionType = TransactionType.Learning
                     }
@@ -114,7 +114,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 {
                     new DataLockEventCommitmentVersion
                     {
-                        CommitmentVersion = 1,
+                        CommitmentVersion = "75-001",
                         CommitmentStartDate = new DateTime(2017, 4, 1),
                         CommitmentStandardCode = 27,
                         CommitmentNegotiatedPrice = 17500,
@@ -153,7 +153,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                             Month = 4,
                             Year = 2017
                         },
-                        CommitmentVersion = 15,
+                        CommitmentVersion = "99-015",
                         IsPayable = false,
                         TransactionType = TransactionType.Learning
                     }
@@ -170,7 +170,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 {
                     new DataLockEventCommitmentVersion
                     {
-                        CommitmentVersion = 15,
+                        CommitmentVersion = "99-015",
                         CommitmentStartDate = new DateTime(2017, 4, 1),
                         CommitmentProgrammeType = 20,
                         CommitmentFrameworkCode = 550,
@@ -213,7 +213,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                             Month = 4,
                             Year = 2017
                         },
-                        CommitmentVersion = 15,
+                        CommitmentVersion = "99-015",
                         IsPayable = false,
                         TransactionType = TransactionType.Learning
                     }
@@ -230,7 +230,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 {
                     new DataLockEventCommitmentVersion
                     {
-                        CommitmentVersion = 15,
+                        CommitmentVersion = "99-015",
                         CommitmentStartDate = new DateTime(2017, 4, 1),
                         CommitmentProgrammeType = 20,
                         CommitmentFrameworkCode = 550,

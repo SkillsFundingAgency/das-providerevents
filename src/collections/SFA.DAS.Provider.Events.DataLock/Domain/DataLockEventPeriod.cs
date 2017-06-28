@@ -7,7 +7,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Domain
     {
         public Guid DataLockEventId { get; set; }
         public CollectionPeriod CollectionPeriod { get; set; }
-        public long CommitmentVersion { get; set; }
+        public string CommitmentVersion { get; set; }
         public bool IsPayable { get; set; }
         public TransactionType TransactionType { get; set; }
     }

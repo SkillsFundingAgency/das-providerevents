@@ -8,7 +8,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Domain.Data.Entities
         public string CollectionPeriodName { get; set; }
         public int CollectionPeriodMonth { get; set; }
         public int CollectionPeriodYear { get; set; }
-        public long CommitmentVersion { get; set; }
+        public string CommitmentVersion { get; set; }
         public bool IsPayable { get; set; }
         public int TransactionType { get; set; }
     }

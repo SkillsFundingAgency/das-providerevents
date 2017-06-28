@@ -122,6 +122,10 @@
       <Link>DbSetupScripts\MigrationScripts\001_DataLockEvents_Add_EventStatus.sql</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\DeployDataLock\sql\migrationscripts\002_DataLockEvents_Change_Commitment_Verion.sql">
+      <Link>DbSetupScripts\MigrationScripts\002_DataLockEvents_Change_Commitment_Verion.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="DbSetupScripts\datalock.reference.transient.ddl.tables.periodend.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

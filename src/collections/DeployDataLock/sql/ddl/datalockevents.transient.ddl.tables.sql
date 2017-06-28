@@ -78,7 +78,7 @@ CREATE TABLE [DataLockEvents].[DataLockEventPeriods]
 	CollectionPeriodName	varchar(8)		NOT NULL,
 	CollectionPeriodMonth	int				NOT NULL,
 	CollectionPeriodYear	int				NOT NULL,
-	CommitmentVersion		bigint			NOT NULL,
+	CommitmentVersion		varchar(25)		NOT NULL,
 	IsPayable				bit				NOT NULL,
 	TransactionType			int				NOT NULL
 )
@@ -96,7 +96,7 @@ GO
 CREATE TABLE [DataLockEvents].[DataLockEventCommitmentVersions]
 (
 	DataLockEventId				uniqueidentifier			NOT NULL,
-	CommitmentVersion			bigint			NOT NULL,
+	CommitmentVersion			varchar(25)		NOT NULL,
 	CommitmentStartDate			date			NULL,
 	CommitmentStandardCode		bigint			NULL,
 	CommitmentProgrammeType		int				NULL,
@@ -156,7 +156,7 @@ CREATE TABLE [DataLockEvents].[DataLockEventsData]
 	IlrEndpointAssessorPrice	decimal(12,5)	NULL,
 	IlrPriceEffectiveFromDate	date			NULL,
 	IlrPriceEffectiveToDate		date			NULL,
-	CommitmentVersionId			bigint			NULL,
+	CommitmentVersionId			varchar(25)			NULL,
 	Period						int				NULL,
 	Payable						bit				NULL,
 	TransactionType				int				NULL,
