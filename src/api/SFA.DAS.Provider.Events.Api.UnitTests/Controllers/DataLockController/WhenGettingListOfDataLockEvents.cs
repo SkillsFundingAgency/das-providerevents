@@ -64,7 +64,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController
                                 {
                                     new Domain.DataLockEventApprenticeship
                                     {
-                                        Version = 19,
+                                        Version = "19",
                                         StartDate = new DateTime(2017, 5, 1),
                                         StandardCode = 27,
                                         NegotiatedPrice = 17500m,

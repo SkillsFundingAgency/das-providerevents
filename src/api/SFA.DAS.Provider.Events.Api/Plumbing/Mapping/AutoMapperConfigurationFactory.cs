@@ -69,7 +69,16 @@ namespace SFA.DAS.Provider.Events.Api.Plumbing.Mapping
 
                 cfg.CreateMap<Types.DataLockEvent, ObsoleteModels.DataLockEventV1>()
                     .ForMember(dst => dst.IlrPriceEffectiveDate, opt => opt.MapFrom(src => src.IlrPriceEffectiveFromDate));
+                cfg.CreateMap<Types.DataLockEventApprenticeship, ObsoleteModels.DataLockEventApprenticeshipV1>()
+                   .ForMember(dst => dst.Version, opt => opt.MapFrom(
+                       src => src.Version.Contains("-") ? long.Parse(src.Version.Split('-')[0]) : long.Parse(src.Version)));
+
+                cfg.CreateMap<Types.DataLockEventPeriod, ObsoleteModels.DataLockEventPeriodV1>()
+                  .ForMember(dst => dst.ApprenticeshipVersion, opt => opt.MapFrom(
+                      src => src.ApprenticeshipVersion.Contains("-") ? long.Parse(src.ApprenticeshipVersion.Split('-')[0]).ToString() : src.ApprenticeshipVersion));
             });
         }
+
+     
     }
 }
