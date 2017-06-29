@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 
-namespace SFA.DAS.Provider.Events.Api.Types
+namespace SFA.DAS.Provider.Events.Api.ObsoleteModels
 {
-    public class DataLockEventApprenticeship
+    public class DataLockEventApprenticeshipV1
     {
-        public string Version { get; set; }
+      
+        public long Version { get; set; }
         public DateTime StartDate { get; set; }
         public long? StandardCode { get; set; }
         public int? ProgrammeType { get; set; }
@@ -12,5 +16,6 @@ namespace SFA.DAS.Provider.Events.Api.Types
         public int? PathwayCode { get; set; }
         public decimal NegotiatedPrice { get; set; }
         public DateTime EffectiveDate { get; set; }
+        
     }
 }

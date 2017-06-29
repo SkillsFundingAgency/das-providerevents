@@ -27,7 +27,7 @@ namespace SFA.DAS.Provider.Events.Api.ObsoleteModels
         public DateTime? IlrPriceEffectiveDate { get; set; }
 
         public DataLockEventError[] Errors { get; set; }
-        public DataLockEventPeriod[] Periods { get; set; }
-        public DataLockEventApprenticeship[] Apprenticeships { get; set; }
+        public DataLockEventPeriodV1[] Periods { get; set; }
+        public DataLockEventApprenticeshipV1[] Apprenticeships { get; set; }
     }
 }
