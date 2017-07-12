@@ -66,8 +66,8 @@ SELECT
 	dlep.CommitmentVersion, 
 	dlep.IsPayable,
     dlep.TransactionType
-FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEventPeriods dlep
-INNER JOIN Reference.DataLockEvents dle 
+FROM Reference.DataLockEvents dle 
+INNER MERGE JOIN ${DAS_ProviderEvents.FQ}.DataLock.DataLockEventPeriods dlep
 On dle.DataLockEventId = dlep.DataLockEventId 
 
 ---------------------------------------------------------------
