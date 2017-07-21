@@ -57,7 +57,8 @@ namespace SFA.DAS.Provider.Events.DataLock
                         _logger.Info($"Looking at last seen event for price episode = {lastSeen.PriceEpisodeIdentifier}, Uln = {lastSeen.Uln}");
                         var current = currentEvents.SingleOrDefault(ev => ev.Ukprn == lastSeen.Ukprn &&
                                                                             ev.PriceEpisodeIdentifier == lastSeen.PriceEpisodeIdentifier &&
-                                                                            ev.LearnRefnumber == lastSeen.LearnRefnumber);
+                                                                            ev.LearnRefnumber == lastSeen.LearnRefnumber &&
+                                                                            ev.CommitmentId == lastSeen.CommitmentId);
                         if (current == null)
                         {
                             _logger.Info("Event has been removed");

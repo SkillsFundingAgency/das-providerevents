@@ -397,7 +397,12 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
 
             // Assert
             _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
-            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events[0] == current)));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(
+                c => 
+                    c.Events.Length == 2 &&
+                    c.Events[1].CommitmentId == current.CommitmentId &&
+                    c.Events[0].CommitmentId == last.CommitmentId 
+                )));
         }
 
         [Test]
