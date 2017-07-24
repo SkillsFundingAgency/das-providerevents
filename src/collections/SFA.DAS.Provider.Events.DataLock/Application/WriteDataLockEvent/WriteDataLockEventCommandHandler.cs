@@ -57,7 +57,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent
         {
             foreach (var @event in sourceEvents)
             {
-                if (CheckWhetherPriceEffectiveFromDateIsInTheFuture(@event))
+                if (!CheckWhetherPriceEffectiveFromDateIsInTheCurrentPeriod(@event))
                 {
                     continue;
                 }
@@ -130,9 +130,27 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent
             }
         }
 
-        private static bool CheckWhetherPriceEffectiveFromDateIsInTheFuture(DataLockEvent @event)
+        private static bool CheckWhetherPriceEffectiveFromDateIsInTheCurrentPeriod(DataLockEvent @event)
         {
-            return @event.IlrPriceEffectiveFromDate.HasValue && @event.IlrPriceEffectiveFromDate.Value >= DateTime.UtcNow;
+            var collectionPeriod =
+                @event.Periods?.OrderBy(c => c.CollectionPeriod.Month)
+                    .ThenBy(c => c.CollectionPeriod.Year)
+                    .FirstOrDefault();
+
+            if (collectionPeriod == null)
+            {
+                return true;
+            }
+
+            if (!@event.IlrPriceEffectiveFromDate.HasValue)
+            {
+                return true;
+            }
+
+            var daysInMonth = DateTime.DaysInMonth(collectionPeriod.CollectionPeriod.Year, collectionPeriod.CollectionPeriod.Month);
+
+            return  @event.IlrPriceEffectiveFromDate.Value >= new DateTime(collectionPeriod.CollectionPeriod.Year, collectionPeriod.CollectionPeriod.Month, 1)
+                && @event.IlrPriceEffectiveFromDate.Value <= new DateTime(collectionPeriod.CollectionPeriod.Year, collectionPeriod.CollectionPeriod.Month, daysInMonth);
         }
     }
 }

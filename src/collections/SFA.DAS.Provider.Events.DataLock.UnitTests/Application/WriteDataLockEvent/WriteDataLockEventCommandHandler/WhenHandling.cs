@@ -166,7 +166,23 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
         public void ThenNoFuturePeriodPriceEpisodeDataLockEventsWillBeCreated()
         {
             //Arrange
-            _event.IlrPriceEffectiveFromDate = DateTime.Today.AddDays(1);
+            _event.IlrPriceEffectiveFromDate = DateTime.Today;
+            _event.Periods = new [] {new DataLockEventPeriod
+            {
+                CollectionPeriod = new CollectionPeriod
+                {
+                    Month = DateTime.Today.AddMonths(1).Month,
+                    Year = DateTime.Today.AddMonths(1).Year
+                }
+
+            },new DataLockEventPeriod
+            {
+                CollectionPeriod = new CollectionPeriod
+                {
+                    Month = DateTime.Today.AddMonths(2).Month,
+                    Year = DateTime.Today.AddMonths(2).Year
+                }
+            } };
 
             //Act
             _handler.Handle(new WriteDataLockEventCommandRequest { Events = new[] { _event } });
@@ -174,6 +190,35 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
             //Assert
             _dataLockEventCommitmentVersionRepository.Verify(r => r.BulkWriteDataLockEventCommitmentVersion(It.IsAny<DataLockEventCommitmentVersionEntity[]>()), Times.Never);
 
+        }
+
+        [Test]
+        public void ThenPriceEpisodeDataLockEventsWillBeCreatedForCurrentPeriods()
+        {
+            //Arrange
+            _event.IlrPriceEffectiveFromDate = DateTime.Today;
+            _event.Periods = new[] {new DataLockEventPeriod
+            {
+                CollectionPeriod = new CollectionPeriod
+                {
+                    Month = DateTime.Today.Month,
+                    Year = DateTime.Today.Year
+                }
+
+            },new DataLockEventPeriod
+            {
+                CollectionPeriod = new CollectionPeriod
+                {
+                    Month = DateTime.Today.AddMonths(1).Month,
+                    Year = DateTime.Today.AddMonths(1).Year
+                }
+            } };
+
+            //Act
+            _handler.Handle(new WriteDataLockEventCommandRequest { Events = new[] { _event } });
+
+            //Assert
+            _dataLockEventCommitmentVersionRepository.Verify(r => r.BulkWriteDataLockEventCommitmentVersion(It.IsAny<DataLockEventCommitmentVersionEntity[]>()), Times.Once);
         }
 
         private bool EventsMatch(DataLockEventEntity entity, DataLockEvent @event)
