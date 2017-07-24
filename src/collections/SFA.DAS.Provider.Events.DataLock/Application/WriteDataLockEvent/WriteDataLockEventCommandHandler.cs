@@ -148,9 +148,16 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent
             }
 
             var daysInMonth = DateTime.DaysInMonth(collectionPeriod.CollectionPeriod.Year, collectionPeriod.CollectionPeriod.Month);
+            var dateTo = new DateTime(collectionPeriod.CollectionPeriod.Year, collectionPeriod.CollectionPeriod.Month, daysInMonth);
+            var dateFrom = new DateTime(collectionPeriod.CollectionPeriod.Year, collectionPeriod.CollectionPeriod.Month, 1);
 
-            return  @event.IlrPriceEffectiveFromDate.Value >= new DateTime(collectionPeriod.CollectionPeriod.Year, collectionPeriod.CollectionPeriod.Month, 1)
-                && @event.IlrPriceEffectiveFromDate.Value <= new DateTime(collectionPeriod.CollectionPeriod.Year, collectionPeriod.CollectionPeriod.Month, daysInMonth);
+            if (@event.IlrPriceEffectiveFromDate.Value >= dateTo)
+            {
+                return true;
+            }
+
+            return  @event.IlrPriceEffectiveFromDate.Value >= dateFrom
+                && @event.IlrPriceEffectiveFromDate.Value <= dateTo;
         }
     }
 }

@@ -193,6 +193,26 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
         }
 
         [Test]
+        public void ThenPastPeriodPriceEpisodeDataLockEventsWillBeCreated()
+        {
+            _event.IlrPriceEffectiveFromDate = DateTime.Today;
+            _event.Periods = new[] {new DataLockEventPeriod
+            {
+                CollectionPeriod = new CollectionPeriod
+                {
+                    Month = DateTime.Today.AddMonths(-1).Month,
+                    Year = DateTime.Today.AddMonths(-1).Year
+                }
+            } };
+
+            //Act
+            _handler.Handle(new WriteDataLockEventCommandRequest { Events = new[] { _event } });
+
+            //Assert
+            _dataLockEventCommitmentVersionRepository.Verify(r => r.BulkWriteDataLockEventCommitmentVersion(It.IsAny<DataLockEventCommitmentVersionEntity[]>()), Times.Once);
+        }
+
+        [Test]
         public void ThenPriceEpisodeDataLockEventsWillBeCreatedForCurrentPeriods()
         {
             //Arrange
