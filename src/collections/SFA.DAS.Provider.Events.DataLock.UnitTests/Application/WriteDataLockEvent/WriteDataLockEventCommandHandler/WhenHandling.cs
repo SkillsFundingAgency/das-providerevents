@@ -162,6 +162,20 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
             _dataLockEventCommitmentVersionRepository.Verify(r => r.BulkWriteDataLockEventCommitmentVersion(It.IsAny<DataLockEventCommitmentVersionEntity[]>()), Times.Never);
         }
 
+        [Test]
+        public void ThenNoFuturePeriodPriceEpisodeDataLockEventsWillBeCreated()
+        {
+            //Arrange
+            _event.IlrPriceEffectiveFromDate = DateTime.Today.AddDays(1);
+
+            //Act
+            _handler.Handle(new WriteDataLockEventCommandRequest { Events = new[] { _event } });
+
+            //Assert
+            _dataLockEventCommitmentVersionRepository.Verify(r => r.BulkWriteDataLockEventCommitmentVersion(It.IsAny<DataLockEventCommitmentVersionEntity[]>()), Times.Never);
+
+        }
+
         private bool EventsMatch(DataLockEventEntity entity, DataLockEvent @event)
         {
             return entity.IlrFileName == @event.IlrFileName
