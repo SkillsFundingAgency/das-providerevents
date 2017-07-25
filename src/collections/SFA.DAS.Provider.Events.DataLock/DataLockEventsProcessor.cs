@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using MediatR;
 using NLog;
+using SFA.DAS.Provider.Events.DataLock.Application.GetCurrentCollectionPeriod;
 using SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents;
 using SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenProviderEvents;
 using SFA.DAS.Provider.Events.DataLock.Application.GetProviders;
@@ -36,6 +38,13 @@ namespace SFA.DAS.Provider.Events.DataLock
             if (providersResponse.HasAnyItems())
             {
                 var eventsToStore = new List<DataLockEvent>();
+
+                var currentPeriod = _mediator.Send(new GetCurrentCollectionPeriodRequest());
+                var currentPeriodEndDate = new DateTime(
+                    currentPeriod.CollectionPeriod.Year,
+                    currentPeriod.CollectionPeriod.Month,
+                    DateTime.DaysInMonth(currentPeriod.CollectionPeriod.Year, currentPeriod.CollectionPeriod.Month));
+
                 foreach (var provider in providersResponse.Items)
                 {
                     _logger.Info($"Starting to process provider {provider.Ukprn}");
@@ -91,13 +100,18 @@ namespace SFA.DAS.Provider.Events.DataLock
                         _logger.Info("Event has changed");
                         current.ProcessDateTime = DateTime.Now;
                         current.Status = EventStatus.New;
-
+                        
                         eventsToStore.Add(current);
                     }
                 }
 
                 if (eventsToStore.Any())
                 {
+                    foreach (var dataLockEvent in eventsToStore)
+                    {
+                        dataLockEvent.CurrentPeriodToDate = currentPeriodEndDate;
+                    }
+
                     _mediator.Send(new WriteDataLockEventCommandRequest
                     {
                         Events = eventsToStore.ToArray()

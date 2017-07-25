@@ -5,6 +5,7 @@ using Moq;
 using NLog;
 using NUnit.Framework;
 using SFA.DAS.Payments.DCFS.Domain;
+using SFA.DAS.Provider.Events.DataLock.Application.GetCurrentCollectionPeriod;
 using SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents;
 using SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenProviderEvents;
 using SFA.DAS.Provider.Events.DataLock.Application.GetProviders;
@@ -273,6 +274,18 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                     Items = new[]
                     {
                         _lastSeenOriginalEvent
+                    }
+                });
+
+            _mediator.Setup(x => x.Send(It.IsAny<GetCurrentCollectionPeriodRequest>()))
+                .Returns(new GetCurrentCollectionPeriodResposne
+                {
+                    CollectionPeriod = new CollectionPeriod
+                    {
+                        Month = 10,
+                        Year = 2016,
+                        Name = "Name"
+                       
                     }
                 });
 
@@ -899,5 +912,16 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                                                                                    && r.Events[0].Status == EventStatus.Removed)));
         }
 
+        [Test]
+        public void ThenTheCurrentPeriodDateIsPopulatedFromTheQuery()
+        {
+            //Act
+            _processor.Process();
+
+            //Assert
+            _mediator.Verify(x=>x.Send(It.IsAny<GetCurrentCollectionPeriodRequest>()),Times.Once);
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(r => r.Events != null 
+                                                                                && r.Events[0].CurrentPeriodToDate.Equals(new DateTime(2016, 10, 31)))));
+        }
     }
 }
