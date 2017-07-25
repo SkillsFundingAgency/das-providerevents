@@ -8,13 +8,13 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
     {
         private const int OpenStatus = 1;
 
-        private const string CollectionPeriodSource = "FROM Reference.CollectionPeriods";
+        private const string CollectionPeriodSource = "Reference.CollectionPeriods";
         private const string CollectionPeriodColumns = "[Id] AS [PeriodId]," +
                                                        "[Name] AS [Name]," +
                                                        "[CalendarMonth] AS [Month]," +
                                                        "[CalendarYear] AS [Year]";
         private const string SelectCollectionPeriods = "SELECT " + CollectionPeriodColumns + " FROM " + CollectionPeriodSource;
-        private const string SelectOpenCollectionPeriod = SelectCollectionPeriods + " WHERE Open = @CollectionOpen";
+        private const string SelectOpenCollectionPeriod = SelectCollectionPeriods + " WHERE [Open] = @CollectionOpen";
 
         public DcfsCollectionPeriodRepository(string connectionString)
             : base(connectionString)
