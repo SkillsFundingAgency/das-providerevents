@@ -72,6 +72,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\GetCurrentCollectionPeriod\GetCurrentCollectionPeriodHandler.cs" />
+    <Compile Include="Application\GetCurrentCollectionPeriod\GetCurrentCollectionPeriodRequest.cs" />
+    <Compile Include="Application\GetCurrentCollectionPeriod\GetCurrentCollectionPeriodResposne.cs" />
     <Compile Include="Application\GetCurrentProviderEvents\GetCurrentProviderEventsHandler.cs" />
     <Compile Include="Application\GetCurrentProviderEvents\GetCurrentProviderEventsRequest.cs" />
     <Compile Include="Application\GetCurrentProviderEvents\GetCurrentProviderEventsResponse.cs" />
