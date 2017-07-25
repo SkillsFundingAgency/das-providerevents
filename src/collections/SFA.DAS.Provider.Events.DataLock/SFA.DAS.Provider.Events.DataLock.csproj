@@ -88,6 +88,7 @@
     <Compile Include="Domain\CollectionPeriod.cs" />
     <Compile Include="Domain\DataLockEventCommitmentVersion.cs" />
     <Compile Include="Domain\DataLockEventError.cs" />
+    <Compile Include="Domain\Data\Entities\CollectionPeriodEntity.cs" />
     <Compile Include="Domain\Data\Entities\CommitmentEntity.cs" />
     <Compile Include="Domain\Data\Entities\DataLockEventCommitmentVersionEntity.cs" />
     <Compile Include="Domain\Data\Entities\DataLockEventDataEntity.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="Domain\Data\Entities\PriceEpisodePeriodMatchEntity.cs" />
     <Compile Include="Domain\Data\Entities\ProviderEntity.cs" />
     <Compile Include="Domain\Data\Entities\ValidationErrorEntity.cs" />
+    <Compile Include="Domain\Data\ICollectionPeriodRepository.cs" />
     <Compile Include="Domain\Data\ICommitmentRepository.cs" />
     <Compile Include="Domain\Data\IDataLockEventCommitmentVersionRepository.cs" />
     <Compile Include="Domain\Data\IDataLockEventDataRepository.cs" />
@@ -116,6 +118,7 @@
     <Compile Include="Domain\EventStatus.cs" />
     <Compile Include="Domain\Provider.cs" />
     <Compile Include="Infrastructure\Context\DataLockContextPropertyKeys.cs" />
+    <Compile Include="Infrastructure\Data\DcfsCollectionPeriodRepository.cs" />
     <Compile Include="Infrastructure\Data\DcfsCommitmentRepository.cs" />
     <Compile Include="Infrastructure\Data\DcfsDataLockEventCommitmentVersionRepository.cs" />
     <Compile Include="Infrastructure\Data\DcfsDataLockEventDataRepository.cs" />
