@@ -18,6 +18,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Specs
         {
             TestDataHelper.Clean();
 
+            TestDataHelper.SetCurrentPeriodEnd();
             TestDataHelper.AddLearningProvider(Ukprn);
             TestDataHelper.AddFileDetails(Ukprn);
             TestDataHelper.AddCommitment(CommitmentId, Ukprn, LearnerRefNumber, passedDataLock: false);
@@ -31,7 +32,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Specs
         {
             // Arrange
             TestDataHelper.SubmissionCopyReferenceData();
-
+            
             // Act
             TaskRunner.RunTask();
 

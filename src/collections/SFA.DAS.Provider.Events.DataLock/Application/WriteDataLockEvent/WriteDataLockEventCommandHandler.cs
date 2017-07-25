@@ -133,8 +133,8 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent
         private static bool CheckWhetherPriceEffectiveFromDateIsInTheCurrentPeriod(DataLockEvent @event)
         {
             var collectionPeriod =
-                @event.Periods?.OrderBy(c => c.CollectionPeriod.Month)
-                    .ThenBy(c => c.CollectionPeriod.Year)
+                @event.Periods?.OrderBy(c => c.CollectionPeriod.Year)
+                    .ThenBy(c => c.CollectionPeriod.Month)
                     .FirstOrDefault();
 
             if (collectionPeriod == null)

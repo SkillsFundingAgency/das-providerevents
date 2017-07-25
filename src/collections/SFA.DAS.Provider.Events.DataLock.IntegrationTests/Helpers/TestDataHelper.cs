@@ -100,6 +100,12 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
             Execute("INSERT INTO Reference.Providers (Ukprn, IlrFilename, IlrSubmissionDateTime) VALUES (@ukprn, 'ILR-{ukprn}-1617-20161013-092500-98', @submissionDate)", new { ukprn, submissionDate = DateTime.Today }, inSubmission: false);
         }
 
+        internal static void SetCurrentPeriodEnd()
+        {
+            Execute("INSERT INTO Reference.CollectionPeriods (Id,Name,CalendarMonth,CalendarYear,[Open]) Values(1, 'R11','" + DateTime.Now.Month + "','" + DateTime.Now.Year + "',1)");
+            Execute("INSERT INTO Reference.CollectionPeriods (Id,Name,CalendarMonth,CalendarYear,[Open]) Values(1, 'R11','" + DateTime.Now.Month + "','" + DateTime.Now.Year + "',1)", inSubmission: false);
+        }
+
         internal static void AddFileDetails(long ukprn, bool successful = true)
         {
             Execute($"INSERT INTO dbo.FileDetails (UKPRN, FileName, SubmittedTime, Success) VALUES (@ukprn, 'ILR-{ukprn}-1617-20161013-092500-98', @submissionDate, @successful)",

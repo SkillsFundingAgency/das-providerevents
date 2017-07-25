@@ -11,6 +11,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Specs
         public void Arrange()
         {
             TestDataHelper.Clean();
+            TestDataHelper.SetCurrentPeriodEnd();
         }
 
         [Test]
