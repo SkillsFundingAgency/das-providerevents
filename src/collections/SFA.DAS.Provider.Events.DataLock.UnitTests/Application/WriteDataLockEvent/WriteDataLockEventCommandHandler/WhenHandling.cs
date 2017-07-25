@@ -76,7 +76,8 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
                 IlrStandardCode = 27,
                 IlrTrainingPrice = 12000,
                 IlrEndpointAssessorPrice = 3000,
-                Periods = new[]
+                CurrentPeriodToDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month)),
+            Periods = new[]
                 {
                     _eventPeriod
                 },
@@ -166,23 +167,8 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
         public void ThenNoFuturePeriodPriceEpisodeDataLockEventsWillBeCreated()
         {
             //Arrange
-            _event.IlrPriceEffectiveFromDate = DateTime.Today;
-            _event.Periods = new [] {new DataLockEventPeriod
-            {
-                CollectionPeriod = new CollectionPeriod
-                {
-                    Month = DateTime.Today.AddMonths(1).Month,
-                    Year = DateTime.Today.AddMonths(1).Year
-                }
-
-            },new DataLockEventPeriod
-            {
-                CollectionPeriod = new CollectionPeriod
-                {
-                    Month = DateTime.Today.AddMonths(2).Month,
-                    Year = DateTime.Today.AddMonths(2).Year
-                }
-            } };
+            _event.IlrPriceEffectiveFromDate = new DateTime(DateTime.Today.AddMonths(1).Year, DateTime.Today.AddMonths(1).Month, DateTime.DaysInMonth(DateTime.Today.AddMonths(1).Year, DateTime.Today.AddMonths(1).Month)); 
+            _event.CurrentPeriodToDate = DateTime.Today;
 
             //Act
             _handler.Handle(new WriteDataLockEventCommandRequest { Events = new[] { _event } });
@@ -195,15 +181,8 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
         [Test]
         public void ThenPastPeriodPriceEpisodeDataLockEventsWillBeCreated()
         {
-            _event.IlrPriceEffectiveFromDate = DateTime.Today;
-            _event.Periods = new[] {new DataLockEventPeriod
-            {
-                CollectionPeriod = new CollectionPeriod
-                {
-                    Month = DateTime.Today.AddMonths(-1).Month,
-                    Year = DateTime.Today.AddMonths(-1).Year
-                }
-            } };
+            _event.IlrPriceEffectiveFromDate = new DateTime(DateTime.Today.AddMonths(-1).Year, DateTime.Today.AddMonths(-1).Month, DateTime.DaysInMonth(DateTime.Today.AddMonths(-1).Year, DateTime.Today.AddMonths(-1).Month)); 
+            _event.CurrentPeriodToDate = DateTime.Today;
 
             //Act
             _handler.Handle(new WriteDataLockEventCommandRequest { Events = new[] { _event } });
@@ -217,23 +196,8 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
         {
             //Arrange
             _event.IlrPriceEffectiveFromDate = DateTime.Today;
-            _event.Periods = new[] {new DataLockEventPeriod
-            {
-                CollectionPeriod = new CollectionPeriod
-                {
-                    Month = DateTime.Today.Month,
-                    Year = DateTime.Today.Year
-                }
-
-            },new DataLockEventPeriod
-            {
-                CollectionPeriod = new CollectionPeriod
-                {
-                    Month = DateTime.Today.AddMonths(1).Month,
-                    Year = DateTime.Today.AddMonths(1).Year
-                }
-            } };
-
+            _event.CurrentPeriodToDate =  new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
+                
             //Act
             _handler.Handle(new WriteDataLockEventCommandRequest { Events = new[] { _event } });
 
