@@ -76,6 +76,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\GetCurrentCollectionPeriod\GetCurrentCollectionPeriodEventsHandler\WhenHandling.cs" />
     <Compile Include="Application\GetCurrentProviderEvents\GetCurrentProviderEventsHandler\WhenHandling.cs" />
     <Compile Include="Application\GetLastSeenProviderEvents\GetLastSeenProviderEventsHandler\WhenHandling.cs" />
     <Compile Include="Application\GetProviders\GetProvidersQueryHandler\WhenHandling.cs" />

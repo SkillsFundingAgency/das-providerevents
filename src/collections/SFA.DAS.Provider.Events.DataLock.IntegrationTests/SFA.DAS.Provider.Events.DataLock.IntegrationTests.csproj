@@ -138,6 +138,9 @@
     <Content Include="DbSetupScripts\ilr.transient.ddl.tables.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="DbSetupScripts\Ilr.Transient.Reference.CollectionPeriods.ddl.tables.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="DbSetupScripts\Payments.deds.ddl.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

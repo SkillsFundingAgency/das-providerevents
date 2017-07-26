@@ -5,10 +5,8 @@ namespace SFA.DAS.Provider.Events.DataLock.Domain
     public class DataLockEvent
     {
         public Guid DataLockEventId { get; set; }
-
         public DateTime ProcessDateTime { get; set; }
         public EventStatus Status { get; set; }
-
         public string IlrFileName { get; set; }
         public DateTime SubmittedDateTime { get; set; }
         public string AcademicYear { get; set; }
@@ -30,7 +28,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Domain
         public decimal? IlrEndpointAssessorPrice { get; set; }
         public DateTime? IlrPriceEffectiveFromDate { get; set; }
         public DateTime? IlrPriceEffectiveToDate { get; set; }
-
+        public DateTime CurrentPeriodToDate { get; set; }
         public DataLockEventPeriod[] Periods { get; set; }
         public DataLockEventError[] Errors { get; set; }
         public DataLockEventCommitmentVersion[] CommitmentVersions { get; set; }

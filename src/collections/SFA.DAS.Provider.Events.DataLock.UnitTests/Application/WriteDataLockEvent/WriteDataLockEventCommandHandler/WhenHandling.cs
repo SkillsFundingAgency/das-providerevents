@@ -76,7 +76,8 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
                 IlrStandardCode = 27,
                 IlrTrainingPrice = 12000,
                 IlrEndpointAssessorPrice = 3000,
-                Periods = new[]
+                CurrentPeriodToDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month)),
+            Periods = new[]
                 {
                     _eventPeriod
                 },
@@ -160,6 +161,48 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.WriteDataLockEv
             _dataLockEventErrorRepository.Verify(r => r.BulkWriteDataLockEventError(It.Is<DataLockEventErrorEntity[]>(e => ErrorsMatch(e[0], _eventError))));
             _dataLockEventPeriodRepository.Verify(r => r.BulkWriteDataLockEventPeriods(It.Is<DataLockEventPeriodEntity[]>(e => PeriodsMatch(e[0], _eventPeriod))));
             _dataLockEventCommitmentVersionRepository.Verify(r => r.BulkWriteDataLockEventCommitmentVersion(It.IsAny<DataLockEventCommitmentVersionEntity[]>()), Times.Never);
+        }
+
+        [Test]
+        public void ThenNoFuturePeriodPriceEpisodeDataLockEventsWillBeCreated()
+        {
+            //Arrange
+            _event.IlrPriceEffectiveFromDate = new DateTime(DateTime.Today.AddMonths(1).Year, DateTime.Today.AddMonths(1).Month, DateTime.DaysInMonth(DateTime.Today.AddMonths(1).Year, DateTime.Today.AddMonths(1).Month)); 
+            _event.CurrentPeriodToDate = DateTime.Today;
+
+            //Act
+            _handler.Handle(new WriteDataLockEventCommandRequest { Events = new[] { _event } });
+
+            //Assert
+            _dataLockEventCommitmentVersionRepository.Verify(r => r.BulkWriteDataLockEventCommitmentVersion(It.IsAny<DataLockEventCommitmentVersionEntity[]>()), Times.Never);
+
+        }
+
+        [Test]
+        public void ThenPastPeriodPriceEpisodeDataLockEventsWillBeCreated()
+        {
+            _event.IlrPriceEffectiveFromDate = new DateTime(DateTime.Today.AddMonths(-1).Year, DateTime.Today.AddMonths(-1).Month, DateTime.DaysInMonth(DateTime.Today.AddMonths(-1).Year, DateTime.Today.AddMonths(-1).Month)); 
+            _event.CurrentPeriodToDate = DateTime.Today;
+
+            //Act
+            _handler.Handle(new WriteDataLockEventCommandRequest { Events = new[] { _event } });
+
+            //Assert
+            _dataLockEventCommitmentVersionRepository.Verify(r => r.BulkWriteDataLockEventCommitmentVersion(It.IsAny<DataLockEventCommitmentVersionEntity[]>()), Times.Once);
+        }
+
+        [Test]
+        public void ThenPriceEpisodeDataLockEventsWillBeCreatedForCurrentPeriods()
+        {
+            //Arrange
+            _event.IlrPriceEffectiveFromDate = DateTime.Today;
+            _event.CurrentPeriodToDate =  new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
+                
+            //Act
+            _handler.Handle(new WriteDataLockEventCommandRequest { Events = new[] { _event } });
+
+            //Assert
+            _dataLockEventCommitmentVersionRepository.Verify(r => r.BulkWriteDataLockEventCommitmentVersion(It.IsAny<DataLockEventCommitmentVersionEntity[]>()), Times.Once);
         }
 
         private bool EventsMatch(DataLockEventEntity entity, DataLockEvent @event)

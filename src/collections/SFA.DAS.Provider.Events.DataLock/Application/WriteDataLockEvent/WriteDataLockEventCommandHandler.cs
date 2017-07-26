@@ -57,6 +57,11 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent
         {
             foreach (var @event in sourceEvents)
             {
+                if (!CheckWhetherPriceEffectiveFromDateIsInOrBeforeTheCurrentPeriod(@event))
+                {
+                    continue;
+                }
+
                 var id = @event.DataLockEventId == default(Guid) ? Guid.NewGuid() : @event.DataLockEventId;
                 events.Add(new DataLockEventEntity
                 {
@@ -125,5 +130,16 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent
             }
         }
 
+        private static bool CheckWhetherPriceEffectiveFromDateIsInOrBeforeTheCurrentPeriod(DataLockEvent @event)
+        {
+            var currentPeriodToDate = @event.CurrentPeriodToDate;
+
+            if (!@event.IlrPriceEffectiveFromDate.HasValue)
+            {
+                return true;
+            }
+
+            return currentPeriodToDate >= @event.IlrPriceEffectiveFromDate.Value;
+        }
     }
 }
