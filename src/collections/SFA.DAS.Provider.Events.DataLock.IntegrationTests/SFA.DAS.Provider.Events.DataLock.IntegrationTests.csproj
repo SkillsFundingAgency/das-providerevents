@@ -126,6 +126,10 @@
       <Link>DbSetupScripts\MigrationScripts\002_DataLockEvents_Change_Commitment_Verion.sql</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\DeployDataLock\sql\migrationscripts\003_DataLockEvents_Change_LearnRef_AimSequence_ColumnType.sql">
+      <Link>DbSetupScripts\MigrationScripts\003_DataLockEvents_Change_LearnRef_AimSequence_ColumnType.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="DbSetupScripts\datalock.reference.transient.ddl.tables.periodend.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
