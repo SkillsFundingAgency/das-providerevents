@@ -62,6 +62,8 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests
 
                 connection.RunDbSetupSqlScriptFile("datalockevents.transient.ddl.views.periodend.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
                 connection.RunDbSetupSqlScriptFile("datalockevents.transient.ddl.procedures.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+
+                connection.RunDbSetupSqlScriptFile("MigrationScripts\\004_DataLockEvents_Transient_Change_LearnRef_AimSequence_ColumnType.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
             }
         }
     }
