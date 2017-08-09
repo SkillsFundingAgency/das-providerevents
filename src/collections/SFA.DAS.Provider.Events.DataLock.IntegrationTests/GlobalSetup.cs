@@ -24,6 +24,8 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests
                 connection.RunDbSetupSqlScriptFile("datalockevents.deds.ddl.tables.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
                 connection.RunDbSetupSqlScriptFile("MigrationScripts\\001_DataLockEvents_Add_EventStatus.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
                 connection.RunDbSetupSqlScriptFile("MigrationScripts\\002_DataLockEvents_Change_Commitment_Verion.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+                connection.RunDbSetupSqlScriptFile("MigrationScripts\\003_DataLockEvents_Change_LearnRef_AimSequence_ColumnType.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+                
             }   
         }
 
@@ -42,6 +44,8 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests
 
                 connection.RunDbSetupSqlScriptFile("datalockevents.transient.ddl.views.submission.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
                 connection.RunDbSetupSqlScriptFile("datalockevents.transient.ddl.procedures.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+
+                connection.RunDbSetupSqlScriptFile("MigrationScripts\\005_DataLockEvents_Submission_Change_LearnRef_AimSequence_ColumnType.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
             }
         }
 
@@ -61,6 +65,8 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests
 
                 connection.RunDbSetupSqlScriptFile("datalockevents.transient.ddl.views.periodend.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
                 connection.RunDbSetupSqlScriptFile("datalockevents.transient.ddl.procedures.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
+
+                connection.RunDbSetupSqlScriptFile("MigrationScripts\\004_DataLockEvents_Transient_Change_LearnRef_AimSequence_ColumnType.sql", GlobalTestContext.Current.DedsDatabaseNameBracketed);
             }
         }
     }
