@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
@@ -45,7 +46,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             {
                 PageNumber = v2Result.PageNumber,
                 TotalNumberOfPages = v2Result.TotalNumberOfPages,
-                Items = _mapper.Map<DataLockEventV1[]>(v2Result.Items)
+                Items = _mapper.Map<DataLockEventV1[]>(v2Result.Items.Where(x => x.Status != EventStatus.Removed).ToArray())
             });
         }
 
