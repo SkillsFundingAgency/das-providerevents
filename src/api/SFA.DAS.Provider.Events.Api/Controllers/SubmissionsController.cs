@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using MediatR;
 using NLog;
+using SFA.DAS.Provider.Events.Api.Plumbing.WebApi;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
@@ -10,8 +11,7 @@ using SFA.DAS.Provider.Events.Domain.Mapping;
 
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
-    [RoutePrefix("api/submissions")]
-    [Authorize(Roles = "ReadSubmissions")]
+    [AuthorizeRemoteOnly(Roles = "ReadSubmissions")]
     public class SubmissionsController : ApiController
     {
         private const int PageSize = 1000;
@@ -27,7 +27,9 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             _logger = logger;
         }
 
-        [Route("", Name = "SubmissionEventsList")]
+        [VersionedRoute("api/submissions", 1, Name = "SubmissionEventsList")]
+        [VersionedRoute("api/submissions", 2, Name = "SubmissionEventsListV2H")]
+        [Route("api/v2/submissions", Name = "SubmissionEventsListV2")]
         [HttpGet]
         public async Task<IHttpActionResult> GetSubmissionEvents(long sinceEventId = 0, DateTime? sinceTime = null, long ukprn = 0, int pageNumber = 1)
         {

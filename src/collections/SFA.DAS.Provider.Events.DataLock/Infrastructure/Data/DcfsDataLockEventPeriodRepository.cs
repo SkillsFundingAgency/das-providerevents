@@ -42,7 +42,7 @@ namespace SFA.DAS.Provider.Events.DataLock.Infrastructure.Data
                 {
                     var batch = periods.Skip(skip).Take(batchSize)
                         .Select(x => $"('{x.DataLockEventId}', '{x.CollectionPeriodName}', {x.CollectionPeriodMonth}, {x.CollectionPeriodYear}, " +
-                                     $"{x.CommitmentVersion}, {(x.IsPayable ? 1 : 0)}, {x.TransactionType})")
+                                     $"'{x.CommitmentVersion}', {(x.IsPayable ? 1 : 0)}, {x.TransactionType})")
                         .Aggregate((x, y) => $"{x}, {y}");
                     using (var command = connection.CreateCommand())
                     {

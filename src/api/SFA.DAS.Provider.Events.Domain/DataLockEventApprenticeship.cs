@@ -4,7 +4,7 @@ namespace SFA.DAS.Provider.Events.Domain
 {
     public class DataLockEventApprenticeship
     {
-        public long Version { get; set; }
+        public string Version { get; set; }
         public DateTime StartDate { get; set; }
         public long? StandardCode { get; set; }
         public int? ProgrammeType { get; set; }

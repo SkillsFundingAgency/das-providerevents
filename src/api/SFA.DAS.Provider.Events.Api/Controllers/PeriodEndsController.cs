@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using MediatR;
 using NLog;
+using SFA.DAS.Provider.Events.Api.Plumbing.WebApi;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodsQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
@@ -10,8 +11,7 @@ using SFA.DAS.Provider.Events.Domain.Mapping;
 
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
-    [RoutePrefix("api/periodends")]
-    [Authorize(Roles = "ReadPayments")]
+    [AuthorizeRemoteOnly(Roles = "ReadPayments")]
     public class PeriodEndsController : ApiController
     {
         private readonly IMediator _mediator;
@@ -25,7 +25,9 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             _logger = logger;
         }
 
-        [Route("", Name = "PeriodEndList")]
+        [VersionedRoute("api/periodends", 1, Name = "PeriodEndList")]
+        [VersionedRoute("api/periodends", 2, Name = "PeriodEndListV2H")]
+        [Route("api/v2/periodends", Name = "PeriodEndListV2")]
         [HttpGet]
         public async Task<IHttpActionResult> ListPeriodEnds()
         {

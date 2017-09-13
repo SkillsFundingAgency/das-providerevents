@@ -5,6 +5,7 @@ using Moq;
 using NLog;
 using NUnit.Framework;
 using SFA.DAS.Payments.DCFS.Domain;
+using SFA.DAS.Provider.Events.DataLock.Application.GetCurrentCollectionPeriod;
 using SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents;
 using SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenProviderEvents;
 using SFA.DAS.Provider.Events.DataLock.Application.GetProviders;
@@ -32,7 +33,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
             new object[] { new [] { new DataLockEventPeriod { CollectionPeriod = new CollectionPeriod {Name = "1"} } }, new [] { new DataLockEventPeriod { CollectionPeriod = new CollectionPeriod {Name = "2"} } } },
             new object[] { new [] { new DataLockEventPeriod { CollectionPeriod = new CollectionPeriod {Month = 1} } }, new [] { new DataLockEventPeriod { CollectionPeriod = new CollectionPeriod {Month = 2} } } },
             new object[] { new [] { new DataLockEventPeriod { CollectionPeriod = new CollectionPeriod {Year = 1} } }, new [] { new DataLockEventPeriod { CollectionPeriod = new CollectionPeriod {Year = 2} } } },
-            new object[] { new [] { new DataLockEventPeriod { CommitmentVersion = 1 } }, new [] { new DataLockEventPeriod { CommitmentVersion = 2 } } },
+            new object[] { new [] { new DataLockEventPeriod { CommitmentVersion = "1-001" } }, new [] { new DataLockEventPeriod { CommitmentVersion = "1-002" } } },
             new object[] { new [] { new DataLockEventPeriod { IsPayable = true } }, new [] { new DataLockEventPeriod { IsPayable = false } } },
             new object[] { new [] { new DataLockEventPeriod { TransactionType = TransactionType.Balancing } }, new [] { new DataLockEventPeriod { TransactionType = TransactionType.Learning } } }
         };
@@ -42,7 +43,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
             new object[] { null, new DataLockEventCommitmentVersion[0] },
             new object[] { new DataLockEventCommitmentVersion[0], null },
             new object[] { new DataLockEventCommitmentVersion[0], new DataLockEventCommitmentVersion[1] },
-            new object[] { new [] { new DataLockEventCommitmentVersion { CommitmentVersion = 1 } }, new [] { new DataLockEventCommitmentVersion { CommitmentVersion = 2 } } },
+            new object[] { new [] { new DataLockEventCommitmentVersion { CommitmentVersion = "1-001" } }, new [] { new DataLockEventCommitmentVersion { CommitmentVersion = "1-002" } } },
             new object[] { new [] { new DataLockEventCommitmentVersion { CommitmentStartDate = DateTime.MinValue } }, new [] { new DataLockEventCommitmentVersion { CommitmentStartDate = DateTime.MaxValue } } },
             new object[] { new [] { new DataLockEventCommitmentVersion { CommitmentStandardCode = 1 } }, new [] { new DataLockEventCommitmentVersion { CommitmentStandardCode = 2 } } },
             new object[] { new [] { new DataLockEventCommitmentVersion { CommitmentProgrammeType = 1 } }, new [] { new DataLockEventCommitmentVersion { CommitmentProgrammeType = 2 } } },
@@ -97,7 +98,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                             Month = 4,
                             Year = 2017
                         },
-                        CommitmentVersion = 1,
+                        CommitmentVersion = "75-001",
                         IsPayable = false,
                         TransactionType = TransactionType.Learning
                     }
@@ -114,7 +115,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 {
                     new DataLockEventCommitmentVersion
                     {
-                        CommitmentVersion = 1,
+                        CommitmentVersion = "75-001",
                         CommitmentStartDate = new DateTime(2017, 4, 1),
                         CommitmentStandardCode = 27,
                         CommitmentNegotiatedPrice = 17500,
@@ -153,7 +154,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                             Month = 4,
                             Year = 2017
                         },
-                        CommitmentVersion = 15,
+                        CommitmentVersion = "99-015",
                         IsPayable = false,
                         TransactionType = TransactionType.Learning
                     }
@@ -170,7 +171,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 {
                     new DataLockEventCommitmentVersion
                     {
-                        CommitmentVersion = 15,
+                        CommitmentVersion = "99-015",
                         CommitmentStartDate = new DateTime(2017, 4, 1),
                         CommitmentProgrammeType = 20,
                         CommitmentFrameworkCode = 550,
@@ -213,7 +214,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                             Month = 4,
                             Year = 2017
                         },
-                        CommitmentVersion = 15,
+                        CommitmentVersion = "99-015",
                         IsPayable = false,
                         TransactionType = TransactionType.Learning
                     }
@@ -230,7 +231,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                 {
                     new DataLockEventCommitmentVersion
                     {
-                        CommitmentVersion = 15,
+                        CommitmentVersion = "99-015",
                         CommitmentStartDate = new DateTime(2017, 4, 1),
                         CommitmentProgrammeType = 20,
                         CommitmentFrameworkCode = 550,
@@ -273,6 +274,18 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                     Items = new[]
                     {
                         _lastSeenOriginalEvent
+                    }
+                });
+
+            _mediator.Setup(x => x.Send(It.IsAny<GetCurrentCollectionPeriodRequest>()))
+                .Returns(new GetCurrentCollectionPeriodResposne
+                {
+                    CollectionPeriod = new CollectionPeriod
+                    {
+                        Month = 10,
+                        Year = 2016,
+                        Name = "Name"
+                       
                     }
                 });
 
@@ -334,6 +347,12 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
                     IsValid = true,
                     Items = new DataLockEvent[0]
                 });
+            _mediator.Setup(m => m.Send(It.IsAny<GetLastSeenProviderEventsRequest>()))
+                 .Returns(new GetLastSeenProviderEventsResponse
+                 {
+                     IsValid = true,
+                     Items = new DataLockEvent[0]
+                 });
 
             // Act
             _processor.Process();
@@ -391,7 +410,12 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
 
             // Assert
             _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
-            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events[0] == current)));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(
+                c => 
+                    c.Events.Length == 2 &&
+                    c.Events[1].CommitmentId == current.CommitmentId &&
+                    c.Events[0].CommitmentId == last.CommitmentId 
+                )));
         }
 
         [Test]
@@ -724,12 +748,12 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
             // Arrange
             var current = new DataLockEvent
             {
-                IlrPriceEffectiveDate = DateTime.Today.AddDays(-10)
+                IlrPriceEffectiveFromDate = DateTime.Today.AddDays(-10)
             };
 
             var last = new DataLockEvent
             {
-                IlrPriceEffectiveDate = DateTime.Today.AddDays(-11)
+                IlrPriceEffectiveFromDate = DateTime.Today.AddDays(-11)
             };
 
             _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
@@ -863,6 +887,41 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.DataLockEventsProcessor
             // Assert
             _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
             _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(c => c.Events[0] == current)));
+        }
+
+        [Test]
+        public void ThenItShouldWriteAnEventWhenLastSeenEventNotInCurrentEvents()
+        {
+            // Arrange
+            _mediator.Setup(m => m.Send(It.IsAny<GetCurrentProviderEventsRequest>()))
+                .Returns(new GetCurrentProviderEventsResponse
+                {
+                    IsValid = true,
+                    Items = new DataLockEvent[0]
+                });
+            _lastSeenOriginalEvent.PriceEpisodeIdentifier += "a";
+
+            // Act
+            _processor.Process();
+
+            // Assert
+            _mediator.Verify(m => m.Send(It.IsAny<WriteDataLockEventCommandRequest>()), Times.Exactly(1));
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(r => r.Events != null
+                                                                                   && r.Events.Length == 1
+                                                                                   && r.Events[0].PriceEpisodeIdentifier == _lastSeenOriginalEvent.PriceEpisodeIdentifier
+                                                                                   && r.Events[0].Status == EventStatus.Removed)));
+        }
+
+        [Test]
+        public void ThenTheCurrentPeriodDateIsPopulatedFromTheQuery()
+        {
+            //Act
+            _processor.Process();
+
+            //Assert
+            _mediator.Verify(x=>x.Send(It.IsAny<GetCurrentCollectionPeriodRequest>()),Times.Once);
+            _mediator.Verify(m => m.Send(It.Is<WriteDataLockEventCommandRequest>(r => r.Events != null 
+                                                                                && r.Events[0].CurrentPeriodToDate.Equals(new DateTime(2016, 10, 31)))));
         }
     }
 }

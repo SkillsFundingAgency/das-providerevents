@@ -79,7 +79,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Provider.Events.Domain\SFA.DAS.Provider.Events.Domain.csproj">
       <Project>{cfbf1c38-4e74-4dd7-aa90-feab37b85fd7}</Project>
-      <Name>SFA.DAS.Payments.Events.Domain</Name>
+      <Name>SFA.DAS.Provider.Events.Domain</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

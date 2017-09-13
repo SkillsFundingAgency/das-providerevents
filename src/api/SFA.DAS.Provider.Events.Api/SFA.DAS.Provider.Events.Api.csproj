@@ -180,6 +180,9 @@
     <Compile Include="Controllers\PaymentsController.cs" />
     <Compile Include="Controllers\PeriodEndsController.cs" />
     <Compile Include="Controllers\SubmissionsController.cs" />
+    <Compile Include="ObsoleteModels\DataLockEventApprenticeshipV1.cs" />
+    <Compile Include="ObsoleteModels\DataLockEventPeriodV1.cs" />
+    <Compile Include="ObsoleteModels\DataLockEventV1.cs" />
     <Compile Include="Plumbing\DependencyResolution\DefaultRegistry.cs" />
     <Compile Include="Plumbing\DependencyResolution\IoC.cs" />
     <Compile Include="Plumbing\DependencyResolution\Policies\LoggingPolicy.cs" />
@@ -192,6 +195,9 @@
     </Compile>
     <Compile Include="Plumbing\Json\StrictEnumConverter.cs" />
     <Compile Include="Plumbing\Mapping\AutoMapperConfigurationFactory.cs" />
+    <Compile Include="Plumbing\WebApi\AuthorizeRemoteOnlyAttribute.cs" />
+    <Compile Include="Plumbing\WebApi\VersionConstraint.cs" />
+    <Compile Include="Plumbing\WebApi\VersionedRoute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -219,19 +225,19 @@
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Provider.Events.Api.Types\SFA.DAS.Provider.Events.Api.Types.csproj">
       <Project>{A557E17C-EB78-4F2E-AC2A-CCACDC2C3172}</Project>
-      <Name>SFA.DAS.Payments.Events.Api.Types</Name>
+      <Name>SFA.DAS.Provider.Events.Api.Types</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Provider.Events.Application\SFA.DAS.Provider.Events.Application.csproj">
       <Project>{5DF95FFE-D3ED-4EB9-9797-8056142E7591}</Project>
-      <Name>SFA.DAS.Payments.Events.Application</Name>
+      <Name>SFA.DAS.Provider.Events.Application</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Provider.Events.Domain\SFA.DAS.Provider.Events.Domain.csproj">
       <Project>{cfbf1c38-4e74-4dd7-aa90-feab37b85fd7}</Project>
-      <Name>SFA.DAS.Payments.Events.Domain</Name>
+      <Name>SFA.DAS.Provider.Events.Domain</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Provider.Events.Infrastructure\SFA.DAS.Provider.Events.Infrastructure.csproj">
       <Project>{960BB861-896A-4EEC-870C-BF03227848FD}</Project>
-      <Name>SFA.DAS.Payments.Events.Infrastructure</Name>
+      <Name>SFA.DAS.Provider.Events.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

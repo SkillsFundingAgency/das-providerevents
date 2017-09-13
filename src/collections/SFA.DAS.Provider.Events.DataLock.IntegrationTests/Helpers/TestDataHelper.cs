@@ -100,6 +100,12 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
             Execute("INSERT INTO Reference.Providers (Ukprn, IlrFilename, IlrSubmissionDateTime) VALUES (@ukprn, 'ILR-{ukprn}-1617-20161013-092500-98', @submissionDate)", new { ukprn, submissionDate = DateTime.Today }, inSubmission: false);
         }
 
+        internal static void SetCurrentPeriodEnd()
+        {
+            Execute("INSERT INTO Reference.CollectionPeriods (Id,Name,CalendarMonth,CalendarYear,[Open]) Values(1, 'R11','" + DateTime.Now.Month + "','" + DateTime.Now.Year + "',1)");
+            Execute("INSERT INTO Reference.CollectionPeriods (Id,Name,CalendarMonth,CalendarYear,[Open]) Values(1, 'R11','" + DateTime.Now.Month + "','" + DateTime.Now.Year + "',1)", inSubmission: false);
+        }
+
         internal static void AddFileDetails(long ukprn, bool successful = true)
         {
             Execute($"INSERT INTO dbo.FileDetails (UKPRN, FileName, SubmittedTime, Success) VALUES (@ukprn, 'ILR-{ukprn}-1617-20161013-092500-98', @submissionDate, @successful)",
@@ -275,8 +281,8 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
         }
 
         internal static void PeriodEndAddIlrDataForCommitment(long? commitmentId,
-                                                     string learnerRefNumber,
-                                                     int aimSequenceNumber = 1)
+                                                              string learnerRefNumber,
+                                                              int aimSequenceNumber = 1)
         {
             Execute("INSERT INTO Reference.DataLockPriceEpisode "
                     + "(Ukprn, LearnRefNumber, Uln, AimSeqNumber, StandardCode, ProgrammeType, FrameworkCode, PathwayCode, "
@@ -305,12 +311,13 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
         internal static void AddDataLockEvent(long ukprn,
                                             string learnerRefNumber,
                                             int aimSequenceNumber = 1,
+                                            string priceEpisodeIdentifier = null,
                                             long uln = 0L,
                                             long commitmentId = 1,
                                             DateTime startDate = default(DateTime),
                                             DateTime endDate = default(DateTime),
                                             decimal agreedCost = 15000m,
-                                            DateTime priceEffectiveDate = default(DateTime),
+                                            DateTime priceEffectiveFromDate = default(DateTime),
                                             long? standardCode = null,
                                             int? programmeType = null,
                                             int? frameworkCode = null,
@@ -339,22 +346,25 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                 endDate = startDate.AddYears(1);
             }
 
-            if (priceEffectiveDate < startDate)
+            if (priceEffectiveFromDate < startDate)
             {
-                priceEffectiveDate = startDate;
+                priceEffectiveFromDate = startDate;
             }
 
-            var priceEpisodeIdentifier = $"99-99-99-{startDate.ToString("yyyy-MM-dd")}";
+            if (priceEpisodeIdentifier == null)
+            {
+                priceEpisodeIdentifier = $"99-99-99-{startDate.ToString("yyyy-MM-dd")}";
+            }
             var eventId = Guid.NewGuid();
 
             Execute("INSERT INTO DataLock.DataLockEvents "
-                + "(DataLockEventId,ProcessDateTime, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, "
+                + "(DataLockEventId,ProcessDateTime, Status, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, "
                 + "PriceEpisodeIdentifier, CommitmentId, EmployerAccountId, EventSource, HasErrors, IlrStartDate, IlrStandardCode, "
-                + "IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice, IlrPriceEffectiveDate) "
+                + "IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice, IlrPriceEffectiveFromDate) "
                 + "VALUES "
-                + $"(@eventId, @processed, 'ILR-{ukprn}-1617-20161013-092500-98.xml', @submittedDateTime, '1617', @ukprn, @uln, @learnerRefNumber, @aimSequenceNumber, "
+                + $"(@eventId, @processed, 1, 'ILR-{ukprn}-1617-20161013-092500-98.xml', @submittedDateTime, '1617', @ukprn, @uln, @learnerRefNumber, @aimSequenceNumber, "
                 + "@priceEpisodeIdentifier, @commitmentId, 123, 1, @hasErrors, @startDate, @standardCode, @programmeType, @frameworkCode, @pathwayCode, "
-                + "@trainingCost, @endpointCost, @priceEffectiveDate)",
+                + "@trainingCost, @endpointCost, @priceEffectiveFromDate)",
                 new
                 {
                     eventId,
@@ -374,7 +384,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                     pathwayCode,
                     trainingCost = agreedCost * 0.8m,
                     endpointCost = agreedCost - agreedCost * 0.8m,
-                    priceEffectiveDate
+                    priceEffectiveFromDate
                 }, false);
 
             var censusDate = startDate.LastDayOfMonth();
@@ -404,7 +414,7 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
                 Execute("INSERT INTO DataLock.DataLockEventErrors "
                       + "(DataLockEventId, ErrorCode, SystemDescription) "
                       + "VALUES "
-                      + "(@eventId, 'DLOCK_07', 'No matching record found in the employer digital account for the negotiated cost of training')",new { eventId }, inTransient: false);
+                      + "(@eventId, 'DLOCK_07', 'No matching record found in the employer digital account for the negotiated cost of training')", new { eventId }, inTransient: false);
             }
 
             Execute("INSERT INTO DataLock.DataLockEventCommitmentVersions "

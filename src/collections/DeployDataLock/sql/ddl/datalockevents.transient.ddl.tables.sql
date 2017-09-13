@@ -35,29 +35,31 @@ GO
 
 CREATE TABLE [DataLockEvents].[DataLockEvents]
 (
-	Id							bigint			PRIMARY KEY IDENTITY(1,1),
-	DataLockEventId				uniqueidentifier			NOT NULL,
-	ProcessDateTime				datetime		NOT NULL,
-	IlrFileName					nvarchar(50)	NOT NULL,
-	SubmittedDateTime		    datetime		NOT NULL,
-	AcademicYear				varchar(4)    	NOT NULL,
-	UKPRN						bigint			NOT NULL,
-	ULN							bigint			NOT NULL,
-	LearnRefNumber				varchar(100)	NOT NULL,
-    AimSeqNumber				bigint			NOT NULL,
-	PriceEpisodeIdentifier		varchar(25)		NOT NULL,
-	CommitmentId				bigint			NOT NULL,
-	EmployerAccountId			bigint			NOT NULL,
-	EventSource					int				NOT NULL,
-	HasErrors					bit				NOT NULL,
-	IlrStartDate				date			NULL,
-	IlrStandardCode				bigint			NULL,
-	IlrProgrammeType			int				NULL,
-	IlrFrameworkCode			int				NULL,
-	IlrPathwayCode				int				NULL,
-	IlrTrainingPrice			decimal(12,5)	NULL,
-	IlrEndpointAssessorPrice	decimal(12,5)	NULL,
-	IlrPriceEffectiveDate		date			NULL
+	Id							bigint				PRIMARY KEY IDENTITY(1,1),
+	DataLockEventId				uniqueidentifier	NOT NULL,
+	ProcessDateTime				datetime			NOT NULL,
+	Status						int					NOT NULL,
+	IlrFileName					nvarchar(50)		NOT NULL,
+	SubmittedDateTime		    datetime			NOT NULL,
+	AcademicYear				varchar(4)    		NOT NULL,
+	UKPRN						bigint				NOT NULL,
+	ULN							bigint				NOT NULL,
+	LearnRefNumber				varchar(100)		NOT NULL,
+    AimSeqNumber				bigint				NOT NULL,
+	PriceEpisodeIdentifier		varchar(25)			NOT NULL,
+	CommitmentId				bigint				NOT NULL,
+	EmployerAccountId			bigint				NOT NULL,
+	EventSource					int					NOT NULL,
+	HasErrors					bit					NOT NULL,
+	IlrStartDate				date				NULL,
+	IlrStandardCode				bigint				NULL,
+	IlrProgrammeType			int					NULL,
+	IlrFrameworkCode			int					NULL,
+	IlrPathwayCode				int					NULL,
+	IlrTrainingPrice			decimal(12,5)		NULL,
+	IlrEndpointAssessorPrice	decimal(12,5)		NULL,
+	IlrPriceEffectiveFromDate	date				NULL,
+	IlrPriceEffectiveToDate		date				NULL
 )
 GO
 
@@ -76,7 +78,7 @@ CREATE TABLE [DataLockEvents].[DataLockEventPeriods]
 	CollectionPeriodName	varchar(8)		NOT NULL,
 	CollectionPeriodMonth	int				NOT NULL,
 	CollectionPeriodYear	int				NOT NULL,
-	CommitmentVersion		bigint			NOT NULL,
+	CommitmentVersion		varchar(25)		NOT NULL,
 	IsPayable				bit				NOT NULL,
 	TransactionType			int				NOT NULL
 )
@@ -94,7 +96,7 @@ GO
 CREATE TABLE [DataLockEvents].[DataLockEventCommitmentVersions]
 (
 	DataLockEventId				uniqueidentifier			NOT NULL,
-	CommitmentVersion			bigint			NOT NULL,
+	CommitmentVersion			varchar(25)		NOT NULL,
 	CommitmentStartDate			date			NULL,
 	CommitmentStandardCode		bigint			NULL,
 	CommitmentProgrammeType		int				NULL,
@@ -126,7 +128,7 @@ GO
 
 
 --------------------------------------------------------------------------------------
--- DataLockEventErrors
+-- DataLockEventsData
 --------------------------------------------------------------------------------------
 IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'DataLockEventsData' AND [schema_id] = SCHEMA_ID('DataLockEvents'))
 	BEGIN
@@ -136,16 +138,15 @@ GO
 
 CREATE TABLE [DataLockEvents].[DataLockEventsData]
 (
-	
-	Ukprn bigint  NOT NULL,
-	PriceEpisodeIdentifier varchar(25)  NULL,
-	LearnRefNumber varchar(100)  NULL,
-	AimSeqNumber bigint  NULL,
-	CommitmentId bigint  NULL,
-	IsSuccess bit  NULL,
-	IlrFilename		nvarchar(50)	NULL,
-	SubmittedTime	datetime NULL,	
-	Uln	bigint	NULL,
+	Ukprn						bigint			NOT NULL,
+	PriceEpisodeIdentifier		varchar(25)		NULL,
+	LearnRefNumber				varchar(100)	NULL,
+	AimSeqNumber				bigint			NULL,
+	CommitmentId				bigint			NULL,
+	IsSuccess					bit				NULL,
+	IlrFilename					nvarchar(50)	NULL,
+	SubmittedTime				datetime		NULL,	
+	Uln							bigint			NULL,
 	IlrStartDate				date			NULL,
 	IlrStandardCode				bigint			NULL,
 	IlrProgrammeType			int				NULL,
@@ -153,21 +154,21 @@ CREATE TABLE [DataLockEvents].[DataLockEventsData]
 	IlrPathwayCode				int				NULL,
 	IlrTrainingPrice			decimal(12,5)	NULL,
 	IlrEndpointAssessorPrice	decimal(12,5)	NULL,
-	IlrPriceEffectiveDate		date			NULL,
-	CommitmentVersionId bigint NULL,
-	Period int NULL,
-	Payable bit NULL,
-	TransactionType int NULL,
-	EmployerAccountId bigint  NULL,
-	CommitmentStartDate date  NULL,
-	CommitmentStandardCode bigint NULL,
-	CommitmentProgrammeType int NULL,
-	CommitmentFrameworkCode int NULL,
-	CommitmentPathwayCode int NULL,
-	CommitmentNegotiatedPrice decimal(15, 2) NULL,
-	CommitmentEffectiveDate date  NULL,
-	RuleId varchar(50) NULL
-
+	IlrPriceEffectiveFromDate	date			NULL,
+	IlrPriceEffectiveToDate		date			NULL,
+	CommitmentVersionId			varchar(25)			NULL,
+	Period						int				NULL,
+	Payable						bit				NULL,
+	TransactionType				int				NULL,
+	EmployerAccountId			bigint			NULL,
+	CommitmentStartDate			date			NULL,
+	CommitmentStandardCode		bigint			NULL,
+	CommitmentProgrammeType		int				NULL,
+	CommitmentFrameworkCode		int				NULL,
+	CommitmentPathwayCode		int				NULL,
+	CommitmentNegotiatedPrice	decimal(15, 2)	NULL,
+	CommitmentEffectiveDate		date			NULL,
+	RuleId						varchar(50)		NULL
 )
 GO
 

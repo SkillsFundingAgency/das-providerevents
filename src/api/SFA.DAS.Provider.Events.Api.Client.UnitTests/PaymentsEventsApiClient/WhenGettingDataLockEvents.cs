@@ -53,7 +53,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 {
                     new DataLockEventPeriod
                     {
-                        ApprenticeshipVersion = 19,
+                        ApprenticeshipVersion = "1-019",
                         Period = new NamedCalendarPeriod
                         {
                             Id = "1617-R09",
@@ -65,7 +65,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                     },
                     new DataLockEventPeriod
                     {
-                        ApprenticeshipVersion = 19,
+                        ApprenticeshipVersion = "1-019",
                         Period = new NamedCalendarPeriod
                         {
                             Id = "1617-R10",
@@ -79,7 +79,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 {
                     new DataLockEventApprenticeship
                     {
-                        Version = 19,
+                        Version = "19",
                         StartDate = new DateTime(2017, 5, 1),
                         StandardCode = 27,
                         NegotiatedPrice = 17500m,

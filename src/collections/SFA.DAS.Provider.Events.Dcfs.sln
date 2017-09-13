@@ -38,6 +38,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{144D3C62
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ddl", "ddl", "{8DB91691-7F7A-424C-86F2-BE76A6FD5B0F}"
 	ProjectSection(SolutionItems) = preProject
+		DeployDataLock\sql\migrationscripts\002_DataLockEvents_Change_Commitment_Verion.sql = DeployDataLock\sql\migrationscripts\002_DataLockEvents_Change_Commitment_Verion.sql
 		DeployDataLock\sql\ddl\datalockevents.deds.ddl.tables.sql = DeployDataLock\sql\ddl\datalockevents.deds.ddl.tables.sql
 		DeployDataLock\sql\ddl\datalockevents.transient.ddl.procedures.sql = DeployDataLock\sql\ddl\datalockevents.transient.ddl.procedures.sql
 		DeployDataLock\sql\ddl\datalockevents.transient.ddl.tables.sql = DeployDataLock\sql\ddl\datalockevents.transient.ddl.tables.sql
@@ -70,6 +71,15 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "copy mappings", "copy mappings", "{8C307202-6D98-4C22-88F5-06BF50C8E8CA}"
 	ProjectSection(SolutionItems) = preProject
 		DeploySubmission\copy mappings\DasSubmissionEventsCopyToDedsMapping.xml = DeploySubmission\copy mappings\DasSubmissionEventsCopyToDedsMapping.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "migrationscripts", "migrationscripts", "{03D62B67-F79F-4684-A364-3A4F706A6041}"
+	ProjectSection(SolutionItems) = preProject
+		DeployDataLock\sql\migrationscripts\001_DataLockEvents_Add_EventStatus.sql = DeployDataLock\sql\migrationscripts\001_DataLockEvents_Add_EventStatus.sql
+		DeployDataLock\sql\migrationscripts\002_DataLockEvents_Change_Commitment_Verion.sql = DeployDataLock\sql\migrationscripts\002_DataLockEvents_Change_Commitment_Verion.sql
+		DeployDataLock\sql\migrationscripts\003_DataLockEvents_Change_LearnRef_AimSequence_ColumnType.sql = DeployDataLock\sql\migrationscripts\003_DataLockEvents_Change_LearnRef_AimSequence_ColumnType.sql
+		DeployDataLock\sql\migrationscripts\004_DataLockEvents_Transient_Change_LearnRef_AimSequence_ColumnType.sql = DeployDataLock\sql\migrationscripts\004_DataLockEvents_Transient_Change_LearnRef_AimSequence_ColumnType.sql
+		DeployDataLock\sql\migrationscripts\005_DataLockEvents_Submission_Change_LearnRef_AimSequence_ColumnType.sql = DeployDataLock\sql\migrationscripts\005_DataLockEvents_Submission_Change_LearnRef_AimSequence_ColumnType.sql
 	EndProjectSection
 EndProject
 Global
@@ -123,5 +133,6 @@ Global
 		{2A595E5F-955C-4B4A-B99F-36F6F4E7D076} = {144D3C62-D0BE-4650-8569-604103E07345}
 		{0DEC15D4-26C4-4051-B046-944D243B5A29} = {004E9717-B703-46BF-BBCC-FE390CE0192D}
 		{8C307202-6D98-4C22-88F5-06BF50C8E8CA} = {E10D1710-C31E-4738-8693-885EA1D3ECE4}
+		{03D62B67-F79F-4684-A364-3A4F706A6041} = {9DB243FF-B759-44BA-B214-0883F1DF420D}
 	EndGlobalSection
 EndGlobal

@@ -10,19 +10,22 @@ INSERT INTO @LastestDataLockEvents
 SELECT
 	MAX(Id)
 FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEvents
+WHERE UKPRN IN (SELECT UKPRN FROM @ProvidersToProcess)
+AND Status <> 3 -- Do not read removed as anything from here will be new again
 GROUP BY UKPRN, LearnRefNumber, PriceEpisodeIdentifier
 
 ---------------------------------------------------------------
 -- DataLockEvents
 ---------------------------------------------------------------
 INSERT INTO Reference.DataLockEvents
-(Id,DataLockEventId, ProcessDateTime, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, 
+(Id,DataLockEventId, ProcessDateTime, Status, IlrFileName, SubmittedDateTime, AcademicYear, UKPRN, ULN, LearnRefNumber, AimSeqNumber, 
 PriceEpisodeIdentifier, CommitmentId, EmployerAccountId, EventSource, HasErrors, IlrStartDate, IlrStandardCode, 
-IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice, IlrPriceEffectiveDate)
+IlrProgrammeType, IlrFrameworkCode, IlrPathwayCode, IlrTrainingPrice, IlrEndpointAssessorPrice, IlrPriceEffectiveFromDate, IlrPriceEffectiveToDate)
 SELECT
 	dle.Id,
 	dle.DataLockEventId,
 	dle.ProcessDateTime, 
+	dle.Status,
 	dle.IlrFileName, 
     dle.SubmittedDateTime, 
     dle.AcademicYear, 
@@ -42,7 +45,8 @@ SELECT
 	dle.IlrPathwayCode, 
 	dle.IlrTrainingPrice, 
 	dle.IlrEndpointAssessorPrice,
-	dle.IlrPriceEffectiveDate
+	dle.IlrPriceEffectiveFromDate,
+	dle.IlrPriceEffectiveToDate
 	
 FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEvents dle
 INNER JOIN @LastestDataLockEvents le
@@ -62,8 +66,8 @@ SELECT
 	dlep.CommitmentVersion, 
 	dlep.IsPayable,
     dlep.TransactionType
-FROM ${DAS_ProviderEvents.FQ}.DataLock.DataLockEventPeriods dlep
-INNER JOIN Reference.DataLockEvents dle 
+FROM Reference.DataLockEvents dle 
+INNER MERGE JOIN ${DAS_ProviderEvents.FQ}.DataLock.DataLockEventPeriods dlep
 On dle.DataLockEventId = dlep.DataLockEventId 
 
 ---------------------------------------------------------------

@@ -76,6 +76,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specs\WhenAnExistingEventIsFound.cs" />
     <Compile Include="Specs\WhenANewEventIsGenerated.cs" />
+    <Compile Include="Specs\WhenAnExistingEventIsNonLongerFound.cs" />
     <Compile Include="SqlExtensions.cs" />
     <Compile Include="TestContext\GlobalTestContext.cs" />
     <Compile Include="TestContext\GlobalTestContextSetupException.cs" />
@@ -117,6 +118,26 @@
       <Link>DbSetupScripts\Copy Reference Data\01 datalock.PreRun.DataLockEvents.PopulateDataLockEventsData.sql</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\DeployDataLock\sql\migrationscripts\001_DataLockEvents_Add_EventStatus.sql">
+      <Link>DbSetupScripts\MigrationScripts\001_DataLockEvents_Add_EventStatus.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\DeployDataLock\sql\migrationscripts\002_DataLockEvents_Change_Commitment_Verion.sql">
+      <Link>DbSetupScripts\MigrationScripts\002_DataLockEvents_Change_Commitment_Verion.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\DeployDataLock\sql\migrationscripts\003_DataLockEvents_Change_LearnRef_AimSequence_ColumnType.sql">
+      <Link>DbSetupScripts\MigrationScripts\003_DataLockEvents_Change_LearnRef_AimSequence_ColumnType.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\DeployDataLock\sql\migrationscripts\004_DataLockEvents_Transient_Change_LearnRef_AimSequence_ColumnType.sql">
+      <Link>DbSetupScripts\MigrationScripts\004_DataLockEvents_Transient_Change_LearnRef_AimSequence_ColumnType.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\DeployDataLock\sql\migrationscripts\005_DataLockEvents_Submission_Change_LearnRef_AimSequence_ColumnType.sql">
+      <Link>DbSetupScripts\MigrationScripts\005_DataLockEvents_Submission_Change_LearnRef_AimSequence_ColumnType.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="DbSetupScripts\datalock.reference.transient.ddl.tables.periodend.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -127,6 +148,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="DbSetupScripts\ilr.transient.ddl.tables.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DbSetupScripts\Ilr.Transient.Reference.CollectionPeriods.ddl.tables.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="DbSetupScripts\Payments.deds.ddl.sql">

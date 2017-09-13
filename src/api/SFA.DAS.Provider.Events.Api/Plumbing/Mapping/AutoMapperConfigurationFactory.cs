@@ -57,14 +57,28 @@ namespace SFA.DAS.Provider.Events.Api.Plumbing.Mapping
                 cfg.CreateMap<Domain.PageOfResults<Domain.DataLockEvent>, Types.PageOfResults<Types.DataLockEvent>>();
                 cfg.CreateMap<Domain.DataLockEvent, Types.DataLockEvent>()
                     .ForMember(dst => dst.EventSource, opt => opt.Ignore())
+                    .ForMember(dst => dst.Status, opt => opt.Ignore())
                     .AfterMap((src, dst) =>
                     {
                         dst.EventSource = (Types.EventSource)(int)src.EventSource;
+                        dst.Status = (Types.EventStatus)(int)src.Status;
                     });
                 cfg.CreateMap<Domain.DataLockEventError, Types.DataLockEventError>();
                 cfg.CreateMap<Domain.DataLockEventPeriod, Types.DataLockEventPeriod>();
                 cfg.CreateMap<Domain.DataLockEventApprenticeship, Types.DataLockEventApprenticeship>();
+
+                cfg.CreateMap<Types.DataLockEvent, ObsoleteModels.DataLockEventV1>()
+                    .ForMember(dst => dst.IlrPriceEffectiveDate, opt => opt.MapFrom(src => src.IlrPriceEffectiveFromDate));
+                cfg.CreateMap<Types.DataLockEventApprenticeship, ObsoleteModels.DataLockEventApprenticeshipV1>()
+                   .ForMember(dst => dst.Version, opt => opt.MapFrom(
+                       src => src.Version.Contains("-") ? long.Parse(src.Version.Split('-')[0]) : long.Parse(src.Version)));
+
+                cfg.CreateMap<Types.DataLockEventPeriod, ObsoleteModels.DataLockEventPeriodV1>()
+                  .ForMember(dst => dst.ApprenticeshipVersion, opt => opt.MapFrom(
+                      src => src.ApprenticeshipVersion.Contains("-") ? long.Parse(src.ApprenticeshipVersion.Split('-')[0]).ToString() : src.ApprenticeshipVersion));
             });
         }
+
+     
     }
 }

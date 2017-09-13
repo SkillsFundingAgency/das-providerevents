@@ -50,10 +50,10 @@ namespace SFA.DAS.Provider.Events.Submission
             var events = new List<SubmissionEvent>();
             foreach (var currentIlr in currentVersions.Items)
             {
-                _logger.Info($"Starting to compare {currentIlr.PriceEpisodeIdentifier} for uln {currentIlr.Uln}");
+                _logger.Info($"Starting to compare {currentIlr.PriceEpisodeIdentifier} for Ukprn {currentIlr.Ukprn},  LearnRef {currentIlr.LearnRefNumber}");
 
                 var lastSeenIlr = lastSeenVersions.Items.SingleOrDefault(ilr => ilr.Ukprn == currentIlr.Ukprn
-                                                                             && ilr.Uln == currentIlr.Uln
+                                                                             && ilr.LearnRefNumber == currentIlr.LearnRefNumber
                                                                              && ilr.PriceEpisodeIdentifier == currentIlr.PriceEpisodeIdentifier);
                 currentIlr.AcademicYear = _yearOfCollection;
                 var @event = CalculateDelta(currentIlr, lastSeenIlr);

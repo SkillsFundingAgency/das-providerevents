@@ -59,6 +59,7 @@
     <Compile Include="Data\IPeriodRepository.cs" />
     <Compile Include="Data\ISubmissionEventsRepository.cs" />
     <Compile Include="EventSource.cs" />
+    <Compile Include="EventStatus.cs" />
     <Compile Include="FundingSource.cs" />
     <Compile Include="Mapping\IMapper.cs" />
     <Compile Include="NamedCalendarPeriod.cs" />

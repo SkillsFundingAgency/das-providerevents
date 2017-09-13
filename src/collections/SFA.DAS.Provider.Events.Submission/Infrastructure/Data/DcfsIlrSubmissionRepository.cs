@@ -62,7 +62,7 @@ namespace SFA.DAS.Provider.Events.Submission.Infrastructure.Data
 
         private string IlrToDeleteStatement(IlrDetails ilr)
         {
-            return $"(UKPRN = {ilr.Ukprn} AND ULN = {ilr.Uln} AND PriceEpisodeIdentifier = '{ilr.PriceEpisodeIdentifier}')";
+            return $"(UKPRN = {ilr.Ukprn} AND LearnRefNumber = '{ilr.LearnRefNumber}' AND PriceEpisodeIdentifier = '{ilr.PriceEpisodeIdentifier}')";
         }
         private string IlrToInsertBlock(IlrDetails ilr)
         {

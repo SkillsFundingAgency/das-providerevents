@@ -12,6 +12,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         private const string Columns = "Id, "
                                      + "DataLockEventId, "
                                      + "ProcessDateTime, "
+                                     + "Status, "
                                      + "IlrFileName,  "
                                      + "UKPRN, "
                                      + "ULN, "
@@ -29,7 +30,8 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                                      + "IlrPathwayCode, "
                                      + "IlrTrainingPrice, "
                                      + "IlrEndpointAssessorPrice,"
-                                     + "IlrPriceEffectiveDate";
+                                     + "IlrPriceEffectiveFromDate,"
+                                     + "IlrPriceEffectiveToDate";
         private const string CountColumn = "COUNT(ev.Id)";
         private const string Pagination = "ORDER BY ev.Id OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY";
 

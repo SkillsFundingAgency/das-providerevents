@@ -57,11 +57,17 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent
         {
             foreach (var @event in sourceEvents)
             {
+                if (!CheckWhetherPriceEffectiveFromDateIsInOrBeforeTheCurrentPeriod(@event))
+                {
+                    continue;
+                }
+
                 var id = @event.DataLockEventId == default(Guid) ? Guid.NewGuid() : @event.DataLockEventId;
                 events.Add(new DataLockEventEntity
                 {
                     DataLockEventId = id,
                     ProcessDateTime = @event.ProcessDateTime,
+                    Status = (int)@event.Status,
                     IlrFileName = @event.IlrFileName,
                     SubmittedDateTime = @event.SubmittedDateTime,
                     AcademicYear = @event.AcademicYear,
@@ -81,7 +87,8 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent
                     IlrPathwayCode = @event.IlrPathwayCode,
                     IlrTrainingPrice = @event.IlrTrainingPrice,
                     IlrEndpointAssessorPrice = @event.IlrEndpointAssessorPrice,
-                    IlrPriceEffectiveDate = @event.IlrPriceEffectiveDate
+                    IlrPriceEffectiveFromDate = @event.IlrPriceEffectiveFromDate,
+                    IlrPriceEffectiveToDate = @event.IlrPriceEffectiveToDate
                 });
                 if (@event.Errors != null && @event.Errors.Any())
                 {
@@ -123,5 +130,16 @@ namespace SFA.DAS.Provider.Events.DataLock.Application.WriteDataLockEvent
             }
         }
 
+        private static bool CheckWhetherPriceEffectiveFromDateIsInOrBeforeTheCurrentPeriod(DataLockEvent @event)
+        {
+            var currentPeriodToDate = @event.CurrentPeriodToDate;
+
+            if (!@event.IlrPriceEffectiveFromDate.HasValue)
+            {
+                return true;
+            }
+
+            return currentPeriodToDate >= @event.IlrPriceEffectiveFromDate.Value;
+        }
     }
 }

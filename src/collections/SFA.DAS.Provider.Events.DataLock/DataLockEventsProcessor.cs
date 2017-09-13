@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using MediatR;
 using NLog;
+using SFA.DAS.Provider.Events.DataLock.Application.GetCurrentCollectionPeriod;
 using SFA.DAS.Provider.Events.DataLock.Application.GetCurrentProviderEvents;
 using SFA.DAS.Provider.Events.DataLock.Application.GetLastSeenProviderEvents;
 using SFA.DAS.Provider.Events.DataLock.Application.GetProviders;
@@ -36,40 +38,80 @@ namespace SFA.DAS.Provider.Events.DataLock
             if (providersResponse.HasAnyItems())
             {
                 var eventsToStore = new List<DataLockEvent>();
+
+                var currentPeriod = _mediator.Send(new GetCurrentCollectionPeriodRequest());
+                var currentPeriodEndDate = new DateTime(
+                    currentPeriod.CollectionPeriod.Year,
+                    currentPeriod.CollectionPeriod.Month,
+                    DateTime.DaysInMonth(currentPeriod.CollectionPeriod.Year, currentPeriod.CollectionPeriod.Month));
+
                 foreach (var provider in providersResponse.Items)
                 {
                     _logger.Info($"Starting to process provider {provider.Ukprn}");
                     var currentEventsResponse = ReturnValidGetCurrentProviderEventsResponseOrThrow(provider.Ukprn);
                     var lastSeenEventsResponse = ReturnValidGetLastSeenProviderEventsResponseOrThrow(provider.Ukprn);
 
-                    if (!currentEventsResponse.HasAnyItems())
+                    var currentEvents = currentEventsResponse.HasAnyItems() ? currentEventsResponse.Items.ToList() : new List<DataLockEvent>();
+                    var lastSeenEvents = lastSeenEventsResponse.HasAnyItems() ? lastSeenEventsResponse.Items.ToList() : new List<DataLockEvent>();
+
+                    if (!currentEvents.Any() && !lastSeenEvents.Any())
                     {
-                        _logger.Info("Provider does not have any current events. Skipping");
+                        _logger.Info("Provider does not have any current or existing events. Skipping");
                         continue;
                     }
-                    foreach (var current in currentEventsResponse.Items)
-                    {
-                        _logger.Info($"Found event. Price episode = {current.PriceEpisodeIdentifier}, Uln = {current.Uln}");
-                        var lastSeen = lastSeenEventsResponse.Items?.SingleOrDefault(ev => ev.Ukprn == current.Ukprn &&
-                                                                                           ev.PriceEpisodeIdentifier == current.PriceEpisodeIdentifier &&
-                                                                                           ev.LearnRefnumber == current.LearnRefnumber);
 
-                        if (EventsAreDifferent(current, lastSeen))
+                    // Look for events that are no longer in system
+                    foreach (var lastSeen in lastSeenEvents)
+                    {
+                        _logger.Info($"Looking at last seen event for price episode = {lastSeen.PriceEpisodeIdentifier}, Uln = {lastSeen.Uln}");
+                        var current = currentEvents.SingleOrDefault(ev => ev.Ukprn == lastSeen.Ukprn &&
+                                                                            ev.PriceEpisodeIdentifier == lastSeen.PriceEpisodeIdentifier &&
+                                                                            ev.LearnRefnumber == lastSeen.LearnRefnumber &&
+                                                                            ev.CommitmentId == lastSeen.CommitmentId);
+                        if (current == null)
+                        {
+                            _logger.Info("Event has been removed");
+                            lastSeen.DataLockEventId = Guid.Empty;
+                            lastSeen.Status = EventStatus.Removed;
+                            eventsToStore.Add(lastSeen);
+                        }
+                        else if (EventsAreDifferent(current, lastSeen))
                         {
                             _logger.Info("Event has changed");
                             current.ProcessDateTime = DateTime.Now;
+                            current.Status = EventStatus.Updated;
 
                             eventsToStore.Add(current);
+                            currentEvents.Remove(current);
                         }
                         else
                         {
-                            _logger.Info("Event is same as previous");
+                            currentEvents.Remove(current);
+                            _logger.Info("Event has not changed");
                         }
+                    }
+
+                    // Process new events
+                    foreach (var current in currentEvents)
+                    {
+                        _logger.Info($"Found new event. Price episode = {current.PriceEpisodeIdentifier}, Uln = {current.Uln}");
+
+
+                        _logger.Info("Event has changed");
+                        current.ProcessDateTime = DateTime.Now;
+                        current.Status = EventStatus.New;
+                        
+                        eventsToStore.Add(current);
                     }
                 }
 
                 if (eventsToStore.Any())
                 {
+                    foreach (var dataLockEvent in eventsToStore)
+                    {
+                        dataLockEvent.CurrentPeriodToDate = currentPeriodEndDate;
+                    }
+
                     _mediator.Send(new WriteDataLockEventCommandRequest
                     {
                         Events = eventsToStore.ToArray()
@@ -177,7 +219,7 @@ namespace SFA.DAS.Provider.Events.DataLock
                 return true;
             }
 
-            if (current.IlrPriceEffectiveDate != lastSeen.IlrPriceEffectiveDate)
+            if (current.IlrPriceEffectiveFromDate != lastSeen.IlrPriceEffectiveFromDate)
             {
                 return true;
             }

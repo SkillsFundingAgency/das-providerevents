@@ -7,6 +7,7 @@ namespace SFA.DAS.Provider.Events.Domain.Data.Entities
         public long Id { get; set; }
         public Guid DataLockEventId { get; set; }
         public DateTime ProcessDateTime { get; set; }
+        public int Status { get; set; }
         public string IlrFileName { get; set; }
         public long Ukprn { get; set; }
         public long Uln { get; set; }
@@ -24,7 +25,8 @@ namespace SFA.DAS.Provider.Events.Domain.Data.Entities
         public int? IlrPathwayCode { get; set; }
         public decimal? IlrTrainingPrice { get; set; }
         public decimal? IlrEndpointAssessorPrice { get; set; }
-        public DateTime? IlrPriceEffectiveDate { get; set; }
+        public DateTime? IlrPriceEffectiveFromDate { get; set; }
+        public DateTime? IlrPriceEffectiveToDate { get; set; }
 
         public DataLockEventErrorEntity[] Errors { get; set; }
         public DataLockEventPeriodEntity[] Periods { get; set; }

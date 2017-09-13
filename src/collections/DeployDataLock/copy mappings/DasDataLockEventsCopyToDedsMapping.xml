@@ -93,12 +93,20 @@
           <Destination>IlrEndpointAssessorPrice</Destination>
         </ColumnMapping>
         <ColumnMapping>
-          <Source>IlrPriceEffectiveDate</Source>
-          <Destination>IlrPriceEffectiveDate</Destination>
+          <Source>IlrPriceEffectiveFromDate</Source>
+          <Destination>IlrPriceEffectiveFromDate</Destination>
+        </ColumnMapping>
+        <ColumnMapping>
+          <Source>IlrPriceEffectiveToDate</Source>
+          <Destination>IlrPriceEffectiveToDate</Destination>
         </ColumnMapping>
         <ColumnMapping>
           <Source>DataLockEventId</Source>
           <Destination>DataLockEventId</Destination>
+        </ColumnMapping>
+ 	      <ColumnMapping>
+          <Source>Status</Source>
+          <Destination>Status</Destination>
         </ColumnMapping>
       </ColumnMappings>
     </TableMapping>

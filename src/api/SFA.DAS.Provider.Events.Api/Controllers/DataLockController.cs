@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Results;
 using MediatR;
 using NLog;
+using SFA.DAS.Provider.Events.Api.ObsoleteModels;
+using SFA.DAS.Provider.Events.Api.Plumbing.WebApi;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.DataLock.GetDataLockEventsQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
@@ -10,8 +14,7 @@ using SFA.DAS.Provider.Events.Domain.Mapping;
 
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
-    [RoutePrefix("api/datalock")]
-    [Authorize(Roles = "ReadDataLock")]
+    [AuthorizeRemoteOnly(Roles = "ReadDataLock")]
     public class DataLockController : ApiController
     {
         private const int PageSize = 250;
@@ -27,9 +30,30 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             _logger = logger;
         }
 
-        [Route("", Name = "DataLockEventsList")]
+        [VersionedRoute("api/datalock", 1, Name = "DataLockEventsList")]
+        [Route("api/v1/datalock", Name = "DataLockEventsListV1")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetDataLockEvents(long sinceEventId = 0, DateTime? sinceTime = null, string employerAccountId = null, long ukprn = 0, int pageNumber = 1)
+        public async Task<IHttpActionResult> GetDataLockEventsV1(long sinceEventId = 0, DateTime? sinceTime = null, string employerAccountId = null, long ukprn = 0, int pageNumber = 1)
+        {
+            var result = await GetDataLockEventsV2(sinceEventId, sinceTime, employerAccountId, ukprn, pageNumber);
+            if (result.GetType() != typeof(OkNegotiatedContentResult<PageOfResults<DataLockEvent>>))
+            {
+                return result;
+            }
+
+            var v2Result = ((OkNegotiatedContentResult<PageOfResults<DataLockEvent>>)result).Content;
+            return Ok(new PageOfResults<DataLockEventV1>
+            {
+                PageNumber = v2Result.PageNumber,
+                TotalNumberOfPages = v2Result.TotalNumberOfPages,
+                Items = _mapper.Map<DataLockEventV1[]>(v2Result.Items.Where(x => x.Status != EventStatus.Removed).ToArray())
+            });
+        }
+
+        [VersionedRoute("api/datalock", 2, Name = "DataLockEventsListV2H")]
+        [Route("api/v2/datalock", Name = "DataLockEventsListV2")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetDataLockEventsV2(long sinceEventId = 0, DateTime? sinceTime = null, string employerAccountId = null, long ukprn = 0, int pageNumber = 1)
         {
             try
             {

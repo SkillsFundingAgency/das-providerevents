@@ -75,7 +75,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
                 IlrPathwayCode = 6,
                 IlrTrainingPrice = 12000,
                 IlrEndpointAssessorPrice = 3000,
-                IlrPriceEffectiveDate = DateTime.Today
+                IlrPriceEffectiveFromDate = DateTime.Today
             };
 
             _eventPeriod = new DataLockEventPeriodEntity
@@ -84,7 +84,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
                 CollectionPeriodName = "1617-R09",
                 CollectionPeriodMonth = 4,
                 CollectionPeriodYear = 2017,
-                CommitmentVersion = 15,
+                CommitmentVersion = "99-015",
                 IsPayable = false,
                 TransactionType = 1
             };
@@ -92,7 +92,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
             _eventCommitmentVersion = new DataLockEventCommitmentVersionEntity
             {
                 DataLockEventId = EventId,
-                CommitmentVersion = 1,
+                CommitmentVersion = "99-001",
                 CommitmentStartDate = new DateTime(2017, 5, 1),
                 CommitmentProgrammeType = 20,
                 CommitmentFrameworkCode = 550,
@@ -323,7 +323,7 @@ namespace SFA.DAS.Provider.Events.DataLock.UnitTests.Application.GetLastSeenProv
                    && @event.IlrPathwayCode == _event.IlrPathwayCode
                    && @event.IlrTrainingPrice == _event.IlrTrainingPrice
                    && @event.IlrEndpointAssessorPrice == _event.IlrEndpointAssessorPrice
-                   && @event.IlrPriceEffectiveDate == _event.IlrPriceEffectiveDate
+                   && @event.IlrPriceEffectiveFromDate == _event.IlrPriceEffectiveFromDate
                    && ErrorMatches(@event.Errors[0])
                    && PeriodMatches(@event.Periods[0])
                    && CommitmentVersionMatches(@event.CommitmentVersions[0]);

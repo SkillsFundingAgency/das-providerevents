@@ -24,8 +24,9 @@ namespace SFA.DAS.Provider.Events.DataLock.Domain.Data.Entities
         public int? IlrPathwayCode { get; set; }
         public decimal IlrTrainingPrice { get; set; }
         public decimal IlrEndpointAssessorPrice { get; set; }
-        public DateTime IlrPriceEffectiveDate { get; set; }
-        public long CommitmentVersionId { get; set; }
+        public DateTime IlrPriceEffectiveFromDate { get; set; }
+        public DateTime? IlrPriceEffectiveToDate { get; set; }
+        public string CommitmentVersionId { get; set; }
         public int Period { get; set; }
         public bool Payable { get; set; }
         public int TransactionType { get; set; }

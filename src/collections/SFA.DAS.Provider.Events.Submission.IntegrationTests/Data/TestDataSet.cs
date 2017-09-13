@@ -94,7 +94,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
             var prepDateTime = DateTime.Now.AddMinutes(-5);
             var academicYear = GetAcademicYear(prepDateTime);
             var startDate = DateTime.Today.AddMonths(3);
-            var learnRefNumber = "1";
+            var learnRefNumber ="REF" + rdm.Next(100, 999).ToString();
             return new TestDataSet
             {
                 AcademicYear = academicYear,
@@ -120,7 +120,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
                     {
                         Ukprn = ukprn,
                         LearnRefNumber = learnRefNumber,
-                        Uln = rdm.Next(1000000000, int.MaxValue),
+                        Uln = 1000000000,
                         NiNumber = "AB123456A"
                     }
                 },
@@ -191,6 +191,14 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.Data
                 version.StandardCode += 11;
                 version.OnProgrammeTotalPrice -= 123;
             }
+
+            return dataset;
+        }
+        public static TestDataSet GetUpdateSubmissionDatasetWithUpdatedUln()
+        {
+            var dataset = GetUpdatedSubmissionDataSet();
+
+            dataset.PreviousVersions.First().Uln += 1234;
 
             return dataset;
         }

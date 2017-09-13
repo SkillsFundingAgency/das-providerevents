@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using MediatR;
 using NLog;
+using SFA.DAS.Provider.Events.Api.Plumbing.WebApi;
 using SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
@@ -12,8 +13,7 @@ using Payment = SFA.DAS.Provider.Events.Api.Types.Payment;
 
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
-    [RoutePrefix("api/payments")]
-    [Authorize(Roles = "ReadPayments")]
+    [AuthorizeRemoteOnly(Roles = "ReadPayments")]
     public class PaymentsController : ApiController
     {
         private const int PageSize = 1000;
@@ -29,7 +29,9 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             _logger = logger;
         }
 
-        [Route("", Name = "PaymentsList")]
+        [VersionedRoute("api/payments", 1, Name = "PaymentsList")]
+        [VersionedRoute("api/payments", 2, Name = "PaymentsListV2H")]
+        [Route("api/v2/payments", Name = "PaymentsListV2")]
         [HttpGet]
         public async Task<IHttpActionResult> GetListOfPayments(string periodId = null, string employerAccountId = null, int page = 1, long? ukprn = null)
         {
