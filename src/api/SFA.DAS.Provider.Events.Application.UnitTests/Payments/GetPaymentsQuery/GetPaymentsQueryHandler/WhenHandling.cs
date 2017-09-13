@@ -182,6 +182,19 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Payments.GetPaymentsQuer
         }
 
         [Test]
+        public async Task ThenItShouldGetAPageOfPaymentsForProviderIfUkprnOnRequest()
+        {
+            // Arrange
+            _request.Ukprn = 324586345;
+
+            // Act
+            await _handler.Handle(_request);
+
+            // Assert
+            _paymentRepository.Verify(r => r.GetPayments(_request.PageNumber, _request.PageSize, null, null, null, _request.Ukprn), Times.Once);
+        }
+
+        [Test]
         public async Task ThenItShouldGetAnPageOfPaymentsForAccountInPeriodIfPeriodAndAccountOnRequest()
         {
             // Arrange

@@ -36,14 +36,10 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             try
             {
                 Period period = null;
-                if (!string.IsNullOrEmpty(periodId))
+                if (PeriodHasBeenProvided(periodId))
                 {
-                    var getPeriodResponse = await _mediator.SendAsync(new GetPeriodQueryRequest { PeriodId = periodId });
-                    if (!getPeriodResponse.IsValid)
-                    {
-                        throw getPeriodResponse.Exception;
-                    }
-                    if (getPeriodResponse.Result == null)
+                    period = await GetPeriod(periodId).ConfigureAwait(false);
+                    if (PeriodNotFound(period))
                     {
                         return Ok(new Types.PageOfResults<Payment>
                         {
@@ -52,21 +48,9 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
                             Items = new Payment[0]
                         });
                     }
-                    period = getPeriodResponse.Result;
                 }
 
-                var paymentsResponse = await _mediator.SendAsync(new GetPaymentsQueryRequest
-                {
-                    Period = period,
-                    EmployerAccountId = employerAccountId,
-                    PageNumber = page,
-                    PageSize = PageSize,
-                    Ukprn = ukprn
-                });
-                if (!paymentsResponse.IsValid)
-                {
-                    throw paymentsResponse.Exception;
-                }
+                var paymentsResponse = await GetPayments(employerAccountId, page, ukprn, period);
 
                 return Ok(_mapper.Map<Types.PageOfResults<Payment>>(paymentsResponse.Result));
             }
@@ -79,6 +63,45 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
                 _logger.Error(ex, ex.Message);
                 return InternalServerError();
             }
+        }
+
+        private static bool PeriodNotFound(Period period)
+        {
+            return period == null;
+        }
+
+        private static bool PeriodHasBeenProvided(string periodId)
+        {
+            return !string.IsNullOrEmpty(periodId);
+        }
+
+        private async Task<Period> GetPeriod(string periodId)
+        {
+            var getPeriodResponse = await _mediator.SendAsync(new GetPeriodQueryRequest { PeriodId = periodId }).ConfigureAwait(false);
+            if (!getPeriodResponse.IsValid)
+            {
+                throw getPeriodResponse.Exception;
+            }
+            return getPeriodResponse.Result;
+        }
+
+        private async Task<GetPaymentsQueryResponse> GetPayments(string employerAccountId, int page, long? ukprn, Period period)
+        {
+            var paymentsResponse = await _mediator.SendAsync(new GetPaymentsQueryRequest
+            {
+                Period = period,
+                EmployerAccountId = employerAccountId,
+                PageNumber = page,
+                PageSize = PageSize,
+                Ukprn = ukprn
+            }).ConfigureAwait(false);
+
+            if (!paymentsResponse.IsValid)
+            {
+                throw paymentsResponse.Exception;
+            }
+
+            return paymentsResponse;
         }
     }
 }
