@@ -14,6 +14,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             : this("MonthEndConnectionString")
         {
         }
+
         protected DcfsRepository(string connectionStringName)
         {
             _connectionStringName = connectionStringName;
