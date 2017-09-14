@@ -57,18 +57,14 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                 whereClause = " WHERE " + whereClause.Substring(1, whereClause.Length - 4);
             }
 
-            return await GetPageOfPayments(whereClause, page, pageSize);
-
-
+            return await GetPageOfPayments(whereClause, page, pageSize).ConfigureAwait(false);
         }
-
-
 
         private async Task<PageOfEntities<PaymentEntity>> GetPageOfPayments(string whereClause, int page, int pageSize)
         {
-            var numberOfPages = await GetNumberOfPages(whereClause, pageSize);
+            var numberOfPages = await GetNumberOfPages(whereClause, pageSize).ConfigureAwait(false);
 
-            var payments = await GetPayments(whereClause, page, pageSize);
+            var payments = await GetPayments(whereClause, page, pageSize).ConfigureAwait(false);
 
             return new PageOfEntities<PaymentEntity>
             {
@@ -77,17 +73,19 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                 Items = payments
             };
         }
+
         private async Task<PaymentEntity[]> GetPayments(string whereClause, int page, int pageSize)
         {
             var command = $"SELECT {Columns} FROM {Source} {whereClause} {Pagination}";
 
             var offset = (page - 1) * pageSize;
-            return await Query<PaymentEntity>(command, new { offset, pageSize });
+            return await Query<PaymentEntity>(command, new { offset, pageSize }).ConfigureAwait(false);
         }
+
         private async Task<int> GetNumberOfPages(string whereClause, int pageSize)
         {
             var command = $"SELECT {CountColumn} FROM {Source} {whereClause}";
-            var count = await QuerySingle<int>(command);
+            var count = await QuerySingle<int>(command).ConfigureAwait(false);
 
             return (int)Math.Ceiling(count / (float)pageSize);
         }
