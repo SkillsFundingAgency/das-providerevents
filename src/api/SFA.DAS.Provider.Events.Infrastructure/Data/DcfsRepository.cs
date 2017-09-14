@@ -14,6 +14,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             : this("MonthEndConnectionString")
         {
         }
+
         protected DcfsRepository(string connectionStringName)
         {
             _connectionStringName = connectionStringName;
@@ -22,20 +23,21 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         protected async Task<SqlConnection> GetOpenConnection()
         {
             var connection = new SqlConnection(CloudConfigurationManager.GetSetting(_connectionStringName));
-            await connection.OpenAsync();
+            await connection.OpenAsync().ConfigureAwait(false);
             return connection;
         }
 
         protected async Task<T[]> Query<T>(string command, object param = null)
         {
-            using (var connection = await GetOpenConnection())
+            using (var connection = await GetOpenConnection().ConfigureAwait(false))
             {
-                return (await connection.QueryAsync<T>(command, param)).ToArray();
+                return (await connection.QueryAsync<T>(command, param).ConfigureAwait(false)).ToArray();
             }
         }
+
         protected async Task<T> QuerySingle<T>(string command, object param = null)
         {
-            return (await Query<T>(command, param)).SingleOrDefault();
+            return (await Query<T>(command, param).ConfigureAwait(false)).SingleOrDefault();
         }
     }
 }

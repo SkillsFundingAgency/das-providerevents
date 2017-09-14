@@ -8,5 +8,7 @@ namespace SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery
         public string EmployerAccountId { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+
+        public long? Ukprn { get; set; }
     }
 }

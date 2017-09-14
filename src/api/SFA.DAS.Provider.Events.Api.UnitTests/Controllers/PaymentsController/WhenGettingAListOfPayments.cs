@@ -20,6 +20,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
     {
         private const string PeriodId = "PERIOD-1";
         private const string EmployerAccountId = "ACCOUNT-1";
+        private const int Ukprn = 432508734;
         private const int Page = 2;
         private const int PageSize = 1000;
         private const int TotalNumberOfPages = 100;
@@ -78,7 +79,8 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
             _mediator.Setup(m => m.SendAsync(It.Is<GetPaymentsQueryRequest>(r => r.Period == _period
                                                                                        && r.EmployerAccountId == EmployerAccountId
                                                                                        && r.PageNumber == Page
-                                                                                       && r.PageSize == PageSize)))
+                                                                                       && r.PageSize == PageSize
+                                                                                       && r.Ukprn == Ukprn)))
                 .Returns(Task.FromResult(new GetPaymentsQueryResponse
                 {
                     IsValid = true,
@@ -144,7 +146,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
         public async Task ThenItShouldReturnAOkResult()
         {
             // Act
-            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page);
+            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page, Ukprn);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -191,7 +193,8 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
             _mediator.Setup(m => m.SendAsync(It.Is<GetPaymentsQueryRequest>(r => r.Period == _period
                                                                                        && r.EmployerAccountId == EmployerAccountId
                                                                                        && r.PageNumber == Page
-                                                                                       && r.PageSize == PageSize)))
+                                                                                       && r.PageSize == PageSize
+                                                                                       && r.Ukprn == Ukprn)))
                 .Returns(Task.FromResult(new GetPaymentsQueryResponse
                 {
                     IsValid = true,
@@ -204,7 +207,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                 }));
 
             // Act
-            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page);
+            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page, Ukprn);
 
             // Assert
             var page = ((OkNegotiatedContentResult<Types.PageOfResults<Types.Payment>>)actual).Content;
