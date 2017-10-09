@@ -11,7 +11,7 @@ using SFA.DAS.Provider.Events.Application.DataLock.GetDataLockEventsQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
 using SFA.DAS.Provider.Events.Domain.Mapping;
 
-namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController
+namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController.V2
 {
     public class WhenGettingListOfDataLockEvents
     {

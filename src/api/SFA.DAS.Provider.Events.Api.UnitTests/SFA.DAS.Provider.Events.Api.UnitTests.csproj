@@ -73,7 +73,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\DataLockController\WhenGettingListOfDataLockEvents.cs" />
+    <Compile Include="Controllers\DataLockController\V1\WhenGettingListOfDataLockEvents.cs" />
+    <Compile Include="Controllers\DataLockController\V2\WhenGettingListOfDataLockEvents.cs" />
     <Compile Include="Controllers\PaymentsController\WhenGettingAListOfPayments.cs" />
     <Compile Include="Controllers\PeriodEndsController\WhenGettingListOfPeriodEnds.cs" />
     <Compile Include="Controllers\SubmissionsController\WhenGettingListOfSubmissionEvents.cs" />
