@@ -78,7 +78,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "migrationscripts", "migrati
 		DeployDataLock\sql\migrationscripts\001_DataLockEvents_Add_EventStatus.sql = DeployDataLock\sql\migrationscripts\001_DataLockEvents_Add_EventStatus.sql
 		DeployDataLock\sql\migrationscripts\002_DataLockEvents_Change_Commitment_Verion.sql = DeployDataLock\sql\migrationscripts\002_DataLockEvents_Change_Commitment_Verion.sql
 		DeployDataLock\sql\migrationscripts\003_DataLockEvents_Change_LearnRef_AimSequence_ColumnType.sql = DeployDataLock\sql\migrationscripts\003_DataLockEvents_Change_LearnRef_AimSequence_ColumnType.sql
-		DeployDataLock\sql\migrationscripts\004_DataLockEvents_Submission_Change_LearnRef_AimSequence_ColumnType.sql = DeployDataLock\sql\migrationscripts\004_DataLockEvents_Submission_Change_LearnRef_AimSequence_ColumnType.sql
 	EndProjectSection
 EndProject
 Global
