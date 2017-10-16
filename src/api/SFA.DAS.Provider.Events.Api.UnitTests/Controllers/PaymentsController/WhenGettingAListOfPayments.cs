@@ -146,7 +146,9 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
         public async Task ThenItShouldReturnAOkResult()
         {
             // Act
-            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page, Ukprn);
+            var actual = await _controller
+                .GetListOfPayments(PeriodId, EmployerAccountId, Page, Ukprn)
+                .ConfigureAwait(false);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -207,7 +209,9 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                 }));
 
             // Act
-            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page, Ukprn);
+            var actual = await _controller
+                .GetListOfPayments(PeriodId, EmployerAccountId, Page, Ukprn)
+                .ConfigureAwait(false);
 
             // Assert
             var page = ((OkNegotiatedContentResult<Types.PageOfResults<Types.Payment>>)actual).Content;
@@ -251,7 +255,9 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                 }));
 
             // Act
-            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page);
+            var actual = await _controller
+                .GetListOfPayments(PeriodId, EmployerAccountId, Page)
+                .ConfigureAwait(false);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -276,7 +282,9 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                 }));
 
             // Act
-            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page);
+            var actual = await _controller
+                .GetListOfPayments(PeriodId, EmployerAccountId, Page)
+                .ConfigureAwait(false);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -296,11 +304,23 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                 }));
 
             // Act
-            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page);
+            var actual = await _controller
+                .GetListOfPayments(PeriodId, EmployerAccountId, Page)
+                .ConfigureAwait(false);
 
             // Assert
             Assert.IsNotNull(actual);
             Assert.IsInstanceOf<InternalServerErrorResult>(actual);
+        }
+
+        [Test]
+        public async Task TheDefaultPageSizeShouldBeTenThousand()
+        {
+            await _controller
+                .GetListOfPayments(PeriodId, EmployerAccountId)
+                .ConfigureAwait(false);
+
+            _mediator.Verify(m => m.SendAsync(It.Is<GetPaymentsQueryRequest>(r => r.PageSize == 10000)), Times.Once);
         }
     }
 }

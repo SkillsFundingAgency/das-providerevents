@@ -16,7 +16,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
     [AuthorizeRemoteOnly(Roles = "ReadPayments")]
     public class PaymentsController : ApiController
     {
-        private const int PageSize = 1000;
+        private const int PageSize = 10000;
 
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
@@ -52,7 +52,9 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
                     }
                 }
 
-                var paymentsResponse = await GetPayments(employerAccountId, page, ukprn, period);
+                var paymentsResponse = await 
+                    GetPayments(employerAccountId, page, ukprn, period)
+                    .ConfigureAwait(false);
 
                 return Ok(_mapper.Map<Types.PageOfResults<Payment>>(paymentsResponse.Result));
             }
@@ -79,7 +81,9 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
 
         private async Task<Period> GetPeriod(string periodId)
         {
-            var getPeriodResponse = await _mediator.SendAsync(new GetPeriodQueryRequest { PeriodId = periodId }).ConfigureAwait(false);
+            var getPeriodResponse = await _mediator
+                .SendAsync(new GetPeriodQueryRequest { PeriodId = periodId })
+                .ConfigureAwait(false);
             if (!getPeriodResponse.IsValid)
             {
                 throw getPeriodResponse.Exception;
@@ -89,7 +93,8 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
 
         private async Task<GetPaymentsQueryResponse> GetPayments(string employerAccountId, int page, long? ukprn, Period period)
         {
-            var paymentsResponse = await _mediator.SendAsync(new GetPaymentsQueryRequest
+            var paymentsResponse = await _mediator
+                .SendAsync(new GetPaymentsQueryRequest
             {
                 Period = period,
                 EmployerAccountId = employerAccountId,
