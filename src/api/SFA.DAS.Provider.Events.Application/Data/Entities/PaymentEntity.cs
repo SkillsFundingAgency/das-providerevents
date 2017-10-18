@@ -6,7 +6,7 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
     public class PaymentEntity
     {
         public string Id { get; set; }
-
+        public Guid RequiredPaymentId { get; set; }
         public long Ukprn { get; set; }
         public long Uln { get; set; }
         public string EmployerAccountId { get; set; }
@@ -33,5 +33,6 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
 
         public int ContractType { get; set; }
         public List<PaymentsDueEarningEntity> PaymentsDueEarningEntities { get; set; }
+        public int TotalCount { get; set; }
     }
 }

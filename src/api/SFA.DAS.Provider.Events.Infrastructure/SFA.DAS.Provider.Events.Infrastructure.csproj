@@ -69,6 +69,7 @@
     <Compile Include="Data\DcfsPeriodRepository.cs" />
     <Compile Include="Data\DcfsRepository.cs" />
     <Compile Include="Data\DcfsSubmissionEventsRepository.cs" />
+    <Compile Include="Data\ParentChildMapper.cs" />
     <Compile Include="Extensions\SqlBuilderTemplateExtensions.cs" />
     <Compile Include="Logging\LoggingConfig.cs" />
     <Compile Include="Mapping\AutoMapperMapper.cs" />
