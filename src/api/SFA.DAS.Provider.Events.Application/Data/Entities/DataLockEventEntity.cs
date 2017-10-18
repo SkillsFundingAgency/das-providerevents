@@ -1,12 +1,13 @@
 ﻿using System;
 
-namespace SFA.DAS.Provider.Events.Domain
+namespace SFA.DAS.Provider.Events.Application.Data.Entities
 {
-    public class DataLockEvent
+    public class DataLockEventEntity
     {
         public long Id { get; set; }
+        public Guid DataLockEventId { get; set; }
         public DateTime ProcessDateTime { get; set; }
-        public EventStatus Status { get; set; }
+        public int Status { get; set; }
         public string IlrFileName { get; set; }
         public long Ukprn { get; set; }
         public long Uln { get; set; }
@@ -15,7 +16,7 @@ namespace SFA.DAS.Provider.Events.Domain
         public string PriceEpisodeIdentifier { get; set; }
         public long ApprenticeshipId { get; set; }
         public long EmployerAccountId { get; set; }
-        public EventSource EventSource { get; set; }
+        public int EventSource { get; set; }
         public bool HasErrors { get; set; }
         public DateTime? IlrStartDate { get; set; }
         public long? IlrStandardCode { get; set; }
@@ -27,8 +28,8 @@ namespace SFA.DAS.Provider.Events.Domain
         public DateTime? IlrPriceEffectiveFromDate { get; set; }
         public DateTime? IlrPriceEffectiveToDate { get; set; }
 
-        public DataLockEventError[] Errors { get; set; }
-        public DataLockEventPeriod[] Periods { get; set; }
-        public DataLockEventApprenticeship[] Apprenticeships { get; set; }
+        public DataLockEventErrorEntity[] Errors { get; set; }
+        public DataLockEventPeriodEntity[] Periods { get; set; }
+        public DataLockEventApprenticeshipEntity[] Apprenticeships { get; set; }
     }
 }

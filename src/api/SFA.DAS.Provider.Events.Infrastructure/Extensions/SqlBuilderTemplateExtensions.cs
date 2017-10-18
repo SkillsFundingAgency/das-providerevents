@@ -4,9 +4,9 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Extensions
 {
     public static class SqlBuilderExtensions
     {
-        public static SqlBuilder Where(this SqlBuilder source, bool onlyIncludeIfTrue, string sql, dynamic parameters = null)
+        public static SqlBuilder Where(this SqlBuilder source, string sql, dynamic parameters, bool includeIf)
         {
-            if (onlyIncludeIfTrue)
+            if (includeIf)
             {
                 source.Where(sql, parameters);
             }

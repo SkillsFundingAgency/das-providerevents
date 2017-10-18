@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Provider.Events.Application.Repositories;
 using SFA.DAS.Provider.Events.Application.Validation;
-using SFA.DAS.Provider.Events.Domain.Data;
 
 namespace SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery
 {
@@ -21,7 +21,8 @@ namespace SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery
         {
             try
             {
-                var validationResult = await _requestValidator.Validate(message);
+                var validationResult = await _requestValidator.Validate(message)
+                    .ConfigureAwait(false);
                 if (!validationResult.IsValid)
                 {
                     return new GetPeriodQueryResponse
@@ -34,7 +35,8 @@ namespace SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery
                 var academicYear = message.PeriodId.Substring(0, 4);
                 var periodName = message.PeriodId.Substring(5);
 
-                var period = await _periodRepository.GetPeriod(academicYear, periodName);
+                var period = await _periodRepository.GetPeriod(academicYear, periodName)
+                    .ConfigureAwait(false);
                 if (period == null)
                 {
                     return new GetPeriodQueryResponse
@@ -46,7 +48,7 @@ namespace SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery
                 return new GetPeriodQueryResponse
                 {
                     IsValid = true,
-                    Result = new Domain.Period
+                    Result = new Data.Period
                     {
                         Id = period.Id,
                         CalendarMonth = period.CalendarMonth,

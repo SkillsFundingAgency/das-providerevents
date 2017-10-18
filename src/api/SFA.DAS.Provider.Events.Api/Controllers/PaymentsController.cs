@@ -4,12 +4,12 @@ using System.Web.Http;
 using MediatR;
 using NLog;
 using SFA.DAS.Provider.Events.Api.Plumbing.WebApi;
+using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Application.Data;
+using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
-using SFA.DAS.Provider.Events.Domain;
-using SFA.DAS.Provider.Events.Domain.Mapping;
-using Payment = SFA.DAS.Provider.Events.Api.Types.Payment;
 
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
@@ -33,7 +33,11 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         [VersionedRoute("api/payments", 2, Name = "PaymentsListV2H")]
         [Route("api/v2/payments", Name = "PaymentsListV2")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetListOfPayments(string periodId = null, string employerAccountId = null, int page = 1, long? ukprn = null)
+        public async Task<IHttpActionResult> GetListOfPayments(
+            string periodId = null, 
+            string employerAccountId = null, 
+            int page = 1, long? 
+            ukprn = null)
         {
             try
             {
@@ -43,7 +47,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
                     period = await GetPeriod(periodId).ConfigureAwait(false);
                     if (PeriodNotFound(period))
                     {
-                        return Ok(new Types.PageOfResults<Payment>
+                        return Ok(new PageOfResults<Payment>
                         {
                             PageNumber = page,
                             TotalNumberOfPages = 0,
@@ -56,7 +60,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
                     GetPayments(employerAccountId, page, ukprn, period)
                     .ConfigureAwait(false);
 
-                return Ok(_mapper.Map<Types.PageOfResults<Payment>>(paymentsResponse.Result));
+                return Ok(_mapper.Map<PageOfResults<Payment>>(paymentsResponse.Result));
             }
             catch (ValidationException ex)
             {

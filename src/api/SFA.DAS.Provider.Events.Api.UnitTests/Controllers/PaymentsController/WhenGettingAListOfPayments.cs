@@ -6,13 +6,13 @@ using MediatR;
 using Moq;
 using NLog;
 using NUnit.Framework;
+using Ploeh.AutoFixture.NUnit3;
+using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Application.Data;
+using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
-using SFA.DAS.Provider.Events.Domain;
-using SFA.DAS.Provider.Events.Domain.Mapping;
-using CalendarPeriod = SFA.DAS.Provider.Events.Api.Types.CalendarPeriod;
-using NamedCalendarPeriod = SFA.DAS.Provider.Events.Api.Types.NamedCalendarPeriod;
 
 namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
 {
@@ -22,7 +22,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
         private const string EmployerAccountId = "ACCOUNT-1";
         private const int Ukprn = 432508734;
         private const int Page = 2;
-        private const int PageSize = 1000;
+        private const int PageSize = 10000;
         private const int TotalNumberOfPages = 100;
 
         private Payment _payment1;
@@ -42,13 +42,13 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                 Uln = 987654,
                 EmployerAccountId = EmployerAccountId,
                 ApprenticeshipId = 147852,
-                CollectionPeriod = new Domain.NamedCalendarPeriod
+                CollectionPeriod = new NamedCalendarPeriod
                 {
                     Id = "1718-R02",
                     Month = 9,
                     Year = 2017
                 },
-                DeliveryPeriod = new Domain.CalendarPeriod
+                DeliveryPeriod = new CalendarPeriod
                 {
                     Month = 8,
                     Year = 2017
@@ -71,17 +71,18 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
 
             _mediator = new Mock<IMediator>();
             _mediator.Setup(m => m.SendAsync(It.Is<GetPeriodQueryRequest>(r => r.PeriodId == PeriodId)))
-                .Returns(Task.FromResult(new GetPeriodQueryResponse
+                .ReturnsAsync(new GetPeriodQueryResponse
                 {
                     IsValid = true,
                     Result = _period
-                }));
+                });
+
             _mediator.Setup(m => m.SendAsync(It.Is<GetPaymentsQueryRequest>(r => r.Period == _period
                                                                                        && r.EmployerAccountId == EmployerAccountId
                                                                                        && r.PageNumber == Page
                                                                                        && r.PageSize == PageSize
                                                                                        && r.Ukprn == Ukprn)))
-                .Returns(Task.FromResult(new GetPaymentsQueryResponse
+                .ReturnsAsync(new GetPaymentsQueryResponse
                 {
                     IsValid = true,
                     Result = new PageOfResults<Payment>
@@ -90,17 +91,17 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                         TotalNumberOfPages = TotalNumberOfPages,
                         Items = new[] { _payment1 }
                     }
-                }));
+                });
 
             _mapper = new Mock<IMapper>();
-            _mapper.Setup(m => m.Map<Types.PageOfResults<Types.Payment>>(It.IsAny<PageOfResults<Payment>>()))
+            _mapper.Setup(m => m.Map<PageOfResults<Payment>>(It.IsAny<PageOfResults<Payment>>()))
                 .Returns((PageOfResults<Payment> source) =>
                 {
-                    return new Types.PageOfResults<Types.Payment>
+                    return new PageOfResults<Payment>
                     {
                         PageNumber = source.PageNumber,
                         TotalNumberOfPages = source.TotalNumberOfPages,
-                        Items = source.Items.Select(p => new Types.Payment
+                        Items = source.Items.Select(p => new Payment
                         {
                             Id = p.Id,
                             Ukprn = p.Ukprn,
@@ -120,14 +121,14 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                             EvidenceSubmittedOn = p.EvidenceSubmittedOn,
                             EmployerAccountVersion = p.EmployerAccountVersion,
                             ApprenticeshipVersion = p.ApprenticeshipVersion,
-                            FundingSource = (Types.FundingSource)(int)p.FundingSource,
-                            TransactionType = (Types.TransactionType)(int)p.TransactionType,
+                            FundingSource = (FundingSource)(int)p.FundingSource,
+                            TransactionType = (TransactionType)(int)p.TransactionType,
                             Amount = p.Amount,
                             StandardCode = p.StandardCode,
                             FrameworkCode = p.FrameworkCode,
                             ProgrammeType = p.ProgrammeType,
                             PathwayCode = p.PathwayCode,
-                            ContractType = (Types.ContractType)(int)p.ContractType
+                            ContractType = (ContractType)(int)p.ContractType
                         }).ToArray()
                     };
                 });
@@ -152,13 +153,14 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.IsInstanceOf<OkNegotiatedContentResult<Types.PageOfResults<Types.Payment>>>(actual);
+            Assert.IsInstanceOf<OkNegotiatedContentResult<PageOfResults<Payment>>>(actual);
         }
 
         [Test]
-        [TestCase(25L, null, null, null)]
-        [TestCase(null, 550, 20, 6)]
-        public async Task ThenItShouldReturnCorrectTrainingCourseInformation(long? standardCode, int? frameworkCode, int? programmeType, int? pathwayCode)
+        [InlineAutoData(25L, null, null, null)]
+        [InlineAutoData(null, 550, 20, 6)]
+        public async Task ThenItShouldReturnCorrectTrainingCourseInformation(
+            long? standardCode, int? frameworkCode, int? programmeType, int? pathwayCode)
         {
             // Assert
             var payment = new Payment
@@ -168,13 +170,13 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                 Uln = 987654,
                 EmployerAccountId = EmployerAccountId,
                 ApprenticeshipId = 147852,
-                CollectionPeriod = new Domain.NamedCalendarPeriod
+                CollectionPeriod = new NamedCalendarPeriod
                 {
                     Id = "1718-R02",
                     Month = 9,
                     Year = 2017
                 },
-                DeliveryPeriod = new Domain.CalendarPeriod
+                DeliveryPeriod = new CalendarPeriod
                 {
                     Month = 8,
                     Year = 2017
@@ -214,7 +216,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                 .ConfigureAwait(false);
 
             // Assert
-            var page = ((OkNegotiatedContentResult<Types.PageOfResults<Types.Payment>>)actual).Content;
+            var page = ((OkNegotiatedContentResult<PageOfResults<Payment>>)actual).Content;
             Assert.IsNotNull(page);
             Assert.AreEqual(Page, page.PageNumber);
             Assert.AreEqual(TotalNumberOfPages, page.TotalNumberOfPages);
@@ -261,9 +263,9 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.IsInstanceOf<OkNegotiatedContentResult<Types.PageOfResults<Types.Payment>>>(actual);
+            Assert.IsInstanceOf<OkNegotiatedContentResult<PageOfResults<Payment>>>(actual);
 
-            var page = ((OkNegotiatedContentResult<Types.PageOfResults<Types.Payment>>)actual).Content;
+            var page = ((OkNegotiatedContentResult<PageOfResults<Payment>>)actual).Content;
             Assert.IsNotNull(page);
             Assert.AreEqual(Page, page.PageNumber);
             Assert.AreEqual(0, page.TotalNumberOfPages);

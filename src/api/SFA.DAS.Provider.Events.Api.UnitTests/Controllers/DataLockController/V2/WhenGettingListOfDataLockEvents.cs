@@ -8,8 +8,8 @@ using NLog;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.DataLock.GetDataLockEventsQuery;
+using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Validation;
-using SFA.DAS.Provider.Events.Domain.Mapping;
 
 namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController.V2
 {
@@ -28,18 +28,18 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController.V
                 .ReturnsAsync(new GetDataLockEventsQueryResponse
                 {
                     IsValid = true,
-                    Result = new Domain.PageOfResults<Domain.DataLockEvent>
+                    Result = new PageOfResults<DataLockEvent>
                     {
                         PageNumber = 1,
                         TotalNumberOfPages = 10,
                         Items = new[]
                         {
-                            new Domain.DataLockEvent
+                            new DataLockEvent
                             {
                                 Id = 123,
                                 Errors = new []
                                 {
-                                    new Domain.DataLockEventError
+                                    new DataLockEventError
                                     {
                                         ErrorCode = "Err1",
                                         SystemDescription = "Error 1"
@@ -47,22 +47,22 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController.V
                                 },
                                 Periods = new []
                                 {
-                                    new Domain.DataLockEventPeriod
+                                    new DataLockEventPeriod
                                     {
                                         ApprenticeshipVersion = "1-015",
-                                        Period = new Domain.NamedCalendarPeriod
+                                        Period = new NamedCalendarPeriod
                                         {
                                             Id = "1617-R09",
                                             Month = 4,
                                             Year = 2017
                                         },
                                         IsPayable = true,
-                                        TransactionType = Domain.TransactionType.Learning
+                                        TransactionType = TransactionType.Learning
                                     }
                                 },
                                 Apprenticeships = new []
                                 {
-                                    new Domain.DataLockEventApprenticeship
+                                    new DataLockEventApprenticeship
                                     {
                                         Version = "19",
                                         StartDate = new DateTime(2017, 5, 1),
@@ -77,8 +77,8 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController.V
                 });
 
             _mapper = new Mock<IMapper>();
-            _mapper.Setup(m => m.Map<PageOfResults<DataLockEvent>>(It.IsAny<Domain.PageOfResults<Domain.DataLockEvent>>()))
-                .Returns((Domain.PageOfResults<Domain.DataLockEvent> source) =>
+            _mapper.Setup(m => m.Map<PageOfResults<DataLockEvent>>(It.IsAny<PageOfResults<DataLockEvent>>()))
+                .Returns((PageOfResults<DataLockEvent> source) =>
                 {
                     return new PageOfResults<DataLockEvent>
                     {

@@ -50,6 +50,7 @@
     <Compile Include="DataLockEventApprenticeship.cs" />
     <Compile Include="DataLockEventError.cs" />
     <Compile Include="DataLockEventPeriod.cs" />
+    <Compile Include="Earning.cs" />
     <Compile Include="EventSource.cs" />
     <Compile Include="EventStatus.cs" />
     <Compile Include="FundingSource.cs" />

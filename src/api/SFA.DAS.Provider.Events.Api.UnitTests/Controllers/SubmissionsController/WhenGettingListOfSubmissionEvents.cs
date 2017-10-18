@@ -7,9 +7,9 @@ using Moq;
 using NLog;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
-using SFA.DAS.Provider.Events.Domain.Mapping;
 
 namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsController
 {
@@ -28,13 +28,13 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
                 .ReturnsAsync(new GetSubmissionEventsQueryResponse
                 {
                     IsValid = true,
-                    Result = new Domain.PageOfResults<Domain.SubmissionEvent>
+                    Result = new PageOfResults<SubmissionEvent>
                     {
                         PageNumber = 1,
                         TotalNumberOfPages = 10,
                         Items = new[]
                         {
-                            new Domain.SubmissionEvent
+                            new SubmissionEvent
                             {
                                 Id = 123
                             }
@@ -43,8 +43,8 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
                 });
 
             _mapper = new Mock<IMapper>();
-            _mapper.Setup(m => m.Map<PageOfResults<SubmissionEvent>>(It.IsAny<Domain.PageOfResults<Domain.SubmissionEvent>>()))
-                .Returns((Domain.PageOfResults<Domain.SubmissionEvent> source) =>
+            _mapper.Setup(m => m.Map<PageOfResults<SubmissionEvent>>(It.IsAny<PageOfResults<SubmissionEvent>>()))
+                .Returns((PageOfResults<SubmissionEvent> source) =>
                 {
                     return new PageOfResults<SubmissionEvent>
                     {

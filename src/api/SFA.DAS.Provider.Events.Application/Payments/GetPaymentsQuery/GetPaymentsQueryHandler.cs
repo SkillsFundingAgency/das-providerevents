@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.Provider.Events.Domain;
-using SFA.DAS.Provider.Events.Domain.Data;
-using SFA.DAS.Provider.Events.Domain.Mapping;
+using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Application.Mapping;
+using SFA.DAS.Provider.Events.Application.Repositories;
 
 namespace SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery
 {

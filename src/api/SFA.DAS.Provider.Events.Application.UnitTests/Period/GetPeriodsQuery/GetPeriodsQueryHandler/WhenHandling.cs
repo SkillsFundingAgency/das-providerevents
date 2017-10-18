@@ -3,10 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Provider.Events.Application.Data.Entities;
+using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodsQuery;
-using SFA.DAS.Provider.Events.Domain.Data;
-using SFA.DAS.Provider.Events.Domain.Data.Entities;
-using SFA.DAS.Provider.Events.Domain.Mapping;
+using SFA.DAS.Provider.Events.Application.Repositories;
 
 namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodsQuery.GetPeriodsQueryHandler
 {
@@ -29,18 +29,18 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodsQuery.G
                 Id = "1617-R12",
                 CalendarMonth = 8,
                 CalendarYear = 2017,
-                AccountDataValidAt = new System.DateTime(2017, 8, 31),
-                CommitmentDataValidAt = new System.DateTime(2017, 9, 1),
-                CompletionDateTime = new System.DateTime(2017, 9, 5, 19, 27, 34)
+                AccountDataValidAt = new DateTime(2017, 8, 31),
+                CommitmentDataValidAt = new DateTime(2017, 9, 1),
+                CompletionDateTime = new DateTime(2017, 9, 5, 19, 27, 34)
             };
             _periodEntity2 = new PeriodEntity
             {
                 Id = "1718-R01",
                 CalendarMonth = 9,
                 CalendarYear = 2017,
-                AccountDataValidAt = new System.DateTime(2017, 10, 2),
-                CommitmentDataValidAt = new System.DateTime(2017, 9, 30),
-                CompletionDateTime = new System.DateTime(2017, 10, 4, 23, 34, 10)
+                AccountDataValidAt = new DateTime(2017, 10, 2),
+                CommitmentDataValidAt = new DateTime(2017, 9, 30),
+                CompletionDateTime = new DateTime(2017, 10, 4, 23, 34, 10)
             };
 
             _periodRepository = new Mock<IPeriodRepository>();
@@ -48,10 +48,10 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodsQuery.G
                 .Returns(Task.FromResult(new[] { _periodEntity1, _periodEntity2 }));
 
             _mapper = new Mock<IMapper>();
-            _mapper.Setup(m => m.Map<Domain.Period[]>(It.IsAny<PeriodEntity[]>()))
+            _mapper.Setup(m => m.Map<Data.Period[]>(It.IsAny<PeriodEntity[]>()))
                 .Returns((PeriodEntity[] source) =>
                 {
-                    return source.Select(e => new Domain.Period
+                    return source.Select(e => new Data.Period
                     {
                         Id = e.Id,
                         CalendarMonth = e.CalendarMonth,
@@ -97,7 +97,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodsQuery.G
             Assert.AreSame(ex, actual.Exception);
         }
 
-        private void AssertPeriodForEntity(Domain.Period period, PeriodEntity entity)
+        private void AssertPeriodForEntity(Data.Period period, PeriodEntity entity)
         {
             Assert.AreEqual(entity.Id, period.Id);
             Assert.AreEqual(entity.CalendarMonth, period.CalendarMonth);

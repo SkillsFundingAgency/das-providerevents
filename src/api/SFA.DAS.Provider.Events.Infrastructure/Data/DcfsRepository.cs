@@ -1,4 +1,5 @@
-﻿using System.Data.SqlClient;
+﻿using System;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -38,6 +39,11 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         protected async Task<T> QuerySingle<T>(string command, object param = null)
         {
             return (await Query<T>(command, param).ConfigureAwait(false)).SingleOrDefault();
+        }
+
+        protected int NumberOfPages(int totalRows, int pageSize)
+        {
+            return (int)Math.Ceiling(totalRows / (float)pageSize);
         }
     }
 }

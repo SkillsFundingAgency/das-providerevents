@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.Provider.Events.Domain.Data;
-using SFA.DAS.Provider.Events.Domain.Mapping;
+using SFA.DAS.Provider.Events.Application.Mapping;
+using SFA.DAS.Provider.Events.Application.Repositories;
 
 namespace SFA.DAS.Provider.Events.Application.Period.GetPeriodsQuery
 {
@@ -21,11 +21,11 @@ namespace SFA.DAS.Provider.Events.Application.Period.GetPeriodsQuery
         {
             try
             {
-                var periodEntities = await _periodRepository.GetPeriods();
+                var periodEntities = await _periodRepository.GetPeriods().ConfigureAwait(false);
                 return new GetPeriodsQueryResponse
                 {
                     IsValid = true,
-                    Result = _mapper.Map<Domain.Period[]>(periodEntities)
+                    Result = _mapper.Map<Data.Period[]>(periodEntities)
                 };
             }
             catch (Exception ex)

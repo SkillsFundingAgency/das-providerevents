@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Provider.Events.Application.Data.Entities;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery;
+using SFA.DAS.Provider.Events.Application.Repositories;
 using SFA.DAS.Provider.Events.Application.Validation;
-using SFA.DAS.Provider.Events.Domain.Data;
-using SFA.DAS.Provider.Events.Domain.Data.Entities;
 
 namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodQuery.GetPeriodQueryHandler
 {

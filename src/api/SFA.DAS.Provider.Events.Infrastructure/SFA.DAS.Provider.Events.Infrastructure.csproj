@@ -49,6 +49,9 @@
       <HintPath>..\packages\NLog.4.3.10\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SFA.DAS.Sql.Dapper, Version=1.0.0.43189, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Sql.Dapper.1.0.0.43189\lib\net45\SFA.DAS.Sql.Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -73,6 +76,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Provider.Events.Api.Types\SFA.DAS.Provider.Events.Api.Types.csproj">
+      <Project>{a557e17c-eb78-4f2e-ac2a-ccacdc2c3172}</Project>
+      <Name>SFA.DAS.Provider.Events.Api.Types</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Provider.Events.Application\SFA.DAS.Provider.Events.Application.csproj">
+      <Project>{5df95ffe-d3ed-4eb9-9797-8056142e7591}</Project>
+      <Name>SFA.DAS.Provider.Events.Application</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Provider.Events.Domain\SFA.DAS.Provider.Events.Domain.csproj">
       <Project>{CFBF1C38-4E74-4DD7-AA90-FEAB37B85FD7}</Project>
       <Name>SFA.DAS.Provider.Events.Domain</Name>

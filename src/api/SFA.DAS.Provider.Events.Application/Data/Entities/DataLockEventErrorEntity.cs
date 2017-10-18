@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.Provider.Events.Domain.Data.Entities
+namespace SFA.DAS.Provider.Events.Application.Data.Entities
 {
     public class DataLockEventErrorEntity
     {
