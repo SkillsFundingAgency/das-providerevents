@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Results;
 using MediatR;
@@ -9,7 +8,6 @@ using NUnit.Framework;
 using Ploeh.AutoFixture.NUnit3;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data;
-using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
@@ -28,7 +26,6 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
         private Payment _payment1;
         private Period _period;
         private Mock<IMediator> _mediator;
-        private Mock<IMapper> _mapper;
         private Api.Controllers.PaymentsController _controller;
         private Mock<ILogger> _logger;
 
@@ -93,46 +90,6 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                     }
                 });
 
-            _mapper = new Mock<IMapper>();
-            _mapper.Setup(m => m.Map<PageOfResults<Payment>>(It.IsAny<PageOfResults<Payment>>()))
-                .Returns((PageOfResults<Payment> source) =>
-                {
-                    return new PageOfResults<Payment>
-                    {
-                        PageNumber = source.PageNumber,
-                        TotalNumberOfPages = source.TotalNumberOfPages,
-                        Items = source.Items.Select(p => new Payment
-                        {
-                            Id = p.Id,
-                            Ukprn = p.Ukprn,
-                            Uln = p.Uln,
-                            EmployerAccountId = p.EmployerAccountId,
-                            ApprenticeshipId = p.ApprenticeshipId,
-                            CollectionPeriod = new NamedCalendarPeriod
-                            {
-                                Month = p.CollectionPeriod.Month,
-                                Year = p.CollectionPeriod.Year
-                            },
-                            DeliveryPeriod = new CalendarPeriod
-                            {
-                                Month = p.DeliveryPeriod.Month,
-                                Year = p.DeliveryPeriod.Year
-                            },
-                            EvidenceSubmittedOn = p.EvidenceSubmittedOn,
-                            EmployerAccountVersion = p.EmployerAccountVersion,
-                            ApprenticeshipVersion = p.ApprenticeshipVersion,
-                            FundingSource = (FundingSource)(int)p.FundingSource,
-                            TransactionType = (TransactionType)(int)p.TransactionType,
-                            Amount = p.Amount,
-                            StandardCode = p.StandardCode,
-                            FrameworkCode = p.FrameworkCode,
-                            ProgrammeType = p.ProgrammeType,
-                            PathwayCode = p.PathwayCode,
-                            ContractType = (ContractType)(int)p.ContractType
-                        }).ToArray()
-                    };
-                });
-
             _logger = new Mock<ILogger>();
             _logger.Setup(l => l.Error(It.IsAny<Exception>(), It.IsAny<string>(), It.IsAny<object[]>()))
                 .Callback<Exception, string, object[]>((ex, msg, args) =>
@@ -140,7 +97,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                     Console.WriteLine($"Error Logged\n{msg}\n{ex}");
                 });
 
-            _controller = new Api.Controllers.PaymentsController(_mediator.Object, _mapper.Object, _logger.Object);
+            _controller = new Api.Controllers.PaymentsController(_mediator.Object, _logger.Object);
         }
 
         [Test]
