@@ -82,7 +82,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
                     throw queryResponse.Exception;
                 }
 
-                return Ok(_mapper.Map<PageOfResults<DataLockEvent>>(queryResponse.Result));
+                return Ok(queryResponse.Result);
             }
             catch (ValidationException ex)
             {

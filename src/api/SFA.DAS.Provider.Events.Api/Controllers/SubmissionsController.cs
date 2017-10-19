@@ -44,13 +44,13 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
                     Ukprn = ukprn,
                     PageNumber = pageNumber,
                     PageSize = PageSize
-                });
+                }).ConfigureAwait(false);
                 if (!queryResponse.IsValid)
                 {
                     throw queryResponse.Exception;
                 }
 
-                return Ok(_mapper.Map<PageOfResults<SubmissionEvent>>(queryResponse.Result));
+                return Ok(queryResponse.Result);
             }
             catch (ValidationException ex)
             {
