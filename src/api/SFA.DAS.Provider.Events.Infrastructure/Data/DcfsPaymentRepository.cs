@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Dapper;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
@@ -71,29 +69,16 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 
             using (var connection = await GetOpenConnection().ConfigureAwait(false))
             {
-                var mapper = new ParentChildrenMapper<PaymentEntity, PaymentsDueEarningEntity>();
-                var lookup = new Dictionary<object, PaymentEntity>();
+                var result = await connection.MappedQueryAsync<PaymentEntity, PaymentsDueEarningEntity>(
+                    query.RawSql,
+                    query.Parameters,
+                    splitOn: c => c.RequiredPaymentId,
+                    parentIdentifier: p => p.Id,
+                    childCollection: p => p.PaymentsDueEarningEntities
+                ).ConfigureAwait(false);
 
-                await connection.QueryAsync(
-                            query.RawSql,
-                            param: query.Parameters,
-                            splitOn: "RequiredPaymentId",
-                            map: mapper.Map(lookup, x => x.Id, x => x.PaymentsDueEarningEntities))
-                        .ConfigureAwait(false);
-
-                var returnValue = new PageOfResults<PaymentEntity>
-                {
-                    PageNumber = page,
-                    TotalNumberOfPages = 0,
-                    Items = lookup.Values.ToArray(),
-                };
-
-                if (lookup.Values.Count != 0)
-                {
-                    returnValue.TotalNumberOfPages = NumberOfPages(lookup.Values.First().TotalCount, pageSize);
-                }
-
-                return returnValue;
+                var pagedResults =  PageResults(result, page, pageSize);
+                return pagedResults;
             }
         }
 

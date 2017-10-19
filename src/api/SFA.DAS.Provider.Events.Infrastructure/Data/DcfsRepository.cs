@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Azure;
+using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Application.Data;
 
 namespace SFA.DAS.Provider.Events.Infrastructure.Data
 {
@@ -44,6 +47,22 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         protected int NumberOfPages(int totalRows, int pageSize)
         {
             return (int)Math.Ceiling(totalRows / (float)pageSize);
+        }
+
+        protected PageOfResults<T> PageResults<T>(List<T> entities, int pageNumber, int pageSize) where T : IAmAPageableEntity
+        {
+            var returnValue = new PageOfResults<T>
+            {
+                PageNumber = pageNumber,
+                TotalNumberOfPages = 0,
+                Items = entities.ToArray(),
+            };
+
+            if (entities.Any())
+            {
+                returnValue.TotalNumberOfPages = NumberOfPages(entities.First().TotalCount, pageSize);
+            }
+            return returnValue;
         }
     }
 }

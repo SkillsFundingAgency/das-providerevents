@@ -22,7 +22,8 @@ namespace SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery
         {
             try
             {
-                var payments = await _paymentRepository.GetPayments(message.PageNumber,
+                var payments = await _paymentRepository.GetPayments(
+                        message.PageNumber,
                         message.PageSize,
                         message.EmployerAccountId,
                         message.Period?.CalendarYear,

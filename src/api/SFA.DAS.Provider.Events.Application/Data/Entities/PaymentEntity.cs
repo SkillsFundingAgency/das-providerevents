@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.Provider.Events.Application.Data.Entities
 {
-    public class PaymentEntity
+    public class PaymentEntity : IAmAPageableEntity
     {
         public string Id { get; set; }
         public Guid RequiredPaymentId { get; set; }

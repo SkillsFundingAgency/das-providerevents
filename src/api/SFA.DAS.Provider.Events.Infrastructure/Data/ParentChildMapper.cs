@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -7,6 +8,27 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 {
     public sealed class ParentChildrenMapper<TParent, TChild> where TParent : class
     {
+        private static readonly ConcurrentDictionary<Expression<Func<TParent, IList<TChild>>>,
+            Func<TParent, IList<TChild>>> ParentChildLookup =
+            new ConcurrentDictionary<Expression<Func<TParent, IList<TChild>>>,
+                Func<TParent, IList<TChild>>>();
+
+        private static Func<TParent, IList<TChild>> CachedCompiledChildFunc(
+            Expression<Func<TParent, IList<TChild>>> expression)
+        {
+            Func<TParent, IList<TChild>> func;
+            if (ParentChildLookup.ContainsKey(expression))
+            {
+                if (ParentChildLookup.TryGetValue(expression, out func))
+                {
+                    return func;
+                }
+            }
+            func = expression.Compile();
+            ParentChildLookup.TryAdd(expression, func);
+            return func;
+        }
+
         public Func<TParent, TChild, TParent> Map<T>(
             Dictionary<T, TParent> lookup,
             Func<TParent, T> parentIdentifierProperty,
@@ -16,7 +38,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             {
                 throw new ArgumentNullException(nameof(lookup));
             }
-            
+
             return (x, y) =>
             {
                 TParent parent;
@@ -27,7 +49,8 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 
                 if (y != null)
                 {
-                    var children = parentChildrenProperty.Compile().Invoke(parent);
+                    var func = CachedCompiledChildFunc(parentChildrenProperty);
+                    var children = func.Invoke(parent);
                     if (children == null)
                     {
                         children = new List<TChild>();

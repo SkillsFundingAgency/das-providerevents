@@ -11,11 +11,14 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
         {
             cfg.CreateMap<PageOfResults<PaymentEntity>, PageOfResults<Payment>>();
 
+            cfg.CreateMap<PaymentsDueEarningEntity, Earning>();
+
             cfg.CreateMap<PaymentEntity, Payment>()
                 .ForMember(dst => dst.CollectionPeriod, opt => opt.Ignore())
                 .ForMember(dst => dst.DeliveryPeriod, opt => opt.Ignore())
                 .ForMember(dst => dst.FundingSource, opt => opt.Ignore())
                 .ForMember(dst => dst.TransactionType, opt => opt.Ignore())
+                .ForMember(dst => dst.EarningDetails, opt => opt.MapFrom(x => x.PaymentsDueEarningEntities))
                 .AfterMap((src, dst) =>
                 {
                     dst.CollectionPeriod = new NamedCalendarPeriod
