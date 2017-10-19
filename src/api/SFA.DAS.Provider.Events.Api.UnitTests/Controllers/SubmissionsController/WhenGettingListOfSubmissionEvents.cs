@@ -16,7 +16,6 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
     public class WhenGettingListOfSubmissionEvents
     {
         private Mock<IMediator> _mediator;
-        private Mock<IMapper> _mapper;
         private Mock<ILogger> _logger;
         private Api.Controllers.SubmissionsController _controller;
 
@@ -42,24 +41,9 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
                     }
                 });
 
-            _mapper = new Mock<IMapper>();
-            _mapper.Setup(m => m.Map<PageOfResults<SubmissionEvent>>(It.IsAny<PageOfResults<SubmissionEvent>>()))
-                .Returns((PageOfResults<SubmissionEvent> source) =>
-                {
-                    return new PageOfResults<SubmissionEvent>
-                    {
-                        PageNumber = source.PageNumber,
-                        TotalNumberOfPages = source.TotalNumberOfPages,
-                        Items = source.Items.Select(e => new SubmissionEvent
-                        {
-                            Id = e.Id
-                        }).ToArray()
-                    };
-                });
-
             _logger = new Mock<ILogger>();
 
-            _controller = new Api.Controllers.SubmissionsController(_mediator.Object, _mapper.Object, _logger.Object);
+            _controller = new Api.Controllers.SubmissionsController(_mediator.Object, _logger.Object);
         }
 
         [Test]

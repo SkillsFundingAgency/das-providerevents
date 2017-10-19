@@ -4,8 +4,6 @@ using System.Web.Http;
 using MediatR;
 using NLog;
 using SFA.DAS.Provider.Events.Api.Plumbing.WebApi;
-using SFA.DAS.Provider.Events.Api.Types;
-using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
 
@@ -17,13 +15,11 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         private const int PageSize = 1000;
 
         private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public SubmissionsController(IMediator mediator, IMapper mapper, ILogger logger)
+        public SubmissionsController(IMediator mediator, ILogger logger)
         {
             _mediator = mediator;
-            _mapper = mapper;
             _logger = logger;
         }
 
