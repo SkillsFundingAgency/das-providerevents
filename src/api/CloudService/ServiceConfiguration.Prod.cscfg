@@ -21,7 +21,7 @@
     </ConfigurationSettings>
 
     <Certificates>
-      <Certificate name="WebSslCert" thumbprint="603BA9416D01C9C18F379C8A8742F8C861B79C17" thumbprintAlgorithm="sha1" />
+      <Certificate name="WebSslCert" thumbprint="F8009D979FC004DFC073D37F7F725D984D137A1F" thumbprintAlgorithm="sha1" />
     </Certificates>
   
   </Role>
