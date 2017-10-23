@@ -116,7 +116,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiHost\IntegrationTestServer.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="DatabaseAccess\CreateDatabase.cs" />
     <Compile Include="DatabaseAccess\DatabaseConnection.cs" />
     <Compile Include="DatabaseAccess\DeleteDatabase.cs" />
@@ -134,6 +133,8 @@
     <Compile Include="RawEntities\ItRequiredPayment.cs" />
     <Compile Include="Setup\DatabaseSetup.cs" />
     <Compile Include="TestData.cs" />
+    <Compile Include="Tests\PaymentsApiTests\When\RequestingALargeAmountOfData.cs" />
+    <Compile Include="Tests\PaymentsApiTests\When\RequestingASubsetOfTheData.cs" />
     <Content Include="SetupScripts\DataSetup-Payments.Periods.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

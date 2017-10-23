@@ -6,24 +6,13 @@ using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.IntegrationTests.ApiHost;
 using SFA.DAS.Provider.Events.Api.Types;
 
-namespace SFA.DAS.Provider.Events.Api.IntegrationTests
+namespace SFA.DAS.Provider.Events.Api.IntegrationTests.PaymentsApiTests.When
 {
     [TestFixture]
-    public class Class1
+    public class RequestingASubsetOfTheData
     {
         [Test]
-        public async Task NoReallyATest()
-        {
-            var results = await IntegrationTestServer.Client.GetAsync("/api/payments").ConfigureAwait(false);
-
-            var resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
-            var items = JsonConvert.DeserializeObject<PageOfResults<Payment>>(resultsAsString);
-
-            items.Items.Should().HaveCount(10000);
-        }
-
-        [Test]
-        public async Task AnotherFakeTest()
+        public async Task TheNumberOfRecordsIsCorrect()
         {
             var firstPayment = TestData.RequiredPayments.First();
             var ukprn = firstPayment.Ukprn;
