@@ -2,7 +2,10 @@
 using Microsoft.Azure;
 using Newtonsoft.Json;
 using SFA.DAS.ApiTokens.Client;
+using SFA.DAS.Provider.Events.Api.Plumbing.DependencyResolution;
+using SFA.DAS.Provider.Events.Api.Plumbing.DependencyResolution.Policies;
 using SFA.DAS.Provider.Events.Api.Plumbing.Json;
+using WebApi.StructureMap;
 
 namespace SFA.DAS.Provider.Events.Api
 {
@@ -30,6 +33,12 @@ namespace SFA.DAS.Provider.Events.Api
                 routeTemplate: "{path}",
                 defaults: new { controller = "Error", action = "NotFound", path = RouteParameter.Optional }
             );
+
+            config.UseStructureMap(x =>
+            {
+                x.Policies.Add<LoggingPolicy>();
+                x.AddRegistry<DefaultRegistry>();
+            });
         }
 
         private static void ConfigureJwtSecurity(HttpConfiguration config)

@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SFA.DAS.Provider.Events.Api.UnitTests</RootNamespace>
     <AssemblyName>SFA.DAS.Provider.Events.Api.UnitTests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -111,10 +112,6 @@
     <ProjectReference Include="..\SFA.DAS.Provider.Events.Application\SFA.DAS.Provider.Events.Application.csproj">
       <Project>{5DF95FFE-D3ED-4EB9-9797-8056142E7591}</Project>
       <Name>SFA.DAS.Provider.Events.Application</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Provider.Events.Domain\SFA.DAS.Provider.Events.Domain.csproj">
-      <Project>{CFBF1C38-4E74-4DD7-AA90-FEAB37B85FD7}</Project>
-      <Name>SFA.DAS.Provider.Events.Domain</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

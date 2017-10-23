@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.Api", "SFA.DAS.Provider.Events.Api\SFA.DAS.Provider.Events.Api.csproj", "{D1F5FBBB-3E25-44AA-9D4E-4F822EDFC767}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.Domain", "SFA.DAS.Provider.Events.Domain\SFA.DAS.Provider.Events.Domain.csproj", "{CFBF1C38-4E74-4DD7-AA90-FEAB37B85FD7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.Application", "SFA.DAS.Provider.Events.Application\SFA.DAS.Provider.Events.Application.csproj", "{5DF95FFE-D3ED-4EB9-9797-8056142E7591}"
 EndProject
@@ -31,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.Api
 EndProject
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "CloudService", "CloudService\CloudService.ccproj", "{8C7F6755-FEE5-4644-A181-E4F860C762DF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.Api.IntegrationTests", "SFA.DAS.Provider.Events.Api.IntegrationTests\SFA.DAS.Provider.Events.Api.IntegrationTests.csproj", "{C719C1E6-6AE7-40E8-867D-94B760207057}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,10 +41,6 @@ Global
 		{D1F5FBBB-3E25-44AA-9D4E-4F822EDFC767}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1F5FBBB-3E25-44AA-9D4E-4F822EDFC767}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1F5FBBB-3E25-44AA-9D4E-4F822EDFC767}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CFBF1C38-4E74-4DD7-AA90-FEAB37B85FD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CFBF1C38-4E74-4DD7-AA90-FEAB37B85FD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CFBF1C38-4E74-4DD7-AA90-FEAB37B85FD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CFBF1C38-4E74-4DD7-AA90-FEAB37B85FD7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5DF95FFE-D3ED-4EB9-9797-8056142E7591}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5DF95FFE-D3ED-4EB9-9797-8056142E7591}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DF95FFE-D3ED-4EB9-9797-8056142E7591}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -77,6 +73,10 @@ Global
 		{8C7F6755-FEE5-4644-A181-E4F860C762DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C7F6755-FEE5-4644-A181-E4F860C762DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C7F6755-FEE5-4644-A181-E4F860C762DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C719C1E6-6AE7-40E8-867D-94B760207057}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C719C1E6-6AE7-40E8-867D-94B760207057}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C719C1E6-6AE7-40E8-867D-94B760207057}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C719C1E6-6AE7-40E8-867D-94B760207057}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,5 +85,9 @@ Global
 		{728ABBE1-C547-49E0-8560-1DEC6C94EE96} = {6A018802-06F9-444D-8D38-B71E58F77766}
 		{E0700D0C-C7CA-41EF-97C6-469134028D21} = {6A018802-06F9-444D-8D38-B71E58F77766}
 		{8471FD9B-3C0E-47BD-80EB-E5DB482C214B} = {6A018802-06F9-444D-8D38-B71E58F77766}
+		{C719C1E6-6AE7-40E8-867D-94B760207057} = {6A018802-06F9-444D-8D38-B71E58F77766}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F85067DF-9EC5-4760-9F4D-18CE1A19E68F}
 	EndGlobalSection
 EndGlobal

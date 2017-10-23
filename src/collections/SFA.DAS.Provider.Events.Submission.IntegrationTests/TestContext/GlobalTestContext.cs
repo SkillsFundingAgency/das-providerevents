@@ -53,6 +53,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.TestContext
             DedsDatabaseName = ExtractDatabaseNameFromConnectionString(DedsDatabaseConnectionString);
             DedsDatabaseNameBracketed = $"[{DedsDatabaseName}]";
         }
+
         private string ExtractDatabaseNameFromConnectionString(string connectionString)
         {
             var match = Regex.Match(connectionString, @"database=([A-Z0-9\-_]{1,});", RegexOptions.IgnoreCase);
@@ -69,8 +70,7 @@ namespace SFA.DAS.Provider.Events.Submission.IntegrationTests.TestContext
 
             throw new Exception("Cannot extract database name from connection string");
         }
-
-
+        
 
         private static GlobalTestContext _current;
         public static GlobalTestContext Current => _current ?? (_current = new GlobalTestContext());

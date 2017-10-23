@@ -96,10 +96,6 @@
       <Project>{5DF95FFE-D3ED-4EB9-9797-8056142E7591}</Project>
       <Name>SFA.DAS.Provider.Events.Application</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Provider.Events.Domain\SFA.DAS.Provider.Events.Domain.csproj">
-      <Project>{CFBF1C38-4E74-4DD7-AA90-FEAB37B85FD7}</Project>
-      <Name>SFA.DAS.Provider.Events.Domain</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
