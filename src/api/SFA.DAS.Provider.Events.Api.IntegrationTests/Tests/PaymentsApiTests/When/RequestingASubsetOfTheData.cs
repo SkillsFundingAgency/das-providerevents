@@ -12,7 +12,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.PaymentsApiTests.When
     public class RequestingASubsetOfTheData
     {
         [Test]
-        public async Task TheNumberOfRecordsIsCorrect()
+        public async Task ThenTheNumberOfRecordsIsCorrect()
         {
             var firstPayment = TestData.RequiredPayments.First();
             var ukprn = firstPayment.Ukprn;
