@@ -14,15 +14,14 @@ namespace SFA.DAS.Provider.Events.DataLock.IntegrationTests.Helpers
     {
         private static readonly string[] PeriodEndCopyReferenceDataScripts =
         {
-            "01 datalock.populate.reference.history.sql",
-            "01 datalock.PreRun.DataLockEvents.PopulateDataLockEventsData.sql"
+            "01 datalock.PreRun.DataLockEvents.PopulateDataLockEventsData.sql",
+            "02 datalock.populate.reference.history.sql",
+            "03 datalock.populate.reference.datalockeventperiods.sql",
+            "04 datalock.populate.reference.datalockeventerrors.sql",
+            "05 datalock.populate.reference.datalockeventcommitmentversions.sql",
         };
 
-        private static readonly string[] SubmissionCopyReferenceDataScripts =
-        {
-            "01 datalock.populate.reference.history.sql",
-            "01 datalock.PreRun.DataLockEvents.PopulateDataLockEventsData.sql"
-        };
+        private static readonly string[] SubmissionCopyReferenceDataScripts = PeriodEndCopyReferenceDataScripts;
 
         internal static void Clean()
         {
