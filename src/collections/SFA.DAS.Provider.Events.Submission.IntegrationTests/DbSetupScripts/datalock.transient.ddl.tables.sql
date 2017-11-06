@@ -36,8 +36,8 @@ GO
 CREATE TABLE DataLock.ValidationError
 (
     [Ukprn] [bigint] NULL,
-	[LearnRefNumber] [varchar](100) NULL,
-	[AimSeqNumber] [bigint] NULL,
+	[LearnRefNumber] [varchar](12) NULL,
+	[AimSeqNumber] [int] NULL,
 	[RuleId] [varchar](50) NULL,
 	[PriceEpisodeIdentifier] [varchar](25) NOT NULL,
 	[CollectionPeriodName] [varchar](8) NOT NULL,
@@ -62,8 +62,8 @@ CREATE TABLE DataLock.PriceEpisodeMatch
 (
     [Ukprn] bigint NOT NULL,
     [PriceEpisodeIdentifier] varchar(25) NOT NULL,
-    [LearnRefNumber] varchar(100) NOT NULL,
-    [AimSeqNumber] bigint NOT NULL,
+    [LearnRefNumber] varchar(12) NOT NULL,
+    [AimSeqNumber] int NOT NULL,
     [CommitmentId] bigint NOT NULL,
 	[IsSuccess] bit NOT NULL
 )
@@ -85,8 +85,8 @@ CREATE TABLE DataLock.PriceEpisodePeriodMatch
 (
     [Ukprn] bigint NOT NULL,
     [PriceEpisodeIdentifier] varchar(25) NOT NULL,
-    [LearnRefNumber] varchar(100) NOT NULL,
-    [AimSeqNumber] bigint NOT NULL,
+    [LearnRefNumber] varchar(12) NOT NULL,
+    [AimSeqNumber] int NOT NULL,
     [CommitmentId] bigint NOT NULL,
     [VersionId] varchar(25) NOT NULL,
     [Period] int NOT NULL,
