@@ -14,6 +14,7 @@
       <Setting name="ApiAudiences" value="http://localhost" />
       <Setting name="LoggingRedisConnectionString" value="" />
       <Setting name="LoggingRedisKey" value="" />
+      <Setting name="InstrumentationKey" value="" />
     </ConfigurationSettings>
   </Role>
 </ServiceConfiguration>
