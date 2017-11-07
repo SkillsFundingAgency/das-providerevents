@@ -17,13 +17,11 @@
       <Setting name="LoggingRedisKey" value="__LoggingRedisKey__" />
       <Setting name="dmuser" value="__dmuser__" />
       <Setting name="dmpwd" value="__dmpwd__" />
-      
+      <Setting name="InstrumentationKey" value="__InstrumentationKey__" />
     </ConfigurationSettings>
-
     <Certificates>
       <Certificate name="WebSslCert" thumbprint="B26EC150A47335F4737784BC4D65A85948009A33" thumbprintAlgorithm="sha1" />
-    </Certificates>
-  
+    </Certificates>  
   </Role>
   <NetworkConfiguration>
     <VirtualNetworkSite name="__Vnet__" />
