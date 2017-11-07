@@ -23,6 +23,7 @@
       <Setting name="LoggingRedisKey"/>
       <Setting name="dmuser"/>
       <Setting name="dmpwd"/>
+      <Setting name="InstrumentationKey" />
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="https" protocol="https" port="443" certificate="WebSslCert" loadBalancer="das-prd-papi-ilb"/>
