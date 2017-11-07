@@ -5,9 +5,9 @@ using MediatR;
 using NLog;
 using SFA.DAS.Provider.Events.Api.Plumbing.WebApi;
 using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodsQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
-using SFA.DAS.Provider.Events.Domain.Mapping;
 
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
@@ -33,7 +33,8 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         {
             try
             {
-                var periodsResponse = await _mediator.SendAsync(new GetPeriodsQueryRequest());
+                var periodsResponse = await _mediator.SendAsync(new GetPeriodsQueryRequest())
+                    .ConfigureAwait(false);
                 if (!periodsResponse.IsValid)
                 {
                     throw periodsResponse.Exception;

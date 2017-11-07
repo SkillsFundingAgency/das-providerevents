@@ -4,12 +4,12 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using Ploeh.AutoFixture.NUnit3;
+using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Application.Data.Entities;
+using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery;
+using SFA.DAS.Provider.Events.Application.Repositories;
 using SFA.DAS.Provider.Events.Application.UnitTests.AutoFixture;
-using SFA.DAS.Provider.Events.Domain;
-using SFA.DAS.Provider.Events.Domain.Data;
-using SFA.DAS.Provider.Events.Domain.Data.Entities;
-using SFA.DAS.Provider.Events.Domain.Mapping;
 
 namespace SFA.DAS.Provider.Events.Application.UnitTests.Payments.GetPaymentsQuery.GetPaymentsQueryHandler
 {
@@ -20,16 +20,14 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Payments.GetPaymentsQuer
             [Frozen] Mock<IPaymentRepository> repository,
             [Frozen] Mock<IMapper> autoMapper,
             Application.Payments.GetPaymentsQuery.GetPaymentsQueryHandler sut,
-            GetPaymentsQueryRequest request,
-            PageOfEntities<PaymentEntity> paymentEntities,
-            PageOfResults<Payment> expectedResults
+            GetPaymentsQueryRequest request, PageOfResults<PaymentEntity> paymentEntities, PageOfResults<Payment> expectedResults
         )
         {
             // Arrange
             repository.Setup(x => x.GetPayments(request.PageNumber, request.PageSize, request.EmployerAccountId, request.Period.CalendarYear,
                 request.Period.CalendarMonth, request.Ukprn)).ReturnsAsync(paymentEntities);
 
-            autoMapper.Setup(x => x.Map<PageOfResults<Payment>>(paymentEntities)).Returns(expectedResults);
+            autoMapper.Setup(x => x.Map<Api.Types.PageOfResults<Payment>>(paymentEntities)).Returns(expectedResults);
 
             // Act
             var actualResult = await sut.Handle(request).ConfigureAwait(false);

@@ -15,7 +15,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SFA.DAS.Provider.Events.Api</RootNamespace>
     <AssemblyName>SFA.DAS.Provider.Events.Api</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
@@ -24,6 +24,8 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -142,13 +144,11 @@
       <HintPath>..\packages\StructureMap.4.4.1\lib\net45\StructureMap.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="StructureMap.Web, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\structuremap.web.3.0.0.108\lib\net40\StructureMap.Web.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.4.0\lib\net45\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.IdentityModel.Tokens.Jwt, Version=4.0.20622.1351, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.4.0.2.206221351\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
       <Private>True</Private>
@@ -165,19 +165,20 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
       <HintPath>..\packages\WebActivatorEx.2.0.5\lib\net40\WebActivatorEx.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="WebApi.StructureMap, Version=1.0.21.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebApi.StructureMap.1.0.21\lib\net452\WebApi.StructureMap.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -198,8 +199,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\StructuremapMvc.cs" />
-    <Compile Include="App_Start\StructuremapWebApi.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\DataLockController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
@@ -211,12 +210,7 @@
     <Compile Include="ObsoleteModels\DataLockEventPeriodV1.cs" />
     <Compile Include="ObsoleteModels\DataLockEventV1.cs" />
     <Compile Include="Plumbing\DependencyResolution\DefaultRegistry.cs" />
-    <Compile Include="Plumbing\DependencyResolution\IoC.cs" />
     <Compile Include="Plumbing\DependencyResolution\Policies\LoggingPolicy.cs" />
-    <Compile Include="Plumbing\DependencyResolution\StructureMapDependencyScope.cs" />
-    <Compile Include="Plumbing\DependencyResolution\StructureMapScopeModule.cs" />
-    <Compile Include="Plumbing\DependencyResolution\StructureMapWebApiDependencyResolver.cs" />
-    <Compile Include="Plumbing\DependencyResolution\StructureMapWebApiDependencyScope.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -260,10 +254,6 @@
     <ProjectReference Include="..\SFA.DAS.Provider.Events.Application\SFA.DAS.Provider.Events.Application.csproj">
       <Project>{5DF95FFE-D3ED-4EB9-9797-8056142E7591}</Project>
       <Name>SFA.DAS.Provider.Events.Application</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Provider.Events.Domain\SFA.DAS.Provider.Events.Domain.csproj">
-      <Project>{cfbf1c38-4e74-4dd7-aa90-feab37b85fd7}</Project>
-      <Name>SFA.DAS.Provider.Events.Domain</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Provider.Events.Infrastructure\SFA.DAS.Provider.Events.Infrastructure.csproj">
       <Project>{960BB861-896A-4EEC-870C-BF03227848FD}</Project>

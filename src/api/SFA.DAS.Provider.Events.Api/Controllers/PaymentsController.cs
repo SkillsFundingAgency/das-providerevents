@@ -4,28 +4,25 @@ using System.Web.Http;
 using MediatR;
 using NLog;
 using SFA.DAS.Provider.Events.Api.Plumbing.WebApi;
+using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Application.Data;
 using SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
-using SFA.DAS.Provider.Events.Domain;
-using SFA.DAS.Provider.Events.Domain.Mapping;
-using Payment = SFA.DAS.Provider.Events.Api.Types.Payment;
 
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
     [AuthorizeRemoteOnly(Roles = "ReadPayments")]
     public class PaymentsController : ApiController
     {
-        private const int PageSize = 1000;
+        private const int PageSize = 10000;
 
         private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public PaymentsController(IMediator mediator, IMapper mapper, ILogger logger)
+        public PaymentsController(IMediator mediator, ILogger logger)
         {
             _mediator = mediator;
-            _mapper = mapper;
             _logger = logger;
         }
 
@@ -33,17 +30,21 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         [VersionedRoute("api/payments", 2, Name = "PaymentsListV2H")]
         [Route("api/v2/payments", Name = "PaymentsListV2")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetListOfPayments(string periodId = null, string employerAccountId = null, int page = 1, long? ukprn = null)
+        public async Task<IHttpActionResult> GetListOfPayments(
+            string periodId = null, 
+            string employerAccountId = null, 
+            int page = 1, long? 
+            ukprn = null)
         {
             try
             {
                 Period period = null;
                 if (PeriodHasBeenProvided(periodId))
                 {
-                    period = await GetPeriod(periodId).ConfigureAwait(false);
+                    period = await GetPeriodAsync(periodId).ConfigureAwait(false);
                     if (PeriodNotFound(period))
                     {
-                        return Ok(new Types.PageOfResults<Payment>
+                        return Ok(new PageOfResults<Payment>
                         {
                             PageNumber = page,
                             TotalNumberOfPages = 0,
@@ -52,9 +53,11 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
                     }
                 }
 
-                var paymentsResponse = await GetPayments(employerAccountId, page, ukprn, period);
+                var paymentsResponse = await 
+                    GetPaymentsAsync(employerAccountId, page, ukprn, period)
+                    .ConfigureAwait(false);
 
-                return Ok(_mapper.Map<Types.PageOfResults<Payment>>(paymentsResponse.Result));
+                return Ok(paymentsResponse.Result);
             }
             catch (ValidationException ex)
             {
@@ -77,9 +80,11 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             return !string.IsNullOrEmpty(periodId);
         }
 
-        private async Task<Period> GetPeriod(string periodId)
+        private async Task<Period> GetPeriodAsync(string periodId)
         {
-            var getPeriodResponse = await _mediator.SendAsync(new GetPeriodQueryRequest { PeriodId = periodId }).ConfigureAwait(false);
+            var getPeriodResponse = await _mediator
+                .SendAsync(new GetPeriodQueryRequest { PeriodId = periodId })
+                .ConfigureAwait(false);
             if (!getPeriodResponse.IsValid)
             {
                 throw getPeriodResponse.Exception;
@@ -87,9 +92,10 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             return getPeriodResponse.Result;
         }
 
-        private async Task<GetPaymentsQueryResponse> GetPayments(string employerAccountId, int page, long? ukprn, Period period)
+        private async Task<GetPaymentsQueryResponse> GetPaymentsAsync(string employerAccountId, int page, long? ukprn, Period period)
         {
-            var paymentsResponse = await _mediator.SendAsync(new GetPaymentsQueryRequest
+            var paymentsResponse = await _mediator
+                .SendAsync(new GetPaymentsQueryRequest
             {
                 Period = period,
                 EmployerAccountId = employerAccountId,

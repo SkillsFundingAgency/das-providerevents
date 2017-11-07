@@ -48,6 +48,17 @@
     <Compile Include="DataLock\GetDataLockEventsQuery\GetDataLockEventsQueryRequest.cs" />
     <Compile Include="DataLock\GetDataLockEventsQuery\GetDataLockEventsQueryRequestValidator.cs" />
     <Compile Include="DataLock\GetDataLockEventsQuery\GetDataLockEventsQueryResponse.cs" />
+    <Compile Include="Data\Entities\DataLockEventApprenticeshipEntity.cs" />
+    <Compile Include="Data\Entities\DataLockEventEntity.cs" />
+    <Compile Include="Data\Entities\DataLockEventErrorEntity.cs" />
+    <Compile Include="Data\Entities\DataLockEventPeriodEntity.cs" />
+    <Compile Include="Data\Entities\PaymentEntity.cs" />
+    <Compile Include="Data\Entities\PaymentsDueEarningEntity.cs" />
+    <Compile Include="Data\Entities\PeriodEntity.cs" />
+    <Compile Include="Data\Entities\SubmissionEventEntity.cs" />
+    <Compile Include="Data\IAmAPageableEntity.cs" />
+    <Compile Include="Data\Period.cs" />
+    <Compile Include="Mapping\IMapper.cs" />
     <Compile Include="Payments\GetPaymentsQuery\GetPaymentsQueryHandler.cs" />
     <Compile Include="Payments\GetPaymentsQuery\GetPaymentsQueryRequest.cs" />
     <Compile Include="Payments\GetPaymentsQuery\GetPaymentsQueryResponse.cs" />
@@ -60,6 +71,10 @@
     <Compile Include="Period\GetPeriodsQuery\GetPeriodsQueryResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryResponse.cs" />
+    <Compile Include="Repositories\IDataLockRepository.cs" />
+    <Compile Include="Repositories\IPaymentRepository.cs" />
+    <Compile Include="Repositories\IPeriodRepository.cs" />
+    <Compile Include="Repositories\ISubmissionEventsRepository.cs" />
     <Compile Include="Response.cs" />
     <Compile Include="Submissions\GetSubmissionEventsQuery\GetSubmissionEventsQueryHandler.cs" />
     <Compile Include="Submissions\GetSubmissionEventsQuery\GetSubmissionEventsQueryRequest.cs" />
@@ -77,9 +92,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Provider.Events.Domain\SFA.DAS.Provider.Events.Domain.csproj">
-      <Project>{cfbf1c38-4e74-4dd7-aa90-feab37b85fd7}</Project>
-      <Name>SFA.DAS.Provider.Events.Domain</Name>
+    <ProjectReference Include="..\SFA.DAS.Provider.Events.Api.Types\SFA.DAS.Provider.Events.Api.Types.csproj">
+      <Project>{a557e17c-eb78-4f2e-ac2a-ccacdc2c3172}</Project>
+      <Name>SFA.DAS.Provider.Events.Api.Types</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

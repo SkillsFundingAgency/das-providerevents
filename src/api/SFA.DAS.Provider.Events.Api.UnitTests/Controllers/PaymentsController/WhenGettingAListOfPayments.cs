@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Results;
 using MediatR;
 using Moq;
 using NLog;
 using NUnit.Framework;
+using Ploeh.AutoFixture.NUnit3;
+using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Application.Data;
 using SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
-using SFA.DAS.Provider.Events.Domain;
-using SFA.DAS.Provider.Events.Domain.Mapping;
-using CalendarPeriod = SFA.DAS.Provider.Events.Api.Types.CalendarPeriod;
-using NamedCalendarPeriod = SFA.DAS.Provider.Events.Api.Types.NamedCalendarPeriod;
 
 namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
 {
@@ -22,13 +20,12 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
         private const string EmployerAccountId = "ACCOUNT-1";
         private const int Ukprn = 432508734;
         private const int Page = 2;
-        private const int PageSize = 1000;
+        private const int PageSize = 10000;
         private const int TotalNumberOfPages = 100;
 
         private Payment _payment1;
         private Period _period;
         private Mock<IMediator> _mediator;
-        private Mock<IMapper> _mapper;
         private Api.Controllers.PaymentsController _controller;
         private Mock<ILogger> _logger;
 
@@ -42,13 +39,13 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                 Uln = 987654,
                 EmployerAccountId = EmployerAccountId,
                 ApprenticeshipId = 147852,
-                CollectionPeriod = new Domain.NamedCalendarPeriod
+                CollectionPeriod = new NamedCalendarPeriod
                 {
                     Id = "1718-R02",
                     Month = 9,
                     Year = 2017
                 },
-                DeliveryPeriod = new Domain.CalendarPeriod
+                DeliveryPeriod = new CalendarPeriod
                 {
                     Month = 8,
                     Year = 2017
@@ -71,17 +68,18 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
 
             _mediator = new Mock<IMediator>();
             _mediator.Setup(m => m.SendAsync(It.Is<GetPeriodQueryRequest>(r => r.PeriodId == PeriodId)))
-                .Returns(Task.FromResult(new GetPeriodQueryResponse
+                .ReturnsAsync(new GetPeriodQueryResponse
                 {
                     IsValid = true,
                     Result = _period
-                }));
+                });
+
             _mediator.Setup(m => m.SendAsync(It.Is<GetPaymentsQueryRequest>(r => r.Period == _period
                                                                                        && r.EmployerAccountId == EmployerAccountId
                                                                                        && r.PageNumber == Page
                                                                                        && r.PageSize == PageSize
                                                                                        && r.Ukprn == Ukprn)))
-                .Returns(Task.FromResult(new GetPaymentsQueryResponse
+                .ReturnsAsync(new GetPaymentsQueryResponse
                 {
                     IsValid = true,
                     Result = new PageOfResults<Payment>
@@ -90,46 +88,6 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                         TotalNumberOfPages = TotalNumberOfPages,
                         Items = new[] { _payment1 }
                     }
-                }));
-
-            _mapper = new Mock<IMapper>();
-            _mapper.Setup(m => m.Map<Types.PageOfResults<Types.Payment>>(It.IsAny<PageOfResults<Payment>>()))
-                .Returns((PageOfResults<Payment> source) =>
-                {
-                    return new Types.PageOfResults<Types.Payment>
-                    {
-                        PageNumber = source.PageNumber,
-                        TotalNumberOfPages = source.TotalNumberOfPages,
-                        Items = source.Items.Select(p => new Types.Payment
-                        {
-                            Id = p.Id,
-                            Ukprn = p.Ukprn,
-                            Uln = p.Uln,
-                            EmployerAccountId = p.EmployerAccountId,
-                            ApprenticeshipId = p.ApprenticeshipId,
-                            CollectionPeriod = new NamedCalendarPeriod
-                            {
-                                Month = p.CollectionPeriod.Month,
-                                Year = p.CollectionPeriod.Year
-                            },
-                            DeliveryPeriod = new CalendarPeriod
-                            {
-                                Month = p.DeliveryPeriod.Month,
-                                Year = p.DeliveryPeriod.Year
-                            },
-                            EvidenceSubmittedOn = p.EvidenceSubmittedOn,
-                            EmployerAccountVersion = p.EmployerAccountVersion,
-                            ApprenticeshipVersion = p.ApprenticeshipVersion,
-                            FundingSource = (Types.FundingSource)(int)p.FundingSource,
-                            TransactionType = (Types.TransactionType)(int)p.TransactionType,
-                            Amount = p.Amount,
-                            StandardCode = p.StandardCode,
-                            FrameworkCode = p.FrameworkCode,
-                            ProgrammeType = p.ProgrammeType,
-                            PathwayCode = p.PathwayCode,
-                            ContractType = (Types.ContractType)(int)p.ContractType
-                        }).ToArray()
-                    };
                 });
 
             _logger = new Mock<ILogger>();
@@ -139,24 +97,27 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                     Console.WriteLine($"Error Logged\n{msg}\n{ex}");
                 });
 
-            _controller = new Api.Controllers.PaymentsController(_mediator.Object, _mapper.Object, _logger.Object);
+            _controller = new Api.Controllers.PaymentsController(_mediator.Object, _logger.Object);
         }
 
         [Test]
         public async Task ThenItShouldReturnAOkResult()
         {
             // Act
-            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page, Ukprn);
+            var actual = await _controller
+                .GetListOfPayments(PeriodId, EmployerAccountId, Page, Ukprn)
+                .ConfigureAwait(false);
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.IsInstanceOf<OkNegotiatedContentResult<Types.PageOfResults<Types.Payment>>>(actual);
+            Assert.IsInstanceOf<OkNegotiatedContentResult<PageOfResults<Payment>>>(actual);
         }
 
         [Test]
-        [TestCase(25L, null, null, null)]
-        [TestCase(null, 550, 20, 6)]
-        public async Task ThenItShouldReturnCorrectTrainingCourseInformation(long? standardCode, int? frameworkCode, int? programmeType, int? pathwayCode)
+        [InlineAutoData(25L, null, null, null)]
+        [InlineAutoData(null, 550, 20, 6)]
+        public async Task ThenItShouldReturnCorrectTrainingCourseInformation(
+            long? standardCode, int? frameworkCode, int? programmeType, int? pathwayCode)
         {
             // Assert
             var payment = new Payment
@@ -166,13 +127,13 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                 Uln = 987654,
                 EmployerAccountId = EmployerAccountId,
                 ApprenticeshipId = 147852,
-                CollectionPeriod = new Domain.NamedCalendarPeriod
+                CollectionPeriod = new NamedCalendarPeriod
                 {
                     Id = "1718-R02",
                     Month = 9,
                     Year = 2017
                 },
-                DeliveryPeriod = new Domain.CalendarPeriod
+                DeliveryPeriod = new CalendarPeriod
                 {
                     Month = 8,
                     Year = 2017
@@ -207,10 +168,12 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                 }));
 
             // Act
-            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page, Ukprn);
+            var actual = await _controller
+                .GetListOfPayments(PeriodId, EmployerAccountId, Page, Ukprn)
+                .ConfigureAwait(false);
 
             // Assert
-            var page = ((OkNegotiatedContentResult<Types.PageOfResults<Types.Payment>>)actual).Content;
+            var page = ((OkNegotiatedContentResult<PageOfResults<Payment>>)actual).Content;
             Assert.IsNotNull(page);
             Assert.AreEqual(Page, page.PageNumber);
             Assert.AreEqual(TotalNumberOfPages, page.TotalNumberOfPages);
@@ -251,13 +214,15 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                 }));
 
             // Act
-            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page);
+            var actual = await _controller
+                .GetListOfPayments(PeriodId, EmployerAccountId, Page)
+                .ConfigureAwait(false);
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.IsInstanceOf<OkNegotiatedContentResult<Types.PageOfResults<Types.Payment>>>(actual);
+            Assert.IsInstanceOf<OkNegotiatedContentResult<PageOfResults<Payment>>>(actual);
 
-            var page = ((OkNegotiatedContentResult<Types.PageOfResults<Types.Payment>>)actual).Content;
+            var page = ((OkNegotiatedContentResult<PageOfResults<Payment>>)actual).Content;
             Assert.IsNotNull(page);
             Assert.AreEqual(Page, page.PageNumber);
             Assert.AreEqual(0, page.TotalNumberOfPages);
@@ -276,7 +241,9 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                 }));
 
             // Act
-            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page);
+            var actual = await _controller
+                .GetListOfPayments(PeriodId, EmployerAccountId, Page)
+                .ConfigureAwait(false);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -296,11 +263,23 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                 }));
 
             // Act
-            var actual = await _controller.GetListOfPayments(PeriodId, EmployerAccountId, Page);
+            var actual = await _controller
+                .GetListOfPayments(PeriodId, EmployerAccountId, Page)
+                .ConfigureAwait(false);
 
             // Assert
             Assert.IsNotNull(actual);
             Assert.IsInstanceOf<InternalServerErrorResult>(actual);
+        }
+
+        [Test]
+        public async Task TheDefaultPageSizeShouldBeTenThousand()
+        {
+            await _controller
+                .GetListOfPayments(PeriodId, EmployerAccountId)
+                .ConfigureAwait(false);
+
+            _mediator.Verify(m => m.SendAsync(It.Is<GetPaymentsQueryRequest>(r => r.PageSize == 10000)), Times.Once);
         }
     }
 }

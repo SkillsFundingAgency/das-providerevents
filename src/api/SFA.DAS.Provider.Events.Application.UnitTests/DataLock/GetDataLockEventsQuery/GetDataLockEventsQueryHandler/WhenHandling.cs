@@ -3,12 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Application.Data.Entities;
 using SFA.DAS.Provider.Events.Application.DataLock.GetDataLockEventsQuery;
+using SFA.DAS.Provider.Events.Application.Mapping;
+using SFA.DAS.Provider.Events.Application.Repositories;
 using SFA.DAS.Provider.Events.Application.Validation;
-using SFA.DAS.Provider.Events.Domain;
-using SFA.DAS.Provider.Events.Domain.Data;
-using SFA.DAS.Provider.Events.Domain.Data.Entities;
-using SFA.DAS.Provider.Events.Domain.Mapping;
 
 namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEventsQuery.GetDataLockEventsQueryHandler
 {
@@ -31,7 +31,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
             _dataLockEventsRepository = new Mock<IDataLockRepository>();
             _dataLockEventsRepository
                 .Setup(r => r.GetDataLockEventsSinceId(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync(new PageOfEntities<DataLockEventEntity>
+                .ReturnsAsync(new PageOfResults<DataLockEventEntity>
                 {
                     PageNumber = 1,
                     TotalNumberOfPages = 2,
@@ -44,7 +44,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
 
             _dataLockEventsRepository
                 .Setup(r => r.GetDataLockEventsSinceTime(It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync(new PageOfEntities<DataLockEventEntity>
+                .ReturnsAsync(new PageOfResults<DataLockEventEntity>
                 {
                     PageNumber = 2,
                     TotalNumberOfPages = 3,
@@ -56,7 +56,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
 
             _dataLockEventsRepository
                 .Setup(r => r.GetDataLockEventsForAccountSinceId(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync(new PageOfEntities<DataLockEventEntity>
+                .ReturnsAsync(new PageOfResults<DataLockEventEntity>
                 {
                     PageNumber = 3,
                     TotalNumberOfPages = 4,
@@ -68,7 +68,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
 
             _dataLockEventsRepository
                 .Setup(r => r.GetDataLockEventsForAccountSinceTime(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync(new PageOfEntities<DataLockEventEntity>
+                .ReturnsAsync(new PageOfResults<DataLockEventEntity>
                 {
                     PageNumber = 4,
                     TotalNumberOfPages = 5,
@@ -80,7 +80,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
 
             _dataLockEventsRepository
                 .Setup(r => r.GetDataLockEventsForProviderSinceId(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync(new PageOfEntities<DataLockEventEntity>
+                .ReturnsAsync(new PageOfResults<DataLockEventEntity>
                 {
                     PageNumber = 5,
                     TotalNumberOfPages = 6,
@@ -92,7 +92,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
 
             _dataLockEventsRepository
                 .Setup(r => r.GetDataLockEventsForProviderSinceTime(It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync(new PageOfEntities<DataLockEventEntity>
+                .ReturnsAsync(new PageOfResults<DataLockEventEntity>
                 {
                     PageNumber = 6,
                     TotalNumberOfPages = 7,
@@ -104,7 +104,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
 
             _dataLockEventsRepository
                 .Setup(r => r.GetDataLockEventsForAccountAndProviderSinceId(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync(new PageOfEntities<DataLockEventEntity>
+                .ReturnsAsync(new PageOfResults<DataLockEventEntity>
                 {
                     PageNumber = 7,
                     TotalNumberOfPages = 8,
@@ -116,7 +116,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
 
             _dataLockEventsRepository
                 .Setup(r => r.GetDataLockEventsForAccountAndProviderSinceTime(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync(new PageOfEntities<DataLockEventEntity>
+                .ReturnsAsync(new PageOfResults<DataLockEventEntity>
                 {
                     PageNumber = 8,
                     TotalNumberOfPages = 9,
@@ -139,8 +139,8 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
 
             _mapper = new Mock<IMapper>();
             _mapper
-                .Setup(m => m.Map<PageOfResults<DataLockEvent>>(It.IsAny<PageOfEntities<DataLockEventEntity>>()))
-                .Returns((PageOfEntities<DataLockEventEntity> source) =>
+                .Setup(m => m.Map<PageOfResults<DataLockEvent>>(It.IsAny<PageOfResults<DataLockEventEntity>>()))
+                .Returns((PageOfResults<DataLockEventEntity> source) =>
                 {
                     return new PageOfResults<DataLockEvent>
                     {
