@@ -12,5 +12,7 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
         public decimal CompletionAmount { get; set; }
         public decimal MonthlyInstallment { get; set; }
         public int TotalInstallments { get; set; }
+        public string EndpointAssessorId { get; set; }
+
     }
 }

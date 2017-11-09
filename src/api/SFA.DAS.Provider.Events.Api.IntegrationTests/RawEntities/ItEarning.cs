@@ -18,5 +18,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.RawEntities
         public decimal MonthlyInstallment { get; set; }
         [Range(1, 12)]
         public int TotalInstallments { get; set; }
+        [StringLength(7)]
+        public string EndpointAssessorId { get; set; }
     }
 }

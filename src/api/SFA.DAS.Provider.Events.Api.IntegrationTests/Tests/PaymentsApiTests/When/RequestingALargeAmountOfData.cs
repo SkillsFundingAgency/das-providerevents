@@ -73,6 +73,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.PaymentsApiTests.When
                     PlannedEndDate = x.PlannedEndDate,
                     StartDate = x.StartDate,
                     TotalInstallments = x.TotalInstallments,
+                    EndpointAssessorId = x.EndpointAssessorId,
                 });
 
             randomItem.EarningDetails.ShouldAllBeEquivalentTo(matchingEarnings, 
