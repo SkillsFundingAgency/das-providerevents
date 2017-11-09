@@ -6,12 +6,15 @@ Payments is a feed of low level payments made by the system. They can optionally
 
 Getting payments can be done by consuming the following URI:
 
-    GET https://host:port/api/payments?periodId={period_id}&employerAccountId={employer_account_id}&page={page_number}
+```
+GET https://host:port/api/payments?periodId={period_id}&employerAccountId={employer_account_id}&page={page_number}&ukprn={ukprn}
+```
 
 Where:
 * period_id = (Optional) period identifier to filter by, i.e. 1617-R02. Default is null / no filter
 * employer_account_id = (Optional) employer account identifier to filter by, i.e. 12345. Default is null / no filter
 * page_number = (Optional) page number to display, i.e. 10. Default is 1
+* ukprn = (Optional) the ukprn to filter by
 
 Response:
 ```json
@@ -39,7 +42,19 @@ Response:
       "FrameworkCode": 550,
       "ProgrammeType": 20,
       "PathwayCode": 6,
-      "ContractType": "ContractWithSfa"
+      "ContractType": "ContractWithSfa",
+      "EarningDetails": [
+                {
+                    "RequiredPaymentId": "57999b0e-12ef-44b8-ace4-267baf68c5aa",
+                    "StartDate": "2017-08-01T00:00:00",
+                    "PlannedEndDate": "2018-08-01T00:00:00",
+                    "ActualEndDate": "0001-01-01T00:00:00",
+                    "CompletionStatus": 1,
+                    "CompletionAmount": 240,
+                    "MonthlyInstallment": 80,
+                    "TotalInstallments": 12
+                }
+            ]
     },
     {
       "Id": "E04992C3-3A54-40A5-89DC-A1432B5993B5",
@@ -61,7 +76,19 @@ Response:
       "FrameworkCode": 550,
       "ProgrammeType": 20,
       "PathwayCode": 6,
-      "ContractType": "ContractWithSfa"
+      "ContractType": "ContractWithSfa",
+      "EarningDetails": [
+                {
+                    "RequiredPaymentId": "57999b0e-12ef-44b8-ace4-267baf68c5aa",
+                    "StartDate": "2017-08-01T00:00:00",
+                    "PlannedEndDate": "2018-08-01T00:00:00",
+                    "ActualEndDate": "0001-01-01T00:00:00",
+                    "CompletionStatus": 1,
+                    "CompletionAmount": 240,
+                    "MonthlyInstallment": 80,
+                    "TotalInstallments": 12
+                }
+            ]
     },
     {
       "Id": "D08BEF99-382A-4138-8B69-F235A6529F18",
@@ -85,7 +112,19 @@ Response:
       "TransactionType": "Learning",
       "Amount": 923.07692,
       "StandardCode": 25,
-      "ContractType": "ContractWithEmployer"
+      "ContractType": "ContractWithEmployer",
+      "EarningDetails": [
+                {
+                    "RequiredPaymentId": "57999b0e-12ef-44b8-ace4-267baf68c5aa",
+                    "StartDate": "2017-08-01T00:00:00",
+                    "PlannedEndDate": "2018-08-01T00:00:00",
+                    "ActualEndDate": "0001-01-01T00:00:00",
+                    "CompletionStatus": 1,
+                    "CompletionAmount": 240,
+                    "MonthlyInstallment": 80,
+                    "TotalInstallments": 12
+                }
+            ]
     }
   ]
 }
@@ -113,19 +152,32 @@ Response **Items** structure:
 | FrameworkCode | int | yes | learning frameworh code |
 | PathwayCode | int | yes | learning pathway code |
 | ContractType | ContractType | no | apprenticeship contract type, see following tables for all possible values |
+| EarningDetails | EarningDetails | no | the earning and ilr information used to generate the payment |
 
-**FundingSource** values:
+**EarningDetails** properties:
+| Property | Description |
+| --- | --- |
+| RequiredPaymentId | The required payment's id that was used to generate this payment |
+| StartDate | The start date (from the ilr)|
+| PlannedEndDate | The planned end date (from the ilr)|
+| ActualEndDate | The actual end date (from the ilr)|
+| CompletionStatus | The completion status (from the ilr)|
+| CompletionAmount | The calculated completion amount (from the earnings data)|
+| MonthlyInstallment |The calculated monthly installment (from the earnings data)|
+| TotalInstallments | The calculated number of installments (from the earnings data)|
 
-| Value | Description |
+**FundingSource** properties:
+
+| Property | Description |
 | --- | --- |
 | Levy | payment funded by the employer's digital account |
 | CoInvestedSfa | payment co-invested by the SFA |
 | CoInvestedEmployer | payment co-invested by the employer |
 | FullyFundedSfa | payment fully covered by the SFA |
 
-**TransactionType** values:
+**TransactionType** properties:
 
-| Value | Description |
+| Property | Description |
 | --- | --- |
 | Learning | on programme payment |
 | Completion | completion payment |
@@ -143,9 +195,9 @@ Response **Items** structure:
 | BalancingMathsAndEnglish | maths or english balancing payment |
 | LearningSupport | learning support payment |
 
-**ContractType** values:
+**ContractType** properties:
 
-| Value | Description |
+| Property | Description |
 | --- | --- |
 | ContractWithEmployer | levy contract |
 | ContractWithSfa | non levy contract |
