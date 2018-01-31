@@ -51,6 +51,13 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.PaymentsApiTests.When
             randomItem.EarningDetails.Should().NotBeEmpty();
         }
 
+        /// <remarks>
+        /// This test will fail until you update your local database to the latest version of [PaymentsDue].[Earnings] (or start with a fresh db)
+        /// The latest version is in TableSetup.sql
+        /// To solve this issue of db schema updates when we don't recreate it each run,
+        /// (an optimisation because the tests populate a large amount of data into the db, which would be too slow)
+        /// we could have a table that contains the schema version and check that before each run.
+        /// </remarks>
         [Test]
         public async Task ThenTheDataIsCorrect()
         {

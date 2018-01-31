@@ -131,22 +131,29 @@
     <Compile Include="RawEntities\ItEarning.cs" />
     <Compile Include="RawEntities\ItPayment.cs" />
     <Compile Include="RawEntities\ItRequiredPayment.cs" />
+    <Compile Include="RawEntities\ItSubmissionEvent.cs" />
     <Compile Include="Setup\DatabaseSetup.cs" />
     <Compile Include="TestData.cs" />
     <Compile Include="Tests\PaymentsApiTests\When\RequestingALargeAmountOfData.cs" />
     <Compile Include="Tests\PaymentsApiTests\When\RequestingASubsetOfTheData.cs" />
+    <Compile Include="Tests\SubmissionsApiTests\When\RequestingSubmissionEvents.cs" />
     <Content Include="SetupScripts\DataSetup-Payments.Periods.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SetupScripts\SubmissionEventsTableCreate.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SetupScripts\TableTeardown.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="SetupScripts\TableSetup.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

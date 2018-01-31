@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Threading.Tasks;
 using Dapper;
 using FastMember;
 using SFA.DAS.Provider.Events.Api.IntegrationTests.RawEntities;
+using SFA.DAS.Provider.Events.Api.Types;
 
 namespace SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess
 {
@@ -23,11 +25,17 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess
             {
                 var sql = "SELECT Count(1) FROM [PaymentsDue].[RequiredPayments]";
                 var result = await conn.ExecuteScalarAsync<int>(sql).ConfigureAwait(false);
-                if (result > 10000)
-                {
-                    return true;
-                }
-                return false;
+                return result > 10000;
+            }
+        }
+
+        public async Task<bool> IsSubmissionEventsTablePopulatedAsync()
+        {
+            using (var conn = DatabaseConnection.Connection())
+            {
+                var sql = "SELECT Count(1) FROM [Submissions].[SubmissionEvents]";
+                var result = await conn.ExecuteScalarAsync<int>(sql).ConfigureAwait(false);
+                return result > 0;
             }
         }
 
@@ -61,7 +69,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess
                 using (var bcp = new SqlBulkCopy(conn))
                 using (var reader = ObjectReader.Create(earnings, "RequiredPaymentId", "StartDate",
                     "PlannedEndDate", "ActualEndDate", "CompletionStatus", "CompletionAmount",
-                    "MonthlyInstallment", "TotalInstallments"))
+                    "MonthlyInstallment", "TotalInstallments", "EndpointAssessorId"))
                 {
                     bcp.DestinationTableName = "[PaymentsDue].[Earnings]";
                     await bcp.WriteToServerAsync(reader).ConfigureAwait(false);
@@ -86,6 +94,28 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess
                 {
                     bcp.DestinationTableName = "[PaymentsDue].[RequiredPayments]";
                     await bcp.WriteToServerAsync(reader).ConfigureAwait(false);
+                }
+            }
+        }
+
+        public async Task BulkInsertSubmissionEvents(List<ItSubmissionEvent> submissionEvents)
+        {
+            using (var conn = DatabaseConnection.Connection())
+            {
+                await conn.OpenAsync();
+                using (var bcp = new SqlBulkCopy(conn))
+                using (var reader = ObjectReader.Create(submissionEvents, "Id", "IlrFileName",
+                    "FileDateTime", "SubmittedDateTime", "ComponentVersionNumber", "Ukprn",
+                    "Uln", "LearnRefNumber", "AimSeqNumber", "PriceEpisodeIdentifier",
+                    "StandardCode", "ProgrammeType", "FrameworkCode", "PathwayCode",
+                    "ActualStartDate", "PlannedEndDate", "ActualEndDate",
+                    "OnProgrammeTotalPrice",
+                    "CompletionTotalPrice", "NiNumber",
+                    "CommitmentId", "AcademicYear",
+                    "EmployerReferenceNumber", "EPAOrgId"))
+                {
+                    bcp.DestinationTableName = "[Submissions].[SubmissionEvents]";
+                    await bcp.WriteToServerAsync(reader);
                 }
             }
         }
