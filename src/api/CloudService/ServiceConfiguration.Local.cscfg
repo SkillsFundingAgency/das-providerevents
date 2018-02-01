@@ -12,9 +12,19 @@
       <Setting name="ApiTokenSecret" value="dodge duck dip dive dodge" />
       <Setting name="ApiIssuer" value="http://localhost:57968/" />
       <Setting name="ApiAudiences" value="http://localhost" />
+      <Setting name="ConfigurationStorageConnectionString" value="UseDevelopmentStorage=true" />
       <Setting name="LoggingRedisConnectionString" value="" />
       <Setting name="LoggingRedisKey" value="" />
+      <Setting name="dmuser" value="__dmuser__" />
+      <Setting name="dmpwd" value="__dmpwd__" />
       <Setting name="InstrumentationKey" value="" />
+    </ConfigurationSettings>
+  </Role>
+  <Role name="SFA.DAS.Provider.Events.DataLockEventWorker">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="ConfigurationStorageConnectionString" value="UseDevelopmentStorage=true" />
     </ConfigurationSettings>
   </Role>
 </ServiceConfiguration>

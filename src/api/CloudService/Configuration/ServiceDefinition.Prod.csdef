@@ -33,4 +33,10 @@
       </Task>
     </Startup>
   </WebRole>
+  <WorkerRole name="SFA.DAS.Provider.Events.DataLockEventWorker" vmsize="Small">
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
+      <Setting name="ConfigurationStorageConnectionString" />
+    </ConfigurationSettings>
+  </WorkerRole>
 </ServiceDefinition>

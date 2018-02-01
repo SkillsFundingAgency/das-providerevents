@@ -23,6 +23,13 @@
       <Certificate name="WebSslCert" thumbprint="B16394AF94AFE1FBBB39687A512F52EF6D4ED041" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
+  <Role name="SFA.DAS.Provider.Events.DataLockEventWorker">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="ConfigurationStorageConnectionString" value="__ConfigurationStorageConnectionString__" />
+    </ConfigurationSettings>
+  </Role>
   <NetworkConfiguration>
     <VirtualNetworkSite name="__Vnet__" />
     <AddressAssignments>

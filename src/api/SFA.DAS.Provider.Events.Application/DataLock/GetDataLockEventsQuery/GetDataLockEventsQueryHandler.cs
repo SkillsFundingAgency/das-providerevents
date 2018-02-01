@@ -14,16 +14,16 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.GetDataLockEventsQuery
         IAsyncRequestHandler<GetDataLockEventsQueryRequest, GetDataLockEventsQueryResponse>
     {
         private readonly IValidator<GetDataLockEventsQueryRequest> _validator;
-        private readonly IDataLockRepository _dataLockEventsRepository;
+        private readonly IDataLockEventRepository _dataLockEventRepository;
         private readonly IMapper _mapper;
 
         public GetDataLockEventsQueryHandler(
             IValidator<GetDataLockEventsQueryRequest> validator, 
-            IDataLockRepository dataLockEventsRepository, 
+            IDataLockEventRepository dataLockEventRepository, 
             IMapper mapper)
         {
             _validator = validator;
-            _dataLockEventsRepository = dataLockEventsRepository;
+            _dataLockEventRepository = dataLockEventRepository;
             _mapper = mapper;
         }
 
@@ -49,11 +49,11 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.GetDataLockEventsQuery
                 {
                     pageOfEntities = message.SinceTime.HasValue
                         ? await
-                            _dataLockEventsRepository.GetDataLockEventsForAccountAndProviderSinceTime(
+                            _dataLockEventRepository.GetDataLockEventsForAccountAndProviderSinceTime(
                                 message.EmployerAccountId, message.Ukprn, message.SinceTime.Value, message.PageNumber,
                                 message.PageSize)
                         : await
-                            _dataLockEventsRepository.GetDataLockEventsForAccountAndProviderSinceId(
+                            _dataLockEventRepository.GetDataLockEventsForAccountAndProviderSinceId(
                                 message.EmployerAccountId, message.Ukprn, message.SinceEventId, message.PageNumber,
                                 message.PageSize);
                 }
@@ -61,42 +61,42 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.GetDataLockEventsQuery
                 {
                     pageOfEntities = message.SinceTime.HasValue
                         ? await
-                            _dataLockEventsRepository.GetDataLockEventsForProviderSinceTime(message.Ukprn,
+                            _dataLockEventRepository.GetDataLockEventsForProviderSinceTime(message.Ukprn,
                                 message.SinceTime.Value, message.PageNumber, message.PageSize)
                         : await
-                            _dataLockEventsRepository.GetDataLockEventsForProviderSinceId(message.Ukprn,
+                            _dataLockEventRepository.GetDataLockEventsForProviderSinceId(message.Ukprn,
                                 message.SinceEventId, message.PageNumber, message.PageSize);
                 }
                 else if (!string.IsNullOrEmpty(message.EmployerAccountId))
                 {
                     pageOfEntities = message.SinceTime.HasValue
                         ? await
-                            _dataLockEventsRepository.GetDataLockEventsForAccountSinceTime(message.EmployerAccountId,
+                            _dataLockEventRepository.GetDataLockEventsForAccountSinceTime(message.EmployerAccountId,
                                 message.SinceTime.Value,
                                 message.PageNumber, message.PageSize)
                         : await
-                            _dataLockEventsRepository.GetDataLockEventsForAccountSinceId(message.EmployerAccountId,
+                            _dataLockEventRepository.GetDataLockEventsForAccountSinceId(message.EmployerAccountId,
                                 message.SinceEventId,
                                 message.PageNumber, message.PageSize);
                 }
                 else if (message.SinceTime.HasValue)
                 {
-                    pageOfEntities = await _dataLockEventsRepository.GetDataLockEventsSinceTime(message.SinceTime.Value, message.PageNumber, message.PageSize);
+                    pageOfEntities = await _dataLockEventRepository.GetDataLockEventsSinceTime(message.SinceTime.Value, message.PageNumber, message.PageSize);
                 }
                 else
                 {
-                    pageOfEntities = await _dataLockEventsRepository.GetDataLockEventsSinceId(message.SinceEventId, message.PageNumber, message.PageSize);
+                    pageOfEntities = await _dataLockEventRepository.GetDataLockEventsSinceId(message.SinceEventId, message.PageNumber, message.PageSize);
                 }
 
                 var eventIds = pageOfEntities.Items.Select(x => x.DataLockEventId.ToString()).Distinct().ToArray();
 
-                var errors = await _dataLockEventsRepository.GetDataLockErrorsForEvents(eventIds);
-                var periods = await _dataLockEventsRepository.GetDataLockPeriodsForEvent(eventIds);
-                var apprenticeships = await _dataLockEventsRepository.GetDataLockApprenticeshipsForEvent(eventIds);
+                var errors = await _dataLockEventRepository.GetDataLockErrorsForEvents(eventIds);
+                //var periods = await _dataLockEventRepository.GetDataLockPeriodsForEvent(eventIds);
+                var apprenticeships = await _dataLockEventRepository.GetDataLockApprenticeshipsForEvent(eventIds);
                 foreach (var entity in pageOfEntities.Items)
                 {
                     entity.Errors = errors.Where(x => x.DataLockEventId == entity.DataLockEventId).ToArray();
-                    entity.Periods = periods.Where(x => x.DataLockEventId == entity.DataLockEventId).ToArray();
+                    //entity.Periods = periods.Where(x => x.DataLockEventId == entity.DataLockEventId).ToArray();
                     entity.Apprenticeships = apprenticeships.Where(x => x.DataLockEventId == entity.DataLockEventId).ToArray();
                 }
 

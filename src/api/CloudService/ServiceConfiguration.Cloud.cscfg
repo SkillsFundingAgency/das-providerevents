@@ -12,9 +12,19 @@
       <Setting name="ApiTokenSecret" value="__ApiTokenSecret__" />
       <Setting name="ApiIssuer" value="__ApiIssuer__" />
       <Setting name="ApiAudiences" value="__ApiAudiences__" />
+      <Setting name="ConfigurationStorageConnectionString" value="__ConfigurationStorageConnectionString__" />
       <Setting name="LoggingRedisConnectionString" value="__LoggingRedisConnectionString__" />
       <Setting name="LoggingRedisKey" value="__LoggingRedisKey__" />
+      <Setting name="dmuser" value="__dmuser__" />
+      <Setting name="dmpwd" value="__dmpwd__" />
       <Setting name="InstrumentationKey" value="__InstrumentationKey__" />
+    </ConfigurationSettings>
+  </Role>
+  <Role name="SFA.DAS.Provider.Events.DataLockEventWorker">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="ConfigurationStorageConnectionString" value="__ConfigurationStorageConnectionString__" />
     </ConfigurationSettings>
   </Role>
 </ServiceConfiguration>

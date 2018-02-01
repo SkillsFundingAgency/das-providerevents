@@ -49,13 +49,23 @@
       <RoleName>SFA.DAS.Provider.Events.Api</RoleName>
       <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Provider.Events.DataLockEventWorker\SFA.DAS.Provider.Events.DataLockEventWorker.csproj">
+      <Name>SFA.DAS.Provider.Events.DataLockEventWorker</Name>
+      <Project>{7fd2ed0e-f998-4395-a792-0721f467d345}</Project>
+      <Private>True</Private>
+      <RoleType>Worker</RoleType>
+      <RoleName>SFA.DAS.Provider.Events.DataLockEventWorker</RoleName>
+      <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
     <Folder Include="SFA.DAS.Provider.Events.ApiContent\" />
+    <Folder Include="SFA.DAS.Provider.Events.DataLockEventWorkerContent\" />
   </ItemGroup>
   <ItemGroup>
     <DiagnosticsConfiguration Include="SFA.DAS.Provider.Events.ApiContent\diagnostics.wadcfgx" />
+    <DiagnosticsConfiguration Include="SFA.DAS.Provider.Events.DataLockEventWorkerContent\diagnostics.wadcfgx" />
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>

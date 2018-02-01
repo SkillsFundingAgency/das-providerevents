@@ -15,7 +15,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
     public class WhenHandling
     {
         private Mock<IValidator<GetDataLockEventsQueryRequest>> _validator;
-        private Mock<IDataLockRepository> _dataLockEventsRepository;
+        private Mock<IDataLockEventRepository> _dataLockEventsRepository;
         private Application.DataLock.GetDataLockEventsQuery.GetDataLockEventsQueryHandler _handler;
         private GetDataLockEventsQueryRequest _request;
         private Mock<IMapper> _mapper;
@@ -28,7 +28,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
                 .Setup(v => v.Validate(It.IsAny<GetDataLockEventsQueryRequest>()))
                 .ReturnsAsync(new ValidationResult());
 
-            _dataLockEventsRepository = new Mock<IDataLockRepository>();
+            _dataLockEventsRepository = new Mock<IDataLockEventRepository>();
             _dataLockEventsRepository
                 .Setup(r => r.GetDataLockEventsSinceId(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(new PageOfResults<DataLockEventEntity>
