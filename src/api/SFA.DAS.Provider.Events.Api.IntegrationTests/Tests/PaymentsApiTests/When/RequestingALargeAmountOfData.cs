@@ -55,7 +55,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.PaymentsApiTests.When
         /// This test will fail until you update your local database to the latest version of [PaymentsDue].[Earnings] (or start with a fresh db)
         /// The latest version is in TableSetup.sql
         /// To solve this issue of db schema updates when we don't recreate it each run,
-        /// (an optimisation because the tests populate a large amount of data into the db, which would be too slow)
+        /// (which would be too slow because the tests populate a large amount of data into the db),
         /// we could have a table that contains the schema version and check that before each run.
         /// </remarks>
         [Test]
