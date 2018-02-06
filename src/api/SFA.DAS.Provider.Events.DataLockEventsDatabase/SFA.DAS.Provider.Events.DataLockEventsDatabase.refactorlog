@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="4f885072-223d-474d-bfc2-b8a9b088cc1d" ChangeDateTime="02/06/2018 15:27:38">
+    <Property Name="ElementName" Value="[dbo].[Provider].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Provider]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Ukprn" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="943330ea-0a59-4b00-928d-da08f9ff478b" ChangeDateTime="02/06/2018 15:32:17">
+    <Property Name="ElementName" Value="[dbo].[DataLockEvent].[DataLockEventId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[DataLockEvent]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ProcessDateTime" />
+  </Operation>
+</Operations>

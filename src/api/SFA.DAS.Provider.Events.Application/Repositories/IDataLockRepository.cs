@@ -10,8 +10,10 @@ namespace SFA.DAS.Provider.Events.Application.Repositories
     {
         Task<IList<ProviderEntity>> GetProviders();
 
-        Task<PageOfResults<DataLockValidationErrorEntity>> GetDataLockValidationErrors(long ukprn, int pageNumber, int pageSize);
+        Task<PageOfResults<Api.Types.DataLock>> GetDataLocks(long ukprn, int page, int pageSize);
+        //Task<IList<DataLockValidationErrorEntity>> GetDataLockValidationErrors(IList<Api.Types.DataLock> dataLocks);
+        //Task<IList<DataLockPriceEpisodeMatchEntity>> GetDataLockPriceEpisodeMatch(IList<Api.Types.DataLock> dataLocks);
 
-        Task<PageOfResults<DataLockPriceEpisodeMatchEntity>> GetDataLockPriceEpisodeMatch(long ukprn, int pageNumber, int pageSize);
+        //Task<PageOfResults<DataLockPriceEpisodeMatchEntity>> GetDataLockPriceEpisodeMatch(long ukprn, int pageNumber, int pageSize);
     }
 }

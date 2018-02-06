@@ -71,8 +71,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoFixture\AutoMoqDataAttribute.cs" />
+    <Compile Include="DataLock\WriteDataLockEventsQuery\WhenHandling.cs" />
+    <Compile Include="DataLock\WriteDataLocksQuery\WhenHandling.cs" />
+    <Compile Include="DataLock\GetLatestDataLocksQuery\WhenHandling.cs" />
     <Compile Include="DataLock\GetDataLockEventsQuery\GetDataLockEventsQueryHandler\WhenHandling.cs" />
     <Compile Include="DataLock\GetDataLockEventsQuery\GetDataLockEventsQueryRequestValidator\WhenValidating.cs" />
+    <Compile Include="DataLock\GetCurrentDataLocksQuery\WhenHandling.cs" />
     <Compile Include="DataLock\GetProvidersQuery\WhenHandling.cs" />
     <Compile Include="Payments\GetPaymentsQuery\GetPaymentsQueryHandler\WhenHandling.cs" />
     <Compile Include="Period\GetPeriodQuery\GetPeriodQueryHandler\WhenHandling.cs" />

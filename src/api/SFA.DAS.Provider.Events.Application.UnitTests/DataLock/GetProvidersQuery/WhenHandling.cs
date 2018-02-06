@@ -6,13 +6,11 @@ using NUnit.Framework;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
 using SFA.DAS.Provider.Events.Application.DataLock.GetProvidersQuery;
 using SFA.DAS.Provider.Events.Application.Repositories;
-using SFA.DAS.Provider.Events.Application.Validation;
 
 namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetProvidersQuery
 {
     public class WhenHandling
     {
-        private Mock<IValidator<GetProvidersQueryRequest>> _validator;
         private Mock<IDataLockEventRepository> _dataLockEventsRepository;
         private Mock<IDataLockRepository> _dataLockRepository;
         private GetProvidersQueryHandler _handler;
@@ -21,11 +19,6 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetProvidersQue
         [SetUp]
         public void Arrange()
         {
-            _validator = new Mock<IValidator<GetProvidersQueryRequest>>();
-            _validator
-                .Setup(v => v.Validate(It.IsAny<GetProvidersQueryRequest>()))
-                .ReturnsAsync(new ValidationResult());
-
             _dataLockRepository = new Mock<IDataLockRepository>();
 
             _dataLockEventsRepository = new Mock<IDataLockEventRepository>();
@@ -44,6 +37,21 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetProvidersQue
             // Assert
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual.IsValid);
+        }
+
+        [Test]
+        public async Task ThenItShouldReturnInvalidResponseWithInternalException()
+        {
+            // Arrange
+            _dataLockRepository.Setup(r => r.GetProviders()).Throws(new ApplicationException("test ex")).Verifiable();
+
+            // Act
+            var actual = await _handler.Handle(_request);
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsFalse(actual.IsValid);
+            Assert.AreEqual("test ex", actual.Exception.Message);
         }
 
         [Test]

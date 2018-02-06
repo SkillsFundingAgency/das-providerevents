@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Provider.Events.Application.Data.Entities
 {
-    public class DataLockPriceEpisodeMatchEntity
+    public class DataLockValidationErrorEntity
     {
         public long Ukprn { get; set; }
         public string LearnRefNumber { get; set; }
-        public long AimSeqNumber { get; set; }
+        public long? AimSeqNumber { get; set; }
         public string PriceEpisodeIdentifier { get; set; }
 
-        public long CommitmentId { get; set; }
+        public string RuleId { get; set; }
     }
 }

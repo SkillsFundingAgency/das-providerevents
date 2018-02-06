@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -11,34 +11,26 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 {
     public class DcfsDataLockRepository : DcfsRepository, IDataLockRepository
     {
-        private const string GetProvidersSql = @"    
-            SELECT
-                [p].[UKPRN] AS [Ukprn],
-		        [fd].[SubmittedTime] AS [IlrSubmissionDateTime]
-	        FROM [Valid].[LearningProvider] p
-		        JOIN [dbo].[FileDetails] fd
-			        ON p.UKPRN = fd.UKPRN
-		        JOIN (
-			        SELECT MAX(ID) AS ID FROM [dbo].[FileDetails] GROUP BY UKPRN
-		        ) LatestByUkprn
-			        ON fd.ID = LatestByUkprn.ID ";
-
         public async Task<IList<ProviderEntity>> GetProviders()
         {
             using (var connection = await GetOpenConnection().ConfigureAwait(false))
             {
-                return (await connection.QueryAsync<ProviderEntity>(GetProvidersSql).ConfigureAwait(false)).ToList();
+                return (await connection.QueryAsync<ProviderEntity>("GetProviders", commandType: CommandType.StoredProcedure).ConfigureAwait(false)).ToList();
             }
         }
 
-        public Task<PageOfResults<DataLockValidationErrorEntity>> GetDataLockValidationErrors(long ukprn, int pageNumber, int pageSize)
+        public async Task<PageOfResults<DataLock>> GetDataLocks(long ukprn, int page, int pageSize)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<PageOfResults<DataLockPriceEpisodeMatchEntity>> GetDataLockPriceEpisodeMatch(long ukprn, int pageNumber, int pageSize)
-        {
-            throw new NotImplementedException();
+            using (var connection = await GetOpenConnection().ConfigureAwait(false))
+            {
+                var entities = await connection.QueryAsync<DataLock>("GetDataLocks", new {ukprn, page, pageSize}, commandType: CommandType.StoredProcedure).ConfigureAwait(false);
+                return new PageOfResults<DataLock>
+                {
+                    Items = entities.ToArray(),
+                    PageNumber = page,
+                    TotalNumberOfPages = -1
+                };
+            }
         }
     }
 }

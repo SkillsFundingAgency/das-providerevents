@@ -34,6 +34,9 @@
       <HintPath>..\packages\MediatR.2.1.0\lib\net45\MediatR.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,6 +47,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataLock\GetLatestDataLocksQuery\GetLatestDataLocksQueryHandler.cs" />
+    <Compile Include="DataLock\GetLatestDataLocksQuery\GetLatestDataLocksQueryRequest.cs" />
+    <Compile Include="DataLock\GetLatestDataLocksQuery\GetLatestDataLocksQueryRequestValidator.cs" />
+    <Compile Include="DataLock\GetLatestDataLocksQuery\GetLatestDataLocksQueryResponse.cs" />
+    <Compile Include="DataLock\GetCurrentDataLocksQuery\GetCurrentDataLocksQueryHandler.cs" />
+    <Compile Include="DataLock\GetCurrentDataLocksQuery\GetCurrentDataLocksQueryRequest.cs" />
+    <Compile Include="DataLock\GetCurrentDataLocksQuery\GetCurrentDataLocksQueryRequestValidator.cs" />
+    <Compile Include="DataLock\GetCurrentDataLocksQuery\GetCurrentDataLocksQueryResponse.cs" />
     <Compile Include="DataLock\GetDataLockEventsQuery\GetDataLockEventsQueryHandler.cs" />
     <Compile Include="DataLock\GetDataLockEventsQuery\GetDataLockEventsQueryRequest.cs" />
     <Compile Include="DataLock\GetDataLockEventsQuery\GetDataLockEventsQueryRequestValidator.cs" />
@@ -51,8 +62,15 @@
     <Compile Include="DataLock\GetProvidersQuery\GetProvidersQueryHandler.cs" />
     <Compile Include="DataLock\GetProvidersQuery\GetProvidersQueryRequest.cs" />
     <Compile Include="DataLock\GetProvidersQuery\GetProvidersQueryResponse.cs" />
+    <Compile Include="DataLock\WriteDataLocksQuery\WriteDataLockEventsQueryHandler.cs" />
+    <Compile Include="DataLock\WriteDataLocksQuery\WriteDataLockEventsQueryRequest.cs" />
+    <Compile Include="DataLock\WriteDataLocksQuery\WriteDataLockEventsQueryResponse.cs" />
+    <Compile Include="DataLock\WriteDataLockEventsQuery\WriteDataLockEventsQueryHandler.cs" />
+    <Compile Include="DataLock\WriteDataLockEventsQuery\WriteDataLockEventsQueryRequest.cs" />
+    <Compile Include="DataLock\WriteDataLockEventsQuery\WriteDataLockEventsQueryResponse.cs" />
+    <Compile Include="Data\Entities\DataLockEntity.cs" />
     <Compile Include="Data\Entities\DataLockPriceEpisodeMatchEntity.cs" />
-    <Compile Include="Data\Entities\DataLockValidationError.cs" />
+    <Compile Include="Data\Entities\DataLockValidationErrorEntity.cs" />
     <Compile Include="Data\Entities\DataLockEventApprenticeshipEntity.cs" />
     <Compile Include="Data\Entities\DataLockEventEntity.cs" />
     <Compile Include="Data\Entities\DataLockEventErrorEntity.cs" />

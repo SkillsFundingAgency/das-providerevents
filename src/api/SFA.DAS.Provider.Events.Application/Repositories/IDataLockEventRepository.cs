@@ -31,11 +31,11 @@ namespace SFA.DAS.Provider.Events.Application.Repositories
         // from worker
         Task<IList<ProviderEntity>> GetProviders();
 
-        Task<PageOfResults<Api.Types.DataLock>> GetLastDataLocks(long ukprn, int page, int pageSize);
+        Task<PageOfResults<DataLockEntity>> GetLastDataLocks(long ukprn, int page, int pageSize);
 
-        Task WriteDataLocks(IList<Api.Types.DataLock> dataLocks);
+        Task WriteDataLocks(IList<DataLockEntity> dataLocks);
 
-        Task WriteDataLockEvents(IList<DataLockEvent> events);
+        Task WriteDataLockEvents(IList<DataLockEventEntity> events);
         
     }
 }
