@@ -7,7 +7,6 @@ using Ploeh.AutoFixture;
 using SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess;
 using SFA.DAS.Provider.Events.Api.IntegrationTests.EntityBuilders.Customisations;
 using SFA.DAS.Provider.Events.Api.IntegrationTests.RawEntities;
-using SFA.DAS.Provider.Events.Api.Types;
 
 namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
 {
