@@ -14,4 +14,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="ProcessDateTime" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="3e6bc500-f5e8-46b2-b9c1-cb4725fff208" ChangeDateTime="02/08/2018 12:26:57">
+    <Property Name="ElementName" Value="[DataLockEvents].[LastDataLock].[Deleted]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[DataLockEvents].[LastDataLock]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DeletedUtc" />
+  </Operation>
 </Operations>

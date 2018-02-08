@@ -1,4 +1,7 @@
 ﻿using System.Threading.Tasks;
+using MediatR;
+using Moq;
+using NLog;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.Types;
 
@@ -7,12 +10,15 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.IntegrationTests.Specs
     public class WhenExistingDataLockProcessed // WhenAnExistingEventIsFound
     {
         private IDataLockProcessor _dataLockProcessor;
+        private Mock<ILogger> _logMock = new Mock<ILogger>();
+        private Mock<IMediator> _mediatorMock = new Mock<IMediator>();
 
         [TestCase(true)]
         [TestCase(false)]
         public async Task ThenNoNewEventsShouldBeWrittenIfNothingChanged(bool passedDataLock)
         {
-            _dataLockProcessor = new DataLockProcessor();
+            
+            _dataLockProcessor = new DataLockProcessor(_logMock.Object, _mediatorMock.Object);
 
             //Arrange
             var helper = new TestDataHelper();

@@ -31,7 +31,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
         public async Task ThenItShouldReturnValidResultWithEmptyList()
         {
             // Arrange
-            _request.DataLocks = new Api.Types.DataLock[0];
+            _request.NewDataLocks = new Api.Types.DataLock[0];
 
             // Act
             var actual = await _handler.Handle(_request);
@@ -46,7 +46,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
         public async Task ThenItShouldReturnValidResultWithNull()
         {
             // Arrange
-            _request.DataLocks = null;
+            _request.NewDataLocks = null;
 
             // Act
             var actual = await _handler.Handle(_request);
@@ -61,7 +61,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
         public async Task ThenItShouldReturnErrorWithInternalException()
         {
             // Arrange
-            _request.DataLocks = new List<Api.Types.DataLock> { new Api.Types.DataLock() };
+            _request.NewDataLocks = new List<Api.Types.DataLock> { new Api.Types.DataLock() };
             _dataLockEventRepository.Setup(r => r.WriteDataLocks(It.IsAny<IList<DataLockEntity>>())).Throws(new ApplicationException("test ex")).Verifiable();
 
             // Act
@@ -79,7 +79,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
         public async Task ThenItShouldWriteEntitiesWithNoSubObjects()
         {
             // Arrange
-            _request.DataLocks = new List<Api.Types.DataLock>
+            _request.NewDataLocks = new List<Api.Types.DataLock>
             {
                 new Api.Types.DataLock
                 {
@@ -134,7 +134,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
                 Commitments = new[] {9L, 8L, 7L}
             };
 
-            _request.DataLocks = new List<Api.Types.DataLock> { dataLock1, dataLock2 };
+            _request.NewDataLocks = new List<Api.Types.DataLock> { dataLock1, dataLock2 };
 
             IList<DataLockEntity> actualEntities = null;
 
@@ -163,6 +163,62 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
             Assert.AreEqual("P2", actualEntities[1].PriceEpisodeIdentifier);
             Assert.AreEqual("[\"E1\",\"E2\"]", actualEntities[1].ErrorCodes);
             Assert.AreEqual("[9,8,7]", actualEntities[1].Commitments);
+        }
+
+        [Test]
+        public async Task ThenItShouldUpdateAndDeleteEntitiesWithSubObjects()
+        {
+            // Arrange
+            var dataLock1 = new Api.Types.DataLock
+            {
+                Ukprn = 2,
+                AimSequenceNumber = 3,
+                LearnerReferenceNumber = "L1",
+                PriceEpisodeIdentifier = "P1"
+            };
+
+            var dataLock2 = new Api.Types.DataLock
+            {
+                Ukprn = 4,
+                AimSequenceNumber = 5,
+                LearnerReferenceNumber = "L2",
+                PriceEpisodeIdentifier = "P2",
+                ErrorCodes = new[] {"E1", "E2"},
+                Commitments = new[] {9L, 8L, 7L}
+            };
+
+            _request.UpdatedDataLocks = new List<Api.Types.DataLock> { dataLock1 };
+            _request.RemovedDataLocks = new List<Api.Types.DataLock> { dataLock2 };
+
+            IList<DataLockEntity> actualEntities = null;
+
+            _dataLockEventRepository.Setup(r => r.UpdateDataLocks(It.IsAny<IList<DataLockEntity>>()))
+                .Returns(Task.FromResult(default(object)))
+                .Callback<IList<DataLockEntity>>(e => { actualEntities = e; });
+
+            // Act
+            var actual = await _handler.Handle(_request);
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(actual.IsValid);
+
+            Assert.AreEqual(2, actualEntities.Count);
+            Assert.AreEqual(2, actualEntities[0].Ukprn);
+            Assert.AreEqual(3, actualEntities[0].AimSequenceNumber);
+            Assert.AreEqual("L1", actualEntities[0].LearnerReferenceNumber);
+            Assert.AreEqual("P1", actualEntities[0].PriceEpisodeIdentifier);
+            Assert.IsNull(actualEntities[0].ErrorCodes);
+            Assert.IsNull(actualEntities[0].Commitments);
+            Assert.IsNull(actualEntities[0].DeletedUtc);
+
+            Assert.AreEqual(4, actualEntities[1].Ukprn);
+            Assert.AreEqual(5, actualEntities[1].AimSequenceNumber);
+            Assert.AreEqual("L2", actualEntities[1].LearnerReferenceNumber);
+            Assert.AreEqual("P2", actualEntities[1].PriceEpisodeIdentifier);
+            Assert.AreEqual("[\"E1\",\"E2\"]", actualEntities[1].ErrorCodes);
+            Assert.AreEqual("[9,8,7]", actualEntities[1].Commitments);
+            Assert.IsNotNull(actualEntities[1].DeletedUtc);
         }
     }
 }

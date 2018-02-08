@@ -60,15 +60,21 @@
     <Folder Include="Stored Procedures" />
     <Folder Include="Tables" />
     <Folder Include="Deds Stored Procedures" />
+    <Folder Include="Schemas" />
+    <Folder Include="Types" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\LastDataLock.sql" />
     <Build Include="Tables\Provider.sql" />
-    <Build Include="DataLockEvents.sql" />
     <Build Include="Tables\DataLockEvent.sql" />
     <Build Include="Tables\DataLockEventApprenticeship.sql" />
     <None Include="Deds Stored Procedures\GetDataLocks.sql" />
     <None Include="Deds Stored Procedures\GetProviders.sql" />
+    <Build Include="Stored Procedures\GetDataLockEvents.sql" />
+    <None Include="Stored Procedures\GetDataLocks.sql" />
+    <Build Include="Stored Procedures\UpdateDataLocks.sql" />
+    <Build Include="Schemas\DataLockEvents.sql" />
+    <Build Include="Types\DataLockEntity.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SFA.DAS.Provider.Events.DataLockEventsDatabase.refactorlog" />

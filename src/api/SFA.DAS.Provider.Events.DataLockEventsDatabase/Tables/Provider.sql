@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[Provider]
+﻿CREATE TABLE [DataLockEvents].[Provider]
 (
 	[Ukprn] BIGINT NOT NULL PRIMARY KEY, 
     [IlrSubmissionDateTime] DATETIME NOT NULL

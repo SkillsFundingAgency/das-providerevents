@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[DataLockEventApprenticeship]
+﻿CREATE TABLE [DataLockEvents].[DataLockEventApprenticeship]
 (
 	[Id] INT NOT NULL PRIMARY KEY, 
     [DataLockEventId] INT NOT NULL, 

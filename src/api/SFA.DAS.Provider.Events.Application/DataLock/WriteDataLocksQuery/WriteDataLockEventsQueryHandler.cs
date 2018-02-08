@@ -31,20 +31,51 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.WriteDataLocksQuery
         {
             try
             {
-                if (message.DataLocks == null || message.DataLocks.Count == 0)
-                    return new WriteDataLocksQueryResponse { IsValid = true };
+                List<DataLockEntity> entities = null;
 
-                var entities = message.DataLocks.Select(d => new DataLockEntity
-                {
-                    Ukprn = d.Ukprn,
-                    AimSequenceNumber = d.AimSequenceNumber,
-                    LearnerReferenceNumber = d.LearnerReferenceNumber,
-                    PriceEpisodeIdentifier = d.PriceEpisodeIdentifier,
-                    ErrorCodes = GetString(d.ErrorCodes),
-                    Commitments = GetString(d.Commitments)
-                }).ToList();
+                if (message.NewDataLocks != null)
+                    entities = message.NewDataLocks.Select(d => new DataLockEntity
+                    {
+                        Ukprn = d.Ukprn,
+                        AimSequenceNumber = d.AimSequenceNumber,
+                        LearnerReferenceNumber = d.LearnerReferenceNumber,
+                        PriceEpisodeIdentifier = d.PriceEpisodeIdentifier,
+                        ErrorCodes = GetString(d.ErrorCodes),
+                        Commitments = GetString(d.Commitments)
+                    }).ToList();
 
-                await _dataLockEventRepository.WriteDataLocks(entities);
+                if (entities != null && entities.Any())
+                    await _dataLockEventRepository.WriteDataLocks(entities);
+
+                entities = new List<DataLockEntity>();
+
+                if (message.UpdatedDataLocks != null)
+                    entities = message.UpdatedDataLocks.Select(d => new DataLockEntity
+                    {
+                        Ukprn = d.Ukprn,
+                        AimSequenceNumber = d.AimSequenceNumber,
+                        LearnerReferenceNumber = d.LearnerReferenceNumber,
+                        PriceEpisodeIdentifier = d.PriceEpisodeIdentifier,
+                        ErrorCodes = GetString(d.ErrorCodes),
+                        Commitments = GetString(d.Commitments),
+
+                    }).ToList();
+
+                if (message.RemovedDataLocks != null)
+                    entities.AddRange(message.RemovedDataLocks.Select(d => new DataLockEntity
+                        {
+                            Ukprn = d.Ukprn,
+                            AimSequenceNumber = d.AimSequenceNumber,
+                            LearnerReferenceNumber = d.LearnerReferenceNumber,
+                            PriceEpisodeIdentifier = d.PriceEpisodeIdentifier,
+                            ErrorCodes = GetString(d.ErrorCodes),
+                            Commitments = GetString(d.Commitments),
+                            DeletedUtc = DateTime.UtcNow
+                        })
+                        .ToList());
+
+                if (entities.Any())
+                    await _dataLockEventRepository.UpdateDataLocks(entities);
 
                 return new WriteDataLocksQueryResponse
                 {

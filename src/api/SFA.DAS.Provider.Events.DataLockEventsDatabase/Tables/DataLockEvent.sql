@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[DataLockEvent]
+﻿CREATE TABLE [DataLockEvents].[DataLockEvent]
 (
 	[Id] BIGINT NOT NULL PRIMARY KEY, 
     [ProcessDateTime] DATETIME NOT NULL, 

@@ -29,8 +29,8 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
                 .ReturnsAsync(new ValidationResult());
 
             _dataLockEventsRepository = new Mock<IDataLockEventRepository>();
-            _dataLockEventsRepository
-                .Setup(r => r.GetDataLockEventsSinceId(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
+
+            _dataLockEventsRepository.Setup(r => r.GetDataLockEvents(null, null, null, null, 1, 0))
                 .ReturnsAsync(new PageOfResults<DataLockEventEntity>
                 {
                     PageNumber = 1,
@@ -39,11 +39,22 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
                     {
                         new DataLockEventEntity { Id = 1, HasErrors = true }
                     }
-                    
+
                 });
 
-            _dataLockEventsRepository
-                .Setup(r => r.GetDataLockEventsSinceTime(It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
+            _dataLockEventsRepository.Setup(r => r.GetDataLockEvents(1, null, null, null, 1, 0))
+                .ReturnsAsync(new PageOfResults<DataLockEventEntity>
+                {
+                    PageNumber = 1,
+                    TotalNumberOfPages = 2,
+                    Items = new[]
+                    {
+                        new DataLockEventEntity { Id = 1, HasErrors = true }
+                    }
+
+                });
+
+            _dataLockEventsRepository.Setup(r => r.GetDataLockEvents(null, DateTime.Today, null, null, 1, 0))
                 .ReturnsAsync(new PageOfResults<DataLockEventEntity>
                 {
                     PageNumber = 2,
@@ -54,8 +65,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
                     }
                 });
 
-            _dataLockEventsRepository
-                .Setup(r => r.GetDataLockEventsForAccountSinceId(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
+            _dataLockEventsRepository.Setup(r => r.GetDataLockEvents(1, null, "Acc", null, 1, 0))
                 .ReturnsAsync(new PageOfResults<DataLockEventEntity>
                 {
                     PageNumber = 3,
@@ -66,8 +76,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
                     }
                 });
 
-            _dataLockEventsRepository
-                .Setup(r => r.GetDataLockEventsForAccountSinceTime(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
+            _dataLockEventsRepository.Setup(r => r.GetDataLockEvents(null, DateTime.Today, "Acc", null, 1, 0))
                 .ReturnsAsync(new PageOfResults<DataLockEventEntity>
                 {
                     PageNumber = 4,
@@ -78,8 +87,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
                     }
                 });
 
-            _dataLockEventsRepository
-                .Setup(r => r.GetDataLockEventsForProviderSinceId(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
+            _dataLockEventsRepository.Setup(r => r.GetDataLockEvents(1, null, null, 1, 1, 0))
                 .ReturnsAsync(new PageOfResults<DataLockEventEntity>
                 {
                     PageNumber = 5,
@@ -90,8 +98,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
                     }
                 });
 
-            _dataLockEventsRepository
-                .Setup(r => r.GetDataLockEventsForProviderSinceTime(It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
+            _dataLockEventsRepository.Setup(r => r.GetDataLockEvents(null, DateTime.Today, null, 1, 1, 0))
                 .ReturnsAsync(new PageOfResults<DataLockEventEntity>
                 {
                     PageNumber = 6,
@@ -102,8 +109,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
                     }
                 });
 
-            _dataLockEventsRepository
-                .Setup(r => r.GetDataLockEventsForAccountAndProviderSinceId(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
+            _dataLockEventsRepository.Setup(r => r.GetDataLockEvents(1, null, "Acc", 1, 1, 0))
                 .ReturnsAsync(new PageOfResults<DataLockEventEntity>
                 {
                     PageNumber = 7,
@@ -114,8 +120,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
                     }
                 });
 
-            _dataLockEventsRepository
-                .Setup(r => r.GetDataLockEventsForAccountAndProviderSinceTime(It.IsAny<string>(), It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
+            _dataLockEventsRepository.Setup(r => r.GetDataLockEvents(null, DateTime.Today, "Acc", 1, 1, 0))
                 .ReturnsAsync(new PageOfResults<DataLockEventEntity>
                 {
                     PageNumber = 8,
@@ -123,17 +128,6 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
                     Items = new[]
                     {
                         new DataLockEventEntity { Id = 8, HasErrors = true }
-                    }
-                });
-
-            _dataLockEventsRepository
-                .Setup(r => r.GetDataLockErrorsForEvents(It.IsAny<string[]>()))
-                .ReturnsAsync(new[]
-                {
-                    new DataLockEventErrorEntity
-                    {
-                        ErrorCode = "Err1",
-                        SystemDescription = "Error 1"
                     }
                 });
 
@@ -155,7 +149,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
 
             _handler = new Application.DataLock.GetDataLockEventsQuery.GetDataLockEventsQueryHandler(_validator.Object, _dataLockEventsRepository.Object, _mapper.Object);
 
-            _request = new GetDataLockEventsQueryRequest();
+            _request = new GetDataLockEventsQueryRequest { PageNumber = 1 };
         }
 
         [Test]
@@ -181,7 +175,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
         public async Task ThenItShouldReturnValidResponseWithValidatorDoesNotFail()
         {
             // Act
-            var actual = await _handler.Handle(_request);
+var actual = await _handler.Handle(_request);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -194,7 +188,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
             // Arrange
             _request.EmployerAccountId = "Acc";
             _request.Ukprn = 1;
-            _request.SinceTime = DateTime.Now;
+            _request.SinceTime = DateTime.Today;
 
             // Act
             var actual = await _handler.Handle(_request);
@@ -208,14 +202,13 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
             Assert.AreEqual(8, actual.Result.Items[0].Id);
         }
 
-        [TestCase(0)]
-        [TestCase(1)]
-        public async Task ThenItShouldReturnResultsBasedOnEmployerAccountAndUkprnAndEventIdIfFilterSpecified(long eventId)
+        [Test]
+        public async Task ThenItShouldReturnResultsBasedOnEmployerAccountAndUkprnAndEventIdIfFilterSpecified()
         {
             // Arrange
             _request.EmployerAccountId = "Acc";
             _request.Ukprn = 1;
-            _request.SinceEventId = eventId;
+            _request.SinceEventId = 1;
 
             // Act
             var actual = await _handler.Handle(_request);
@@ -234,7 +227,8 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
         {
             // Arrange
             _request.Ukprn = 1;
-            _request.SinceTime = DateTime.Now;
+            _request.SinceTime = DateTime.Today;
+            _request.PageSize = 0;
 
             // Act
             var actual = await _handler.Handle(_request);
@@ -248,13 +242,12 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
             Assert.AreEqual(6, actual.Result.Items[0].Id);
         }
 
-        [TestCase(0)]
-        [TestCase(1)]
-        public async Task ThenItShouldReturnResultsBasedOnUkprnAndEventIdIfFilterSpecified(int eventId)
+        [Test]
+        public async Task ThenItShouldReturnResultsBasedOnUkprnAndEventIdIfFilterSpecified()
         {
             // Arrange
             _request.Ukprn = 1;
-            _request.SinceEventId = eventId;
+            _request.SinceEventId = 1;
 
             // Act
             var actual = await _handler.Handle(_request);
@@ -273,7 +266,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
         {
             // Arrange
             _request.EmployerAccountId = "Acc";
-            _request.SinceTime = DateTime.Now;
+            _request.SinceTime = DateTime.Today;
 
             // Act
             var actual = await _handler.Handle(_request);
@@ -287,13 +280,12 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
             Assert.AreEqual(4, actual.Result.Items[0].Id);
         }
 
-        [TestCase(0)]
-        [TestCase(1)]
-        public async Task ThenItShouldReturnResultsBasedOnEmployerAccountEventIdIfFilterSpecified(int eventId)
+        [Test]
+        public async Task ThenItShouldReturnResultsBasedOnEmployerAccountEventIdIfFilterSpecified()
         {
             // Arrange
             _request.EmployerAccountId = "Acc";
-            _request.SinceEventId = eventId;
+            _request.SinceEventId = 1;
 
             // Act
             var actual = await _handler.Handle(_request);
@@ -311,7 +303,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
         public async Task ThenItShouldReturnResultsBasesOnTimeIfTimeFilterSpecified()
         {
             // Arrange
-            _request.SinceTime = DateTime.Now;
+            _request.SinceTime = DateTime.Today;
 
             // Act
             var actual = await _handler.Handle(_request);
@@ -325,12 +317,11 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
             Assert.AreEqual(2, actual.Result.Items[0].Id);
         }
 
-        [TestCase(0)]
-        [TestCase(1)]
-        public async Task ThenItShouldReturnResultsBasesOnEventIdIfTimeFilterNotSpecified(int eventId)
+        [Test]
+        public async Task ThenItShouldReturnResultsBasesOnEventIdIfTimeFilterNotSpecified()
         {
             // Arrange
-            _request.SinceEventId = eventId;
+            _request.SinceEventId = 1;
 
             // Act
             var actual = await _handler.Handle(_request);
@@ -348,7 +339,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
         public async Task ThenItShouldReturnInvalidResponseIfExceptionOccurs()
         {
             // Arrange
-            _dataLockEventsRepository.Setup(r => r.GetDataLockEventsSinceId(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
+            _dataLockEventsRepository.Setup(r => r.GetDataLockEvents(It.IsAny<long?>(), It.IsAny<DateTime?>(), It.IsAny<string>(), It.IsAny<long?>(), It.IsAny<int>(), It.IsAny<int>()))
                 .ThrowsAsync(new Exception("Test"));
 
             // Act

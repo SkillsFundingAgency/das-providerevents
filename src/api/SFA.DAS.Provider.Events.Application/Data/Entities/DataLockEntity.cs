@@ -14,5 +14,6 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
         public string PriceEpisodeIdentifier { get; set; }
         public string ErrorCodes { get; set; }
         public string Commitments { get; set; }
+        public DateTime? DeletedUtc { get; set; }
     }
 }

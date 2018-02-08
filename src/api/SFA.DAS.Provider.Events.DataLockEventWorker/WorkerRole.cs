@@ -35,7 +35,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
             // see the MSDN topic at https://go.microsoft.com/fwlink/?LinkId=166357.
 
             _container = ConfigureIocContainer();
-            _dataLockProcessor = new DataLockProcessor();
+            _dataLockProcessor = _container.GetInstance<IDataLockProcessor>();
             bool result = base.OnStart();
 
             Trace.TraceInformation("SFA.DAS.Provider.Events.DataLockEventWorker has been started");
@@ -57,6 +57,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
             while (!cancellationToken.IsCancellationRequested)
             {
                 Trace.TraceInformation("Working");
+                await _dataLockProcessor.ProcessDataLocks();
                 await Task.Delay(60000);
             }
         }

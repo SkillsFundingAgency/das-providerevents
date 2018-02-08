@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[LastDataLock]
+﻿CREATE TABLE [DataLockEvents].[LastDataLock]
 (
 	[Id] INT NOT NULL PRIMARY KEY, 
     [Ukprn] BIGINT NOT NULL, 
@@ -6,5 +6,6 @@
     [AimSequenceNumber] BIGINT NOT NULL, 
     [PriceEpisodeIdentifier] VARCHAR(25) NOT NULL, 
     [ErrorCodes] VARCHAR(MAX) NULL, 
-    [Commitments] VARCHAR(MAX) NULL
+    [Commitments] VARCHAR(MAX) NULL, 
+    [DeletedUtc] DATETIME NULL
 )
