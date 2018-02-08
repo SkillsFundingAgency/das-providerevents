@@ -26,13 +26,13 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
             else
                 await PopulateAllData().ConfigureAwait(false);
 
-            if (await _populate.IsSubmissionEventsTablePopulatedAsync())
-                await ReadSubmissionEventsAsync();
+            if (await _populate.IsSubmissionEventsTablePopulated())
+                await ReadSubmissionEvents();
             else
-                await PopulateSubmissionEventsAsync();
+                await PopulateSubmissionEvents();
         }
 
-        private async Task PopulateSubmissionEventsAsync()
+        private async Task PopulateSubmissionEvents()
         {
             Debug.WriteLine("Populating submission events table, this could take a while");
 
@@ -64,12 +64,12 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
             TestData.Earnings = TestData.Payments.SelectMany(x => x.Earnings).ToList();
 
             await data.BulkInsertPayments(TestData.Payments).ConfigureAwait(false);
-            await data.BulkInsertEarningsAsync(TestData.Earnings).ConfigureAwait(false);
+            await data.BulkInsertEarnings(TestData.Earnings).ConfigureAwait(false);
             await data.BulkInsertRequiredPayments(TestData.RequiredPayments).ConfigureAwait(false);
             await data.CreatePeriods().ConfigureAwait(false);
         }
 
-        private async Task ReadSubmissionEventsAsync()
+        private async Task ReadSubmissionEvents()
         {
             const string submissionEventsSql = "SELECT * FROM [Submissions].[SubmissionEvents]";
 

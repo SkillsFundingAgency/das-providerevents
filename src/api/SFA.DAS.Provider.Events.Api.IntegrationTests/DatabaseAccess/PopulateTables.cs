@@ -29,7 +29,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess
             }
         }
 
-        public async Task<bool> IsSubmissionEventsTablePopulatedAsync()
+        public async Task<bool> IsSubmissionEventsTablePopulated()
         {
             using (var conn = DatabaseConnection.Connection())
             {
@@ -61,7 +61,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess
             }
         }
 
-        public async Task BulkInsertEarningsAsync(List<ItEarning> earnings)
+        public async Task BulkInsertEarnings(List<ItEarning> earnings)
         {
             using (var conn = DatabaseConnection.Connection())
             {

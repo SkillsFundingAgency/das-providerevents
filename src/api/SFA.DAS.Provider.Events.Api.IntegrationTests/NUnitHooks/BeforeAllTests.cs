@@ -12,9 +12,9 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests
         public async Task Setup()
         {
             var create = new CreateDatabase(new DatabaseConnection());
-            if (!await create.IsCreatedAsync())
+            if (!await create.IsCreated())
             {
-                await create.CreateAsync();
+                await create.Create();
             }
 
             var populate = new PopulateTables(new DatabaseConnection());
@@ -24,10 +24,10 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests
             // previously, the tests didn't populate the table, so we check for that.
             // this way we handle (a) first run with empty database,
             // (b) first run after table modification & (c) subsequent runs
-            if (!await create.IsSubmissionEventsCreatedAsync()
-                || !await populate.IsSubmissionEventsTablePopulatedAsync())
+            if (!await create.IsSubmissionEventsCreated()
+                || !await populate.IsSubmissionEventsTablePopulated())
             {
-                await create.CreateSubmissionEventsAsync();
+                await create.CreateSubmissionEvents();
             }
 
             var setup = new DatabaseSetup(populate);

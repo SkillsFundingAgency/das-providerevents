@@ -14,7 +14,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess
             _connection = connection;
         }
 
-        public async Task CreateAsync()
+        public async Task Create()
         {
             Debug.WriteLine("Creating tables");
 
@@ -22,7 +22,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess
                 .ConfigureAwait(false);
         }
 
-        public async Task<bool> IsCreatedAsync()
+        public async Task<bool> IsCreated()
         {
             using (var connection = DatabaseConnection.Connection())
             {
@@ -32,14 +32,14 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess
                 return await connection.ExecuteScalarAsync<int>(sql).ConfigureAwait(false) == 1;
             }
         }
-        public async Task CreateSubmissionEventsAsync()
+        public async Task CreateSubmissionEvents()
         {
             Debug.WriteLine("Creating SubmissionEvents table");
 
             await _connection.RunScriptfile(Path.Combine("SetupScripts", "SubmissionEventsTableCreate"));
         }
 
-        public async Task<bool> IsSubmissionEventsCreatedAsync()
+        public async Task<bool> IsSubmissionEventsCreated()
         {
             using (var connection = DatabaseConnection.Connection())
             {
