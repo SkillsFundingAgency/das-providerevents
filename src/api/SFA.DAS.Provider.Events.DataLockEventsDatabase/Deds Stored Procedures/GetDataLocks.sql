@@ -1,4 +1,11 @@
-﻿CREATE PROCEDURE [DataLock].[GetDataLocks] @ukprn BIGINT,
+﻿IF EXISTS ( SELECT * 
+            FROM   sysobjects 
+            WHERE  id = object_id(N'[DataLock].[GetDataLocks]') 
+                   and OBJECTPROPERTY(id, N'IsProcedure') = 1 )
+	DROP PROCEDURE [DataLock].[GetDataLocks];
+GO --split here
+
+CREATE PROCEDURE [DataLock].[GetDataLocks] @ukprn BIGINT,
     @page INT,
     @pageSize INT
 AS

@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using NLog;
+using SFA.DAS.NLog.Logger;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
 using SFA.DAS.Provider.Events.Application.DataLock.GetCurrentDataLocksQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.GetLatestDataLocksQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.GetProvidersQuery;
+using SFA.DAS.Provider.Events.Application.DataLock.UpdateProviderQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.WriteDataLockEventsQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.WriteDataLocksQuery;
 using SFA.DAS.Provider.Events.Application.Repositories;
@@ -18,9 +20,9 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
     public class DataLockProcessor : IDataLockProcessor
     {
         private readonly IMediator _mediator;
-        private readonly ILogger _logger;
+        private readonly ILog _logger;
 
-        public DataLockProcessor(ILogger logger, IMediator mediator)
+        public DataLockProcessor(ILog logger, IMediator mediator)
         {
             _logger = logger;
             _mediator = mediator;
@@ -136,23 +138,33 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                         }
                     }
 
-                    var writeDataLocks = new WriteDataLocksQueryRequest
+                    if (newDataLocks.Count + updatedDataLocks.Count + deletedDataLocks.Count > 0)
                     {
-                        NewDataLocks = newDataLocks, 
-                        UpdatedDataLocks = updatedDataLocks, 
-                        RemovedDataLocks = deletedDataLocks
-                    };
+                        var writeDataLocks = new WriteDataLocksQueryRequest
+                        {
+                            NewDataLocks = newDataLocks,
+                            UpdatedDataLocks = updatedDataLocks,
+                            RemovedDataLocks = deletedDataLocks
+                        };
 
-                    var response = await _mediator.SendAsync(writeDataLocks).ConfigureAwait(false);
-                    if (!response.IsValid)
-                        throw new ApplicationException($"Failed to update data locks for provider {provider.Ukprn}", response.Exception);
+                        var response = await _mediator.SendAsync(writeDataLocks).ConfigureAwait(false);
+                        if (!response.IsValid)
+                            throw new ApplicationException($"Failed to update data locks for provider {provider.Ukprn}", response.Exception);
+                    }
 
+                    if (events.Count > 0)
+                    {
+                        var writeDataLockEvents = new WriteDataLockEventsQueryRequest {DataLockEvents = events};
 
-                    var writeDataLockEvents = new WriteDataLockEventsQueryRequest { DataLockEvents = events };
+                        var dataLockEventsResponse = await _mediator.SendAsync(writeDataLockEvents).ConfigureAwait(false);
+                        if (!dataLockEventsResponse.IsValid)
+                            throw new ApplicationException($"Failed to save new data lock events for provider {provider.Ukprn}", dataLockEventsResponse.Exception);
+                    }
 
-                    var dataLockEventsResponse = await _mediator.SendAsync(writeDataLockEvents).ConfigureAwait(false);
-                    if (!dataLockEventsResponse.IsValid)
-                        throw new ApplicationException($"Failed to save new data lock events for provider {provider.Ukprn}", dataLockEventsResponse.Exception);
+                    var updateProviderRequest = new UpdateProviderQueryRequest {Provider = provider};
+                    var updateProviderResponse = await _mediator.SendAsync(updateProviderRequest).ConfigureAwait(false);
+                    if (!updateProviderResponse.IsValid)
+                        throw new ApplicationException($"Failed to update provider {provider.Ukprn} submission date", updateProviderResponse.Exception);
                 }
                 catch (Exception ex)
                 {
@@ -176,16 +188,8 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
             };
         }
 
-        private static bool AreSame(DataLock x, DataLock y)
-        {
-            return x.Ukprn == y.Ukprn && Compare(x, y) == 0;
-        }
-
         private static bool AreEqual(DataLock x, DataLock y)
         {
-            if (!AreSame(x, y))
-                return false;
-
             if ((x.ErrorCodes == null) != (y.ErrorCodes == null))
                 return false;
 
@@ -203,6 +207,15 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
 
         private static int Compare(DataLock x, DataLock y)
         {
+            if (x == null && y == null) return 0;
+
+            if (x == null) return 1;
+
+            if (y == null) return -1;
+
+            if (x.Ukprn < y.Ukprn) return -1;
+            if (x.Ukprn > y.Ukprn) return 1;
+
             var learnerRefCompare = string.Compare(x.LearnerReferenceNumber, y.LearnerReferenceNumber, StringComparison.Ordinal);
             if (learnerRefCompare != 0) return learnerRefCompare;
 
@@ -223,7 +236,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
             if (!response.IsValid)
                 throw new ApplicationException($"Failed to get last data locks for provider {provider.Ukprn}", response.Exception);
 
-            return response.Result.Items == null ? new Queue<DataLock>() : new Queue<DataLock>(response.Result.Items);
+            return response.Result?.Items == null ? new Queue<DataLock>() : new Queue<DataLock>(response.Result.Items);
         }
 
         private async Task<Queue<DataLock>> GetCurrentDataLocks(ProviderEntity provider, int pageNumber)
@@ -234,7 +247,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
             if (!response.IsValid)
                 throw new ApplicationException($"Failed to get current data locks for provider {provider.Ukprn}", response.Exception);
 
-            var dataLocks = response.Result.Items;
+            var dataLocks = response.Result?.Items;
             if (dataLocks == null) return new Queue<DataLock>();
             return new Queue<DataLock>(dataLocks);
         }

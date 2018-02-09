@@ -15,7 +15,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         {
             using (var connection = await GetOpenConnection().ConfigureAwait(false))
             {
-                return (await connection.QueryAsync<ProviderEntity>("GetProviders", commandType: CommandType.StoredProcedure).ConfigureAwait(false)).ToList();
+                return (await connection.QueryAsync<ProviderEntity>("DataLock.GetProviders", commandType: CommandType.StoredProcedure).ConfigureAwait(false)).ToList();
             }
         }
 
@@ -23,7 +23,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         {
             using (var connection = await GetOpenConnection().ConfigureAwait(false))
             {
-                var entities = await connection.QueryAsync<DataLock>("GetDataLocks", new {ukprn, page, pageSize}, commandType: CommandType.StoredProcedure).ConfigureAwait(false);
+                var entities = await connection.QueryAsync<DataLock>("DataLock.GetDataLocks", new {ukprn, page, pageSize}, commandType: CommandType.StoredProcedure).ConfigureAwait(false);
                 return new PageOfResults<DataLock>
                 {
                     Items = entities.ToArray(),

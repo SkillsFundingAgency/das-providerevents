@@ -31,7 +31,7 @@ Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "CloudService", "CloudServic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.Api.IntegrationTests", "SFA.DAS.Provider.Events.Api.IntegrationTests\SFA.DAS.Provider.Events.Api.IntegrationTests.csproj", "{C719C1E6-6AE7-40E8-867D-94B760207057}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.DataLockEventWorker.IntegrationTests", "SFA.DAS.Provider.Events.DataLockEventWorker.IntegrationTests\SFA.DAS.Provider.Events.DataLockEventWorker.IntegrationTests.csproj", "{953DC260-916D-4A71-84D9-2297E2A1AA1B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests", "SFA.DAS.Provider.Events.DataLockEventWorker.IntegrationTests\SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests.csproj", "{953DC260-916D-4A71-84D9-2297E2A1AA1B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests", "SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests\SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.csproj", "{7B281B9B-F357-4F2B-A3D4-013D90858DFD}"
 EndProject

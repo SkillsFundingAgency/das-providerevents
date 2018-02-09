@@ -62,6 +62,9 @@
     <Compile Include="DataLock\GetProvidersQuery\GetProvidersQueryHandler.cs" />
     <Compile Include="DataLock\GetProvidersQuery\GetProvidersQueryRequest.cs" />
     <Compile Include="DataLock\GetProvidersQuery\GetProvidersQueryResponse.cs" />
+    <Compile Include="DataLock\UpdateProviderQuery\UpdateProviderQueryHandler.cs" />
+    <Compile Include="DataLock\UpdateProviderQuery\UpdateProviderQueryRequest.cs" />
+    <Compile Include="DataLock\UpdateProviderQuery\UpdateProviderQueryResponse.cs" />
     <Compile Include="DataLock\WriteDataLocksQuery\WriteDataLockEventsQueryHandler.cs" />
     <Compile Include="DataLock\WriteDataLocksQuery\WriteDataLockEventsQueryRequest.cs" />
     <Compile Include="DataLock\WriteDataLocksQuery\WriteDataLockEventsQueryResponse.cs" />

@@ -16,6 +16,7 @@ namespace SFA.DAS.Provider.Events.Application.Repositories
 
         // from worker
         Task<IList<ProviderEntity>> GetProviders();
+        Task UpdateProvider(ProviderEntity providers);
 
         Task<PageOfResults<DataLockEntity>> GetLastDataLocks(long ukprn, int page, int pageSize);
 

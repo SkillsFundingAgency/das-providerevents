@@ -17,6 +17,10 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
     {
         private readonly string _connectionStringName;
 
+        public DataLockEventRepository() : this("DataLockEventConnectionString")
+        {
+        }
+
         public DataLockEventRepository(string connectionStringName)
         {
             _connectionStringName = connectionStringName;
@@ -35,7 +39,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                 parameters.Add("pageSize", pageSize);
                 parameters.Add("totalPages", dbType: DbType.Int64, direction: ParameterDirection.Output);
 
-                var entities = await connection.QueryAsync<DataLockEventEntity>("GetProviders", parameters, commandType: CommandType.StoredProcedure).ConfigureAwait(false);
+                var entities = await connection.QueryAsync<DataLockEventEntity>("[DataLockEvents].[GetProviders]", parameters, commandType: CommandType.StoredProcedure).ConfigureAwait(false);
 
                 return new PageOfResults<DataLockEventEntity>
                 {
@@ -54,6 +58,14 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             }
         }
 
+        public async Task UpdateProvider(ProviderEntity provider)
+        {
+            using (var connection = new SqlConnection(CloudConfigurationManager.GetSetting(_connectionStringName)))
+            {
+                await connection.ExecuteAsync("[DataLockEvents].[UpdateProvider]", new { provider.Ukprn, provider.IlrSubmissionDateTime }, commandType: CommandType.StoredProcedure).ConfigureAwait(false);
+            }            
+        }
+
         public async Task<PageOfResults<DataLockEntity>> GetLastDataLocks(long ukprn, int page, int pageSize)
         {
             using (var connection = new SqlConnection(CloudConfigurationManager.GetSetting(_connectionStringName)))
@@ -64,7 +76,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                 parameters.Add("pageSize", pageSize);
                 parameters.Add("totalPages", dbType: DbType.Int64, direction: ParameterDirection.Output);
 
-                var entities = await connection.QueryAsync<DataLockEntity>("GetDataLocks", parameters, commandType: CommandType.StoredProcedure).ConfigureAwait(false);
+                var entities = await connection.QueryAsync<DataLockEntity>("[DataLockEvents].[GetDataLocks]", parameters, commandType: CommandType.StoredProcedure).ConfigureAwait(false);
 
                 return new PageOfResults<DataLockEntity>
                 {
