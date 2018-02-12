@@ -109,7 +109,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
             Assert.AreEqual("1", actualEntities[0].LearnerReferenceNumber);
             Assert.AreEqual("1", actualEntities[0].PriceEpisodeIdentifier);
             Assert.IsNull(actualEntities[0].ErrorCodes);
-            Assert.IsNull(actualEntities[0].Commitments);
+            Assert.IsNull(actualEntities[0].CommitmentVersions);
         }
 
         [Test]
@@ -131,7 +131,12 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
                 LearnerReferenceNumber = "L2",
                 PriceEpisodeIdentifier = "P2",
                 ErrorCodes = new[] {"E1", "E2"},
-                Commitments = new[] {9L, 8L, 7L}
+                CommitmentVersions = new[]
+                {
+                    new DataLockEventApprenticeship {Version = "9", PathwayCode = 1, StartDate = DateTime.Today},
+                    new DataLockEventApprenticeship {Version = "8", PathwayCode = 2, StartDate = DateTime.Today},
+                    new DataLockEventApprenticeship {Version = "7", PathwayCode = 3, StartDate = DateTime.Today}
+                }
             };
 
             _request.NewDataLocks = new List<Api.Types.DataLock> { dataLock1, dataLock2 };
@@ -155,14 +160,14 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
             Assert.AreEqual("L1", actualEntities[0].LearnerReferenceNumber);
             Assert.AreEqual("P1", actualEntities[0].PriceEpisodeIdentifier);
             Assert.IsNull(actualEntities[0].ErrorCodes);
-            Assert.IsNull(actualEntities[0].Commitments);
+            Assert.IsNull(actualEntities[0].CommitmentVersions);
 
             Assert.AreEqual(4, actualEntities[1].Ukprn);
             Assert.AreEqual(5, actualEntities[1].AimSequenceNumber);
             Assert.AreEqual("L2", actualEntities[1].LearnerReferenceNumber);
             Assert.AreEqual("P2", actualEntities[1].PriceEpisodeIdentifier);
             Assert.AreEqual("[\"E1\",\"E2\"]", actualEntities[1].ErrorCodes);
-            Assert.AreEqual("[9,8,7]", actualEntities[1].Commitments);
+            Assert.AreEqual("[9,8,7]", actualEntities[1].CommitmentVersions);
         }
 
         [Test]
@@ -184,7 +189,12 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
                 LearnerReferenceNumber = "L2",
                 PriceEpisodeIdentifier = "P2",
                 ErrorCodes = new[] {"E1", "E2"},
-                Commitments = new[] {9L, 8L, 7L}
+                CommitmentVersions = new[]
+                {
+                    new DataLockEventApprenticeship {Version = "9", PathwayCode = 1, StartDate = DateTime.Today},
+                    new DataLockEventApprenticeship {Version = "8", PathwayCode = 2, StartDate = DateTime.Today},
+                    new DataLockEventApprenticeship {Version = "7", PathwayCode = 3, StartDate = DateTime.Today}
+                }
             };
 
             _request.UpdatedDataLocks = new List<Api.Types.DataLock> { dataLock1 };
@@ -209,7 +219,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
             Assert.AreEqual("L1", actualEntities[0].LearnerReferenceNumber);
             Assert.AreEqual("P1", actualEntities[0].PriceEpisodeIdentifier);
             Assert.IsNull(actualEntities[0].ErrorCodes);
-            Assert.IsNull(actualEntities[0].Commitments);
+            Assert.IsNull(actualEntities[0].CommitmentVersions);
             Assert.IsNull(actualEntities[0].DeletedUtc);
 
             Assert.AreEqual(4, actualEntities[1].Ukprn);
@@ -217,7 +227,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
             Assert.AreEqual("L2", actualEntities[1].LearnerReferenceNumber);
             Assert.AreEqual("P2", actualEntities[1].PriceEpisodeIdentifier);
             Assert.AreEqual("[\"E1\",\"E2\"]", actualEntities[1].ErrorCodes);
-            Assert.AreEqual("[9,8,7]", actualEntities[1].Commitments);
+            Assert.AreEqual("[9,8,7]", actualEntities[1].CommitmentVersions);
             Assert.IsNotNull(actualEntities[1].DeletedUtc);
         }
     }

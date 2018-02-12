@@ -60,7 +60,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests.Specs
             var commitmentId = 1;
 
             TestDataHelperDeds.AddProvider(ukprn, DateTime.Today);
-            TestDataHelperDeds.AddCommitment(commitmentId, ukprn, "Lrn-001", passedDataLock: false);
+            //TestDataHelperDeds.AddCommitment(commitmentId, ukprn, "Lrn-001", passedDataLock: false);
             //TestDataHelperDeds.AddIlrDataForCommitment(commitmentId, "Lrn-001");
 
             //_helper.CopyReferenceData();
@@ -79,16 +79,16 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests.Specs
             Assert.AreEqual(ukprn, @event.Ukprn);
             Assert.AreEqual(EventStatus.New, @event.Status);
 
-            var eventErrors = @event.Errors;// _helper.GetAllEventErrors(@event.DataLockEventId);
-            var eventPeriods = @event.Periods;// _helper.GetAllEventPeriods(@event.DataLockEventId);
-            var eventCommitmentVersions = @event.Apprenticeships;// _helper.GetAllEventCommitmentVersions(@event.DataLockEventId);
+            var eventErrors = @event.ErrorCodes;// _helper.GetAllEventErrors(@event.DataLockEventId);
+            //var eventPeriods = @event.Periods;// _helper.GetAllEventPeriods(@event.DataLockEventId);
+            var eventCommitmentVersions = @event.CommitmentVersions;// _helper.GetAllEventCommitmentVersions(@event.DataLockEventId);
 
             Assert.IsNotNull(eventErrors);
-            Assert.IsNotNull(eventPeriods);
+            //Assert.IsNotNull(eventPeriods);
             Assert.IsNotNull(eventCommitmentVersions);
 
             Assert.AreEqual(1, eventErrors.Length);
-            Assert.AreEqual(36, eventPeriods.Length);
+            //Assert.AreEqual(36, eventPeriods.Length);
             Assert.AreEqual(1, eventCommitmentVersions.Length);
         }
 

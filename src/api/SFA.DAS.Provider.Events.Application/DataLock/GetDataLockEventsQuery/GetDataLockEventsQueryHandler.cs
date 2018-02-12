@@ -52,7 +52,7 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.GetDataLockEventsQuery
                 return new GetDataLockEventsQueryResponse
                 {
                     IsValid = true,
-                    Result = _mapper.Map<Api.Types.PageOfResults<DataLockEvent>>(pageOfEntities)
+                    Result = _mapper.Map<PageOfResults<DataLockEvent>>(pageOfEntities)
                 };
             }
             catch (Exception ex)

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
@@ -33,9 +34,9 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLockEv
                     {
                         var entity = new DataLockEventEntity();
                         if (e.Errors != null)
-                            entity.Errors = e.Errors.Select(er => new DataLockEventErrorEntity()).ToArray();
+                            entity.ErrorCodes = JsonConvert.SerializeObject(e.Errors.Select(er => er.ErrorCode).ToArray());
                         if (e.Apprenticeships != null)
-                        entity.Apprenticeships = e.Apprenticeships.Select(a => new DataLockEventApprenticeshipEntity()).ToArray();
+                            entity.CommitmentVersions = JsonConvert.SerializeObject(e.Apprenticeships);
                         return entity;
                     }));
                 });           
@@ -90,8 +91,8 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLockEv
             Assert.IsTrue(actual.IsValid);
             Assert.IsNotNull(actualEntities);
             Assert.AreEqual(1, actualEntities.Count);
-            Assert.IsNull(actualEntities[0].Errors);
-            Assert.IsNull(actualEntities[0].Apprenticeships);
+            Assert.IsNull(actualEntities[0].ErrorCodes);
+            Assert.IsNull(actualEntities[0].CommitmentVersions);
         }
         [Test]
         public async Task AndThereAreErrorsThenItShouldReturnValidResponse()
@@ -131,8 +132,8 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLockEv
             Assert.IsTrue(actual.IsValid);
             Assert.IsNotNull(actualEntities);
             Assert.AreEqual(1, actualEntities.Count);
-            Assert.AreEqual(4, actualEntities[0].Errors.Length);
-            Assert.AreEqual(2, actualEntities[0].Apprenticeships.Length);
+            Assert.AreEqual(4, actualEntities[0].ErrorCodes.Length);
+            Assert.AreEqual(2, actualEntities[0].CommitmentVersions.Length);
         }
 
         [Test]

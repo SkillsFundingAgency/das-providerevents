@@ -71,13 +71,11 @@
     <Compile Include="DataLock\WriteDataLockEventsQuery\WriteDataLockEventsQueryHandler.cs" />
     <Compile Include="DataLock\WriteDataLockEventsQuery\WriteDataLockEventsQueryRequest.cs" />
     <Compile Include="DataLock\WriteDataLockEventsQuery\WriteDataLockEventsQueryResponse.cs" />
+    <Compile Include="Data\Entities\DataLockCommitmentEntity.cs" />
     <Compile Include="Data\Entities\DataLockEntity.cs" />
-    <Compile Include="Data\Entities\DataLockPriceEpisodeMatchEntity.cs" />
-    <Compile Include="Data\Entities\DataLockValidationErrorEntity.cs" />
     <Compile Include="Data\Entities\DataLockEventApprenticeshipEntity.cs" />
     <Compile Include="Data\Entities\DataLockEventEntity.cs" />
     <Compile Include="Data\Entities\DataLockEventErrorEntity.cs" />
-    <Compile Include="Data\Entities\DataLockEventPeriodEntity.cs" />
     <Compile Include="Data\Entities\PaymentEntity.cs" />
     <Compile Include="Data\Entities\PaymentsDueEarningEntity.cs" />
     <Compile Include="Data\Entities\PeriodEntity.cs" />

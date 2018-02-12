@@ -39,7 +39,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                 parameters.Add("pageSize", pageSize);
                 parameters.Add("totalPages", dbType: DbType.Int64, direction: ParameterDirection.Output);
 
-                var entities = await connection.QueryAsync<DataLockEventEntity>("[DataLockEvents].[GetProviders]", parameters, commandType: CommandType.StoredProcedure).ConfigureAwait(false);
+                var entities = await connection.QueryAsync<DataLockEventEntity>("[DataLockEvents].[GetDataLockEvents]", parameters, commandType: CommandType.StoredProcedure).ConfigureAwait(false);
 
                 return new PageOfResults<DataLockEventEntity>
                 {
@@ -72,9 +72,9 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("ukprn", ukprn);
-                parameters.Add("offset", (page-1)*pageSize);
+                parameters.Add("page", page);
                 parameters.Add("pageSize", pageSize);
-                parameters.Add("totalPages", dbType: DbType.Int64, direction: ParameterDirection.Output);
+                parameters.Add("totalPages", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
                 var entities = await connection.QueryAsync<DataLockEntity>("[DataLockEvents].[GetDataLocks]", parameters, commandType: CommandType.StoredProcedure).ConfigureAwait(false);
 

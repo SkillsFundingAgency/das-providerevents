@@ -19,17 +19,14 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             }
         }
 
-        public async Task<PageOfResults<DataLock>> GetDataLocks(long ukprn, int page, int pageSize)
+        public async Task<IList<DataLockEntity>> GetDataLocks(long ukprn, int page, int pageSize)
         {
             using (var connection = await GetOpenConnection().ConfigureAwait(false))
             {
-                var entities = await connection.QueryAsync<DataLock>("DataLock.GetDataLocks", new {ukprn, page, pageSize}, commandType: CommandType.StoredProcedure).ConfigureAwait(false);
-                return new PageOfResults<DataLock>
-                {
-                    Items = entities.ToArray(),
-                    PageNumber = page,
-                    TotalNumberOfPages = -1
-                };
+                var dataLockEntities = (await connection.QueryAsync<DataLockEntity>("DataLock.GetDataLocks", new {ukprn, page, pageSize}, commandType: CommandType.StoredProcedure).ConfigureAwait(false)).ToList();
+                var parameters = new DataLockEntityTableValueParameter(dataLockEntities);
+                var commitments = (await connection.QueryAsync<DataLockEntity>("DataLock.GetDataLockCommitments", parameters, commandType: CommandType.StoredProcedure).ConfigureAwait(false)).ToList();                
+                return dataLockEntities;
             }
         }
     }

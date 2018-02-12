@@ -16,7 +16,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         private static readonly SqlMetaData _priceEpisodeIdMetaData = new SqlMetaData("PriceEpisodeIdentifier", SqlDbType.VarChar, 25);
         private static readonly SqlMetaData _aimSequenceNumberMetaData = new SqlMetaData("AimSequenceNumber", SqlDbType.BigInt);
         private static readonly SqlMetaData _errorCodesMetaData = new SqlMetaData("ErrorCodes", SqlDbType.NVarChar, SqlMetaData.Max);
-        private static readonly SqlMetaData _commitmentsMetaData = new SqlMetaData("Commitments", SqlDbType.NVarChar, SqlMetaData.Max);
+        private static readonly SqlMetaData _commitmentsMetaData = new SqlMetaData("CommitmentVersions", SqlDbType.NVarChar, SqlMetaData.Max);
         private static readonly SqlMetaData _deletedMetaData = new SqlMetaData("DeletedUtc", SqlDbType.DateTime);
 
         public DataLockEntityTableValueParameter(IEnumerable<DataLockEntity> dataLocks)
@@ -38,7 +38,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                 if (param.AimSequenceNumber.HasValue)
                     rec.SetInt64(3, param.AimSequenceNumber.Value);
                 rec.SetString(4, param.ErrorCodes);
-                rec.SetString(5, param.Commitments);
+                rec.SetString(5, param.CommitmentVersions);
                 if (param.DeletedUtc.HasValue)
                     rec.SetDateTime(6, param.DeletedUtc.Value);
                 items.Add(rec);

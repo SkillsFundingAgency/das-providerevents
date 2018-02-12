@@ -19,6 +19,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
 {
     public class DataLockProcessor : IDataLockProcessor
     {
+        private const int PageSize = 10000;
         private readonly IMediator _mediator;
         private readonly ILog _logger;
 
@@ -69,10 +70,15 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                             if ((currentDataLocks == null || currentDataLocks.Count == 0) && !currentLocksDone)
                             {
                                 currentDataLocks = await GetCurrentDataLocks(provider, currentLockPage).ConfigureAwait(false);
-                                if (currentDataLocks?.Count == 0)
+                                if (currentDataLocks == null || currentDataLocks.Count == 0)
+                                {
                                     currentLocksDone = true;
+                                }
                                 else
+                                {
                                     currentLockPage++;
+                                    currentLocksDone = currentDataLocks.Count < PageSize;
+                                }
                             }
 
                             if (currentDataLocks != null && currentDataLocks.Count > 0)
@@ -88,10 +94,15 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                             if ((lastLocks == null || lastLocks.Count == 0) && !lastLocksDone)
                             {
                                 lastLocks = await GetLastDataLocks(provider, lastLockPage).ConfigureAwait(false);
-                                if (lastLocks?.Count == 0)
+                                if (lastLocks == null || lastLocks.Count == 0)
+                                {
                                     lastLocksDone = true;
+                                }
                                 else
+                                {
                                     lastLockPage++;
+                                    lastLocksDone = lastLocks.Count < PageSize;
+                                }
                             }
 
                             if (lastLocks != null && lastLocks.Count > 0)
@@ -182,9 +193,32 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
             {
                 Ukprn = current.Ukprn,
                 PriceEpisodeIdentifier = current.PriceEpisodeIdentifier,
-                AimSeqNumber = current.AimSequenceNumber.Value,                
+                AimSeqNumber = current.AimSequenceNumber.Value,
                 LearnRefNumber = current.LearnerReferenceNumber,
-                Status = status
+                Status = status,
+
+                Uln = current.Uln,
+                //ApprenticeshipId = current.a
+                //EmployerAccountId =
+                //EventSource =
+                //HasErrors =
+                //Id =
+                //IlrFileName = current.ilrf
+
+                IlrEndpointAssessorPrice = current.IlrEndpointAssessorPrice,
+                IlrFrameworkCode = current.IlrFrameworkCode,
+                IlrPathwayCode = current.IlrPathwayCode,
+                IlrPriceEffectiveFromDate = current.IlrPriceEffectiveFromDate,
+                IlrProgrammeType = current.IlrProgrammeType,
+                IlrStandardCode = current.IlrStandardCode,
+                IlrPriceEffectiveToDate = current.IlrPriceEffectiveToDate,
+                IlrStartDate = current.IlrStartDate,
+                IlrTrainingPrice = current.IlrTrainingPrice,
+
+                Errors = current.ErrorCodes.Select(c => new DataLockEventError { ErrorCode = c}).ToArray(),
+                Apprenticeships = current.CommitmentVersions.ToArray()
+                //Periods = 
+                //Apprenticeships = 
             };
         }
 
@@ -196,10 +230,10 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
             if (x.ErrorCodes != null && !x.ErrorCodes.SequenceEqual(y.ErrorCodes))
                 return false;
 
-            if ((x.Commitments == null) != (y.Commitments == null))
+            if ((x.CommitmentVersions == null) != (y.CommitmentVersions == null))
                 return false;
 
-            if (x.Commitments != null && !x.Commitments.SequenceEqual(y.Commitments))
+            if (x.CommitmentVersions != null && !x.CommitmentVersions.SequenceEqual(y.CommitmentVersions))
                 return false;
 
             return true;
@@ -230,7 +264,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
 
         private async Task<Queue<DataLock>> GetLastDataLocks(ProviderEntity provider, int lastLockPage)
         {
-            var query = new GetLatestDataLocksQueryRequest {Ukprn = provider.Ukprn, PageNumber = lastLockPage, PageSize = 10000};
+            var query = new GetLatestDataLocksQueryRequest {Ukprn = provider.Ukprn, PageNumber = lastLockPage, PageSize = PageSize};
             var response = await _mediator.SendAsync(query).ConfigureAwait(false);
 
             if (!response.IsValid)
@@ -241,7 +275,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
 
         private async Task<Queue<DataLock>> GetCurrentDataLocks(ProviderEntity provider, int pageNumber)
         {
-            var query = new GetCurrentDataLocksQueryRequest {Ukprn = provider.Ukprn, PageNumber = pageNumber, PageSize = 10000};
+            var query = new GetCurrentDataLocksQueryRequest {Ukprn = provider.Ukprn, PageNumber = pageNumber, PageSize = PageSize};
             var response = await _mediator.SendAsync(query).ConfigureAwait(false);
 
             if (!response.IsValid)

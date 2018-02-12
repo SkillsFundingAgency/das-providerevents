@@ -105,7 +105,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetLatestDataLo
                 LearnerReferenceNumber = "L1",
                 PriceEpisodeIdentifier = "P1",
                 ErrorCodes = "[\"E1\", \"E2\"]",
-                Commitments = "[\"9\", \"8\", \"7\"]"
+                CommitmentVersions = "[\"9\", \"8\", \"7\"]"
             };
 
             var dataLocks = new[] { dataLock };
@@ -132,10 +132,10 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetLatestDataLo
             Assert.AreEqual(2, actual.Result.Items[0].ErrorCodes.Count);
             Assert.AreEqual("E1", actual.Result.Items[0].ErrorCodes[0]);
             Assert.AreEqual("E2", actual.Result.Items[0].ErrorCodes[1]);
-            Assert.AreEqual(3, actual.Result.Items[0].Commitments.Count);
-            Assert.AreEqual(9L, actual.Result.Items[0].Commitments[0]);
-            Assert.AreEqual(8L, actual.Result.Items[0].Commitments[1]);
-            Assert.AreEqual(7L, actual.Result.Items[0].Commitments[2]);
+            Assert.AreEqual(3, actual.Result.Items[0].CommitmentVersions.Count);
+            Assert.AreEqual(9L, actual.Result.Items[0].CommitmentVersions[0]);
+            Assert.AreEqual(8L, actual.Result.Items[0].CommitmentVersions[1]);
+            Assert.AreEqual(7L, actual.Result.Items[0].CommitmentVersions[2]);
         }
 
         [Test]
@@ -182,7 +182,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetLatestDataLo
             Assert.AreEqual(2, actual.Result.Items[0].ErrorCodes.Count);
             Assert.AreEqual("E1", actual.Result.Items[0].ErrorCodes[0]);
             Assert.AreEqual("E2", actual.Result.Items[0].ErrorCodes[1]);
-            Assert.IsNull(actual.Result.Items[0].Commitments);
+            Assert.IsNull(actual.Result.Items[0].CommitmentVersions);
         }
 
         [Test]
@@ -232,7 +232,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetLatestDataLo
             Assert.AreEqual(2, actual.Result.Items.Length);
             Assert.AreEqual(1, actual.Result.Items[0].Ukprn);
             Assert.IsNull(actual.Result.Items[0].ErrorCodes);
-            Assert.IsNull(actual.Result.Items[0].Commitments);
+            Assert.IsNull(actual.Result.Items[0].CommitmentVersions);
         }
     }
 }

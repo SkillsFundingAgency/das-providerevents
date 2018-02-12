@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 using Moq;
-using NLog;
 using NUnit.Framework;
+using SFA.DAS.NLog.Logger;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
 using SFA.DAS.Provider.Events.Application.DataLock.GetCurrentDataLocksQuery;
@@ -20,7 +20,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests
     public class DataLockEventProcessorTest
     {
         private IDataLockProcessor _dataLockProcessor;
-        private readonly Mock<ILogger> _loggerMock = new Mock<ILogger>();
+        private readonly Mock<ILog> _loggerMock = new Mock<ILog>();
         private readonly Mock<IMediator> _mediatorMock = new Mock<IMediator>(MockBehavior.Strict);
         private GetProvidersQueryResponse _getProvidersQueryResponse;
 
@@ -41,7 +41,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests
             // arrange
             _mediatorMock.Setup(m => m.SendAsync(It.IsAny<GetProvidersQueryRequest>())).ReturnsAsync(_getProvidersQueryResponse).Verifiable("Provider list was not requested");
             _mediatorMock.Setup(m => m.SendAsync(It.IsAny<GetCurrentDataLocksQueryRequest>())).ReturnsAsync(new GetCurrentDataLocksQueryResponse { IsValid = true }).Verifiable("Current Data Locks were not requested for provider");
-            _mediatorMock.Setup(m => m.SendAsync(It.IsAny<GetLatestDataLocksQueryRequest>())).ReturnsAsync(new GetLatestDataLocksQueryResponse(){ IsValid = true }).Verifiable("Latest Data Locks were not requested for provider");
+            _mediatorMock.Setup(m => m.SendAsync(It.IsAny<GetLatestDataLocksQueryRequest>())).ReturnsAsync(new GetLatestDataLocksQueryResponse{ IsValid = true }).Verifiable("Latest Data Locks were not requested for provider");
             _mediatorMock.Setup(m => m.SendAsync(It.Is<UpdateProviderQueryRequest>(r => r.Provider.IlrSubmissionDateTime == DateTime.Today))).ReturnsAsync(new UpdateProviderQueryResponse {IsValid = true}).Verifiable("Provider update was not requested");
 
             // act
@@ -78,7 +78,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests
                     Items = new[]
                     {
                         new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "1", PriceEpisodeIdentifier = "1", ErrorCodes = new List<string> { "E1" }},// existing unchanged
-                        new DataLock {Ukprn = 1, AimSequenceNumber = 2, LearnerReferenceNumber = "1", PriceEpisodeIdentifier = "1", Commitments = new List<long> { 1 }},// existing changed
+                        new DataLock {Ukprn = 1, AimSequenceNumber = 2, LearnerReferenceNumber = "1", PriceEpisodeIdentifier = "1", CommitmentVersions = new[] { new DataLockEventApprenticeship {Version = "1", PathwayCode = 1, StartDate = DateTime.Today} }},// existing changed
                         //new DataLock {Ukprn = 1, AimSequenceNumber = 3, LearnerReferenceNumber = "1", PriceEpisodeIdentifier = "1", ErrorCodes = new List<string> { "E1" }},// new
                         new DataLock {Ukprn = 1, AimSequenceNumber = 4, LearnerReferenceNumber = "1", PriceEpisodeIdentifier = "1", ErrorCodes = new List<string> { "E1" }} // old
                     }
@@ -138,7 +138,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests
 
 
         [Test]
-        public async Task TestDataLockComparisonOnVariousPrpoerties()
+        public async Task TestDataLockComparisonOnVariousProperties()
         {
             // arrange
             var currentDataLocksQueryResponse = new GetCurrentDataLocksQueryResponse
@@ -151,9 +151,14 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests
                         new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "1", PriceEpisodeIdentifier = "1", ErrorCodes = new List<string> { "E1" } },// existing unchanged
                         new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "2", PriceEpisodeIdentifier = "1", ErrorCodes = new List<string> { "E1" } },// existing changed
                         new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "4", PriceEpisodeIdentifier = "4", ErrorCodes = new List<string> { "E1" } },// existing changed
-                        new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "5", PriceEpisodeIdentifier = "5", Commitments = new []{ 1L }},// existing changed
+                        new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "5", PriceEpisodeIdentifier = "5", CommitmentVersions = new []{new DataLockEventApprenticeship { Version = "1", PathwayCode = 1, StartDate = DateTime.Today}}},// existing changed
                         new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "6", PriceEpisodeIdentifier = "6"},// existing changed
-                        new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "7", PriceEpisodeIdentifier = "7", Commitments = new []{ 1L, 5L, 7L }},// existing changed
+                        new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "7", PriceEpisodeIdentifier = "7", CommitmentVersions = new[]
+                        {
+                            new DataLockEventApprenticeship {Version = "1", PathwayCode = 1, StartDate = DateTime.Today},
+                            new DataLockEventApprenticeship {Version = "5", PathwayCode = 2, StartDate = DateTime.Today},
+                            new DataLockEventApprenticeship {Version = "7", PathwayCode = 3, StartDate = DateTime.Today}
+                        }},// existing changed
                         new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "2", PriceEpisodeIdentifier = "2"},// new
                         new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "3", PriceEpisodeIdentifier = "2"},// new
                         //new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "2", PriceEpisodeIdentifier = "3"} // old
@@ -168,14 +173,26 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests
                 {
                     Items = new[]
                     {
-                        new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "1", PriceEpisodeIdentifier = "1", ErrorCodes = new List<string> { "E1" }},// existing unchanged
-                        new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "2", PriceEpisodeIdentifier = "1", Commitments = new List<long> { 1 }},// existing changed
-                        new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "4", PriceEpisodeIdentifier = "4", ErrorCodes = new List<string> { "E1", "E2" }},// existing changed
-                        new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "5", PriceEpisodeIdentifier = "5"},// existing changed
-                        new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "6", PriceEpisodeIdentifier = "6", Commitments = new []{ 1L }},// existing changed
-                        new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "7", PriceEpisodeIdentifier = "7", Commitments = new []{ 1L, 2L, 3L }},// existing changed
+                        new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "1", PriceEpisodeIdentifier = "1", ErrorCodes = new List<string> {"E1"}}, // existing unchanged
+                        new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "2", PriceEpisodeIdentifier = "1", CommitmentVersions = new[] {new DataLockEventApprenticeship {Version = "1", PathwayCode = 1, StartDate = DateTime.Today}}}, // existing changed
+                        new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "4", PriceEpisodeIdentifier = "4", ErrorCodes = new List<string> {"E1", "E2"}}, // existing changed
+                        new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "5", PriceEpisodeIdentifier = "5"}, // existing changed
+                        new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "6", PriceEpisodeIdentifier = "6", CommitmentVersions = new[] {new DataLockEventApprenticeship {Version = "1", PathwayCode = 1, StartDate = DateTime.Today}}}, // existing changed
+                        new DataLock
+                        {
+                            Ukprn = 1,
+                            AimSequenceNumber = 1,
+                            LearnerReferenceNumber = "7",
+                            PriceEpisodeIdentifier = "7",
+                            CommitmentVersions = new[]
+                            {
+                                new DataLockEventApprenticeship {Version = "1", PathwayCode = 1, StartDate = DateTime.Today},
+                                new DataLockEventApprenticeship {Version = "2", PathwayCode = 2, StartDate = DateTime.Today},
+                                new DataLockEventApprenticeship {Version = "3", PathwayCode = 3, StartDate = DateTime.Today}
+                            }
+                        }, // existing changed
                         //new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "2", PriceEpisodeIdentifier = "2", ErrorCodes = new List<string> { "E1" }},// new
-                        new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "2", PriceEpisodeIdentifier = "3", ErrorCodes = new List<string> { "E1" }} // old
+                        new DataLock {Ukprn = 1, AimSequenceNumber = 1, LearnerReferenceNumber = "2", PriceEpisodeIdentifier = "3", ErrorCodes = new List<string> {"E1"}} // old
                     }
                 }
             };
@@ -260,6 +277,125 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests
             // 3 events
             Assert.IsNotNull(actualWriteDataLockEventsRequest);
             Assert.AreEqual(8, actualWriteDataLockEventsRequest.DataLockEvents.Count);
+        }
+
+
+        [Test]
+        public async Task TestDataLockPropertiesTransferred()
+        {
+            // arrange
+            var currentDataLocksQueryResponse = new GetCurrentDataLocksQueryResponse
+            {
+                IsValid = true,
+                Result = new PageOfResults<DataLock>
+                {
+                    Items = new[]
+                    {
+                        new DataLock
+                        {
+                            Ukprn = 1,
+                            AimSequenceNumber = 3,
+                            LearnerReferenceNumber = "1",
+                            PriceEpisodeIdentifier = "1",
+                            Uln = 1L,
+                            ErrorCodes = new[] {"E1", "E2"},
+                            CommitmentVersions = new[]
+                            {
+                                new DataLockEventApprenticeship { Version = "1", PathwayCode = 1, StartDate = DateTime.Today}, 
+                                new DataLockEventApprenticeship { Version = "2", PathwayCode = 2, EffectiveDate = DateTime.Today }
+                            },
+                            IlrEndpointAssessorPrice = 2M,
+                            IlrPriceEffectiveFromDate = DateTime.Today,
+                            IlrStartDate = DateTime.Today,
+                            IlrTrainingPrice = 2M,
+                            IlrFrameworkCode = 2,
+                            IlrPathwayCode = 2,
+                            IlrProgrammeType = 2,
+                            IlrStandardCode = 2L,
+                            IlrPriceEffectiveToDate = DateTime.Today
+                        }
+                    }
+                }
+            };
+            
+            var lastDataLocksQueryResponse = new GetLatestDataLocksQueryResponse
+            {
+                IsValid = true,
+                Result = new PageOfResults<DataLock> { Items = new DataLock[0] }
+            };
+
+            WriteDataLocksQueryRequest actualWriteDataLocksRequest = null;
+            WriteDataLockEventsQueryRequest actualWriteDataLockEventsRequest = null;
+            
+            _mediatorMock.Setup(m => m.SendAsync(It.IsAny<GetProvidersQueryRequest>())).ReturnsAsync(_getProvidersQueryResponse).Verifiable("Provider list was not requested");
+            _mediatorMock.Setup(m => m.SendAsync(It.Is<GetCurrentDataLocksQueryRequest>(r => r.PageNumber == 1))).ReturnsAsync(currentDataLocksQueryResponse).Verifiable("Current Data Locks page 1 was not requested for provider");
+            _mediatorMock.Setup(m => m.SendAsync(It.Is<GetLatestDataLocksQueryRequest>(r => r.PageNumber == 1))).ReturnsAsync(lastDataLocksQueryResponse).Verifiable("Latest Data Locks page 1 was not requested for provider");
+            _mediatorMock.Setup(m => m.SendAsync(It.Is<UpdateProviderQueryRequest>(r => r.Provider.IlrSubmissionDateTime == DateTime.Today))).ReturnsAsync(new UpdateProviderQueryResponse {IsValid = true}).Verifiable("Provider update was not requested");
+
+            _mediatorMock.Setup(m => m.SendAsync(It.IsAny<WriteDataLocksQueryRequest>()))
+                .ReturnsAsync(new WriteDataLocksQueryResponse {IsValid = true })
+                .Callback<WriteDataLocksQueryRequest>(r => actualWriteDataLocksRequest = r)
+                .Verifiable("Write new Data Locks was not called");
+
+            _mediatorMock.Setup(m => m.SendAsync(It.IsAny<WriteDataLockEventsQueryRequest>()))
+                .ReturnsAsync(new WriteDataLockEventsQueryResponse {IsValid = true})
+                .Callback<WriteDataLockEventsQueryRequest>(r => actualWriteDataLockEventsRequest = r)
+                .Verifiable("Write new Data Lock Events was not called");
+
+            // act
+            await _dataLockProcessor.ProcessDataLocks();
+            
+            // assert
+            _mediatorMock.VerifyAll();
+
+            Assert.IsNotNull(actualWriteDataLocksRequest);
+
+            // 1 new data lock
+            Assert.IsNotNull(actualWriteDataLocksRequest.NewDataLocks);
+            Assert.AreEqual(1, actualWriteDataLocksRequest.NewDataLocks.Count);
+            Assert.AreEqual(1, actualWriteDataLocksRequest.NewDataLocks[0].Ukprn);
+            Assert.AreEqual(3, actualWriteDataLocksRequest.NewDataLocks[0].AimSequenceNumber);
+            Assert.AreEqual("1", actualWriteDataLocksRequest.NewDataLocks[0].PriceEpisodeIdentifier);
+            Assert.AreEqual(1L, actualWriteDataLocksRequest.NewDataLocks[0].Uln);
+            Assert.AreEqual(2, actualWriteDataLocksRequest.NewDataLocks[0].ErrorCodes.Count);
+            Assert.AreEqual("E1", actualWriteDataLocksRequest.NewDataLocks[0].ErrorCodes[0]);
+            Assert.AreEqual("E2", actualWriteDataLocksRequest.NewDataLocks[0].ErrorCodes[1]);
+            Assert.AreEqual(2, actualWriteDataLocksRequest.NewDataLocks[0].CommitmentVersions.Count);
+            Assert.AreEqual("1", actualWriteDataLocksRequest.NewDataLocks[0].CommitmentVersions[0].Version);
+            Assert.AreEqual("2", actualWriteDataLocksRequest.NewDataLocks[0].CommitmentVersions[1].Version);
+            Assert.AreEqual(2M, actualWriteDataLocksRequest.NewDataLocks[0].IlrEndpointAssessorPrice);
+            Assert.AreEqual(DateTime.Today, actualWriteDataLocksRequest.NewDataLocks[0].IlrPriceEffectiveFromDate);
+            Assert.AreEqual(DateTime.Today, actualWriteDataLocksRequest.NewDataLocks[0].IlrStartDate);
+            Assert.AreEqual(2M, actualWriteDataLocksRequest.NewDataLocks[0].IlrTrainingPrice);
+            Assert.AreEqual(2, actualWriteDataLocksRequest.NewDataLocks[0].IlrFrameworkCode);
+            Assert.AreEqual(2, actualWriteDataLocksRequest.NewDataLocks[0].IlrPathwayCode);
+            Assert.AreEqual(2, actualWriteDataLocksRequest.NewDataLocks[0].IlrProgrammeType);
+            Assert.AreEqual(2L, actualWriteDataLocksRequest.NewDataLocks[0].IlrStandardCode);
+            Assert.AreEqual(DateTime.Today, actualWriteDataLocksRequest.NewDataLocks[0].IlrPriceEffectiveToDate);
+
+            // 1 event
+            Assert.IsNotNull(actualWriteDataLockEventsRequest);
+            Assert.AreEqual(1, actualWriteDataLockEventsRequest.DataLockEvents.Count);
+            Assert.AreEqual(1, actualWriteDataLockEventsRequest.DataLockEvents[0].Ukprn);
+            Assert.AreEqual(1, actualWriteDataLockEventsRequest.DataLockEvents[0].Ukprn);
+            Assert.AreEqual(3L, actualWriteDataLockEventsRequest.DataLockEvents[0].AimSeqNumber);
+            Assert.AreEqual("1", actualWriteDataLockEventsRequest.DataLockEvents[0].PriceEpisodeIdentifier);
+            Assert.AreEqual(1L, actualWriteDataLockEventsRequest.DataLockEvents[0].Uln);
+            Assert.AreEqual(2, actualWriteDataLockEventsRequest.DataLockEvents[0].Errors.Length);
+            Assert.AreEqual("E1", actualWriteDataLockEventsRequest.DataLockEvents[0].Errors[0].ErrorCode);
+            Assert.AreEqual("E2", actualWriteDataLockEventsRequest.DataLockEvents[0].Errors[1].ErrorCode);
+            Assert.AreEqual(2, actualWriteDataLockEventsRequest.DataLockEvents[0].Apprenticeships.Length);
+            Assert.AreEqual("1", actualWriteDataLockEventsRequest.DataLockEvents[0].Apprenticeships[0].Version);
+            Assert.AreEqual("2", actualWriteDataLockEventsRequest.DataLockEvents[0].Apprenticeships[1].Version);
+            Assert.AreEqual(2M, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrEndpointAssessorPrice);
+            Assert.AreEqual(DateTime.Today, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrPriceEffectiveFromDate);
+            Assert.AreEqual(DateTime.Today, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrStartDate);
+            Assert.AreEqual(2M, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrTrainingPrice);
+            Assert.AreEqual(2, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrFrameworkCode);
+            Assert.AreEqual(2, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrPathwayCode);
+            Assert.AreEqual(2, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrProgrammeType);
+            Assert.AreEqual(2L, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrStandardCode);
+            Assert.AreEqual(DateTime.Today, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrPriceEffectiveToDate);
         }
 
         [Test]

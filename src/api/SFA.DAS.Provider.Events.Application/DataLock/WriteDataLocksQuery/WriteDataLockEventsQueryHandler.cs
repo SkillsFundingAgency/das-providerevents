@@ -41,7 +41,7 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.WriteDataLocksQuery
                         LearnerReferenceNumber = d.LearnerReferenceNumber,
                         PriceEpisodeIdentifier = d.PriceEpisodeIdentifier,
                         ErrorCodes = GetString(d.ErrorCodes),
-                        Commitments = GetString(d.Commitments)
+                        CommitmentVersions = GetString(d.CommitmentVersions)
                     }).ToList();
 
                 if (entities != null && entities.Any())
@@ -57,7 +57,7 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.WriteDataLocksQuery
                         LearnerReferenceNumber = d.LearnerReferenceNumber,
                         PriceEpisodeIdentifier = d.PriceEpisodeIdentifier,
                         ErrorCodes = GetString(d.ErrorCodes),
-                        Commitments = GetString(d.Commitments),
+                        CommitmentVersions = GetString(d.CommitmentVersions),
 
                     }).ToList();
 
@@ -69,7 +69,7 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.WriteDataLocksQuery
                             LearnerReferenceNumber = d.LearnerReferenceNumber,
                             PriceEpisodeIdentifier = d.PriceEpisodeIdentifier,
                             ErrorCodes = GetString(d.ErrorCodes),
-                            Commitments = GetString(d.Commitments),
+                            CommitmentVersions = GetString(d.CommitmentVersions),
                             DeletedUtc = DateTime.UtcNow
                         })
                         .ToList());

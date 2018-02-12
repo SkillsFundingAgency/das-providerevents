@@ -40,7 +40,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetDataLockEven
             // Arrange
             _pageNumberMustBeAtLeastOneRule
                 .Setup(r => r.Validate(It.IsAny<int>()))
-                .ReturnsAsync(null);
+                .ReturnsAsync((string)null);
 
             _request = new GetDataLockEventsQueryRequest
             {

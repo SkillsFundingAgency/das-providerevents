@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using System.Linq;
+using AutoMapper;
+using Newtonsoft.Json;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
@@ -45,20 +48,53 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
 
 
             cfg.CreateMap<PageOfResults<DataLockEventEntity>, PageOfResults<DataLockEvent>>();
-            cfg.CreateMap<DataLockEventEntity, DataLockEvent>();
-            cfg.CreateMap<DataLockEventErrorEntity, DataLockEventError>();
-            cfg.CreateMap<DataLockEventPeriodEntity, DataLockEventPeriod>()
-                .ForMember(dst => dst.Period, opt => opt.Ignore())
+            cfg.CreateMap<DataLockEventEntity, DataLockEvent>()
+                .ForMember(dst => dst.Errors, o => o.Ignore())
                 .AfterMap((src, dst) =>
                 {
-                    dst.Period = new NamedCalendarPeriod
+                    if (!string.IsNullOrEmpty(src.ErrorCodes))
                     {
-                        Id = src.CollectionPeriodId.Trim(),
-                        Month = src.CollectionPeriodMonth,
-                        Year = src.CollectionPeriodYear
-                    };
+                        dst.Errors = JsonConvert.DeserializeObject<List<string>>(src.ErrorCodes).Select(s => new DataLockEventError
+                        {
+                            ErrorCode = s
+                        }).ToArray();
+                    }
+                    else
+                    {
+                        dst.Errors = null;
+                    }
+                })
+                .ForMember(dst => dst.Apprenticeships, o => o.Ignore())
+                .AfterMap((src, dst) =>
+                {
+                    if (!string.IsNullOrEmpty(src.CommitmentVersions))
+                    {
+                        dst.Apprenticeships = JsonConvert.DeserializeObject<List<DataLockEventApprenticeship>>(src.CommitmentVersions).ToArray();
+                    }
+                    else
+                    {
+                        dst.Apprenticeships = null;
+                    }
                 });
-            cfg.CreateMap<DataLockEventApprenticeshipEntity, DataLockEventApprenticeship>();
+
+
+            cfg.CreateMap<DataLockEvent, DataLockEventEntity>()
+                .ForMember(dst => dst.ErrorCodes, o => o.Ignore())
+                .AfterMap((src, dst) =>
+                {
+                    if (src.Errors == null || src.Errors.Length == 0)
+                        dst.ErrorCodes = null;
+                    else
+                        dst.ErrorCodes = JsonConvert.SerializeObject(src.Errors.Select(e => e.ErrorCode).ToList());
+                })
+                .ForMember(dst => dst.CommitmentVersions, o => o.Ignore())
+                .AfterMap((src, dst) =>
+                {
+                    if (src.Apprenticeships == null || src.Apprenticeships.Length == 0)
+                        dst.CommitmentVersions = null;
+                    else
+                        dst.CommitmentVersions = JsonConvert.SerializeObject(src.Apprenticeships);
+                });
         }
     }
 }

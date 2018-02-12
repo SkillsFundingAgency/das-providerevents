@@ -54,8 +54,8 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.GetLatestDataLocksQuery
                     if (!string.IsNullOrEmpty(entity.ErrorCodes))
                         dataLock.ErrorCodes = JsonConvert.DeserializeObject<List<string>>(entity.ErrorCodes);
 
-                    if (!string.IsNullOrEmpty(entity.Commitments))
-                        dataLock.Commitments = JsonConvert.DeserializeObject<List<long>>(entity.Commitments);
+                    if (!string.IsNullOrEmpty(entity.CommitmentVersions))
+                        dataLock.CommitmentVersions = JsonConvert.DeserializeObject<List<DataLockEventApprenticeship>>(entity.CommitmentVersions);
 
                     dataLocks.Add(dataLock);
                 }

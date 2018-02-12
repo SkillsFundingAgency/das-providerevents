@@ -104,6 +104,8 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
 
         public static void AddProvider(long ukprn, DateTime ilrSubmissionDate)
         {
+            Execute("insert into [Valid].[LearningProvider] (UKPRN) values (@ukprn)", new { ukprn });
+            Execute("insert into [dbo].[FileDetails] (UKPRN, SubmittedTime) values (@ukprn, @ilrSubmissionDate)", new { ukprn, ilrSubmissionDate });
         }
 
         public static void AddCommitment(long id,

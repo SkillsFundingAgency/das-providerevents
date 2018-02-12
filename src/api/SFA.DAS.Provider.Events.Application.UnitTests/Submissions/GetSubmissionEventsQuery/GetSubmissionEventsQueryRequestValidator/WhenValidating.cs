@@ -38,7 +38,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetSubmissio
         {
             // Arrange
             _pageNumberMustBeAtLeastOneRule.Setup(r => r.Validate(It.IsAny<int>()))
-                .ReturnsAsync(null);
+                .ReturnsAsync((string)null);
             _request = new GetSubmissionEventsQueryRequest
             {
                 PageNumber = 1

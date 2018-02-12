@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SFA.DAS.Provider.Events.Application.Data.Entities
+namespace SFA.DAS.Provider.Events.Api.Types
 {
-    public class DataLockEntity
+    public class DataLock
     {
         public long Ukprn { get; set; }
         public string LearnerReferenceNumber { get; set; }
-        public long? AimSequenceNumber { get; set; }
         public string PriceEpisodeIdentifier { get; set; }
-        public string ErrorCodes { get; set; }
-        public string CommitmentVersions { get; set; }
-        public DateTime? DeletedUtc { get; set; }
+
+        public long? AimSequenceNumber { get; set; }
+
+        public IList<string> ErrorCodes { get; set; }
+        public IList<DataLockEventApprenticeship> CommitmentVersions { get; set; }
+
+        public bool IsSuccess => ErrorCodes == null || ErrorCodes.Count == 0;
 
         public long Uln { get; set; }
         public DateTime? IlrStartDate { get; set; }
@@ -27,5 +27,6 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
         public decimal? IlrEndpointAssessorPrice { get; set; }
         public DateTime? IlrPriceEffectiveFromDate { get; set; }
         public DateTime? IlrPriceEffectiveToDate { get; set; }
+
     }
 }

@@ -28,8 +28,11 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
         public DateTime? IlrPriceEffectiveFromDate { get; set; }
         public DateTime? IlrPriceEffectiveToDate { get; set; }
 
-        public DataLockEventErrorEntity[] Errors { get; set; }
-        public DataLockEventPeriodEntity[] Periods { get; set; }
-        public DataLockEventApprenticeshipEntity[] Apprenticeships { get; set; }
+        //public DataLockEventErrorEntity[] Errors { get; set; }
+        //public DataLockEventPeriodEntity[] Periods { get; set; }
+        //public DataLockEventApprenticeshipEntity[] Apprenticeships { get; set; }
+
+        public string ErrorCodes { get;set; }
+        public string CommitmentVersions { get;set; }
     }
 }
