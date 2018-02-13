@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -11,34 +12,47 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
 {
     class DatabaseSetup
     {
-        private readonly CreateDatabase _create;
         private readonly PopulateTables _populate;
 
-        public DatabaseSetup(
-            CreateDatabase create, 
-            PopulateTables populate)
+        public DatabaseSetup(PopulateTables populate)
         {
-            _create = create;
             _populate = populate;
         }
 
         public async Task PopulateTestData()
         {
             if (await _populate.AreTablesPopulated().ConfigureAwait(false))
-            {
                 await ReadAllData().ConfigureAwait(false);
-            }
             else
-            {
                 await PopulateAllData().ConfigureAwait(false);
+
+            if (await _populate.IsSubmissionEventsTablePopulated())
+                await ReadSubmissionEvents();
+            else
+                await PopulateSubmissionEvents();
+        }
+
+        private async Task PopulateSubmissionEvents()
+        {
+            Debug.WriteLine("Populating submission events table, this could take a while");
+
+            TestData.SubmissionEvents = new Fixture().CreateMany<ItSubmissionEvent>(10).ToList();
+            foreach (var @event in TestData.SubmissionEvents)
+            {
+                // these fields are just date's in the db
+                @event.ActualStartDate = @event.ActualStartDate.Value.Date;
+                @event.ActualEndDate = @event.ActualEndDate.Value.Date;
+                @event.PlannedEndDate = @event.PlannedEndDate.Value.Date;
+                // these fields are datetime's in the db, so can't match the precision of c#'s datetime, so we chop off the milliseconds
+                @event.SubmittedDateTime = @event.SubmittedDateTime.AddTicks(-(@event.SubmittedDateTime.Ticks % TimeSpan.TicksPerSecond));
+                @event.FileDateTime = @event.FileDateTime.AddTicks(-(@event.FileDateTime.Ticks % TimeSpan.TicksPerSecond));
             }
+            await _populate.BulkInsertSubmissionEvents(TestData.SubmissionEvents);
         }
 
         private async Task PopulateAllData()
         {
-            Debug.WriteLine("Creating and populating tables, this could take a while");
-            var database = _create;
-            await database.Create().ConfigureAwait(false);
+            Debug.WriteLine("Populating tables, this could take a while");
 
             var data = _populate;
 
@@ -50,9 +64,20 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
             TestData.Earnings = TestData.Payments.SelectMany(x => x.Earnings).ToList();
 
             await data.BulkInsertPayments(TestData.Payments).ConfigureAwait(false);
-            await data.BulkInsertEarningsAsync(TestData.Earnings).ConfigureAwait(false);
+            await data.BulkInsertEarnings(TestData.Earnings).ConfigureAwait(false);
             await data.BulkInsertRequiredPayments(TestData.RequiredPayments).ConfigureAwait(false);
             await data.CreatePeriods().ConfigureAwait(false);
+        }
+
+        private async Task ReadSubmissionEvents()
+        {
+            const string submissionEventsSql = "SELECT * FROM [Submissions].[SubmissionEvents]";
+
+            using (var conn = DatabaseConnection.Connection())
+            {
+                await conn.OpenAsync();
+                TestData.SubmissionEvents = (await conn.QueryAsync<ItSubmissionEvent>(submissionEventsSql)).ToList();
+            }
         }
 
         private async Task ReadAllData()

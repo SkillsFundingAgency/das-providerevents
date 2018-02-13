@@ -24,5 +24,6 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
         public long? ApprenticeshipId { get; set; }
         public string AcademicYear { get; set; }
         public int? EmployerReferenceNumber { get; set; }
+        public string EPAOrgId { get; set; }
     }
 }
