@@ -10,7 +10,8 @@ AS
 BEGIN
 	SELECT
         [p].[UKPRN] AS [Ukprn],
-		[fd].[SubmittedTime] AS [IlrSubmissionDateTime]
+		[fd].[SubmittedTime] AS [IlrSubmissionDateTime],
+		[fd].[Filename] AS [IlrFileName]
 	FROM [Valid].[LearningProvider] p
 		JOIN [dbo].[FileDetails] fd
 			ON p.UKPRN = fd.UKPRN

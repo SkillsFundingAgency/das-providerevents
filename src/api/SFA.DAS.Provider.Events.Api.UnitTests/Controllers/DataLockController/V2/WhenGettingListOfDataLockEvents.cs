@@ -44,32 +44,6 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController.V
                                         ErrorCode = "Err1",
                                         SystemDescription = "Error 1"
                                     }
-                                },
-                                Periods = new []
-                                {
-                                    new DataLockEventPeriod
-                                    {
-                                        ApprenticeshipVersion = "1-015",
-                                        Period = new NamedCalendarPeriod
-                                        {
-                                            Id = "1617-R09",
-                                            Month = 4,
-                                            Year = 2017
-                                        },
-                                        IsPayable = true,
-                                        TransactionType = TransactionType.Learning
-                                    }
-                                },
-                                Apprenticeships = new []
-                                {
-                                    new DataLockEventApprenticeship
-                                    {
-                                        Version = "19",
-                                        StartDate = new DateTime(2017, 5, 1),
-                                        StandardCode = 27,
-                                        NegotiatedPrice = 17500m,
-                                        EffectiveDate = new DateTime(2017, 5, 1)
-                                    }
                                 }
                             }
                         }
@@ -93,34 +67,6 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController.V
                                 {
                                     ErrorCode = e.Errors[0].ErrorCode,
                                     SystemDescription = e.Errors[0].SystemDescription
-                                }
-                            },
-                            Periods = new []
-                            {
-                                new DataLockEventPeriod
-                                {
-                                    ApprenticeshipVersion = e.Periods[0].ApprenticeshipVersion,
-                                    Period = new NamedCalendarPeriod
-                                    {
-                                        Id = e.Periods[0].Period.Id,
-                                        Month = e.Periods[0].Period.Month,
-                                        Year = e.Periods[0].Period.Year
-                                    },
-                                    IsPayable = e.Periods[0].IsPayable
-                                }
-                            },
-                            Apprenticeships = new []
-                            {
-                                new DataLockEventApprenticeship
-                                {
-                                    Version = e.Apprenticeships[0].Version,
-                                    StartDate = e.Apprenticeships[0].StartDate,
-                                    StandardCode = e.Apprenticeships[0].StandardCode,
-                                    ProgrammeType = e.Apprenticeships[0].ProgrammeType,
-                                    FrameworkCode = e.Apprenticeships[0].FrameworkCode,
-                                    PathwayCode = e.Apprenticeships[0].PathwayCode,
-                                    NegotiatedPrice = e.Apprenticeships[0].NegotiatedPrice,
-                                    EffectiveDate = e.Apprenticeships[0].EffectiveDate
                                 }
                             }
                         }).ToArray()

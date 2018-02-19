@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
 using SFA.DAS.Provider.Events.Application.DataLock.GetLatestDataLocksQuery;
+using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Repositories;
 using SFA.DAS.Provider.Events.Application.Validation.Rules;
 
@@ -15,13 +19,45 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetLatestDataLo
         private Mock<IDataLockEventRepository> _dataLockEventRepository;
         private GetLatestDataLocksQueryHandler _handler;
         private GetLatestDataLocksQueryRequest _request;
+        private Mock<IMapper> _mapper;
 
         [SetUp]
         public void Arrange()
         {
+            _mapper = new Mock<IMapper>();
+            _mapper
+                .Setup(m => m.Map<Api.Types.DataLock[]>(It.IsAny<DataLockEntity[]>()))
+                .Returns((DataLockEntity[] list) =>
+                {
+                    return list.Select(source =>
+                    {
+                        var entity = new Api.Types.DataLock
+                        {
+                            CommitmentId = source.ApprenticeshipId.Value,
+                            EmployerAccountId = source.EmployerAccountId,
+                            IlrEndpointAssessorPrice = source.IlrEndpointAssessorPrice,
+                            IlrFrameworkCode = source.IlrFrameworkCode,
+                            IlrPathwayCode = source.IlrPathwayCode,
+                            IlrPriceEffectiveFromDate = source.IlrPriceEffectiveFromDate,
+                            IlrPriceEffectiveToDate = source.IlrPriceEffectiveToDate,
+                            IlrProgrammeType = source.IlrProgrammeType,
+                            IlrStandardCode = source.IlrStandardCode,
+                            IlrStartDate = source.IlrStartDate,
+                            IlrTrainingPrice = source.IlrTrainingPrice,
+                            PriceEpisodeIdentifier = source.PriceEpisodeIdentifier,
+                            Ukprn = source.Ukprn,
+                            Uln = source.Uln,
+                            ErrorCodes = string.IsNullOrEmpty(source.ErrorCodes) ? null : JsonConvert.DeserializeObject<IList<string>>(source.ErrorCodes),
+                            AimSequenceNumber = source.AimSequenceNumber,
+                            LearnerReferenceNumber = source.LearnerReferenceNumber
+                        };
+                        return entity;
+                    }).ToArray();
+                });           
+
             _dataLockEventRepository = new Mock<IDataLockEventRepository>();
 
-            _handler = new GetLatestDataLocksQueryHandler(new GetLatestDataLocksQueryRequestValidator(new PageNumberMustBeAtLeastOneRule()), _dataLockEventRepository.Object);
+            _handler = new GetLatestDataLocksQueryHandler(new GetLatestDataLocksQueryRequestValidator(new PageNumberMustBeAtLeastOneRule()), _dataLockEventRepository.Object, _mapper.Object);
 
             _request = new GetLatestDataLocksQueryRequest { PageNumber = 1 };
         }
@@ -104,8 +140,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetLatestDataLo
                 AimSequenceNumber = 2,
                 LearnerReferenceNumber = "L1",
                 PriceEpisodeIdentifier = "P1",
-                ErrorCodes = "[\"E1\", \"E2\"]",
-                CommitmentVersions = "[\"9\", \"8\", \"7\"]"
+                ErrorCodes = "[\"E1\", \"E2\"]"
             };
 
             var dataLocks = new[] { dataLock };
@@ -132,10 +167,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetLatestDataLo
             Assert.AreEqual(2, actual.Result.Items[0].ErrorCodes.Count);
             Assert.AreEqual("E1", actual.Result.Items[0].ErrorCodes[0]);
             Assert.AreEqual("E2", actual.Result.Items[0].ErrorCodes[1]);
-            Assert.AreEqual(3, actual.Result.Items[0].CommitmentVersions.Count);
-            Assert.AreEqual(9L, actual.Result.Items[0].CommitmentVersions[0]);
-            Assert.AreEqual(8L, actual.Result.Items[0].CommitmentVersions[1]);
-            Assert.AreEqual(7L, actual.Result.Items[0].CommitmentVersions[2]);
+            Assert.IsNull(actual.Result.Items[0].CommitmentVersions);
         }
 
         [Test]

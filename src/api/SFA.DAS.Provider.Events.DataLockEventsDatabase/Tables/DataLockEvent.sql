@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [DataLockEvents].[DataLockEvent]
 (
-	[Id] BIGINT NOT NULL PRIMARY KEY, 
+	[Id] BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY, 
     [ProcessDateTime] DATETIME NOT NULL, 
     [Status] INT NOT NULL, 
     [IlrFileName] NVARCHAR(50) NOT NULL, 
@@ -11,7 +11,6 @@
     [PriceEpisodeIdentifier] VARCHAR(25) NOT NULL, 
     [ApprenticeshipId] BIGINT NOT NULL, 
     [EmployerAccountId] BIGINT NOT NULL, 
-    [EventSource] INT NOT NULL, 
     [HasErrors] BIT NOT NULL, 
     [IlrStartDate] DATETIME NULL, 
     [IlrStandardCode] BIGINT NULL, 
@@ -22,6 +21,5 @@
     [IlrEndpointAssessorPrice] DECIMAL(12, 5) NULL, 
     [IlrPriceEffectiveFromDate] DATETIME NULL, 
     [IlrPriceEffectiveToDate] DATETIME NULL, 
-    [ErrorCodes] VARCHAR(MAX) NULL,
-    [CommitmentVersions] VARCHAR(MAX) NULL
+    [ErrorCodes] VARCHAR(MAX) NULL
 )

@@ -10,6 +10,7 @@ namespace SFA.DAS.Provider.Events.Api.Types
         public string PriceEpisodeIdentifier { get; set; }
 
         public long? AimSequenceNumber { get; set; }
+        public long CommitmentId {get; set; }
 
         public IList<string> ErrorCodes { get; set; }
         public IList<DataLockEventApprenticeship> CommitmentVersions { get; set; }
@@ -17,6 +18,7 @@ namespace SFA.DAS.Provider.Events.Api.Types
         public bool IsSuccess => ErrorCodes == null || ErrorCodes.Count == 0;
 
         public long Uln { get; set; }
+        public long EmployerAccountId {get; set; }
         public DateTime? IlrStartDate { get; set; }
         public long? IlrStandardCode { get; set; }
         public int? IlrProgrammeType { get; set; }

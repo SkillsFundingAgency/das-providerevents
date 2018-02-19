@@ -46,8 +46,30 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
 
             cfg.CreateMap<SubmissionEventEntity, SubmissionEvent>();
 
+            cfg.CreateMap<DataLock, DataLockEntity>()
+                .ForMember(dst => dst.ApprenticeshipId, o => o.MapFrom(src => src.CommitmentId))
+                .ForMember(dst => dst.ErrorCodes, o => o.Ignore())
+                .AfterMap((src, dst) =>
+                {
+                    if (src.ErrorCodes == null || src.ErrorCodes.Count == 0)
+                        dst.ErrorCodes = null;
+                    else
+                        dst.ErrorCodes = JsonConvert.SerializeObject(src.ErrorCodes);
+                });
+
+            cfg.CreateMap<DataLockEntity, DataLock>()
+                .ForMember(dst => dst.CommitmentId, o => o.MapFrom(src => src.ApprenticeshipId))
+                .ForMember(dst => dst.ErrorCodes, o => o.Ignore())
+                .AfterMap((src, dst) =>
+                {
+                    if (string.IsNullOrEmpty(src.ErrorCodes))
+                        dst.ErrorCodes = null;
+                    else
+                        dst.ErrorCodes = JsonConvert.DeserializeObject<List<string>>(src.ErrorCodes);
+                });
 
             cfg.CreateMap<PageOfResults<DataLockEventEntity>, PageOfResults<DataLockEvent>>();
+
             cfg.CreateMap<DataLockEventEntity, DataLockEvent>()
                 .ForMember(dst => dst.Errors, o => o.Ignore())
                 .AfterMap((src, dst) =>
@@ -63,18 +85,6 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
                     {
                         dst.Errors = null;
                     }
-                })
-                .ForMember(dst => dst.Apprenticeships, o => o.Ignore())
-                .AfterMap((src, dst) =>
-                {
-                    if (!string.IsNullOrEmpty(src.CommitmentVersions))
-                    {
-                        dst.Apprenticeships = JsonConvert.DeserializeObject<List<DataLockEventApprenticeship>>(src.CommitmentVersions).ToArray();
-                    }
-                    else
-                    {
-                        dst.Apprenticeships = null;
-                    }
                 });
 
 
@@ -86,14 +96,6 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
                         dst.ErrorCodes = null;
                     else
                         dst.ErrorCodes = JsonConvert.SerializeObject(src.Errors.Select(e => e.ErrorCode).ToList());
-                })
-                .ForMember(dst => dst.CommitmentVersions, o => o.Ignore())
-                .AfterMap((src, dst) =>
-                {
-                    if (src.Apprenticeships == null || src.Apprenticeships.Length == 0)
-                        dst.CommitmentVersions = null;
-                    else
-                        dst.CommitmentVersions = JsonConvert.SerializeObject(src.Apprenticeships);
                 });
         }
     }

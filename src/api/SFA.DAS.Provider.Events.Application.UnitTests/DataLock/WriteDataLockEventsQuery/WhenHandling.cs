@@ -35,11 +35,9 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLockEv
                         var entity = new DataLockEventEntity();
                         if (e.Errors != null)
                             entity.ErrorCodes = JsonConvert.SerializeObject(e.Errors.Select(er => er.ErrorCode).ToArray());
-                        if (e.Apprenticeships != null)
-                            entity.CommitmentVersions = JsonConvert.SerializeObject(e.Apprenticeships);
                         return entity;
                     }));
-                });           
+                });
             
             _dataLockEventRepository = new Mock<IDataLockEventRepository>();
 
@@ -92,7 +90,6 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLockEv
             Assert.IsNotNull(actualEntities);
             Assert.AreEqual(1, actualEntities.Count);
             Assert.IsNull(actualEntities[0].ErrorCodes);
-            Assert.IsNull(actualEntities[0].CommitmentVersions);
         }
         [Test]
         public async Task AndThereAreErrorsThenItShouldReturnValidResponse()
@@ -108,13 +105,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLockEv
                 new DataLockEventError { ErrorCode = "E4", SystemDescription = "Blah"}
             };
 
-            var dataLockEventApprenticeships = new []
-            {
-                new DataLockEventApprenticeship { EffectiveDate = DateTime.Today,  Version = "1" },
-                new DataLockEventApprenticeship { EffectiveDate = DateTime.Today,  Version = "2" }
-            };
-
-            var dataLockEvent = new DataLockEvent {Ukprn = 1, Uln = 2, Errors = dataLockEventErrors, Apprenticeships = dataLockEventApprenticeships};
+            var dataLockEvent = new DataLockEvent {Ukprn = 1, Uln = 2, Errors = dataLockEventErrors};
 
             var events = new List<DataLockEvent> { dataLockEvent };
             _request.DataLockEvents = events;
@@ -132,8 +123,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLockEv
             Assert.IsTrue(actual.IsValid);
             Assert.IsNotNull(actualEntities);
             Assert.AreEqual(1, actualEntities.Count);
-            Assert.AreEqual(4, actualEntities[0].ErrorCodes.Length);
-            Assert.AreEqual(2, actualEntities[0].CommitmentVersions.Length);
+            Assert.AreEqual("[\"E1\",\"E2\",\"E3\",\"E4\"]", actualEntities[0].ErrorCodes);
         }
 
         [Test]

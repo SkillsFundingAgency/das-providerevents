@@ -42,7 +42,5 @@ namespace SFA.DAS.Provider.Events.Api.Plumbing.Mapping
                       src => src.ApprenticeshipVersion.Contains("-") ? long.Parse(src.ApprenticeshipVersion.Split('-')[0]).ToString() : src.ApprenticeshipVersion));
             });
         }
-
-     
     }
 }

@@ -30,7 +30,6 @@ BEGIN
 		[PriceEpisodeIdentifier],
 		[ApprenticeshipId],
 		[EmployerAccountId],
-		[EventSource],
 		[HasErrors],
 		[IlrStartDate],
 		[IlrStandardCode],

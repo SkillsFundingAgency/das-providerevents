@@ -123,7 +123,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                             // same lock
                             if (!AreEqual(currentLock, lastLock))
                             {
-                                events.Add(FromDataLock(currentLock, EventStatus.Updated));
+                                events.Add(FromDataLock(currentLock, EventStatus.Updated, provider));
                                 updatedDataLocks.Add(currentLock);
                             }
 
@@ -136,14 +136,14 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                             {
                                 // new data lock
                                 newDataLocks.Add(currentLock);
-                                events.Add(FromDataLock(currentLock, EventStatus.New));
+                                events.Add(FromDataLock(currentLock, EventStatus.New, provider));
                                 fetchNextCurrentLock = true;
                             }
                             else
                             {
                                 // removed data lock
                                 deletedDataLocks.Add(lastLock);
-                                events.Add(FromDataLock(lastLock, EventStatus.Removed));
+                                events.Add(FromDataLock(lastLock, EventStatus.Removed, provider));
                                 fetchNextLastLock = true;
                             }
                         }
@@ -184,7 +184,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
             });
         }
 
-        private static DataLockEvent FromDataLock(DataLock current, EventStatus status)
+        private static DataLockEvent FromDataLock(DataLock current, EventStatus status, ProviderEntity provider)
         {
             if (!current.AimSequenceNumber.HasValue)
                 throw new ApplicationException("DataLock has no AimSequenceNumber, cannot create data lock event. Ukprn:");
@@ -196,14 +196,12 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                 AimSeqNumber = current.AimSequenceNumber.Value,
                 LearnRefNumber = current.LearnerReferenceNumber,
                 Status = status,
-
                 Uln = current.Uln,
-                //ApprenticeshipId = current.a
-                //EmployerAccountId =
-                //EventSource =
-                //HasErrors =
-                //Id =
-                //IlrFileName = current.ilrf
+                ApprenticeshipId = current.CommitmentId,
+                EmployerAccountId = current.EmployerAccountId,
+                ProcessDateTime = DateTime.UtcNow,
+                IlrFileName = provider.IlrFileName,
+                HasErrors = current.ErrorCodes != null && current.ErrorCodes.Count > 0,
 
                 IlrEndpointAssessorPrice = current.IlrEndpointAssessorPrice,
                 IlrFrameworkCode = current.IlrFrameworkCode,
@@ -215,10 +213,8 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                 IlrStartDate = current.IlrStartDate,
                 IlrTrainingPrice = current.IlrTrainingPrice,
 
-                Errors = current.ErrorCodes.Select(c => new DataLockEventError { ErrorCode = c}).ToArray(),
-                Apprenticeships = current.CommitmentVersions.ToArray()
+                Errors = current.ErrorCodes == null ? null : current.ErrorCodes.Select(c => new DataLockEventError { ErrorCode = c}).ToArray()
                 //Periods = 
-                //Apprenticeships = 
             };
         }
 

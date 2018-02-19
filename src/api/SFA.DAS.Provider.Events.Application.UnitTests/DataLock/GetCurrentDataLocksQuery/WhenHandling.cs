@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
 using SFA.DAS.Provider.Events.Application.DataLock.GetCurrentDataLocksQuery;
+using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Repositories;
 using SFA.DAS.Provider.Events.Application.Validation;
 using SFA.DAS.Provider.Events.Application.Validation.Rules;
@@ -18,13 +21,40 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetCurrentDataL
         private Mock<IDataLockRepository> _dataLockRepository;
         private GetCurrentDataLocksQueryHandler _handler;
         private GetCurrentDataLocksQueryRequest _request;
+        private Mock<IMapper> _mapper;
 
         [SetUp]
         public void Arrange()
         {
             _dataLockRepository = new Mock<IDataLockRepository>();
+            _mapper = new Mock<IMapper>();
+            _mapper
+                .Setup(m => m.Map<Api.Types.DataLock[]>(It.IsAny<IList<DataLockEntity>>()))
+                .Returns((IList<DataLockEntity> list) =>
+                {
+                    return list.Select(source => new Api.Types.DataLock
+                    {
+                        AimSequenceNumber = source.AimSequenceNumber,
+                        CommitmentId = source.ApprenticeshipId.Value,
+                        EmployerAccountId = source.EmployerAccountId,
+                        IlrEndpointAssessorPrice = source.IlrEndpointAssessorPrice,
+                        IlrFrameworkCode = source.IlrFrameworkCode,
+                        IlrPathwayCode = source.IlrPathwayCode,
+                        IlrPriceEffectiveFromDate = source.IlrPriceEffectiveFromDate,
+                        IlrPriceEffectiveToDate = source.IlrPriceEffectiveToDate,
+                        IlrProgrammeType = source.IlrProgrammeType,
+                        IlrStandardCode = source.IlrStandardCode,
+                        IlrStartDate = source.IlrStartDate,
+                        IlrTrainingPrice = source.IlrTrainingPrice,
+                        LearnerReferenceNumber = source.LearnerReferenceNumber,
+                        PriceEpisodeIdentifier = source.PriceEpisodeIdentifier,
+                        Ukprn = source.Ukprn,
+                        Uln = source.Uln,
+                        ErrorCodes = string.IsNullOrEmpty(source.ErrorCodes) ? null : JsonConvert.DeserializeObject<List<string>>(source.ErrorCodes)
+                    }).ToArray();
+                });
 
-            _handler = new GetCurrentDataLocksQueryHandler(new GetCurrentDataLocksQueryRequestValidator(new PageNumberMustBeAtLeastOneRule()), _dataLockRepository.Object);
+            _handler = new GetCurrentDataLocksQueryHandler(new GetCurrentDataLocksQueryRequestValidator(new PageNumberMustBeAtLeastOneRule()), _dataLockRepository.Object, _mapper.Object);
 
             _request = new GetCurrentDataLocksQueryRequest { PageNumber = 1 };
         }
@@ -100,8 +130,8 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetCurrentDataL
                 AimSequenceNumber = 2,
                 LearnerReferenceNumber = "L1",
                 PriceEpisodeIdentifier = "P1",
-                ErrorCodes = "['E1','E2']",
-                CommitmentVersions = "[9,8,7]"
+                ApprenticeshipId = 1,
+                ErrorCodes = "['E1','E2']"
             };
 
             var dataLocks = new[] { dataLock };
@@ -121,10 +151,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetCurrentDataL
             Assert.AreEqual(2, actual.Result.Items[0].ErrorCodes.Count);
             Assert.AreEqual("E1", actual.Result.Items[0].ErrorCodes[0]);
             Assert.AreEqual("E2", actual.Result.Items[0].ErrorCodes[1]);
-            Assert.AreEqual(3, actual.Result.Items[0].CommitmentVersions.Count);
-            Assert.AreEqual(9L, actual.Result.Items[0].CommitmentVersions[0]);
-            Assert.AreEqual(8L, actual.Result.Items[0].CommitmentVersions[1]);
-            Assert.AreEqual(7L, actual.Result.Items[0].CommitmentVersions[2]);
+            Assert.IsNull(actual.Result.Items[0].CommitmentVersions);
         }
 
         [Test]
@@ -141,8 +168,8 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetCurrentDataL
                 AimSequenceNumber = 2,
                 LearnerReferenceNumber = "L1",
                 PriceEpisodeIdentifier = "P1",
-                ErrorCodes = "['E1','E2']",
-                CommitmentVersions = "[]"
+                ApprenticeshipId = 1,
+                ErrorCodes = "['E1','E2']"
             };
 
             var dataLocks = new[]
@@ -165,7 +192,6 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetCurrentDataL
             Assert.AreEqual(2, actual.Result.Items[0].ErrorCodes.Count);
             Assert.AreEqual("E1", actual.Result.Items[0].ErrorCodes[0]);
             Assert.AreEqual("E2", actual.Result.Items[0].ErrorCodes[1]);
-            Assert.AreEqual(0, actual.Result.Items[0].CommitmentVersions.Count);
         }
 
         [Test]
@@ -182,8 +208,8 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetCurrentDataL
                 AimSequenceNumber = 2,
                 LearnerReferenceNumber = "L1",
                 PriceEpisodeIdentifier = "P1",
-                ErrorCodes = null,
-                CommitmentVersions = null
+                ApprenticeshipId = 1,
+                ErrorCodes = null
             };
 
             var dataLock2 = new DataLockEntity
@@ -192,8 +218,8 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetCurrentDataL
                 AimSequenceNumber = 3,
                 LearnerReferenceNumber = "L3",
                 PriceEpisodeIdentifier = "P3",
-                ErrorCodes = null,
-                CommitmentVersions = null
+                ApprenticeshipId = 2,
+                ErrorCodes = null
             };
 
             var dataLocks = new[] {dataLock1, dataLock2};
@@ -211,7 +237,6 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetCurrentDataL
             Assert.AreEqual(2, actual.Result.Items.Length);
             Assert.AreEqual(1, actual.Result.Items[0].Ukprn);
             Assert.IsNull(actual.Result.Items[0].ErrorCodes);
-            Assert.IsNull(actual.Result.Items[0].CommitmentVersions);
         }
     }
 }

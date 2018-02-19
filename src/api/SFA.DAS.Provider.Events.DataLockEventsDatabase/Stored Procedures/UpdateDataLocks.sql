@@ -4,7 +4,6 @@ AS
 BEGIN
   UPDATE [DataLockEvents].[LastDataLock] 
 	SET ErrorCodes = dl.ErrorCodes,
-		Commitments = dl.Commitments,
 		DeletedUtc = dl.DeletedUtc  
   FROM [DataLockEvents].[LastDataLock] 
 	JOIN @dataLocks dl ON dl.Ukprn = [DataLockEvents].[LastDataLock].Ukprn

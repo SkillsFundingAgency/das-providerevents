@@ -33,12 +33,13 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             {
                 var rec = new SqlDataRecord(_ukprnMetaData, _learnRefNumberMetaData, _priceEpisodeIdMetaData, _aimSequenceNumberMetaData, _errorCodesMetaData, _commitmentsMetaData, _deletedMetaData);
                 rec.SetInt64(0, param.Ukprn);
-                rec.SetString(1, param.LearnerReferenceNumber);
+                if (param.LearnerReferenceNumber != null)
+                    rec.SetString(1, param.LearnerReferenceNumber);
                 rec.SetString(2, param.PriceEpisodeIdentifier);
                 if (param.AimSequenceNumber.HasValue)
                     rec.SetInt64(3, param.AimSequenceNumber.Value);
-                rec.SetString(4, param.ErrorCodes);
-                rec.SetString(5, param.CommitmentVersions);
+                if (param.ErrorCodes != null)
+                    rec.SetString(4, param.ErrorCodes);
                 if (param.DeletedUtc.HasValue)
                     rec.SetDateTime(6, param.DeletedUtc.Value);
                 items.Add(rec);
@@ -46,7 +47,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 
             var p = sqlCommand.Parameters.Add("@dataLocks", SqlDbType.Structured);
             p.Direction = ParameterDirection.Input;
-            p.TypeName = "[DataLockEvent].[DataLockEntity]";
+            p.TypeName = "[DataLockEvents].[DataLockEntity]";
             p.Value = items;
         }
     }

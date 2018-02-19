@@ -5,7 +5,6 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
     public class DataLockEventEntity
     {
         public long Id { get; set; }
-        public Guid DataLockEventId { get; set; }
         public DateTime ProcessDateTime { get; set; }
         public int Status { get; set; }
         public string IlrFileName { get; set; }
@@ -16,7 +15,6 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
         public string PriceEpisodeIdentifier { get; set; }
         public long ApprenticeshipId { get; set; }
         public long EmployerAccountId { get; set; }
-        public int EventSource { get; set; }
         public bool HasErrors { get; set; }
         public DateTime? IlrStartDate { get; set; }
         public long? IlrStandardCode { get; set; }
@@ -33,6 +31,5 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
         //public DataLockEventApprenticeshipEntity[] Apprenticeships { get; set; }
 
         public string ErrorCodes { get;set; }
-        public string CommitmentVersions { get;set; }
     }
 }

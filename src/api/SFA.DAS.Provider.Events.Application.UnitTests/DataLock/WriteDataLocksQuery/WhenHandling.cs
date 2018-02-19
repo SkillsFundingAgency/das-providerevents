@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
 using SFA.DAS.Provider.Events.Application.DataLock.WriteDataLocksQuery;
+using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Repositories;
-using SFA.DAS.Provider.Events.Application.Validation.Rules;
 
 namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQuery
 {
@@ -16,14 +18,37 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
         private Mock<IDataLockEventRepository> _dataLockEventRepository;
         private WriteDataLocksQueryHandler _handler;
         private WriteDataLocksQueryRequest _request;
+        private Mock<IMapper> _mapper;
 
         [SetUp]
         public void Arrange()
         {
+            _mapper = new Mock<IMapper>();
+            _mapper
+                .Setup(m => m.Map<IList<DataLockEntity>>(It.IsAny<IList<Api.Types.DataLock>>()))
+                .Returns((IList<Api.Types.DataLock> list) => list.Select(source => new DataLockEntity
+                {
+                    ApprenticeshipId = source.CommitmentId,
+                    EmployerAccountId = source.EmployerAccountId,
+                    IlrEndpointAssessorPrice = source.IlrEndpointAssessorPrice,
+                    IlrFrameworkCode = source.IlrFrameworkCode,
+                    IlrPathwayCode = source.IlrPathwayCode,
+                    IlrPriceEffectiveFromDate = source.IlrPriceEffectiveFromDate,
+                    IlrPriceEffectiveToDate = source.IlrPriceEffectiveToDate,
+                    IlrProgrammeType = source.IlrProgrammeType,
+                    IlrStandardCode = source.IlrStandardCode,
+                    IlrStartDate = source.IlrStartDate,
+                    IlrTrainingPrice = source.IlrTrainingPrice,
+                    PriceEpisodeIdentifier = source.PriceEpisodeIdentifier,
+                    Ukprn = source.Ukprn,
+                    Uln = source.Uln,
+                    ErrorCodes = source.ErrorCodes == null || source.ErrorCodes.Count == 0 ? null : JsonConvert.SerializeObject(source.ErrorCodes),
+                    AimSequenceNumber = source.AimSequenceNumber,
+                    LearnerReferenceNumber = source.LearnerReferenceNumber
+                }).ToList());
+            
             _dataLockEventRepository = new Mock<IDataLockEventRepository>();
-
-            _handler = new WriteDataLocksQueryHandler(_dataLockEventRepository.Object);
-
+            _handler = new WriteDataLocksQueryHandler(_dataLockEventRepository.Object, _mapper.Object);
             _request = new WriteDataLocksQueryRequest();
         }
 
@@ -109,7 +134,6 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
             Assert.AreEqual("1", actualEntities[0].LearnerReferenceNumber);
             Assert.AreEqual("1", actualEntities[0].PriceEpisodeIdentifier);
             Assert.IsNull(actualEntities[0].ErrorCodes);
-            Assert.IsNull(actualEntities[0].CommitmentVersions);
         }
 
         [Test]
@@ -160,14 +184,12 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
             Assert.AreEqual("L1", actualEntities[0].LearnerReferenceNumber);
             Assert.AreEqual("P1", actualEntities[0].PriceEpisodeIdentifier);
             Assert.IsNull(actualEntities[0].ErrorCodes);
-            Assert.IsNull(actualEntities[0].CommitmentVersions);
 
             Assert.AreEqual(4, actualEntities[1].Ukprn);
             Assert.AreEqual(5, actualEntities[1].AimSequenceNumber);
             Assert.AreEqual("L2", actualEntities[1].LearnerReferenceNumber);
             Assert.AreEqual("P2", actualEntities[1].PriceEpisodeIdentifier);
             Assert.AreEqual("[\"E1\",\"E2\"]", actualEntities[1].ErrorCodes);
-            Assert.AreEqual("[9,8,7]", actualEntities[1].CommitmentVersions);
         }
 
         [Test]
@@ -188,13 +210,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
                 AimSequenceNumber = 5,
                 LearnerReferenceNumber = "L2",
                 PriceEpisodeIdentifier = "P2",
-                ErrorCodes = new[] {"E1", "E2"},
-                CommitmentVersions = new[]
-                {
-                    new DataLockEventApprenticeship {Version = "9", PathwayCode = 1, StartDate = DateTime.Today},
-                    new DataLockEventApprenticeship {Version = "8", PathwayCode = 2, StartDate = DateTime.Today},
-                    new DataLockEventApprenticeship {Version = "7", PathwayCode = 3, StartDate = DateTime.Today}
-                }
+                ErrorCodes = new[] {"E1", "E2"}
             };
 
             _request.UpdatedDataLocks = new List<Api.Types.DataLock> { dataLock1 };
@@ -219,7 +235,6 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
             Assert.AreEqual("L1", actualEntities[0].LearnerReferenceNumber);
             Assert.AreEqual("P1", actualEntities[0].PriceEpisodeIdentifier);
             Assert.IsNull(actualEntities[0].ErrorCodes);
-            Assert.IsNull(actualEntities[0].CommitmentVersions);
             Assert.IsNull(actualEntities[0].DeletedUtc);
 
             Assert.AreEqual(4, actualEntities[1].Ukprn);
@@ -227,7 +242,6 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
             Assert.AreEqual("L2", actualEntities[1].LearnerReferenceNumber);
             Assert.AreEqual("P2", actualEntities[1].PriceEpisodeIdentifier);
             Assert.AreEqual("[\"E1\",\"E2\"]", actualEntities[1].ErrorCodes);
-            Assert.AreEqual("[9,8,7]", actualEntities[1].CommitmentVersions);
             Assert.IsNotNull(actualEntities[1].DeletedUtc);
         }
     }

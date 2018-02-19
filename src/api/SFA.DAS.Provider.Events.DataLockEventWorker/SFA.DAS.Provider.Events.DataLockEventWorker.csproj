@@ -118,6 +118,10 @@
       <Project>{5DF95FFE-D3ED-4EB9-9797-8056142E7591}</Project>
       <Name>SFA.DAS.Provider.Events.Application</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Provider.Events.Infrastructure\SFA.DAS.Provider.Events.Infrastructure.csproj">
+      <Project>{960BB861-896A-4EEC-870C-BF03227848FD}</Project>
+      <Name>SFA.DAS.Provider.Events.Infrastructure</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

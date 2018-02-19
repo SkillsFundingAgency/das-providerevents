@@ -58,7 +58,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
             {
                 Trace.TraceInformation("Working");
                 await _dataLockProcessor.ProcessDataLocks();
-                await Task.Delay(60000);
+                await Task.Delay(60000, cancellationToken);
             }
         }
         private IContainer ConfigureIocContainer()

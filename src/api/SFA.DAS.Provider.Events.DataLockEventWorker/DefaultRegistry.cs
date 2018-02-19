@@ -15,9 +15,16 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using AutoMapper;
 using MediatR;
 using SFA.DAS.NLog.Logger;
+using SFA.DAS.Provider.Events.Infrastructure.Mapping;
 using StructureMap;
+using StructureMap.TypeRules;
 
 namespace SFA.DAS.Provider.Events.DataLockEventWorker
 {
@@ -34,6 +41,8 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                     scan.RegisterConcreteTypesAgainstTheFirstInterface();
                 });
 
+            
+            RegisterMapper();
             RegisterMediator();
             ConfigureLogging();
         }
@@ -48,6 +57,35 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
         private void ConfigureLogging()
         {
             For<ILog>().Use(x => new NLogLogger(x.ParentType, null, null)).AlwaysUnique();
+        }
+
+        private void RegisterMapper()
+        {
+            
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.StartsWith("SFA.DAS.Data"));
+
+            var mappingProfiles = new List<Profile>();
+
+            foreach (var assembly in assemblies)
+            {
+                var profiles = Assembly.Load(assembly.FullName).GetTypes()
+                                       .Where(t => typeof(Profile).IsAssignableFrom(t))
+                                       .Where(t => t.IsConcrete() && t.HasConstructors())
+                                       .Select(t => (Profile)Activator.CreateInstance(t));
+
+                mappingProfiles.AddRange(profiles);
+            }
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                mappingProfiles.ForEach(cfg.AddProfile);
+                
+            });
+
+            
+//            For<IConfigurationProvider>().Use(config).Singleton();
+            For<IMapper>().Use(config.CreateMapper()).Singleton();
+            For<MapperConfiguration>().Use(cfg => new MapperConfiguration(DomainAutoMapperConfiguration.AddDomainMappings));
         }
     }
 }

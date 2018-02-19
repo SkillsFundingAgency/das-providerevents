@@ -90,9 +90,9 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests
             
             _mediatorMock.Setup(m => m.SendAsync(It.IsAny<GetProvidersQueryRequest>())).ReturnsAsync(_getProvidersQueryResponse).Verifiable("Provider list was not requested");
             _mediatorMock.Setup(m => m.SendAsync(It.Is<GetCurrentDataLocksQueryRequest>(r => r.PageNumber == 1))).ReturnsAsync(currentDataLocksQueryResponse).Verifiable("Current Data Locks page 1 was not requested for provider");
-            _mediatorMock.Setup(m => m.SendAsync(It.Is<GetCurrentDataLocksQueryRequest>(r => r.PageNumber == 2))).ReturnsAsync(new GetCurrentDataLocksQueryResponse{ IsValid = true}).Verifiable("Current Data Locks page 2 was not requested for provider");
+            //_mediatorMock.Setup(m => m.SendAsync(It.Is<GetCurrentDataLocksQueryRequest>(r => r.PageNumber == 2))).ReturnsAsync(new GetCurrentDataLocksQueryResponse{ IsValid = true}).Verifiable("Current Data Locks page 2 was not requested for provider");
             _mediatorMock.Setup(m => m.SendAsync(It.Is<GetLatestDataLocksQueryRequest>(r => r.PageNumber == 1))).ReturnsAsync(lastDataLocksQueryResponse).Verifiable("Latest Data Locks page 1 was not requested for provider");
-            _mediatorMock.Setup(m => m.SendAsync(It.Is<GetLatestDataLocksQueryRequest>(r => r.PageNumber == 2))).ReturnsAsync(new GetLatestDataLocksQueryResponse{ IsValid = true}).Verifiable("Latest Data Locks page 2 was not requested for provider");
+            //_mediatorMock.Setup(m => m.SendAsync(It.Is<GetLatestDataLocksQueryRequest>(r => r.PageNumber == 2))).ReturnsAsync(new GetLatestDataLocksQueryResponse{ IsValid = true}).Verifiable("Latest Data Locks page 2 was not requested for provider");
             _mediatorMock.Setup(m => m.SendAsync(It.Is<UpdateProviderQueryRequest>(r => r.Provider.IlrSubmissionDateTime == DateTime.Today))).ReturnsAsync(new UpdateProviderQueryResponse {IsValid = true}).Verifiable("Provider update was not requested");
 
             _mediatorMock.Setup(m => m.SendAsync(It.IsAny<WriteDataLocksQueryRequest>()))
@@ -202,9 +202,9 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests
             
             _mediatorMock.Setup(m => m.SendAsync(It.IsAny<GetProvidersQueryRequest>())).ReturnsAsync(_getProvidersQueryResponse).Verifiable("Provider list was not requested");
             _mediatorMock.Setup(m => m.SendAsync(It.Is<GetCurrentDataLocksQueryRequest>(r => r.PageNumber == 1))).ReturnsAsync(currentDataLocksQueryResponse).Verifiable("Current Data Locks page 1 was not requested for provider");
-            _mediatorMock.Setup(m => m.SendAsync(It.Is<GetCurrentDataLocksQueryRequest>(r => r.PageNumber == 2))).ReturnsAsync(new GetCurrentDataLocksQueryResponse{ IsValid = true}).Verifiable("Current Data Locks page 2 was not requested for provider");
+            //_mediatorMock.Setup(m => m.SendAsync(It.Is<GetCurrentDataLocksQueryRequest>(r => r.PageNumber == 2))).ReturnsAsync(new GetCurrentDataLocksQueryResponse{ IsValid = true}).Verifiable("Current Data Locks page 2 was not requested for provider");
             _mediatorMock.Setup(m => m.SendAsync(It.Is<GetLatestDataLocksQueryRequest>(r => r.PageNumber == 1))).ReturnsAsync(lastDataLocksQueryResponse).Verifiable("Latest Data Locks page 1 was not requested for provider");
-            _mediatorMock.Setup(m => m.SendAsync(It.Is<GetLatestDataLocksQueryRequest>(r => r.PageNumber == 2))).ReturnsAsync(new GetLatestDataLocksQueryResponse{ IsValid = true}).Verifiable("Latest Data Locks page 2 was not requested for provider");
+            //_mediatorMock.Setup(m => m.SendAsync(It.Is<GetLatestDataLocksQueryRequest>(r => r.PageNumber == 2))).ReturnsAsync(new GetLatestDataLocksQueryResponse{ IsValid = true}).Verifiable("Latest Data Locks page 2 was not requested for provider");
             _mediatorMock.Setup(m => m.SendAsync(It.Is<UpdateProviderQueryRequest>(r => r.Provider.IlrSubmissionDateTime == DateTime.Today))).ReturnsAsync(new UpdateProviderQueryResponse {IsValid = true}).Verifiable("Provider update was not requested");
 
             _mediatorMock.Setup(m => m.SendAsync(It.IsAny<WriteDataLocksQueryRequest>()))
@@ -299,10 +299,11 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests
                             PriceEpisodeIdentifier = "1",
                             Uln = 1L,
                             ErrorCodes = new[] {"E1", "E2"},
+                            CommitmentId = 7,
                             CommitmentVersions = new[]
                             {
-                                new DataLockEventApprenticeship { Version = "1", PathwayCode = 1, StartDate = DateTime.Today}, 
-                                new DataLockEventApprenticeship { Version = "2", PathwayCode = 2, EffectiveDate = DateTime.Today }
+                                new DataLockEventApprenticeship {Version = "1", PathwayCode = 1, StartDate = DateTime.Today},
+                                new DataLockEventApprenticeship {Version = "2", PathwayCode = 2, EffectiveDate = DateTime.Today}
                             },
                             IlrEndpointAssessorPrice = 2M,
                             IlrPriceEffectiveFromDate = DateTime.Today,
@@ -372,6 +373,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests
             Assert.AreEqual(2, actualWriteDataLocksRequest.NewDataLocks[0].IlrProgrammeType);
             Assert.AreEqual(2L, actualWriteDataLocksRequest.NewDataLocks[0].IlrStandardCode);
             Assert.AreEqual(DateTime.Today, actualWriteDataLocksRequest.NewDataLocks[0].IlrPriceEffectiveToDate);
+            Assert.AreEqual(7, actualWriteDataLocksRequest.NewDataLocks[0].CommitmentId);
 
             // 1 event
             Assert.IsNotNull(actualWriteDataLockEventsRequest);
@@ -384,9 +386,6 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests
             Assert.AreEqual(2, actualWriteDataLockEventsRequest.DataLockEvents[0].Errors.Length);
             Assert.AreEqual("E1", actualWriteDataLockEventsRequest.DataLockEvents[0].Errors[0].ErrorCode);
             Assert.AreEqual("E2", actualWriteDataLockEventsRequest.DataLockEvents[0].Errors[1].ErrorCode);
-            Assert.AreEqual(2, actualWriteDataLockEventsRequest.DataLockEvents[0].Apprenticeships.Length);
-            Assert.AreEqual("1", actualWriteDataLockEventsRequest.DataLockEvents[0].Apprenticeships[0].Version);
-            Assert.AreEqual("2", actualWriteDataLockEventsRequest.DataLockEvents[0].Apprenticeships[1].Version);
             Assert.AreEqual(2M, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrEndpointAssessorPrice);
             Assert.AreEqual(DateTime.Today, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrPriceEffectiveFromDate);
             Assert.AreEqual(DateTime.Today, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrStartDate);
@@ -396,6 +395,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests
             Assert.AreEqual(2, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrProgrammeType);
             Assert.AreEqual(2L, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrStandardCode);
             Assert.AreEqual(DateTime.Today, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrPriceEffectiveToDate);
+            Assert.AreEqual(7, actualWriteDataLockEventsRequest.DataLockEvents[0].ApprenticeshipId);
         }
 
         [Test]

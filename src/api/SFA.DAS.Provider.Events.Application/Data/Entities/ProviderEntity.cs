@@ -10,5 +10,6 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
     {
         public long Ukprn { get;set; }
         public DateTime IlrSubmissionDateTime { get; set; }
+        public string IlrFileName { get; set; }
     }
 }

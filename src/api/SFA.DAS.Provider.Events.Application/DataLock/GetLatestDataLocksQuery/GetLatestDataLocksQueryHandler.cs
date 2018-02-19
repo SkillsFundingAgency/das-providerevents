@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
-using Newtonsoft.Json;
 using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Repositories;
 using SFA.DAS.Provider.Events.Application.Validation;
 
@@ -13,13 +13,15 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.GetLatestDataLocksQuery
     {
         private readonly IValidator<GetLatestDataLocksQueryRequest> _validator;
         private readonly IDataLockEventRepository _dataLockEventRepository;
+        private readonly IMapper _mapper;
 
         public GetLatestDataLocksQueryHandler(
             IValidator<GetLatestDataLocksQueryRequest> validator, 
-            IDataLockEventRepository dataLockEventRepository)
+            IDataLockEventRepository dataLockEventRepository, IMapper mapper)
         {
             _validator = validator;
             _dataLockEventRepository = dataLockEventRepository;
+            _mapper = mapper;
         }
 
         public async Task<GetLatestDataLocksQueryResponse> Handle(GetLatestDataLocksQueryRequest message)
@@ -39,33 +41,14 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.GetLatestDataLocksQuery
 
                 var entities = await _dataLockEventRepository.GetLastDataLocks(message.Ukprn, message.PageNumber, message.PageSize);
 
-                var dataLocks = new List<Api.Types.DataLock>();
-
-                foreach (var entity in entities.Items)
-                {
-                    var dataLock = new Api.Types.DataLock
-                    {
-                        Ukprn = entity.Ukprn,
-                        LearnerReferenceNumber = entity.LearnerReferenceNumber,
-                        AimSequenceNumber = entity.AimSequenceNumber,
-                        PriceEpisodeIdentifier = entity.PriceEpisodeIdentifier
-                    };
-
-                    if (!string.IsNullOrEmpty(entity.ErrorCodes))
-                        dataLock.ErrorCodes = JsonConvert.DeserializeObject<List<string>>(entity.ErrorCodes);
-
-                    if (!string.IsNullOrEmpty(entity.CommitmentVersions))
-                        dataLock.CommitmentVersions = JsonConvert.DeserializeObject<List<DataLockEventApprenticeship>>(entity.CommitmentVersions);
-
-                    dataLocks.Add(dataLock);
-                }
+                var dataLocks = _mapper.Map<Api.Types.DataLock[]>(entities.Items);
 
                 return new GetLatestDataLocksQueryResponse
                 {
                     IsValid = true,
                     Result = new PageOfResults<Api.Types.DataLock>
                     {
-                        Items = dataLocks.ToArray(),
+                        Items = dataLocks,
                         PageNumber = entities.PageNumber,
                         TotalNumberOfPages = entities.TotalNumberOfPages
                     }

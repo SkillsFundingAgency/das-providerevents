@@ -24,8 +24,6 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             using (var connection = await GetOpenConnection().ConfigureAwait(false))
             {
                 var dataLockEntities = (await connection.QueryAsync<DataLockEntity>("DataLock.GetDataLocks", new {ukprn, page, pageSize}, commandType: CommandType.StoredProcedure).ConfigureAwait(false)).ToList();
-                var parameters = new DataLockEntityTableValueParameter(dataLockEntities);
-                var commitments = (await connection.QueryAsync<DataLockEntity>("DataLock.GetDataLockCommitments", parameters, commandType: CommandType.StoredProcedure).ConfigureAwait(false)).ToList();                
                 return dataLockEntities;
             }
         }

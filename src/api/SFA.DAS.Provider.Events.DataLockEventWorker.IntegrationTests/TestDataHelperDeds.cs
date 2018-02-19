@@ -2,9 +2,7 @@
 using System.Configuration;
 using System.Data.SqlClient;
 using System.IO;
-using System.Reflection;
 using Dapper;
-using NUnit.Framework;
 
 namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
 {
@@ -37,78 +35,19 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
 
         public static void Clean()
         {
-            var sql = @"
-                IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'DataLock') EXEC('CREATE SCHEMA DataLock')
-                IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'Valid') EXEC('CREATE SCHEMA Valid')
-                IF OBJECT_ID('DataLock.PriceEpisodeMatch', 'U') IS NOT NULL 
-					IF EXISTS(SELECT 1 FROM [DataLock].[PriceEpisodeMatch]) 
-						DROP TABLE [DataLock].[PriceEpisodeMatch];
-                IF OBJECT_ID('DataLock.ValidationError', 'U') IS NOT NULL 
-					IF EXISTS(SELECT 1 FROM DataLock.ValidationError) 
-						DROP TABLE DataLock.ValidationError; 
-                IF OBJECT_ID('Valid.LearningProvider', 'U') IS NOT NULL 
-					IF EXISTS(SELECT 1 FROM [Valid].[LearningProvider]) 
-						DROP TABLE [Valid].[LearningProvider]; 
-                IF OBJECT_ID('[dbo].[FileDetails]', 'U') IS NOT NULL 
-					IF EXISTS(SELECT 1 FROM [dbo].[FileDetails]) 
-						DROP TABLE [dbo].[FileDetails]; 
-
-                IF OBJECT_ID('DataLock.PriceEpisodeMatch', 'U') IS NULL
-                    CREATE TABLE DataLock.PriceEpisodeMatch
-                    (
-                        [Ukprn] bigint NOT NULL,
-                        [PriceEpisodeIdentifier] varchar(25) NOT NULL,
-                        [LearnRefNumber] varchar(100) NOT NULL,
-                        [AimSeqNumber] bigint NOT NULL,
-                        [CommitmentId] varchar(50) NOT NULL,
-                        [CollectionPeriodName] varchar(8),
-                        [CollectionPeriodMonth] int,
-                        [CollectionPeriodYear] int,
-	                    [IsSuccess] bit
-                    );
-
-                IF OBJECT_ID('DataLock.ValidationError', 'U') IS NULL
-                    CREATE TABLE DataLock.ValidationError
-                    (
-                        [Ukprn] bigint,
-                        [LearnRefNumber] varchar(12),
-                        [AimSeqNumber] int,
-                        [RuleId] varchar(50),
-                        [PriceEpisodeIdentifier] varchar(25) NOT NULL
-                    );
-
-                IF OBJECT_ID('Valid.LearningProvider', 'U') IS NULL
-                    create table [Valid].[LearningProvider] (
-	                    [UKPRN] [bigint] NOT NULL PRIMARY KEY
-                    );
-
-                IF OBJECT_ID('dbo.FileDetails', 'U') IS NULL
-                    CREATE TABLE [dbo].[FileDetails] (
-                        [ID] [int] IDENTITY(1,1) PRIMARY KEY,
-                        [UKPRN] [bigint] NOT NULL,
-                        [Filename] [nvarchar](50) NULL,
-                        [FileSizeKb] [bigint] NULL,
-                        [TotalLearnersSubmitted] [int] NULL,
-                        [TotalValidLearnersSubmitted] [int] NULL,
-                        [TotalInvalidLearnersSubmitted] [int] NULL,
-                        [TotalErrorCount] [int] NULL,
-                        [TotalWarningCount] [int] NULL,
-                        [SubmittedTime] [datetime] NULL,
-                        [Success] [bit]
-                        CONSTRAINT [PK_dbo.FileDetails] UNIQUE ([UKPRN], [Filename], [Success] ASC)
-                    );";
+            var script = Directory.GetFiles(Path.Combine(Path.GetDirectoryName(typeof(TestDataHelperDeds).Assembly.Location), "DedsDbSetUp"), "Cleanup.sql")[0];
 
             using (var connection = new SqlConnection(_connectionString))
-                connection.Execute(sql);
+                connection.Execute(File.ReadAllText(script));
         }
 
         public static void AddProvider(long ukprn, DateTime ilrSubmissionDate)
         {
             Execute("insert into [Valid].[LearningProvider] (UKPRN) values (@ukprn)", new { ukprn });
-            Execute("insert into [dbo].[FileDetails] (UKPRN, SubmittedTime) values (@ukprn, @ilrSubmissionDate)", new { ukprn, ilrSubmissionDate });
+            Execute("insert into [dbo].[FileDetails] (UKPRN, SubmittedTime, Filename) values (@ukprn, @ilrSubmissionDate, cast(@ilrSubmissionDate as sysname) + '.xml')", new { ukprn, ilrSubmissionDate });
         }
 
-        public static void AddCommitment(long id,
+        public static void AddDataLock(long[] commitmentIds,
             long ukprn,
             string learnerRefNumber,
             int aimSequenceNumber = 1,
@@ -120,9 +59,19 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
             int? programmeType = null,
             int? frameworkCode = null,
             int? pathwayCode = null,
-            bool passedDataLock = true)
+            string errorCodesCsv = null,
+            string priceEpisodeIdentifier = null,
+            long? employerAccountId = 77,
+            DateTime? effectiveFromDate = null,
+            DateTime? effectiveToDate = null,
+            decimal totalTrainingPrice = 0,
+            decimal totalEndpointAssessorPrice = 0,
+            string learnAimRef = "60051255")
         {
             var minStartDate = new DateTime(2017, 4, 1);
+
+            if (!effectiveFromDate.HasValue)
+                effectiveFromDate = DateTime.Today;
 
             if (uln == 0)
             {
@@ -144,95 +93,155 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
                 endDate = startDate.AddYears(1);
             }
 
-            //Execute("INSERT INTO Reference.DasCommitments " +
-            //        "(CommitmentId,VersionId,AccountId,Uln,Ukprn,StartDate,EndDate,AgreedCost,StandardCode,ProgrammeType,FrameworkCode,PathwayCode,PaymentStatus,PaymentStatusDescription,Priority,EffectiveFrom) " +
-            //        "VALUES " +
-            //        "(@id, 1, '123', @uln, @ukprn, @startDate, @endDate, @agreedCost, @standardCode, @programmeType, @frameworkCode, @pathwayCode, 1, 'Active', 1, @startDate)",
-            //        new { id, uln, ukprn, startDate, endDate, agreedCost, standardCode, programmeType, frameworkCode, pathwayCode });
+            if (priceEpisodeIdentifier == null)
+                priceEpisodeIdentifier = $"99-99-99-{startDate:yyyy-MM-dd}";
 
-            var priceEpisodeIdentifier = $"99-99-99-{startDate.ToString("yyyy-MM-dd")}";
-
-            Execute("INSERT INTO DataLock.PriceEpisodeMatch "
-                    + "(Ukprn,LearnRefNumber,AimSeqNumber,CommitmentId,PriceEpisodeIdentifier,IsSuccess) "
-                    + "VALUES "
-                    + "(@ukprn,@learnerRefNumber,@aimSequenceNumber,@id,@priceEpisodeIdentifier,@isSuccess)",
-                    new { id, ukprn, learnerRefNumber, aimSequenceNumber, priceEpisodeIdentifier, isSuccess = passedDataLock });
-
-            //var censusDate = LastDayOfMonth(startDate);
-            //var period = 1;
-
-            //while (censusDate <= endDate && period <= 12)
-            //{
-            //    foreach (var traxType in Enum.GetValues(typeof(TransactionTypesFlag)))
-            //    {
-            //        AddPriceEpisodePeriodMatch(id, ukprn, learnerRefNumber, aimSequenceNumber, priceEpisodeIdentifier, period, (int)traxType, passedDataLock);
-            //    }
-
-            //    censusDate = LastDayOfMonth(censusDate.AddMonths(1));
-            //    period++;
-            //}
-
-            //if (endDate != LastDayOfMonth(endDate) && period <= 12)
-            //{
-            //    foreach (var traxType in Enum.GetValues(typeof(TransactionTypesFlag)))
-            //    {
-            //        AddPriceEpisodePeriodMatch(id, ukprn, learnerRefNumber, aimSequenceNumber, priceEpisodeIdentifier, period, (int)traxType, passedDataLock);
-            //    }
-            //}
-
-            if (!passedDataLock)
+            if (commitmentIds != null)
             {
-                Execute("INSERT INTO DataLock.ValidationError "
-                      + "(Ukprn, LearnRefNumber, AimSeqNumber, RuleId, PriceEpisodeIdentifier) "
-                      + "VALUES "
-                      + "(@ukprn, @learnerRefNumber, @aimSequenceNumber, 'DLOCK_07', @priceEpisodeIdentifier)",
-                      new { id, ukprn, learnerRefNumber, aimSequenceNumber, priceEpisodeIdentifier });
+                foreach (var id in commitmentIds)
+                {
+                    Execute(@"INSERT INTO [dbo].[DasCommitments]
+                                   ([CommitmentId]
+                                   ,[VersionId]
+                                   ,[Uln]
+                                   ,[Ukprn]
+                                   ,[AccountId]
+                                   ,[StartDate]
+                                   ,[EndDate]
+                                   ,[AgreedCost]
+                                   ,[StandardCode]
+                                   ,[ProgrammeType]
+                                   ,[FrameworkCode]
+                                   ,[PathwayCode]
+                                   ,[PaymentStatus]
+                                   ,[PaymentStatusDescription]
+                                   ,[Priority]
+                                   ,[EffectiveFromDate]
+                                   ,[EffectiveToDate]
+                                   ,[LegalEntityName])
+                             VALUES
+                                   (@id
+                                   ,cast(@id as sysname) + '-' + cast(@id as sysname)
+                                   ,@uln
+                                   ,@ukprn
+                                   ,@employerAccountId
+                                   ,@startDate
+                                   ,@endDate
+                                   ,@agreedCost
+                                   ,@standardCode
+                                   ,@programmeType
+                                   ,@frameworkCode
+                                   ,@pathwayCode
+                                   ,@paymentStatus
+                                   ,@paymentStatusDescription
+                                   ,@priority
+                                   ,@effectiveFromDate
+                                   ,@effectiveToDate
+                                   ,'LegalEntityName')",
+                        new {id, uln, ukprn, employerAccountId, startDate, endDate, agreedCost, standardCode, programmeType, frameworkCode, pathwayCode, paymentStatus = 0, paymentStatusDescription = "",
+                            priority = 1, learnerRefNumber, aimSequenceNumber, priceEpisodeIdentifier, isSuccess = errorCodesCsv == null, effectiveFromDate, effectiveToDate});
+
+                    Execute(@"INSERT INTO DataLock.PriceEpisodeMatch
+                        (Ukprn,LearnRefNumber,AimSeqNumber,CommitmentId,PriceEpisodeIdentifier,IsSuccess)
+                        VALUES
+                        (@ukprn,@learnerRefNumber,@aimSequenceNumber,@id,@priceEpisodeIdentifier,@isSuccess)",
+                        new {id, ukprn, learnerRefNumber, aimSequenceNumber, priceEpisodeIdentifier, isSuccess = errorCodesCsv == null});
+
+                    if (errorCodesCsv != null)
+                    {
+                        foreach (var errorCode in errorCodesCsv.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            Execute(@"INSERT INTO DataLock.ValidationError
+                              (Ukprn, LearnRefNumber, AimSeqNumber, RuleId, PriceEpisodeIdentifier)
+                              VALUES
+                              (@ukprn, @learnerRefNumber, @aimSequenceNumber, @errorCode, @priceEpisodeIdentifier)",
+                                new {id, ukprn, learnerRefNumber, aimSequenceNumber, priceEpisodeIdentifier, errorCode});
+                        }
+                    }
+                }
             }
-        }
 
-        public static void AddIlrDataForCommitment(long? commitmentId,
-            string learnerRefNumber,
-            int aimSequenceNumber = 1)
-        {
-            Execute("INSERT INTO Rulebase.AEC_ApprenticeshipPriceEpisode "
-                    + "(LearnRefNumber, PriceEpisodeIdentifier, EpisodeEffectiveTNPStartDate, EpisodeStartDate, "
-                    + "PriceEpisodeAimSeqNumber, PriceEpisodePlannedEndDate, PriceEpisodeTotalTNPPrice, TNP1, TNP2) "
-                    + "SELECT "
-                    + "@learnerRefNumber, "
-                    + "'99-99-99-' + CONVERT(char(10), StartDate, 126), "
-                    + "StartDate, "
-                    + "StartDate, "
-                    + "@aimSequenceNumber, "
-                    + "EndDate, "
-                    + "AgreedCost, "
-                    + "AgreedCost * 0.8, "
-                    + "AgreedCost * 0.2 "
-                    + "FROM Reference.DasCommitments "
-                    + "WHERE CommitmentId = @commitmentId",
-                new {commitmentId, learnerRefNumber, aimSequenceNumber});
 
-            Execute("INSERT INTO Valid.Learner "
-                    + "(LearnRefNumber, ULN, Ethnicity, Sex, LLDDHealthProb) "
-                    + "SELECT @learnerRefNumber,Uln,0,0,0 FROM Reference.DasCommitments "
-                    + "WHERE CommitmentId = @commitmentId",
-                new {commitmentId, learnerRefNumber});
 
-            Execute("INSERT INTO Valid.LearningDelivery "
-                    + "(LearnRefNumber, LearnAimRef, AimType, AimSeqNumber, LearnStartDate, LearnPlanEndDate, FundModel, StdCode, ProgType, FworkCode, PwayCode) "
-                    + "SELECT @learnerRefNumber, 'ZPROG001', 1, @aimSequenceNumber, StartDate, EndDate, 36, StandardCode, ProgrammeType, FrameworkCode, PathwayCode FROM Reference.DasCommitments "
-                    + "WHERE CommitmentId = @commitmentId",
-                new {commitmentId, learnerRefNumber, aimSequenceNumber});
-        }
-        
+            Execute(@"
+                if not exists(select 1 from [Rulebase].[AEC_ApprenticeshipPriceEpisode] where Ukprn = @ukprn and LearnRefNumber = @learnerRefNumber and PriceEpisodeIdentifier = @priceEpisodeIdentifier)
+                INSERT INTO [Rulebase].[AEC_ApprenticeshipPriceEpisode]
+                           ([Ukprn]
+                           ,[LearnRefNumber]
+                           ,[PriceEpisodeIdentifier]
+                           ,[PriceEpisodeAimSeqNumber]
+                           ,[TNP1]
+                           ,[TNP2]
+                           ,[TNP3]
+                           ,[TNP4]
+                           ,[EpisodeEffectiveTNPStartDate]
+                           ,[PriceEpisodeContractType])
+                     VALUES
+                           (@ukprn
+                           ,@learnerRefNumber
+                           ,@priceEpisodeIdentifier
+                           ,@aimSequenceNumber
+                           ,@totalTrainingPrice
+                           ,@totalEndpointAssessorPrice
+                           ,0
+                           ,0
+                           ,@effectiveFromDate
+                           ,'Levy Contract')",
+                new
+                    {ukprn, learnerRefNumber, priceEpisodeIdentifier, effectiveFromDate, totalTrainingPrice, totalEndpointAssessorPrice, aimSequenceNumber});
 
-        public static void AddDataLockValidationError(long ukprn, string learnRefNumber, long? aimSeqNumber, string priceEpisodeIdentifier, string ruleId)
-        {
+            Execute(@"
+                if not exists(select 1 from [Valid].[Learner] where Ukprn = @ukprn and LearnRefNumber = @learnerRefNumber)
+                INSERT INTO [Valid].[Learner]
+                           ([Ukprn]
+                           ,[LearnRefNumber]
+                           ,[Uln]
+                           ,[Ethnicity]
+                           ,[Sex]
+                           ,[LLDDHealthProb]
+                           )
+                     VALUES
+                           (@ukprn
+                           ,@learnerRefNumber
+                           ,@uln
+                           ,0
+                           ,'Y'
+                           ,1)",
+                new
+                    {ukprn, learnerRefNumber, uln });
 
-        }
-
-        public static void AddDataLockPricePeriodMatch(long ukprn, string learnRefNumber, long? aimSeqNumber, string priceEpisodeIdentifier, long commitmentId, bool isSuccess)
-        {
-
+            Execute(@"
+                if not exists(select 1 from [Valid].[LearningDelivery] where Ukprn = @ukprn and LearnRefNumber = @learnerRefNumber and AimSeqNumber = @aimSequenceNumber)
+                INSERT INTO [Valid].[LearningDelivery]
+                           ([Ukprn]
+                           ,[LearnRefNumber]
+                           ,[AimSeqNumber]
+                           ,[LearnStartDate]
+                           ,[StdCode]
+                           ,[ProgType]
+                           ,[FworkCode]
+                           ,[PwayCode]
+                           ,[LearnAimRef]
+                           ,[AimType]
+                           ,[LearnPlanEndDate]
+                           ,[FundModel]
+                           )
+                     VALUES
+                           (@ukprn
+                           ,@learnerRefNumber
+                           ,@aimSequenceNumber
+                           ,@startDate
+                           ,@standardCode
+                           ,@programmeType
+                           ,@frameworkCode
+                           ,@pathwayCode
+                           ,@learnAimRef
+                           ,3
+                           ,@endDate
+                           ,36
+                           )",
+                new
+                    {ukprn, learnerRefNumber, aimSequenceNumber, startDate, standardCode, programmeType, frameworkCode, pathwayCode, learnAimRef, endDate });
         }
 
         private static void Execute(string command, object param = null)

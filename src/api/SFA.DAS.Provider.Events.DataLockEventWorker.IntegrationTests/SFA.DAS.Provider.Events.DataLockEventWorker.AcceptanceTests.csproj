@@ -130,14 +130,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataLockProcessorTestBase.cs" />
+    <Compile Include="FromPaymentsComponent\DataLockErrorsTest.cs" />
     <Compile Include="ProcessTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetUpFixture.cs" />
     <Compile Include="Specs\WhenANewDataLockIsGenerated.cs" />
     <Compile Include="Specs\WhenExistingDataLockProcessed.cs" />
-    <Compile Include="Specs\WhenAnExistingEventIsNonLongerFound.cs" />
-    <Compile Include="Specs\WhenARemovedEventIsReprocessed.cs" />
-    <Compile Include="TestDataHelperDataLockEventStorage.cs" />
+    <Compile Include="Specs\WhenAnExistingEventIsNoLongerFound.cs" />
+    <Compile Include="TestDataHelperDataLockEventsDatabase.cs" />
     <Compile Include="TestDataHelperDeds.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +176,10 @@
       <Link>DedsDbSetUp\GetProviders.sql</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="DedsDbSetUp\Cleanup.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

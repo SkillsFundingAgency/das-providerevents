@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
-using Newtonsoft.Json;
 using SFA.DAS.Provider.Events.Api.Types;
-using SFA.DAS.Provider.Events.Application.Data.Entities;
+using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Repositories;
 using SFA.DAS.Provider.Events.Application.Validation;
 
@@ -15,13 +12,15 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.GetCurrentDataLocksQuery
     {
         private readonly IValidator<GetCurrentDataLocksQueryRequest> _validator;
         private readonly IDataLockRepository _dataLockRepository;
+        private readonly IMapper _mapper;
 
         public GetCurrentDataLocksQueryHandler(
             IValidator<GetCurrentDataLocksQueryRequest> validator, 
-            IDataLockRepository dataLockRepository)
+            IDataLockRepository dataLockRepository, IMapper mapper)
         {
             _validator = validator;
             _dataLockRepository = dataLockRepository;
+            _mapper = mapper;
         }
 
         public async Task<GetCurrentDataLocksQueryResponse> Handle(GetCurrentDataLocksQueryRequest message)
@@ -46,10 +45,9 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.GetCurrentDataLocksQuery
                     IsValid = true,
                     Result = new PageOfResults<Api.Types.DataLock>
                     {
-                        Items = dataLockEvents.Select(ToDataLock).ToArray(),
+                        Items = _mapper.Map<Api.Types.DataLock[]>(dataLockEvents),
                         PageNumber = message.PageNumber,
                         TotalNumberOfPages = -1
-
                     }
                 };
             }
@@ -61,35 +59,6 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.GetCurrentDataLocksQuery
                     Exception = ex
                 };
             }
-        }
-
-        private static Api.Types.DataLock ToDataLock(DataLockEntity e)
-        {
-            var dataLock = new Api.Types.DataLock
-            {
-                Ukprn = e.Ukprn,
-                LearnerReferenceNumber = e.LearnerReferenceNumber,
-                PriceEpisodeIdentifier = e.PriceEpisodeIdentifier,
-                AimSequenceNumber = e.AimSequenceNumber,
-                IlrEndpointAssessorPrice = e.IlrEndpointAssessorPrice,
-                IlrFrameworkCode = e.IlrFrameworkCode,
-                IlrPathwayCode = e.IlrPathwayCode,
-                IlrPriceEffectiveFromDate = e.IlrPriceEffectiveFromDate,
-                IlrPriceEffectiveToDate = e.IlrPriceEffectiveToDate,
-                IlrProgrammeType = e.IlrProgrammeType,
-                IlrStandardCode = e.IlrStandardCode,
-                IlrStartDate = e.IlrStartDate,
-                IlrTrainingPrice = e.IlrTrainingPrice,
-                Uln = e.Uln
-            };
-
-            if (!string.IsNullOrEmpty(e.ErrorCodes))
-                dataLock.ErrorCodes = JsonConvert.DeserializeObject<List<string>>(e.ErrorCodes);
-
-            if (!string.IsNullOrEmpty(e.CommitmentVersions))
-                dataLock.CommitmentVersions = JsonConvert.DeserializeObject<List<DataLockEventApprenticeship>>(e.CommitmentVersions);
-
-            return dataLock;
         }
     }
 }

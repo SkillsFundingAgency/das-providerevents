@@ -16,7 +16,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
         public void SetUp()
         {
             TestDataHelperDeds.CreateDatabase();
-            TestDataHelperDataLockEventStorage.CreateDatabase();
+            //TestDataHelperDataLockEventsDatabase.CreateDatabase();
         }
     }
 }

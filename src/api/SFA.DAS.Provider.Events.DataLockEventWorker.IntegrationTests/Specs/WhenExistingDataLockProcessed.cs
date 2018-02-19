@@ -1,192 +1,99 @@
-﻿//using System.Threading.Tasks;
-//using MediatR;
-//using Moq;
-//using NLog;
-//using NUnit.Framework;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using MediatR;
+using Moq;
+using NLog;
+using NUnit.Framework;
+using SFA.DAS.Provider.Events.Api.Types;
 
-//namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests.Specs
-//{
-//    public class WhenExistingDataLockProcessed // WhenAnExistingEventIsFound
-//    {
-//        private IDataLockProcessor _dataLockProcessor;
-//        private Mock<ILogger> _logMock = new Mock<ILogger>();
-//        private Mock<IMediator> _mediatorMock = new Mock<IMediator>();
+namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests.Specs
+{
+    public class WhenExistingDataLockProcessed : DataLockProcessorTestBase
+    {
+        private IDataLockProcessor _dataLockProcessor;
+        private Mock<ILogger> _logMock = new Mock<ILogger>();
+        private Mock<IMediator> _mediatorMock = new Mock<IMediator>();
 
-//        [TestCase(true)]
-//        [TestCase(false)]
-//        public async Task ThenNoNewEventsShouldBeWrittenIfNothingChanged(bool passedDataLock)
-//        {
-            
-//            _dataLockProcessor = new DataLockProcessor(_logMock.Object, _mediatorMock.Object);
+        private long Ukprn = 10000534;
+        private long CommitmentId = 1;
+        private const string LearnerRefNumber = "Lrn-007";
+        private const string PriceEpisodeIdentifier = "1-1-1-2017-04-07";
 
-//            //Arrange
-//            var helper = new TestDataHelperDataLockEventStorage();
+        [TestCase(true)]
+        [TestCase(false)]
+        public void ThenNoNewEventsShouldBeWrittenIfNothingChanged(bool passedDataLock)
+        {
+            //Arrange
+            TestDataHelperDeds.AddProvider(Ukprn, DateTime.Today);
+            TestDataHelperDeds.AddDataLock(new[] {CommitmentId}, Ukprn, LearnerRefNumber, priceEpisodeIdentifier: PriceEpisodeIdentifier, errorCodesCsv: passedDataLock ? null : "E1");
 
-//            var ukprn = 10000534;
-//            var commitmentId = 1;
+            TestDataHelperDataLockEventsDatabase.AddProvider(Ukprn, DateTime.Today.AddDays(-1));
+            TestDataHelperDataLockEventsDatabase.AddDataLock(new[] {CommitmentId}, Ukprn, LearnerRefNumber, priceEpisodeIdentifier: PriceEpisodeIdentifier, errorCodesCsv: passedDataLock ? null : "E1");
 
-//            helper.Clean();
-//            //helper.SetCurrentPeriodEnd();
+            //Act
+            Act(() => TestDataHelperDataLockEventsDatabase.Count("select count(*) from [DataLockEvents].[Provider] where Ukprn = @ukprn and IlrSubmissionDateTime = @date", new {ukprn = Ukprn, date = DateTime.Today}) > 0);
 
-//            helper.AddLearningProvider(ukprn);
+            // Assert
+            var events = TestDataHelperDataLockEventsDatabase.GetAllEvents();
+            var actualEvent = events?.SingleOrDefault(e => e.PriceEpisodeIdentifier == PriceEpisodeIdentifier);
 
-//            //helper.AddFileDetails(ukprn);
-//            helper.AddCommitment(commitmentId, ukprn, "Lrn-001", passedDataLock: passedDataLock);
-//            helper.AddIlrDataForCommitment(commitmentId, "Lrn-001");
+            Assert.IsNull(actualEvent);
+        }
 
-//            //helper.CopyReferenceData();
+        [Test]
+        public void ThenANewEventShouldBeWrittenIfSomethingChanged()
+        {
+            //Arrange
+            TestDataHelperDeds.AddProvider(Ukprn, DateTime.Today);
+            TestDataHelperDeds.AddDataLock(new[] {CommitmentId}, Ukprn, LearnerRefNumber, priceEpisodeIdentifier: PriceEpisodeIdentifier);
 
-//            //Act
-//            await _dataLockProcessor.ProcessDataLocks();
+            TestDataHelperDataLockEventsDatabase.AddProvider(Ukprn, DateTime.Today.AddDays(-1));
+            TestDataHelperDataLockEventsDatabase.AddDataLock(new[] {CommitmentId}, Ukprn, LearnerRefNumber, priceEpisodeIdentifier: PriceEpisodeIdentifier, errorCodesCsv: "E1");
 
-//            //TaskRunner.RunTask(eventsSource:
-//            //    context == TestFixtureContext.PeriodEnd
-//            //    ? EventSource.PeriodEnd
-//            //    : EventSource.Submission);
+            //Act
+            Act(() => TestDataHelperDataLockEventsDatabase.Count("select count(*) from [DataLockEvents].[Provider] where Ukprn = @ukprn and IlrSubmissionDateTime = @date", new {ukprn = Ukprn, date = DateTime.Today}) > 0);
 
-//            // Assert
-//            var events = helper.GetAllEvents();
+            // Assert
+            var events = TestDataHelperDataLockEventsDatabase.GetAllEvents();
+            var actualEvent = events?.SingleOrDefault(e => e.PriceEpisodeIdentifier == PriceEpisodeIdentifier);
 
-//            Assert.IsNotNull(events);
-//            Assert.AreEqual(0, events.Count);
-//        }
+            Assert.IsNotNull(actualEvent);
+            Assert.AreEqual(Ukprn, actualEvent.Ukprn);
+            Assert.AreEqual(PriceEpisodeIdentifier, actualEvent.PriceEpisodeIdentifier);
+            Assert.AreEqual(LearnerRefNumber, actualEvent.LearnRefNumber);
+            Assert.AreEqual(CommitmentId, actualEvent.ApprenticeshipId);
+            Assert.AreEqual(false, actualEvent.HasErrors);
+            Assert.AreEqual(null, actualEvent.ErrorCodes);
+            Assert.AreEqual(EventStatus.Updated, (EventStatus)actualEvent.Status);
+        }
 
-///*
-//        [Test]
-//        public void ThenANewEventShouldBeWrittenIfSomethingChanged()
-//        {
-//            //Arrange
-//            var helper = new TestDataHelper();
-
-//            helper.Clean();
-//            //helper.SetCurrentPeriodEnd();
-
-//            var ukprn = 10000534;
-//            var commitmentId = 1;
-
-//            helper.AddLearningProvider(ukprn);
-//            //helper.AddFileDetails(ukprn);
-//            helper.AddCommitment(commitmentId, ukprn, "Lrn-001", passedDataLock: false);
-//            helper.AddIlrDataForCommitment(commitmentId, "Lrn-001");
-
-//            //helper.AddDataLockEvent(ukprn, "Lrn-001");
-
-//            //helper.CopyReferenceData();
-
-//            //Act
-//            //_processor.Run();
-//            //TaskRunner.RunTask(eventsSource:
-//            //    context == TestFixtureContext.PeriodEnd
-//            //    ? EventSource.PeriodEnd
-//            //    : EventSource.Submission);
-
-//            // Assert
-//            var events = helper.GetAllEvents();
-
-//            Assert.IsNotNull(events);
-//            Assert.AreEqual(1, events.Count);
-
-//            var @event = events[0];
-//            Assert.AreEqual(ukprn, @event.Ukprn);
-//            //Assert.AreEqual(commitmentId, @event.CommitmentId);
-//            Assert.AreEqual(EventStatus.Updated, @event.Status);
-
-//            var eventErrors = helper.GetAllEventErrors(@event.DataLockEventId);
-//            var eventPeriods = helper.GetAllEventPeriods(@event.DataLockEventId);
-//            var eventCommitmentVersions = helper.GetAllEventCommitmentVersions(@event.DataLockEventId);
-
-//            Assert.IsNotNull(eventErrors);
-//            Assert.IsNotNull(eventPeriods);
-//            Assert.IsNotNull(eventCommitmentVersions);
-
-//            Assert.AreEqual(1, eventErrors.Length);
-//            Assert.AreEqual(36, eventPeriods.Length);
-//            Assert.AreEqual(1, eventCommitmentVersions.Length);
-//        }
-
-
-
-
-//        [TestCase(TestFixtureContext.Submission)]
-//        [TestCase(TestFixtureContext.PeriodEnd)]
-//        public void ThenANewEventShouldBeEmittedIfItIsNoLongerRemoved(TestFixtureContext context)
-//        {
-//            //Arrange
-//            var helper = TestDataHelper.Get(context);
-
-//            var ukprn = 10000534;
-//            var commitmentId = 1;
-
-//            helper.Clean();
-//            helper.SetCurrentPeriodEnd();
-
-//            helper.AddLearningProvider(ukprn);
-
-//            helper.AddFileDetails(ukprn);
-//            helper.AddCommitment(commitmentId, ukprn, "Lrn-001", passedDataLock: false);
-//            helper.AddIlrDataForCommitment(commitmentId, "Lrn-001");
-
-//            //historic data locks (occurred on previous submissions)
-//            helper.AddDataLockEvent(ukprn, "Lrn-001", passedDataLock: false, status: EventStatus.New);
-//            helper.AddDataLockEvent(ukprn, "Lrn-001", passedDataLock: false, status: EventStatus.Removed);
-
-
-//            helper.CopyReferenceData();
-
-//            //Act
-//            TaskRunner.RunTask(eventsSource:
-//                context == TestFixtureContext.PeriodEnd
-//                ? EventSource.PeriodEnd
-//                : EventSource.Submission);
-
-//            // Assert
-//            var events = helper.GetAllEvents();
-
-//            Assert.IsNotNull(events);
-//            Assert.AreEqual(1, events.Length);
-//        }
-
-
-
-
-//        [TestCase(TestFixtureContext.Submission)]
-//        [TestCase(TestFixtureContext.PeriodEnd)]
-//        public void ThenANewEventShouldNotBeEmittedIfItIsTheSameStatus(TestFixtureContext context)
-//        {
-//            //Arrange
-//            var helper = TestDataHelper.Get(context);
-
-//            var ukprn = 10000534;
-//            var commitmentId = 1;
-
-//            helper.Clean();
-//            helper.SetCurrentPeriodEnd();
-
-//            helper.AddLearningProvider(ukprn);
-
-//            helper.AddFileDetails(ukprn);
-//            helper.AddCommitment(commitmentId, ukprn, "Lrn-001", passedDataLock: false);
-//            helper.AddIlrDataForCommitment(commitmentId, "Lrn-001");
-
-//            //historic data locks (occurred on previous submissions)
-//            helper.AddDataLockEvent(ukprn, "Lrn-001", passedDataLock: false, status: EventStatus.New);
-
-//            helper.CopyReferenceData();
-
-//            //Act
-//            TaskRunner.RunTask(eventsSource:
-//                context == TestFixtureContext.PeriodEnd
-//                ? EventSource.PeriodEnd
-//                : EventSource.Submission);
-
-//            // Assert
-//            var events = helper.GetAllEvents();
-
-//            Assert.IsNotNull(events);
-//            Assert.AreEqual(0, events.Length);
-//        }
-
-//    */
         
-//    }
-//}
+        [Test]
+        public void ThenANewEventShouldBeEmittedIfItIsNoLongerRemoved()
+        {
+            //Arrange
+            TestDataHelperDeds.AddProvider(Ukprn, DateTime.Today);
+            TestDataHelperDeds.AddDataLock(new[] {CommitmentId}, Ukprn, LearnerRefNumber, priceEpisodeIdentifier: PriceEpisodeIdentifier, errorCodesCsv: "E1");
+
+            TestDataHelperDataLockEventsDatabase.AddProvider(Ukprn, DateTime.Today.AddDays(-1));
+            TestDataHelperDataLockEventsDatabase.AddDataLock(new[] {CommitmentId}, Ukprn, LearnerRefNumber, priceEpisodeIdentifier: PriceEpisodeIdentifier, errorCodesCsv: "E1", deletedTime: DateTime.UtcNow.AddDays(-1));
+
+            //Act
+            Act(() => TestDataHelperDataLockEventsDatabase.Count("select count(*) from [DataLockEvents].[Provider] where Ukprn = @ukprn and IlrSubmissionDateTime = @date", new {ukprn = Ukprn, date = DateTime.Today}) > 0);
+
+            // Assert
+            var events = TestDataHelperDataLockEventsDatabase.GetAllEvents();
+            var actualEvent = events?.SingleOrDefault(e => e.PriceEpisodeIdentifier == PriceEpisodeIdentifier);
+
+            Assert.IsNotNull(actualEvent);
+            Assert.AreEqual(Ukprn, actualEvent.Ukprn);
+            Assert.AreEqual(PriceEpisodeIdentifier, actualEvent.PriceEpisodeIdentifier);
+            Assert.AreEqual(LearnerRefNumber, actualEvent.LearnRefNumber);
+            Assert.AreEqual(CommitmentId, actualEvent.ApprenticeshipId);
+            Assert.AreEqual(true, actualEvent.HasErrors);
+            Assert.AreEqual("[\"E1\"]", actualEvent.ErrorCodes);
+            Assert.AreEqual(EventStatus.New, (EventStatus)actualEvent.Status);
+        }
+    }
+}

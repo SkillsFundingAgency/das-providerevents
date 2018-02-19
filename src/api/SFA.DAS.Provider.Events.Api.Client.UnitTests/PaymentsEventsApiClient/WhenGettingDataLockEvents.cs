@@ -48,43 +48,6 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                         ErrorCode = "Err15",
                         SystemDescription = "Mismatch on price."
                     }
-                },
-                Periods = new []
-                {
-                    new DataLockEventPeriod
-                    {
-                        ApprenticeshipVersion = "1-019",
-                        Period = new NamedCalendarPeriod
-                        {
-                            Id = "1617-R09",
-                            Month = 4,
-                            Year = 2017
-                        },
-                        IsPayable = false,
-                        TransactionType = TransactionType.Learning
-                    },
-                    new DataLockEventPeriod
-                    {
-                        ApprenticeshipVersion = "1-019",
-                        Period = new NamedCalendarPeriod
-                        {
-                            Id = "1617-R10",
-                            Month = 5,
-                            Year = 2017
-                        },
-                        IsPayable = false
-                    }
-                },
-                Apprenticeships = new []
-                {
-                    new DataLockEventApprenticeship
-                    {
-                        Version = "19",
-                        StartDate = new DateTime(2017, 5, 1),
-                        StandardCode = 27,
-                        NegotiatedPrice = 17500m,
-                        EffectiveDate = new DateTime(2017, 5, 1)
-                    }
                 }
             };
 
@@ -155,9 +118,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                    && original.IlrPathwayCode == client.IlrPathwayCode
                    && original.IlrTrainingPrice == client.IlrTrainingPrice
                    && original.IlrEndpointAssessorPrice == client.IlrEndpointAssessorPrice
-                   && EventErrorsMatch(original.Errors, client.Errors)
-                   && EventPeriodsMatch(original.Periods, client.Periods)
-                   && EventApprenticeshipsMatch(original.Apprenticeships, client.Apprenticeships);
+                   && EventErrorsMatch(original.Errors, client.Errors);
         }
 
         private bool EventErrorsMatch(DataLockEventError[] original, DataLockEventError[] client)

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Newtonsoft.Json;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
+using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Repositories;
 
 namespace SFA.DAS.Provider.Events.Application.DataLock.WriteDataLocksQuery
@@ -13,10 +14,12 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.WriteDataLocksQuery
         IAsyncRequestHandler<WriteDataLocksQueryRequest, WriteDataLocksQueryResponse>
     {
         private readonly IDataLockEventRepository _dataLockEventRepository;
+        private readonly IMapper _mapper;
 
-        public WriteDataLocksQueryHandler(IDataLockEventRepository dataLockEventRepository)
+        public WriteDataLocksQueryHandler(IDataLockEventRepository dataLockEventRepository, IMapper mapper)
         {
             _dataLockEventRepository = dataLockEventRepository;
+            _mapper = mapper;
         }
 
         private string GetString<T>(IList<T> array)
@@ -31,18 +34,10 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.WriteDataLocksQuery
         {
             try
             {
-                List<DataLockEntity> entities = null;
+                IList<DataLockEntity> entities = null;
 
                 if (message.NewDataLocks != null)
-                    entities = message.NewDataLocks.Select(d => new DataLockEntity
-                    {
-                        Ukprn = d.Ukprn,
-                        AimSequenceNumber = d.AimSequenceNumber,
-                        LearnerReferenceNumber = d.LearnerReferenceNumber,
-                        PriceEpisodeIdentifier = d.PriceEpisodeIdentifier,
-                        ErrorCodes = GetString(d.ErrorCodes),
-                        CommitmentVersions = GetString(d.CommitmentVersions)
-                    }).ToList();
+                    entities = _mapper.Map<IList<DataLockEntity>>(message.NewDataLocks);
 
                 if (entities != null && entities.Any())
                     await _dataLockEventRepository.WriteDataLocks(entities);
@@ -50,29 +45,14 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.WriteDataLocksQuery
                 entities = new List<DataLockEntity>();
 
                 if (message.UpdatedDataLocks != null)
-                    entities = message.UpdatedDataLocks.Select(d => new DataLockEntity
-                    {
-                        Ukprn = d.Ukprn,
-                        AimSequenceNumber = d.AimSequenceNumber,
-                        LearnerReferenceNumber = d.LearnerReferenceNumber,
-                        PriceEpisodeIdentifier = d.PriceEpisodeIdentifier,
-                        ErrorCodes = GetString(d.ErrorCodes),
-                        CommitmentVersions = GetString(d.CommitmentVersions),
-
-                    }).ToList();
+                    entities = _mapper.Map<IList<DataLockEntity>>(message.UpdatedDataLocks);
 
                 if (message.RemovedDataLocks != null)
-                    entities.AddRange(message.RemovedDataLocks.Select(d => new DataLockEntity
-                        {
-                            Ukprn = d.Ukprn,
-                            AimSequenceNumber = d.AimSequenceNumber,
-                            LearnerReferenceNumber = d.LearnerReferenceNumber,
-                            PriceEpisodeIdentifier = d.PriceEpisodeIdentifier,
-                            ErrorCodes = GetString(d.ErrorCodes),
-                            CommitmentVersions = GetString(d.CommitmentVersions),
-                            DeletedUtc = DateTime.UtcNow
-                        })
-                        .ToList());
+                    entities = entities.Concat(_mapper.Map<IList<DataLockEntity>>(message.RemovedDataLocks).Select(e =>
+                    {
+                        e.DeletedUtc = DateTime.UtcNow;
+                        return e;
+                    })).ToList();
 
                 if (entities.Any())
                     await _dataLockEventRepository.UpdateDataLocks(entities);

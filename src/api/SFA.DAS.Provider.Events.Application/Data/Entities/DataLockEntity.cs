@@ -12,8 +12,9 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
         public string LearnerReferenceNumber { get; set; }
         public long? AimSequenceNumber { get; set; }
         public string PriceEpisodeIdentifier { get; set; }
+        public long? ApprenticeshipId { get; set; }
         public string ErrorCodes { get; set; }
-        public string CommitmentVersions { get; set; }
+        public long EmployerAccountId { get; set; }
         public DateTime? DeletedUtc { get; set; }
 
         public long Uln { get; set; }
