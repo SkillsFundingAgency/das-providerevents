@@ -13,7 +13,7 @@ AS
 BEGIN
 	SELECT pem.[ErrorCodes],
 		pem.[AimSequenceNumber],
-		pem.[CommitmentId] AS [ApprenticeshipId],
+		pem.[CommitmentId],
 		pem.[IsSuccess],
 		pem.[LearnerReferenceNumber],
 		c.[EmployerAccountId],
@@ -30,6 +30,7 @@ BEGIN
 					WHERE err.Ukprn = pem.Ukprn
 						AND err.LearnRefNumber = pem.LearnRefNumber
 						AND err.PriceEpisodeIdentifier = pem.PriceEpisodeIdentifier
+						AND err.AimSeqNumber = pem.AimSeqNumber
 				) AS SQ
 			) AS [ErrorCodes],
 			pem.IsSuccess,
@@ -94,13 +95,12 @@ BEGIN
 		AND dpe.LearnRefNumber = pem.LearnerReferenceNumber
 		AND dpe.PriceEpisodeIdentifier = pem.PriceEpisodeIdentifier
 	INNER JOIN (
-		select 
-			c.CommitmentId, 
-			max(c.AccountId) as EmployerAccountId 
-		from 
-			dbo.DasCommitments c 
-		group by 
-			c.CommitmentId
+		SELECT CommitmentId, AccountId AS EmployerAccountId
+		FROM (
+				SELECT c.CommitmentId, c.AccountId, row_number() OVER (PARTITION BY [CommitmentId] ORDER BY [VersionId] DESC) sort
+				FROM dbo.DasCommitments c
+			) AS sorted
+		WHERE sorted.sort = 1
 		) c ON pem.CommitmentId = c.CommitmentId
 	ORDER BY pem.LearnerReferenceNumber,
 		pem.PriceEpisodeIdentifier,

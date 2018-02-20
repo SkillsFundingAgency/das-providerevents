@@ -31,7 +31,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests.FromPaymen
 
             Assert.AreEqual(ukprn, @event.Ukprn);
             Assert.AreEqual(1L, @event.AimSeqNumber);
-            Assert.AreEqual(73L, @event.ApprenticeshipId);
+            Assert.AreEqual(73L, @event.CommitmentId);
             Assert.AreEqual(true, @event.HasErrors);
             Assert.AreEqual("learner a", @event.LearnRefNumber);
             Assert.AreEqual("2-450-1-01/05/2017", @event.PriceEpisodeIdentifier);
@@ -73,7 +73,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests.FromPaymen
 
             Assert.AreEqual(ukprn, @event.Ukprn);
             Assert.AreEqual(1L, @event.AimSeqNumber);
-            Assert.AreEqual(73L, @event.ApprenticeshipId);
+            Assert.AreEqual(73L, @event.CommitmentId);
             Assert.AreEqual(true, @event.HasErrors);
             Assert.AreEqual("learner a", @event.LearnRefNumber);
             Assert.AreEqual("2-450-1-01/05/2017", @event.PriceEpisodeIdentifier);
@@ -117,7 +117,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests.FromPaymen
 
             Assert.AreEqual(ukprn, @event.Ukprn);
             Assert.AreEqual(1L, @event.AimSeqNumber);
-            Assert.AreEqual(73L, @event.ApprenticeshipId);
+            Assert.AreEqual(73L, @event.CommitmentId);
             Assert.AreEqual(true, @event.HasErrors);
             Assert.AreEqual("learner a", @event.LearnRefNumber);
             Assert.AreEqual("2-450-1-01/05/2017", @event.PriceEpisodeIdentifier);
@@ -144,7 +144,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests.FromPaymen
 
             Assert.AreEqual(ukprn, @event.Ukprn);
             Assert.AreEqual(1L, @event.AimSeqNumber);
-            Assert.AreEqual(74L, @event.ApprenticeshipId);
+            Assert.AreEqual(74L, @event.CommitmentId);
             Assert.AreEqual(true, @event.HasErrors);
             Assert.AreEqual("learner a", @event.LearnRefNumber);
             Assert.AreEqual("2-450-1-01/05/2017", @event.PriceEpisodeIdentifier);

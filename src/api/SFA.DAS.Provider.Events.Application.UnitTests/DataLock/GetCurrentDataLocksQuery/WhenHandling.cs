@@ -35,7 +35,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetCurrentDataL
                     return list.Select(source => new Api.Types.DataLock
                     {
                         AimSequenceNumber = source.AimSequenceNumber,
-                        CommitmentId = source.ApprenticeshipId.Value,
+                        CommitmentId = source.CommitmentId,
                         EmployerAccountId = source.EmployerAccountId,
                         IlrEndpointAssessorPrice = source.IlrEndpointAssessorPrice,
                         IlrFrameworkCode = source.IlrFrameworkCode,
@@ -130,7 +130,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetCurrentDataL
                 AimSequenceNumber = 2,
                 LearnerReferenceNumber = "L1",
                 PriceEpisodeIdentifier = "P1",
-                ApprenticeshipId = 1,
+                CommitmentId = 1,
                 ErrorCodes = "['E1','E2']"
             };
 
@@ -168,7 +168,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetCurrentDataL
                 AimSequenceNumber = 2,
                 LearnerReferenceNumber = "L1",
                 PriceEpisodeIdentifier = "P1",
-                ApprenticeshipId = 1,
+                CommitmentId = 1,
                 ErrorCodes = "['E1','E2']"
             };
 
@@ -208,7 +208,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetCurrentDataL
                 AimSequenceNumber = 2,
                 LearnerReferenceNumber = "L1",
                 PriceEpisodeIdentifier = "P1",
-                ApprenticeshipId = 1,
+                CommitmentId = 1,
                 ErrorCodes = null
             };
 
@@ -218,7 +218,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetCurrentDataL
                 AimSequenceNumber = 3,
                 LearnerReferenceNumber = "L3",
                 PriceEpisodeIdentifier = "P3",
-                ApprenticeshipId = 2,
+                CommitmentId = 2,
                 ErrorCodes = null
             };
 

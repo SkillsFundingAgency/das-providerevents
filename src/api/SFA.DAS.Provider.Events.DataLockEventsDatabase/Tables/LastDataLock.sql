@@ -8,7 +8,7 @@
     [ErrorCodes] VARCHAR(MAX) NULL, 
     [DeletedUtc] DATETIME NULL,
 	[Uln] BIGINT NOT NULL,
-    [ApprenticeshipId] BIGINT NOT NULL,
+    [CommitmentId] BIGINT NOT NULL,
     [EmployerAccountId] BIGINT NOT NULL,
     [IlrStartDate] DATETIME,
     [IlrStandardCode] BIGINT,

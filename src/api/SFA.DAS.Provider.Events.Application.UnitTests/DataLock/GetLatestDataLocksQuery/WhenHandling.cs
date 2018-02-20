@@ -33,7 +33,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetLatestDataLo
                     {
                         var entity = new Api.Types.DataLock
                         {
-                            CommitmentId = source.ApprenticeshipId.Value,
+                            CommitmentId = source.CommitmentId,
                             EmployerAccountId = source.EmployerAccountId,
                             IlrEndpointAssessorPrice = source.IlrEndpointAssessorPrice,
                             IlrFrameworkCode = source.IlrFrameworkCode,
@@ -230,7 +230,8 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetLatestDataLo
                 Ukprn = 1,
                 AimSequenceNumber = 2,
                 LearnerReferenceNumber = "L1",
-                PriceEpisodeIdentifier = "P1"
+                PriceEpisodeIdentifier = "P1",
+                CommitmentId = 777
             };
 
             var dataLock2 = new DataLockEntity
@@ -238,7 +239,8 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetLatestDataLo
                 Ukprn = 2,
                 AimSequenceNumber = 3,
                 LearnerReferenceNumber = "L3",
-                PriceEpisodeIdentifier = "P3"
+                PriceEpisodeIdentifier = "P3",
+                CommitmentId = 747
             };
 
             var dataLocks = new[] {dataLock1, dataLock2};

@@ -56,8 +56,8 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests.Specs
 
             Assert.IsNotNull(events);
             Assert.AreEqual(2, events.Count);
-            Assert.AreEqual(1, events.Count(x => x.ApprenticeshipId == commitmentId1), "More than 1 event for commitment 1");
-            Assert.AreEqual(1, events.Count(x => x.ApprenticeshipId == commitmentId2), "More than 1 event for commitment 2");
+            Assert.AreEqual(1, events.Count(x => x.CommitmentId == commitmentId1), "More than 1 event for commitment 1");
+            Assert.AreEqual(1, events.Count(x => x.CommitmentId == commitmentId2), "More than 1 event for commitment 2");
         }
 
         //[Explicit]

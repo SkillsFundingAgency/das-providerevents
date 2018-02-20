@@ -16,7 +16,6 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         private static readonly SqlMetaData _priceEpisodeIdMetaData = new SqlMetaData("PriceEpisodeIdentifier", SqlDbType.VarChar, 25);
         private static readonly SqlMetaData _aimSequenceNumberMetaData = new SqlMetaData("AimSequenceNumber", SqlDbType.BigInt);
         private static readonly SqlMetaData _errorCodesMetaData = new SqlMetaData("ErrorCodes", SqlDbType.NVarChar, SqlMetaData.Max);
-        private static readonly SqlMetaData _commitmentsMetaData = new SqlMetaData("CommitmentVersions", SqlDbType.NVarChar, SqlMetaData.Max);
         private static readonly SqlMetaData _deletedMetaData = new SqlMetaData("DeletedUtc", SqlDbType.DateTime);
 
         public DataLockEntityTableValueParameter(IEnumerable<DataLockEntity> dataLocks)
@@ -31,7 +30,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             var items = new List<SqlDataRecord>();
             foreach (var param in _dataLocks)
             {
-                var rec = new SqlDataRecord(_ukprnMetaData, _learnRefNumberMetaData, _priceEpisodeIdMetaData, _aimSequenceNumberMetaData, _errorCodesMetaData, _commitmentsMetaData, _deletedMetaData);
+                var rec = new SqlDataRecord(_ukprnMetaData, _learnRefNumberMetaData, _priceEpisodeIdMetaData, _aimSequenceNumberMetaData, _errorCodesMetaData, _deletedMetaData);
                 rec.SetInt64(0, param.Ukprn);
                 if (param.LearnerReferenceNumber != null)
                     rec.SetString(1, param.LearnerReferenceNumber);
@@ -41,7 +40,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                 if (param.ErrorCodes != null)
                     rec.SetString(4, param.ErrorCodes);
                 if (param.DeletedUtc.HasValue)
-                    rec.SetDateTime(6, param.DeletedUtc.Value);
+                    rec.SetDateTime(5, param.DeletedUtc.Value);
                 items.Add(rec);
             }
 

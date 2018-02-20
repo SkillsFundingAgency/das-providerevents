@@ -47,7 +47,6 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
             cfg.CreateMap<SubmissionEventEntity, SubmissionEvent>();
 
             cfg.CreateMap<DataLock, DataLockEntity>()
-                .ForMember(dst => dst.ApprenticeshipId, o => o.MapFrom(src => src.CommitmentId))
                 .ForMember(dst => dst.ErrorCodes, o => o.Ignore())
                 .AfterMap((src, dst) =>
                 {
@@ -58,7 +57,6 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
                 });
 
             cfg.CreateMap<DataLockEntity, DataLock>()
-                .ForMember(dst => dst.CommitmentId, o => o.MapFrom(src => src.ApprenticeshipId))
                 .ForMember(dst => dst.ErrorCodes, o => o.Ignore())
                 .AfterMap((src, dst) =>
                 {
@@ -71,6 +69,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
             cfg.CreateMap<PageOfResults<DataLockEventEntity>, PageOfResults<DataLockEvent>>();
 
             cfg.CreateMap<DataLockEventEntity, DataLockEvent>()
+                .ForMember(dst => dst.ApprenticeshipId, o => o.MapFrom(src => src.CommitmentId))
                 .ForMember(dst => dst.Errors, o => o.Ignore())
                 .AfterMap((src, dst) =>
                 {
@@ -89,6 +88,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
 
 
             cfg.CreateMap<DataLockEvent, DataLockEventEntity>()
+                .ForMember(dst => dst.CommitmentId, o => o.MapFrom(src => src.ApprenticeshipId))
                 .ForMember(dst => dst.ErrorCodes, o => o.Ignore())
                 .AfterMap((src, dst) =>
                 {

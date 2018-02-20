@@ -21,4 +21,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="DeletedUtc" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="414835c1-c050-4888-952e-cabc309d84ba" ChangeDateTime="02/20/2018 12:27:44">
+    <Property Name="ElementName" Value="[DataLockEvents].[DataLockEvent].[ApprenticeshipId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[DataLockEvents].[DataLockEvent]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CommitmentId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="e4866ea9-e3d5-4872-986a-91bee0e0986e" ChangeDateTime="02/20/2018 12:27:57">
+    <Property Name="ElementName" Value="[DataLockEvents].[LastDataLock].[ApprenticeshipId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[DataLockEvents].[LastDataLock]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CommitmentId" />
+  </Operation>
 </Operations>

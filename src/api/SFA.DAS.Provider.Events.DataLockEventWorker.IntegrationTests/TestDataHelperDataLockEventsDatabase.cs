@@ -119,7 +119,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
                     var errorCodes = errorCodesCsv == null ? null : string.Concat("[\"", string.Join("\",\"", errorCodesCsv.Split(new[]{"'"}, StringSplitOptions.RemoveEmptyEntries)), "\"]");
 
                     Execute(@"INSERT INTO DataLockEvents.LastDataLock
-                        (Ukprn,[LearnerReferenceNumber],[AimSequenceNumber],[ApprenticeshipId],PriceEpisodeIdentifier,ErrorCodes,Uln,[EmployerAccountId],[IlrStandardCode],[IlrFrameworkCode],[IlrProgrammeType],[IlrPathwayCode],[IlrPriceEffectiveFromDate],[IlrPriceEffectiveToDate],[DeletedUtc])
+                        (Ukprn,[LearnerReferenceNumber],[AimSequenceNumber],[CommitmentId],PriceEpisodeIdentifier,ErrorCodes,Uln,[EmployerAccountId],[IlrStandardCode],[IlrFrameworkCode],[IlrProgrammeType],[IlrPathwayCode],[IlrPriceEffectiveFromDate],[IlrPriceEffectiveToDate],[DeletedUtc])
                         VALUES
                         (@ukprn,@learnerRefNumber,@aimSequenceNumber,@id,@priceEpisodeIdentifier,@errorCodes,@uln,@employerAccountId,@standardCode,@frameworkCode,@programmeType,@pathwayCode,@startDate,@endDate,@deletedTime)",
                         new {id, ukprn, learnerRefNumber, aimSequenceNumber, priceEpisodeIdentifier, errorCodes, uln, employerAccountId = 888, standardCode, frameworkCode, programmeType, pathwayCode, startDate, endDate, deletedTime});

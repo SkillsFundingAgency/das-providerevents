@@ -28,7 +28,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
                 .Setup(m => m.Map<IList<DataLockEntity>>(It.IsAny<IList<Api.Types.DataLock>>()))
                 .Returns((IList<Api.Types.DataLock> list) => list.Select(source => new DataLockEntity
                 {
-                    ApprenticeshipId = source.CommitmentId,
+                    CommitmentId = source.CommitmentId,
                     EmployerAccountId = source.EmployerAccountId,
                     IlrEndpointAssessorPrice = source.IlrEndpointAssessorPrice,
                     IlrFrameworkCode = source.IlrFrameworkCode,

@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
-using MediatR;
-using Moq;
-using NLog;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.Types;
 
@@ -11,12 +7,8 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests.Specs
 {
     public class WhenExistingDataLockProcessed : DataLockProcessorTestBase
     {
-        private IDataLockProcessor _dataLockProcessor;
-        private Mock<ILogger> _logMock = new Mock<ILogger>();
-        private Mock<IMediator> _mediatorMock = new Mock<IMediator>();
-
-        private long Ukprn = 10000534;
-        private long CommitmentId = 1;
+        private const long Ukprn = 10000534;
+        private const long CommitmentId = 1;
         private const string LearnerRefNumber = "Lrn-007";
         private const string PriceEpisodeIdentifier = "1-1-1-2017-04-07";
 
@@ -62,7 +54,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests.Specs
             Assert.AreEqual(Ukprn, actualEvent.Ukprn);
             Assert.AreEqual(PriceEpisodeIdentifier, actualEvent.PriceEpisodeIdentifier);
             Assert.AreEqual(LearnerRefNumber, actualEvent.LearnRefNumber);
-            Assert.AreEqual(CommitmentId, actualEvent.ApprenticeshipId);
+            Assert.AreEqual(CommitmentId, actualEvent.CommitmentId);
             Assert.AreEqual(false, actualEvent.HasErrors);
             Assert.AreEqual(null, actualEvent.ErrorCodes);
             Assert.AreEqual(EventStatus.Updated, (EventStatus)actualEvent.Status);
@@ -90,7 +82,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests.Specs
             Assert.AreEqual(Ukprn, actualEvent.Ukprn);
             Assert.AreEqual(PriceEpisodeIdentifier, actualEvent.PriceEpisodeIdentifier);
             Assert.AreEqual(LearnerRefNumber, actualEvent.LearnRefNumber);
-            Assert.AreEqual(CommitmentId, actualEvent.ApprenticeshipId);
+            Assert.AreEqual(CommitmentId, actualEvent.CommitmentId);
             Assert.AreEqual(true, actualEvent.HasErrors);
             Assert.AreEqual("[\"E1\"]", actualEvent.ErrorCodes);
             Assert.AreEqual(EventStatus.New, (EventStatus)actualEvent.Status);

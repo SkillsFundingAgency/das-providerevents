@@ -9,7 +9,7 @@
     [LearnRefNumber] VARCHAR(100) NOT NULL, 
     [AimSeqNumber] BIGINT NOT NULL, 
     [PriceEpisodeIdentifier] VARCHAR(25) NOT NULL, 
-    [ApprenticeshipId] BIGINT NOT NULL, 
+    [CommitmentId] BIGINT NOT NULL, 
     [EmployerAccountId] BIGINT NOT NULL, 
     [HasErrors] BIT NOT NULL, 
     [IlrStartDate] DATETIME NULL, 

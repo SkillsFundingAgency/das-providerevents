@@ -28,7 +28,7 @@ BEGIN
 		[LearnRefNumber],
 		[AimSeqNumber],
 		[PriceEpisodeIdentifier],
-		[ApprenticeshipId],
+		[CommitmentId],
 		[EmployerAccountId],
 		[HasErrors],
 		[IlrStartDate],

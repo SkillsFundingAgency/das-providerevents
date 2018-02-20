@@ -49,10 +49,10 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                     var fetchNextLastLock = true;
 
                     DataLock currentLock = null;
-                    DataLock lastLock = null;
+                    DataLock lastSeenLock = null;
 
-                    Queue<DataLock> currentDataLocks = null;
-                    Queue<DataLock> lastLocks = null;
+                    Queue<DataLock> currentLocks = null;
+                    Queue<DataLock> lastSeenLocks = null;
                     var events = new List<DataLockEvent>();
                     var newDataLocks = new List<DataLock>();
                     var deletedDataLocks = new List<DataLock>();
@@ -67,22 +67,22 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                     {
                         if (fetchNextCurrentLock)
                         {
-                            if ((currentDataLocks == null || currentDataLocks.Count == 0) && !currentLocksDone)
+                            if ((currentLocks == null || currentLocks.Count == 0) && !currentLocksDone)
                             {
-                                currentDataLocks = await GetCurrentDataLocks(provider, currentLockPage).ConfigureAwait(false);
-                                if (currentDataLocks == null || currentDataLocks.Count == 0)
+                                currentLocks = await GetCurrentDataLocks(provider, currentLockPage).ConfigureAwait(false);
+                                if (currentLocks == null || currentLocks.Count == 0)
                                 {
                                     currentLocksDone = true;
                                 }
                                 else
                                 {
                                     currentLockPage++;
-                                    currentLocksDone = currentDataLocks.Count < PageSize;
+                                    currentLocksDone = currentLocks.Count < PageSize;
                                 }
                             }
 
-                            if (currentDataLocks != null && currentDataLocks.Count > 0)
-                                currentLock = currentDataLocks.Dequeue();
+                            if (currentLocks != null && currentLocks.Count > 0)
+                                currentLock = currentLocks.Dequeue();
                             else
                                 currentLock = null;
 
@@ -91,37 +91,37 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
 
                         if (fetchNextLastLock)
                         {
-                            if ((lastLocks == null || lastLocks.Count == 0) && !lastLocksDone)
+                            if ((lastSeenLocks == null || lastSeenLocks.Count == 0) && !lastLocksDone)
                             {
-                                lastLocks = await GetLastDataLocks(provider, lastLockPage).ConfigureAwait(false);
-                                if (lastLocks == null || lastLocks.Count == 0)
+                                lastSeenLocks = await GetLastDataLocks(provider, lastLockPage).ConfigureAwait(false);
+                                if (lastSeenLocks == null || lastSeenLocks.Count == 0)
                                 {
                                     lastLocksDone = true;
                                 }
                                 else
                                 {
                                     lastLockPage++;
-                                    lastLocksDone = lastLocks.Count < PageSize;
+                                    lastLocksDone = lastSeenLocks.Count < PageSize;
                                 }
                             }
 
-                            if (lastLocks != null && lastLocks.Count > 0)
-                                lastLock = lastLocks.Dequeue();
+                            if (lastSeenLocks != null && lastSeenLocks.Count > 0)
+                                lastSeenLock = lastSeenLocks.Dequeue();
                             else
-                                lastLock = null;
+                                lastSeenLock = null;
 
                             fetchNextLastLock = false;
                         }
 
-                        if (currentLock == null && lastLock == null)
+                        if (currentLock == null && lastSeenLock == null)
                             break;
 
-                        var compare = Compare(currentLock, lastLock);
+                        var compare = Compare(currentLock, lastSeenLock);
 
                         if (compare == 0)
                         {
                             // same lock
-                            if (!AreEqual(currentLock, lastLock))
+                            if (!AreEqual(currentLock, lastSeenLock))
                             {
                                 events.Add(FromDataLock(currentLock, EventStatus.Updated, provider));
                                 updatedDataLocks.Add(currentLock);
@@ -142,35 +142,24 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                             else
                             {
                                 // removed data lock
-                                deletedDataLocks.Add(lastLock);
-                                events.Add(FromDataLock(lastLock, EventStatus.Removed, provider));
+                                deletedDataLocks.Add(lastSeenLock);
+                                events.Add(FromDataLock(lastSeenLock, EventStatus.Removed, provider));
                                 fetchNextLastLock = true;
                             }
                         }
+
+                        if (newDataLocks.Count + updatedDataLocks.Count + deletedDataLocks.Count > PageSize)
+                            await WriteDataLocks(newDataLocks, updatedDataLocks, deletedDataLocks, provider);
+
+                        if (events.Count > PageSize)
+                            await WriteDataLockEvents(events, provider);
                     }
 
                     if (newDataLocks.Count + updatedDataLocks.Count + deletedDataLocks.Count > 0)
-                    {
-                        var writeDataLocks = new WriteDataLocksQueryRequest
-                        {
-                            NewDataLocks = newDataLocks,
-                            UpdatedDataLocks = updatedDataLocks,
-                            RemovedDataLocks = deletedDataLocks
-                        };
-
-                        var response = await _mediator.SendAsync(writeDataLocks).ConfigureAwait(false);
-                        if (!response.IsValid)
-                            throw new ApplicationException($"Failed to update data locks for provider {provider.Ukprn}", response.Exception);
-                    }
+                        await WriteDataLocks(newDataLocks, updatedDataLocks, deletedDataLocks, provider);
 
                     if (events.Count > 0)
-                    {
-                        var writeDataLockEvents = new WriteDataLockEventsQueryRequest {DataLockEvents = events};
-
-                        var dataLockEventsResponse = await _mediator.SendAsync(writeDataLockEvents).ConfigureAwait(false);
-                        if (!dataLockEventsResponse.IsValid)
-                            throw new ApplicationException($"Failed to save new data lock events for provider {provider.Ukprn}", dataLockEventsResponse.Exception);
-                    }
+                        await WriteDataLockEvents(events, provider);
 
                     var updateProviderRequest = new UpdateProviderQueryRequest {Provider = provider};
                     var updateProviderResponse = await _mediator.SendAsync(updateProviderRequest).ConfigureAwait(false);
@@ -182,6 +171,35 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                     _logger.Error(ex, $"Error processing data locks for provider {provider.Ukprn}");
                 }
             });
+        }
+
+        private async Task WriteDataLockEvents(List<DataLockEvent> events, ProviderEntity provider)
+        {
+            var writeDataLockEvents = new WriteDataLockEventsQueryRequest {DataLockEvents = events};
+
+            var dataLockEventsResponse = await _mediator.SendAsync(writeDataLockEvents).ConfigureAwait(false);
+            if (!dataLockEventsResponse.IsValid)
+                throw new ApplicationException($"Failed to save new data lock events for provider {provider.Ukprn}", dataLockEventsResponse.Exception);
+
+            events.Clear();
+        }
+
+        private async Task WriteDataLocks(List<DataLock> newDataLocks, List<DataLock> updatedDataLocks, List<DataLock> deletedDataLocks, ProviderEntity provider)
+        {
+            var writeDataLocks = new WriteDataLocksQueryRequest
+            {
+                NewDataLocks = newDataLocks,
+                UpdatedDataLocks = updatedDataLocks,
+                RemovedDataLocks = deletedDataLocks
+            };
+
+            var response = await _mediator.SendAsync(writeDataLocks).ConfigureAwait(false);
+            if (!response.IsValid)
+                throw new ApplicationException($"Failed to update data locks for provider {provider.Ukprn}", response.Exception);
+
+            newDataLocks.Clear();
+            updatedDataLocks.Clear();
+            deletedDataLocks.Clear();
         }
 
         private static DataLockEvent FromDataLock(DataLock current, EventStatus status, ProviderEntity provider)
