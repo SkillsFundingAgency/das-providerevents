@@ -27,5 +27,26 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                 return dataLockEntities;
             }
         }
+
+        public async Task<PageOfResults<DataLockEventEntity>> GetDataLockEvents(long ukprn, int page, int pageSize)
+        {
+            using (var connection = await GetOpenConnection().ConfigureAwait(false))
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("ukprn", ukprn);
+                parameters.Add("offset", (page-1)*pageSize);
+                parameters.Add("pageSize", pageSize);
+                parameters.Add("totalPages", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+                var dataLockEntities = (await connection.QueryAsync<DataLockEventEntity>("DataLock.GetDataLockEvents", parameters, commandType: CommandType.StoredProcedure).ConfigureAwait(false)).ToList();
+
+                return new PageOfResults<DataLockEventEntity>
+                {
+                    Items = dataLockEntities.ToArray(),
+                    PageNumber = page,
+                    TotalNumberOfPages = parameters.Get<int>("totalPages")
+                };
+            }
+        }
     }
 }

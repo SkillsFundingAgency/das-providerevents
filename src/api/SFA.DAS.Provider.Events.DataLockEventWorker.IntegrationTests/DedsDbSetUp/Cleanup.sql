@@ -40,6 +40,12 @@ IF OBJECT_ID('dbo.DasCommitments', 'U') IS NOT NULL
 IF OBJECT_ID('[Rulebase].[AEC_ApprenticeshipPriceEpisode]', 'U') IS NOT NULL 
 	IF EXISTS(SELECT 1 FROM [Rulebase].[AEC_ApprenticeshipPriceEpisode]) 
 		DROP TABLE [Rulebase].[AEC_ApprenticeshipPriceEpisode]; 
+IF OBJECT_ID('[DataLock].[DataLockEventErrors]', 'U') IS NOT NULL 
+	IF EXISTS(SELECT 1 FROM [DataLock].[DataLockEventErrors]) 
+		DROP TABLE [DataLock].[DataLockEventErrors]; 
+IF OBJECT_ID('[DataLock].[DataLockEvents]', 'U') IS NOT NULL 
+	IF EXISTS(SELECT 1 FROM [DataLock].[DataLockEvents]) 
+		DROP TABLE [DataLock].[DataLockEvents]; 
 
 IF OBJECT_ID('DataLock.PriceEpisodeMatch', 'U') IS NULL
     CREATE TABLE DataLock.PriceEpisodeMatch
@@ -299,3 +305,51 @@ IF OBJECT_ID('[Rulebase].[AEC_ApprenticeshipPriceEpisode]', 'U') IS NULL
 			[PriceEpisodeIdentifier] asc
 		)
 	)
+
+IF OBJECT_ID('[DataLock].[DataLockEventErrors]', 'U') IS NULL
+	CREATE TABLE [DataLock].[DataLockEventErrors](
+		[DataLockEventId] [uniqueidentifier] NOT NULL,
+		[ErrorCode] [varchar](15) NOT NULL,
+		[SystemDescription] [nvarchar](255) NOT NULL,
+	PRIMARY KEY CLUSTERED 
+	(
+		[DataLockEventId] ASC,
+		[ErrorCode] ASC
+	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+	) ON [PRIMARY]
+
+
+IF OBJECT_ID('[DataLock].[DataLockEvents]', 'U') IS NULL
+	CREATE TABLE [DataLock].[DataLockEvents](
+		[Id] [bigint] IDENTITY(1,1) NOT NULL,
+		[DataLockEventId] [uniqueidentifier] NOT NULL,
+		[ProcessDateTime] [datetime] NOT NULL,
+		[IlrFileName] [nvarchar](50) NOT NULL,
+		[SubmittedDateTime] [datetime] NOT NULL,
+		[AcademicYear] [varchar](4) NOT NULL,
+		[UKPRN] [bigint] NOT NULL,
+		[ULN] [bigint] NOT NULL,
+		[LearnRefNumber] [varchar](12) NOT NULL,
+		[AimSeqNumber] [int] NOT NULL,
+		[PriceEpisodeIdentifier] [varchar](25) NOT NULL,
+		[CommitmentId] [bigint] NOT NULL,
+		[EmployerAccountId] [bigint] NOT NULL,
+		[EventSource] [int] NOT NULL,
+		[HasErrors] [bit] NOT NULL,
+		[IlrStartDate] [date] NULL,
+		[IlrStandardCode] [bigint] NULL,
+		[IlrProgrammeType] [int] NULL,
+		[IlrFrameworkCode] [int] NULL,
+		[IlrPathwayCode] [int] NULL,
+		[IlrTrainingPrice] [decimal](12, 5) NULL,
+		[IlrEndpointAssessorPrice] [decimal](12, 5) NULL,
+		[IlrPriceEffectiveFromDate] [date] NULL,
+		[IlrPriceEffectiveToDate] [date] NULL,
+		[Status] [int] NOT NULL,
+	PRIMARY KEY CLUSTERED 
+	(
+		[Id] ASC
+	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+	) ON [PRIMARY]
+
+

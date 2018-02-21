@@ -14,6 +14,13 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests.Specs
         private const string LearnerRefNumber = "Lrn-001";
         private const string PriceEpisodeIdentifier = "1-1-1-2017-04-01";
 
+        [SetUp]
+        public override void SetupBase()
+        {
+            base.SetupBase();
+            TestDataHelperDataLockEventsDatabase.PopulateInitialRun();
+        }
+
         [Test]
         public void ThenItShouldWriteADeletionEvent()
         {

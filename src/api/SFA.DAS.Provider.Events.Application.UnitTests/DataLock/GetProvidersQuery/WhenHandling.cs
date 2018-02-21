@@ -29,17 +29,6 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetProvidersQue
         }
 
         [Test]
-        public async Task ThenItShouldReturnValidResponseWithValidatorDoesNotFail()
-        {
-            // Act
-            var actual = await _handler.Handle(_request);
-
-            // Assert
-            Assert.IsNotNull(actual);
-            Assert.IsTrue(actual.IsValid);
-        }
-
-        [Test]
         public async Task ThenItShouldReturnInvalidResponseWithInternalException()
         {
             // Arrange
@@ -92,6 +81,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetProvidersQue
             };
 
             _dataLockRepository.Setup(r => r.GetProviders()).ReturnsAsync(result1).Verifiable("Providers were not requested from DEDS");
+            _dataLockEventsRepository.Setup(r => r.HasInitialRunRecord()).ReturnsAsync(true).Verifiable("Check for initial run was never made");
 
             var result2 = new List<ProviderEntity>
             {
@@ -129,7 +119,8 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetProvidersQue
             };
 
             _dataLockRepository.Setup(r => r.GetProviders()).ReturnsAsync(dedsPage1).Verifiable("Providers page 1 were not requested from DEDS");
- 
+            _dataLockEventsRepository.Setup(r => r.HasInitialRunRecord()).ReturnsAsync(true).Verifiable("Check for initial run was never made");
+
             var dlePage1 = new List<ProviderEntity>
             {
                 new ProviderEntity {Ukprn = 1, IlrSubmissionDateTime = DateTime.Today},

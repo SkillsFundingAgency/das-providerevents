@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
-using NLog;
 using SFA.DAS.NLog.Logger;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
 using SFA.DAS.Provider.Events.Application.DataLock.GetCurrentDataLocksQuery;
+using SFA.DAS.Provider.Events.Application.DataLock.GetHistoricDataLockEventsQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.GetLatestDataLocksQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.GetProvidersQuery;
+using SFA.DAS.Provider.Events.Application.DataLock.RecordProcessorRun;
 using SFA.DAS.Provider.Events.Application.DataLock.UpdateProviderQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.WriteDataLockEventsQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.WriteDataLocksQuery;
-using SFA.DAS.Provider.Events.Application.Repositories;
 
 namespace SFA.DAS.Provider.Events.DataLockEventWorker
 {
@@ -33,7 +33,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
         {
             _logger.Debug("ProcessDataLocks started");
 
-            var providers = await GetProviders();
+            var providers = await GetProviders().ConfigureAwait(false);
 
             if (providers == null || providers.Count == 0)
             {
@@ -43,134 +43,219 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
 
             Parallel.ForEach(providers, async provider =>
             {
+                int? runId = null;
                 try
                 {
-                    var fetchNextCurrentLock = true;
-                    var fetchNextLastLock = true;
+                    runId = await RecordProcessStart(provider).ConfigureAwait(false);
 
-                    DataLock currentLock = null;
-                    DataLock lastSeenLock = null;
+                    if (provider.RequiresInitialImport)
+                        await ProviderInitialImport(provider).ConfigureAwait(false);
+                    else
+                        await ProcessProvider(provider).ConfigureAwait(false);
 
-                    Queue<DataLock> currentLocks = null;
-                    Queue<DataLock> lastSeenLocks = null;
-                    var events = new List<DataLockEvent>();
-                    var newDataLocks = new List<DataLock>();
-                    var deletedDataLocks = new List<DataLock>();
-                    var updatedDataLocks = new List<DataLock>();
-                    
-                    var currentLockPage = 1;
-                    var currentLocksDone = false;
-                    var lastLockPage = 1;
-                    var lastLocksDone = false;
-
-                    while (true)
-                    {
-                        if (fetchNextCurrentLock)
-                        {
-                            if ((currentLocks == null || currentLocks.Count == 0) && !currentLocksDone)
-                            {
-                                currentLocks = await GetCurrentDataLocks(provider, currentLockPage).ConfigureAwait(false);
-                                if (currentLocks == null || currentLocks.Count == 0)
-                                {
-                                    currentLocksDone = true;
-                                }
-                                else
-                                {
-                                    currentLockPage++;
-                                    currentLocksDone = currentLocks.Count < PageSize;
-                                }
-                            }
-
-                            if (currentLocks != null && currentLocks.Count > 0)
-                                currentLock = currentLocks.Dequeue();
-                            else
-                                currentLock = null;
-
-                            fetchNextCurrentLock = false;
-                        }
-
-                        if (fetchNextLastLock)
-                        {
-                            if ((lastSeenLocks == null || lastSeenLocks.Count == 0) && !lastLocksDone)
-                            {
-                                lastSeenLocks = await GetLastDataLocks(provider, lastLockPage).ConfigureAwait(false);
-                                if (lastSeenLocks == null || lastSeenLocks.Count == 0)
-                                {
-                                    lastLocksDone = true;
-                                }
-                                else
-                                {
-                                    lastLockPage++;
-                                    lastLocksDone = lastSeenLocks.Count < PageSize;
-                                }
-                            }
-
-                            if (lastSeenLocks != null && lastSeenLocks.Count > 0)
-                                lastSeenLock = lastSeenLocks.Dequeue();
-                            else
-                                lastSeenLock = null;
-
-                            fetchNextLastLock = false;
-                        }
-
-                        if (currentLock == null && lastSeenLock == null)
-                            break;
-
-                        var compare = Compare(currentLock, lastSeenLock);
-
-                        if (compare == 0)
-                        {
-                            // same lock
-                            if (!AreEqual(currentLock, lastSeenLock))
-                            {
-                                events.Add(FromDataLock(currentLock, EventStatus.Updated, provider));
-                                updatedDataLocks.Add(currentLock);
-                            }
-
-                            fetchNextCurrentLock = true;
-                            fetchNextLastLock = true;
-                        }
-                        else
-                        {
-                            if (compare < 0)
-                            {
-                                // new data lock
-                                newDataLocks.Add(currentLock);
-                                events.Add(FromDataLock(currentLock, EventStatus.New, provider));
-                                fetchNextCurrentLock = true;
-                            }
-                            else
-                            {
-                                // removed data lock
-                                deletedDataLocks.Add(lastSeenLock);
-                                events.Add(FromDataLock(lastSeenLock, EventStatus.Removed, provider));
-                                fetchNextLastLock = true;
-                            }
-                        }
-
-                        if (newDataLocks.Count + updatedDataLocks.Count + deletedDataLocks.Count > PageSize)
-                            await WriteDataLocks(newDataLocks, updatedDataLocks, deletedDataLocks, provider);
-
-                        if (events.Count > PageSize)
-                            await WriteDataLockEvents(events, provider);
-                    }
-
-                    if (newDataLocks.Count + updatedDataLocks.Count + deletedDataLocks.Count > 0)
-                        await WriteDataLocks(newDataLocks, updatedDataLocks, deletedDataLocks, provider);
-
-                    if (events.Count > 0)
-                        await WriteDataLockEvents(events, provider);
-
-                    var updateProviderRequest = new UpdateProviderQueryRequest {Provider = provider};
-                    var updateProviderResponse = await _mediator.SendAsync(updateProviderRequest).ConfigureAwait(false);
-                    if (!updateProviderResponse.IsValid)
-                        throw new ApplicationException($"Failed to update provider {provider.Ukprn} submission date", updateProviderResponse.Exception);
+                    await RecordProcessEnd(provider.Ukprn, runId.Value).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
+                    if (runId.HasValue)
+                        await RecordProcessEnd(provider.Ukprn, runId.Value, ex.ToString()).ConfigureAwait(false);
+
                     _logger.Error(ex, $"Error processing data locks for provider {provider.Ukprn}");
                 }
+
             });
+        }
+
+        private async Task ProviderInitialImport(ProviderEntity provider)
+        {
+            var page = 1;
+
+            while (true)
+            {
+                var query = new GetCurrentDataLocksQueryRequest {Ukprn = provider.Ukprn, PageNumber = page, PageSize = PageSize};
+                var response = await _mediator.SendAsync(query).ConfigureAwait(false);
+
+                if (!response.IsValid)
+                    throw new ApplicationException($"Failed to get current data locks for provider {provider.Ukprn} initial import", response.Exception);
+
+                if (response.Result == null || response.Result.Items == null || response.Result.Items.Length == 0) 
+                    break;
+
+                var writeDataLocks = new WriteDataLocksQueryRequest
+                {
+                    NewDataLocks = response.Result.Items
+                };
+
+                var writeResponse = await _mediator.SendAsync(writeDataLocks).ConfigureAwait(false);
+
+                if (!writeResponse.IsValid)
+                    throw new ApplicationException($"Failed to write data locks for provider {provider.Ukprn} initial import", response.Exception);
+
+                if (response.Result.Items.Length < PageSize)
+                    break;
+
+                page++;
+            }
+
+            page = 1;
+
+            while (true)
+            {
+                var query = new GetHistoricDataLockEventsQueryRequest {Ukprn = provider.Ukprn, PageNumber = page, PageSize = PageSize};
+                var response = await _mediator.SendAsync(query).ConfigureAwait(false);
+
+                if (!response.IsValid)
+                    throw new ApplicationException($"Failed to get historic data lock events for provider {provider.Ukprn} initial import", response.Exception);
+
+                if (response.Result == null || response.Result.Items == null || response.Result.Items.Length == 0)
+                    break;
+
+                var writeRequest = new WriteDataLockEventsQueryRequest
+                {
+                    DataLockEvents = response.Result.Items
+                };
+
+                var writeResponse = await _mediator.SendAsync(writeRequest).ConfigureAwait(false);
+                if (!writeResponse.IsValid)
+                    throw new ApplicationException($"Failed to write historic data lock events for provider {provider.Ukprn} initial import", response.Exception);
+
+                if (response.Result.Items.Length < PageSize)
+                    break;
+
+                page++;
+            }
+
+            provider.RequiresInitialImport = false;
+            
+            var updateProviderRequest = new UpdateProviderQueryRequest {Provider = provider};
+            var updateProviderResponse = await _mediator.SendAsync(updateProviderRequest).ConfigureAwait(false);
+            if (!updateProviderResponse.IsValid)
+                throw new ApplicationException($"Failed to update provider {provider.Ukprn} submission date", updateProviderResponse.Exception);
+        }
+
+        private async Task ProcessProvider(ProviderEntity provider)
+        {
+            var fetchNextCurrentLock = true;
+            var fetchNextLastLock = true;
+
+            DataLock currentLock = null;
+            DataLock lastSeenLock = null;
+
+            Queue<DataLock> currentLocks = null;
+            Queue<DataLock> lastSeenLocks = null;
+            var events = new List<DataLockEvent>();
+            var newDataLocks = new List<DataLock>();
+            var deletedDataLocks = new List<DataLock>();
+            var updatedDataLocks = new List<DataLock>();
+
+            var currentLockPage = 1;
+            var currentLocksDone = false;
+            var lastLockPage = 1;
+            var lastLocksDone = false;
+
+            while (true)
+            {
+                if (fetchNextCurrentLock)
+                {
+                    if ((currentLocks == null || currentLocks.Count == 0) && !currentLocksDone)
+                    {
+                        currentLocks = await GetCurrentDataLocks(provider, currentLockPage).ConfigureAwait(false);
+                        if (currentLocks == null || currentLocks.Count == 0)
+                        {
+                            currentLocksDone = true;
+                        }
+                        else
+                        {
+                            currentLockPage++;
+                            currentLocksDone = currentLocks.Count < PageSize;
+                        }
+                    }
+
+                    if (currentLocks != null && currentLocks.Count > 0)
+                        currentLock = currentLocks.Dequeue();
+                    else
+                        currentLock = null;
+
+                    fetchNextCurrentLock = false;
+                }
+
+                if (fetchNextLastLock)
+                {
+                    if ((lastSeenLocks == null || lastSeenLocks.Count == 0) && !lastLocksDone)
+                    {
+                        lastSeenLocks = await GetLastDataLocks(provider, lastLockPage).ConfigureAwait(false);
+                        if (lastSeenLocks == null || lastSeenLocks.Count == 0)
+                        {
+                            lastLocksDone = true;
+                        }
+                        else
+                        {
+                            lastLockPage++;
+                            lastLocksDone = lastSeenLocks.Count < PageSize;
+                        }
+                    }
+
+                    if (lastSeenLocks != null && lastSeenLocks.Count > 0)
+                        lastSeenLock = lastSeenLocks.Dequeue();
+                    else
+                        lastSeenLock = null;
+
+                    fetchNextLastLock = false;
+                }
+
+                if (currentLock == null && lastSeenLock == null)
+                    break;
+
+                var compare = Compare(currentLock, lastSeenLock);
+
+                if (compare == 0)
+                {
+                    // same lock
+                    if (!AreEqual(currentLock, lastSeenLock))
+                    {
+                        events.Add(FromDataLock(currentLock, EventStatus.Updated, provider));
+                        updatedDataLocks.Add(currentLock);
+                    }
+
+                    fetchNextCurrentLock = true;
+                    fetchNextLastLock = true;
+                }
+                else
+                {
+                    if (compare < 0)
+                    {
+                        // new data lock
+                        newDataLocks.Add(currentLock);
+                        events.Add(FromDataLock(currentLock, EventStatus.New, provider));
+                        fetchNextCurrentLock = true;
+                    }
+                    else
+                    {
+                        // removed data lock
+                        deletedDataLocks.Add(lastSeenLock);
+                        events.Add(FromDataLock(lastSeenLock, EventStatus.Removed, provider));
+                        fetchNextLastLock = true;
+                    }
+                }
+
+
+                if (newDataLocks.Count + updatedDataLocks.Count + deletedDataLocks.Count > PageSize)
+                    await WriteDataLocks(newDataLocks, updatedDataLocks, deletedDataLocks, provider);
+
+                if (events.Count > PageSize)
+                    await WriteDataLockEvents(events, provider);
+            }
+
+            if (newDataLocks.Count + updatedDataLocks.Count + deletedDataLocks.Count > 0)
+                await WriteDataLocks(newDataLocks, updatedDataLocks, deletedDataLocks, provider);
+
+            if (events.Count > 0)
+                await WriteDataLockEvents(events, provider);
+
+            var updateProviderRequest = new UpdateProviderQueryRequest {Provider = provider};
+            var updateProviderResponse = await _mediator.SendAsync(updateProviderRequest).ConfigureAwait(false);
+            if (!updateProviderResponse.IsValid)
+                throw new ApplicationException($"Failed to update provider {provider.Ukprn} submission date", updateProviderResponse.Exception);
         }
 
         private async Task WriteDataLockEvents(List<DataLockEvent> events, ProviderEntity provider)
@@ -232,7 +317,6 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                 IlrTrainingPrice = current.IlrTrainingPrice,
 
                 Errors = current.ErrorCodes == null ? null : current.ErrorCodes.Select(c => new DataLockEventError { ErrorCode = c}).ToArray()
-                //Periods = 
             };
         }
 
@@ -307,6 +391,40 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
             if (!response.IsValid)
                 throw new ApplicationException("Failed to get provider list", response.Exception);
             return response.Result;
+        }
+
+        private async Task<int> RecordProcessStart(ProviderEntity provider)
+        {
+            var request = new RecordProcessorRunRequest
+            {
+                Ukprn = provider.Ukprn,
+                StartTimeUtc = DateTime.UtcNow,
+                IlrSubmissionDateTime = provider.IlrSubmissionDateTime,
+                IsInitialRun = provider.RequiresInitialImport
+            };
+
+            var response = await _mediator.SendAsync(request).ConfigureAwait(false);
+
+            if (!response.IsValid)
+                throw new ApplicationException("Failed to record process start", response.Exception);
+            return response.RunId;
+        }
+
+        private async Task RecordProcessEnd(long ukprn, int runId, string error = null)
+        {
+            var request = new RecordProcessorRunRequest
+            {
+                Ukprn = ukprn,
+                RunId = runId,
+                FinishTimeUtc = DateTime.UtcNow,
+                IsSuccess = error == null,
+                Error = error
+            };
+
+            var response = await _mediator.SendAsync(request).ConfigureAwait(false);
+
+            if (!response.IsValid)
+                throw new ApplicationException("Failed to record process end", response.Exception);
         }
     }
 }

@@ -24,6 +24,13 @@ namespace SFA.DAS.Provider.Events.Application.Repositories
         Task UpdateDataLocks(IList<DataLockEntity> dataLocks);
 
         Task WriteDataLockEvents(IList<DataLockEventEntity> events);
-        
+        Task<bool> HasInitialRunRecord();
+
+        Task WriteProviders(IList<ProviderEntity> providers);
+
+        Task<int> InsertOrUpdateProcessRunRecord(int? id, long? ukprn, DateTime? ilrSubmissionDateTime, DateTime? startTimeUtc, DateTime? finishTimeUtc, bool? isInitialRun, bool? isSuccess, string error);
+
+        Task SetProviderProcessor(long ukprn, int runId);
+        Task ClearProviderProcessor(long ukprn);
     }
 }

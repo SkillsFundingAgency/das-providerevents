@@ -39,7 +39,8 @@ BEGIN
 		[IlrTrainingPrice],
 		[IlrEndpointAssessorPrice],
 		[IlrPriceEffectiveFromDate],
-		[IlrPriceEffectiveToDate]
+		[IlrPriceEffectiveToDate],
+		[ErrorCodes]
 	FROM
 		[DataLockEvents].[DataLockEvent] ev
 	WHERE

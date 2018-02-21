@@ -75,6 +75,10 @@
     <Build Include="Schemas\DataLockEvents.sql" />
     <Build Include="Types\DataLockEntity.sql" />
     <Build Include="Stored Procedures\UpdateProvider.sql" />
+    <Build Include="Tables\ProcessorRun.sql" />
+    <None Include="Deds Stored Procedures\GetDataLockEvents.sql">
+      <CopyToOutputDirectory>DoNotCopy</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SFA.DAS.Provider.Events.DataLockEventsDatabase.refactorlog" />

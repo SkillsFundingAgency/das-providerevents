@@ -27,7 +27,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
         }
 
         [SetUp]
-        public void SetupBase()
+        public virtual void SetupBase()
         {
             Task.WaitAll(
                 Task.Run(() => TestDataHelperDeds.Clean()),

@@ -47,6 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataLock\RecordProcessorRun\RecordProcessorRunHandler.cs" />
+    <Compile Include="DataLock\RecordProcessorRun\RecordProcessorRunRequest.cs" />
+    <Compile Include="DataLock\RecordProcessorRun\RecordProcessorRunResponse.cs" />
+    <Compile Include="DataLock\GetHistoricDataLockEventsQuery\GetHistoricDataLockEventsQueryHandler.cs" />
+    <Compile Include="DataLock\GetHistoricDataLockEventsQuery\GetHistoricDataLockEventsQueryRequest.cs" />
+    <Compile Include="DataLock\GetHistoricDataLockEventsQuery\GetHistoricDataLockEventsQueryResponse.cs" />
     <Compile Include="DataLock\GetLatestDataLocksQuery\GetLatestDataLocksQueryHandler.cs" />
     <Compile Include="DataLock\GetLatestDataLocksQuery\GetLatestDataLocksQueryRequest.cs" />
     <Compile Include="DataLock\GetLatestDataLocksQuery\GetLatestDataLocksQueryRequestValidator.cs" />

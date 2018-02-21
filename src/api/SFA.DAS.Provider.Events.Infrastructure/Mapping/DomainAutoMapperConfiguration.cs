@@ -77,7 +77,8 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
                     {
                         dst.Errors = JsonConvert.DeserializeObject<List<string>>(src.ErrorCodes).Select(s => new DataLockEventError
                         {
-                            ErrorCode = s
+                            ErrorCode = s,
+                            SystemDescription = GetErrorDescription(s)
                         }).ToArray();
                     }
                     else
@@ -97,6 +98,37 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
                     else
                         dst.ErrorCodes = JsonConvert.SerializeObject(src.Errors.Select(e => e.ErrorCode).ToList());
                 });
+        }
+
+        private static string GetErrorDescription(string errorCode)
+        {
+            switch (errorCode)
+            {
+                case "DLOCK_01":
+                    return "No matching record found in an employer digital account for the UKPRN";
+                case "DLOCK_02":
+                    return "No matching record found in the employer digital account for the ULN";
+                case "DLOCK_03":
+                    return "No matching record found in the employer digital account for the standard code";
+                case "DLOCK_04":
+                    return "No matching record found in the employer digital account for the framework code";
+                case "DLOCK_05":
+                    return "No matching record found in the employer digital account for the programme type";
+                case "DLOCK_06":
+                    return "No matching record found in the employer digital account for the pathway code";
+                case "DLOCK_07":
+                    return "No matching record found in the employer digital account for the negotiated cost of training";
+                case "DLOCK_08":
+                    return "Multiple matching records found in the employer digital account";
+                case "DLOCK_09":
+                    return "The start date for this negotiated price is before the corresponding price start date in the employer digital account";
+                case "DLOCK_10":
+                    return "The employer has stopped payments for this apprentice";
+                case "DLOCK_11":
+                    return "The employer is not currently a levy payer";
+                default:
+                    return errorCode;
+            }
         }
     }
 }

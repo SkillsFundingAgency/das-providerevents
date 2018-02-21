@@ -61,7 +61,6 @@
     <Compile Include="PeriodEnd.cs" />
     <Compile Include="PeriodEndLinks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Provider.cs" />
     <Compile Include="ReferenceDataDetails.cs" />
     <Compile Include="SubmissionEvent.cs" />
     <Compile Include="TransactionType.cs" />

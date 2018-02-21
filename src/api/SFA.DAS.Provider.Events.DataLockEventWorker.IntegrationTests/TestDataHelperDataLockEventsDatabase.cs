@@ -61,8 +61,24 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
                 connection.Execute(sql);
         }
 
-        public static void AddProvider(long ukprn, DateTime ilrSubmissionDate)
+        public static void AddProvider(long ukprn, DateTime ilrSubmissionDateTime)
         {
+            Execute(@"
+                insert into [DataLockEvents].[Provider] ([Ukprn], [IlrSubmissionDateTime])
+                values (@ukprn, @ilrSubmissionDateTime)
+            ", new {ukprn, ilrSubmissionDateTime});
+        }
+
+        public static IList<ProviderEntity> GetAllProviders()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+                return connection.Query<ProviderEntity>("select * from DataLockEvents.Provider").ToList();
+        }
+
+        public static IList<DataLockEntity> GetAllLastDataLocks()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+                return connection.Query<DataLockEntity>("select * from DataLockEvents.LastDataLock").ToList();
         }
 
         private static void Execute(string command, object param = null)
@@ -125,6 +141,14 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
                         new {id, ukprn, learnerRefNumber, aimSequenceNumber, priceEpisodeIdentifier, errorCodes, uln, employerAccountId = 888, standardCode, frameworkCode, programmeType, pathwayCode, startDate, endDate, deletedTime});
                 }
             }
+        }
+
+        public static void PopulateInitialRun(long ukprn = 10000, DateTime? ilrSubmissionDateTime = null)
+        {
+            Execute(@"
+                insert into [DataLockEvents].[ProcessorRun] ([Ukprn], [IlrSubmissionDateTime], [StartTimeUtc], [FinishTimeUtc], [IsInitialRun], [IsSuccess])
+                values (@ukprn, @ilrSubmissionDateTime, getdate(), getdate(), 1, 1)
+            ", new {ukprn, ilrSubmissionDateTime = ilrSubmissionDateTime.GetValueOrDefault(DateTime.Today)});
         }
     }
 }

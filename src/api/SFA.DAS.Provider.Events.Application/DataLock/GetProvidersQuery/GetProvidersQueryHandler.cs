@@ -23,9 +23,21 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.GetProvidersQuery
         {
             try
             {
-                var allProviders = await _dataLockRepository.GetProviders();
+                var allProviders = await _dataLockRepository.GetProviders().ConfigureAwait(false);
 
-                if (!message.UpdatedOnly)
+                var initialRun = !await _dataLockEventRepository.HasInitialRunRecord().ConfigureAwait(false);
+
+                if (initialRun)
+                {
+                    foreach (var provider in allProviders)
+                    {
+                        provider.RequiresInitialImport = true;
+                    }
+
+                    await _dataLockEventRepository.WriteProviders(allProviders).ConfigureAwait(false);
+                }
+
+                if (!message.UpdatedOnly || initialRun)
                 {
                     return new GetProvidersQueryResponse
                     {
@@ -34,12 +46,12 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.GetProvidersQuery
                     };
                 }
 
-                var processedProviders = (await _dataLockEventRepository.GetProviders()).ToDictionary(p => p.Ukprn, p => p.IlrSubmissionDateTime);
+                var processedProviders = (await _dataLockEventRepository.GetProviders().ConfigureAwait(false)).ToDictionary(p => p.Ukprn, p => p);
 
                 for (var i = allProviders.Count - 1; i >= 0; i--)
                 {
                     var provider = allProviders[i];
-                    if (processedProviders.TryGetValue(provider.Ukprn, out var processTime) && processTime >= provider.IlrSubmissionDateTime) 
+                    if (processedProviders.TryGetValue(provider.Ukprn, out var processedProvider) && (processedProvider.IlrSubmissionDateTime >= provider.IlrSubmissionDateTime || processedProvider.HandledBy.HasValue))
                         allProviders.RemoveAt(i);
                 }
 

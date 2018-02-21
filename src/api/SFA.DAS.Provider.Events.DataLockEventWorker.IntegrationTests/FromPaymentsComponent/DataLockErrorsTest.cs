@@ -11,6 +11,13 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests.FromPaymen
     [TestFixture(Description = "Ported from Feature: Datalock produces correct errors when ILR does not match commitment")]
     public class DataLockErrorsTest : DataLockProcessorTestBase
     {
+        [SetUp]
+        public override void SetupBase()
+        {
+            base.SetupBase();
+            TestDataHelperDataLockEventsDatabase.PopulateInitialRun();
+        }
+
         [Test(Description = "Scenario: DLOCK07 - When no matching record found in an employer digital account for for the agreed price then datalock DLOCK_07 will be produced")]
         public void Dlock07()
         {

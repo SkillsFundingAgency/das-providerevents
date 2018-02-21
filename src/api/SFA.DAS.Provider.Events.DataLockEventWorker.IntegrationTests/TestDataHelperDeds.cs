@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.IO;
 using Dapper;
+using SFA.DAS.Provider.Events.Api.Types;
 
 namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
 {
@@ -242,6 +243,80 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
                            )",
                 new
                     {ukprn, learnerRefNumber, aimSequenceNumber, startDate, standardCode, programmeType, frameworkCode, pathwayCode, learnAimRef, endDate });
+        }
+
+        public static void AddDataLockEvent(long ukprn, DateTime processedDateTime, EventStatus status, string otherStrings, int otherNumbers, DateTime otherDates, string[] errors)
+        {
+            var id = Guid.NewGuid();
+            Execute(@"
+                INSERT INTO [DataLock].[DataLockEvents]
+                           ([DataLockEventId]
+                           ,[ProcessDateTime]
+                           ,[IlrFileName]
+                           ,[SubmittedDateTime]
+                           ,[AcademicYear]
+                           ,[UKPRN]
+                           ,[ULN]
+                           ,[LearnRefNumber]
+                           ,[AimSeqNumber]
+                           ,[PriceEpisodeIdentifier]
+                           ,[CommitmentId]
+                           ,[EmployerAccountId]
+                           ,[EventSource]
+                           ,[HasErrors]
+                           ,[IlrStartDate]
+                           ,[IlrStandardCode]
+                           ,[IlrProgrammeType]
+                           ,[IlrFrameworkCode]
+                           ,[IlrPathwayCode]
+                           ,[IlrTrainingPrice]
+                           ,[IlrEndpointAssessorPrice]
+                           ,[IlrPriceEffectiveFromDate]
+                           ,[IlrPriceEffectiveToDate]
+                           ,[Status])
+                     VALUES
+                           (@id
+                           ,@processedDateTime
+                           ,@otherStrings
+                           ,@otherDates
+                           ,'1617'
+                           ,@ukprn
+                           ,@otherNumbers
+                           ,@otherStrings
+                           ,@otherNumbers
+                           ,@otherStrings
+                           ,@otherNumbers
+                           ,@otherNumbers
+                           ,@otherNumbers
+                           ,@hasErrors
+                           ,@otherDates
+                           ,@otherNumbers
+                           ,@otherNumbers
+                           ,@otherNumbers
+                           ,@otherNumbers
+                           ,@otherNumbers
+                           ,@otherNumbers
+                           ,@otherDates
+                           ,@otherDates
+                           ,@status)
+                ", new {id, ukprn, otherDates, otherNumbers, otherStrings, processedDateTime, hasErrors = errors != null, status});
+
+            if (errors != null)
+            {
+                foreach (var error in errors)
+                {
+                    Execute(@"
+                        INSERT INTO [DataLock].[DataLockEventErrors]
+                                   ([DataLockEventId]
+                                   ,[ErrorCode]
+                                   ,[SystemDescription])
+                             VALUES
+                                   (@id
+                                   ,@error
+                                   ,@error)", new {id, error});
+                }
+            }
+
         }
 
         private static void Execute(string command, object param = null)

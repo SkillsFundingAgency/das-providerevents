@@ -9,6 +9,12 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests.Specs
     [TestFixture]
     public class WhenANewDataLockIsGenerated : DataLockProcessorTestBase
     {
+        [SetUp]
+        public override void SetupBase()
+        {
+            base.SetupBase();
+            TestDataHelperDataLockEventsDatabase.PopulateInitialRun();
+        }
 
         [Test]
         public void ThenItShouldBeWrittenToTheDatabase()

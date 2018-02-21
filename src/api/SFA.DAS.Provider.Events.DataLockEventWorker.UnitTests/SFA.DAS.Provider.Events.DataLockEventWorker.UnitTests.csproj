@@ -74,8 +74,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataLockEventProcessorTest.cs" />
+    <Compile Include="Tests\DataLockProcessorTestBase.cs" />
+    <Compile Include="Tests\ExceptionsTest.cs" />
+    <Compile Include="Tests\RegularRunTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tests\InitialRunTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

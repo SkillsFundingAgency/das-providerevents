@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MediatR;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.NLog.Logger;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
 using SFA.DAS.Provider.Events.Application.DataLock.GetCurrentDataLocksQuery;
@@ -14,27 +12,11 @@ using SFA.DAS.Provider.Events.Application.DataLock.UpdateProviderQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.WriteDataLockEventsQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.WriteDataLocksQuery;
 
-namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests
+namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.Tests
 {
     [TestFixture]
-    public class DataLockEventProcessorTest
+    public class RegularRunTest : DataLockProcessorTestBase
     {
-        private IDataLockProcessor _dataLockProcessor;
-        private readonly Mock<ILog> _loggerMock = new Mock<ILog>();
-        private readonly Mock<IMediator> _mediatorMock = new Mock<IMediator>(MockBehavior.Strict);
-        private GetProvidersQueryResponse _getProvidersQueryResponse;
-
-        [SetUp]
-        public void SetUp()
-        {
-            _dataLockProcessor = new DataLockProcessor(_loggerMock.Object, _mediatorMock.Object);
-            _getProvidersQueryResponse = new GetProvidersQueryResponse
-            {
-                IsValid = true,
-                Result = new[] {new ProviderEntity {Ukprn = 1, IlrSubmissionDateTime = DateTime.Today}}
-            };
-        }
-
         [Test]
         public async Task TestProcessorRequestsNewDataLocks()
         {
@@ -97,12 +79,12 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests
 
             _mediatorMock.Setup(m => m.SendAsync(It.IsAny<WriteDataLocksQueryRequest>()))
                 .ReturnsAsync(new WriteDataLocksQueryResponse {IsValid = true })
-                .Callback<WriteDataLocksQueryRequest>(r => actualWriteDataLocksRequest = r)
+                .Callback<WriteDataLocksQueryRequest>(r => actualWriteDataLocksRequest = DeepClone(r))
                 .Verifiable("Write new Data Locks was not called");
 
             _mediatorMock.Setup(m => m.SendAsync(It.IsAny<WriteDataLockEventsQueryRequest>()))
                 .ReturnsAsync(new WriteDataLockEventsQueryResponse {IsValid = true})
-                .Callback<WriteDataLockEventsQueryRequest>(r => actualWriteDataLockEventsRequest = r)
+                .Callback<WriteDataLockEventsQueryRequest>(r => actualWriteDataLockEventsRequest = DeepClone(r))
                 .Verifiable("Write new Data Lock Events was not called");
 
             // act
@@ -209,12 +191,12 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests
 
             _mediatorMock.Setup(m => m.SendAsync(It.IsAny<WriteDataLocksQueryRequest>()))
                 .ReturnsAsync(new WriteDataLocksQueryResponse {IsValid = true })
-                .Callback<WriteDataLocksQueryRequest>(r => actualWriteDataLocksRequest = r)
+                .Callback<WriteDataLocksQueryRequest>(r => actualWriteDataLocksRequest = DeepClone(r))
                 .Verifiable("Write new Data Locks was not called");
 
             _mediatorMock.Setup(m => m.SendAsync(It.IsAny<WriteDataLockEventsQueryRequest>()))
                 .ReturnsAsync(new WriteDataLockEventsQueryResponse {IsValid = true})
-                .Callback<WriteDataLockEventsQueryRequest>(r => actualWriteDataLockEventsRequest = r)
+                .Callback<WriteDataLockEventsQueryRequest>(r => actualWriteDataLockEventsRequest = DeepClone(r))
                 .Verifiable("Write new Data Lock Events was not called");
 
             // act
@@ -335,12 +317,12 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests
 
             _mediatorMock.Setup(m => m.SendAsync(It.IsAny<WriteDataLocksQueryRequest>()))
                 .ReturnsAsync(new WriteDataLocksQueryResponse {IsValid = true })
-                .Callback<WriteDataLocksQueryRequest>(r => actualWriteDataLocksRequest = r)
+                .Callback<WriteDataLocksQueryRequest>(r => actualWriteDataLocksRequest = DeepClone(r))
                 .Verifiable("Write new Data Locks was not called");
 
             _mediatorMock.Setup(m => m.SendAsync(It.IsAny<WriteDataLockEventsQueryRequest>()))
                 .ReturnsAsync(new WriteDataLockEventsQueryResponse {IsValid = true})
-                .Callback<WriteDataLockEventsQueryRequest>(r => actualWriteDataLockEventsRequest = r)
+                .Callback<WriteDataLockEventsQueryRequest>(r => actualWriteDataLockEventsRequest = DeepClone(r))
                 .Verifiable("Write new Data Lock Events was not called");
 
             // act
@@ -415,64 +397,6 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests
             
             // assert
             _mediatorMock.VerifyAll();
-        }        
-        
-        [Test]
-        public async Task TestProcessGracefullyEndsWhenCurrentDataLockRequestFailed()
-        {
-            // arrange
-            _mediatorMock.Setup(m => m.SendAsync(It.IsAny<GetProvidersQueryRequest>())).ReturnsAsync(_getProvidersQueryResponse).Verifiable("Provider list was not requested");
-            _mediatorMock.Setup(m => m.SendAsync(It.Is<GetCurrentDataLocksQueryRequest>(r => r.PageNumber == 1))).ThrowsAsync(new ApplicationException()).Verifiable();
-
-            // act
-            await _dataLockProcessor.ProcessDataLocks();
-            
-            // assert
-            _mediatorMock.VerifyAll();
-        }
-        
-        [Test]
-        public async Task TestProcessGracefullyEndsWhenLatestDataLockRequestFails()
-        {
-            // arrange
-            _mediatorMock.Setup(m => m.SendAsync(It.IsAny<GetProvidersQueryRequest>())).ReturnsAsync(_getProvidersQueryResponse).Verifiable("Provider list was not requested");
-            _mediatorMock.Setup(m => m.SendAsync(It.Is<GetCurrentDataLocksQueryRequest>(r => r.PageNumber == 1))).ReturnsAsync(new GetCurrentDataLocksQueryResponse{ IsValid = true}).Verifiable("Current Data Locks page 1 was not requested for provider");
-            _mediatorMock.Setup(m => m.SendAsync(It.Is<GetLatestDataLocksQueryRequest>(r => r.PageNumber == 1))).ThrowsAsync(new ApplicationException()).Verifiable();
-
-            // act
-            await _dataLockProcessor.ProcessDataLocks();
-            
-            // assert
-            _mediatorMock.VerifyAll();
-        }        
-
-        [Test]
-        public async Task TestProcessGracefullyEndsWhenCurrentDataLockRequestInvalid()
-        {
-            // arrange
-            _mediatorMock.Setup(m => m.SendAsync(It.IsAny<GetProvidersQueryRequest>())).ReturnsAsync(_getProvidersQueryResponse).Verifiable("Provider list was not requested");
-            _mediatorMock.Setup(m => m.SendAsync(It.Is<GetCurrentDataLocksQueryRequest>(r => r.PageNumber == 1))).ReturnsAsync(new GetCurrentDataLocksQueryResponse {IsValid = false, Exception = new ApplicationException()}).Verifiable();
-
-            // act
-            await _dataLockProcessor.ProcessDataLocks();
-            
-            // assert
-            _mediatorMock.VerifyAll();
-        }
-        
-        [Test]
-        public async Task TestProcessGracefullyEndsWhenLatestDataLockRequestInvalid()
-        {
-            // arrange
-            _mediatorMock.Setup(m => m.SendAsync(It.IsAny<GetProvidersQueryRequest>())).ReturnsAsync(_getProvidersQueryResponse).Verifiable("Provider list was not requested");
-            _mediatorMock.Setup(m => m.SendAsync(It.Is<GetCurrentDataLocksQueryRequest>(r => r.PageNumber == 1))).ReturnsAsync(new GetCurrentDataLocksQueryResponse{ IsValid = true}).Verifiable("Current Data Locks page 1 was not requested for provider");
-            _mediatorMock.Setup(m => m.SendAsync(It.Is<GetLatestDataLocksQueryRequest>(r => r.PageNumber == 1))).ReturnsAsync(new GetLatestDataLocksQueryResponse {IsValid = false, Exception = new ApplicationException()}).Verifiable();
-
-            // act
-            await _dataLockProcessor.ProcessDataLocks();
-            
-            // assert
-            _mediatorMock.VerifyAll();
-        }
+        }                
     }
 }

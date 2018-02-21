@@ -35,4 +35,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="CommitmentId" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="56ad81e0-2d62-42e5-9c9b-752d514d5fa0" ChangeDateTime="02/20/2018 14:07:59">
+    <Property Name="ElementName" Value="[dbo].[DataLockErrorDescription].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[DataLockErrorDescription]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Code" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="f2a71fdc-e596-4fee-a6fb-358bc05781e4" ChangeDateTime="02/20/2018 14:51:27">
+    <Property Name="ElementName" Value="[dbo].[ProcessorRuns].[StartTime]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ProcessorRuns]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="StartTimeUtc" />
+  </Operation>
 </Operations>
