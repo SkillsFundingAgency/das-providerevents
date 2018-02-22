@@ -4,7 +4,6 @@ using MediatR;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Repositories;
-using SFA.DAS.Provider.Events.Application.Validation;
 
 namespace SFA.DAS.Provider.Events.Application.DataLock.GetHistoricDataLockEventsQuery
 {

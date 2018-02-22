@@ -325,13 +325,13 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
             if ((x.ErrorCodes == null) != (y.ErrorCodes == null))
                 return false;
 
-            if (x.ErrorCodes != null && !x.ErrorCodes.SequenceEqual(y.ErrorCodes))
+            if (x.ErrorCodes != null && y.ErrorCodes != null && !x.ErrorCodes.SequenceEqual(y.ErrorCodes))
                 return false;
 
             if ((x.CommitmentVersions == null) != (y.CommitmentVersions == null))
                 return false;
 
-            if (x.CommitmentVersions != null && !x.CommitmentVersions.SequenceEqual(y.CommitmentVersions))
+            if (x.CommitmentVersions != null && y.CommitmentVersions != null && !x.CommitmentVersions.SequenceEqual(y.CommitmentVersions))
                 return false;
 
             return true;
@@ -339,12 +339,13 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
 
         private static int Compare(DataLock x, DataLock y)
         {
-            if (x == null && y == null) return 0;
+            if (x == null && y == null) return 0; // this can really never happen but for the sake of completeness it's here
 
             if (x == null) return 1;
 
             if (y == null) return -1;
 
+            // this can also never happen but who knows where refactoring will take us
             if (x.Ukprn < y.Ukprn) return -1;
             if (x.Ukprn > y.Ukprn) return 1;
 

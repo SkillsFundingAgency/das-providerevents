@@ -8,6 +8,7 @@ using SFA.DAS.Provider.Events.Application.Data.Entities;
 using SFA.DAS.Provider.Events.Application.DataLock.GetCurrentDataLocksQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.GetLatestDataLocksQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.GetProvidersQuery;
+using SFA.DAS.Provider.Events.Application.DataLock.RecordProcessorRun;
 using SFA.DAS.Provider.Events.Application.DataLock.UpdateProviderQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.WriteDataLockEventsQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.WriteDataLocksQuery;
@@ -17,6 +18,20 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.Tests
     [TestFixture]
     public class RegularRunTest : DataLockProcessorTestBase
     {
+        [SetUp]
+        protected override void SetUp()
+        {
+            base.SetUp();
+            
+            _mediatorMock.Setup(m => m.SendAsync(It.Is<RecordProcessorRunRequest>(r => r.FinishTimeUtc == null)))
+                .ReturnsAsync(new RecordProcessorRunResponse {RunId = 777, IsValid = true})
+                .Verifiable("Process start was not recorded");
+            
+            _mediatorMock.Setup(m => m.SendAsync(It.Is<RecordProcessorRunRequest>(r => r.FinishTimeUtc != null && r.RunId == 777)))
+                .ReturnsAsync(new RecordProcessorRunResponse {RunId = 777, IsValid = true})
+                .Verifiable("Process finish was not recorded");
+        }
+
         [Test]
         public async Task TestProcessorRequestsNewDataLocks()
         {
@@ -390,6 +405,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.Tests
                 Result = new ProviderEntity[0]
             };
 
+            _mediatorMock.Reset();
             _mediatorMock.Setup(m => m.SendAsync(It.IsAny<GetProvidersQueryRequest>())).ReturnsAsync(providersQueryResponse).Verifiable("Provider list was not requested");
 
             // act

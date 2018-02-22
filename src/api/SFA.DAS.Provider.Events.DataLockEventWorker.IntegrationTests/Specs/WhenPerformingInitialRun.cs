@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.Types;
 
@@ -49,8 +45,8 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests.Specs
             var actualEvent = events[0];
             Assert.AreEqual(Ukprn, actualEvent.Ukprn);
             Assert.AreEqual("1", actualEvent.PriceEpisodeIdentifier);
-            Assert.AreEqual(LearnerRefNumber, actualEvent.LearnRefNumber);
-            Assert.AreEqual(CommitmentId, actualEvent.CommitmentId);
+            Assert.AreEqual("1", actualEvent.LearnRefNumber);
+            Assert.AreEqual(1, actualEvent.CommitmentId);
             Assert.AreEqual(false, actualEvent.HasErrors);
             Assert.IsNull(actualEvent.ErrorCodes);
             Assert.AreEqual(EventStatus.Removed, (EventStatus)actualEvent.Status);
@@ -58,8 +54,8 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests.Specs
             actualEvent = events[1];
             Assert.AreEqual(Ukprn, actualEvent.Ukprn);
             Assert.AreEqual("2", actualEvent.PriceEpisodeIdentifier);
-            Assert.AreEqual(LearnerRefNumber, actualEvent.LearnRefNumber);
-            Assert.AreEqual(CommitmentId, actualEvent.CommitmentId);
+            Assert.AreEqual("2", actualEvent.LearnRefNumber);
+            Assert.AreEqual(2, actualEvent.CommitmentId);
             Assert.AreEqual(true, actualEvent.HasErrors);
             Assert.AreEqual("[\"E1\",\"E2\"]", actualEvent.ErrorCodes);
             Assert.AreEqual(EventStatus.Updated, (EventStatus)actualEvent.Status);

@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Net;
 using System.Threading;
@@ -58,7 +59,13 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
             {
                 Trace.TraceInformation("Working");
                 await _dataLockProcessor.ProcessDataLocks();
-                await Task.Delay(60000, cancellationToken);
+                try
+                {
+                    await Task.Delay(60000, cancellationToken);
+                }
+                catch (OperationCanceledException)
+                {
+                }
             }
         }
         private IContainer ConfigureIocContainer()

@@ -19,7 +19,12 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
                     connection.Execute("if(db_id(N'ProviderEventsAT') IS NULL) create database [ProviderEventsAT]");
             }
 
-            var scripts = Directory.GetFiles(Path.Combine(Path.GetDirectoryName(typeof(TestDataHelperDeds).Assembly.Location), "DedsDbSetUp"), "*.sql");
+            var scripts =
+                Directory.GetFiles(
+                    Path.Combine(
+                        Path.GetDirectoryName(typeof(TestDataHelperDeds).Assembly.Location) ??
+                        throw new InvalidOperationException("Failed to get assembly location path"), "DedsDbSetUp"),
+                    "*.sql");
 
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -36,7 +41,12 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
 
         public static void Clean()
         {
-            var script = Directory.GetFiles(Path.Combine(Path.GetDirectoryName(typeof(TestDataHelperDeds).Assembly.Location), "DedsDbSetUp"), "Cleanup.sql")[0];
+            var script =
+                Directory.GetFiles(
+                    Path.Combine(
+                        Path.GetDirectoryName(typeof(TestDataHelperDeds).Assembly.Location) ??
+                        throw new InvalidOperationException("Failed to get assembly location path"), "DedsDbSetUp"),
+                    "Cleanup.sql")[0];
 
             using (var connection = new SqlConnection(_connectionString))
                 connection.Execute(File.ReadAllText(script));

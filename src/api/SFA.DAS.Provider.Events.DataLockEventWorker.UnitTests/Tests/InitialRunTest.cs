@@ -188,7 +188,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.Tests
 
             Assert.IsNotNull(actualRecord2);
             Assert.AreEqual(777, actualRecord2.RunId);
-            Assert.IsNull(actualRecord2.Ukprn);
+            Assert.AreEqual(1, actualRecord2.Ukprn);
             Assert.IsNull(actualRecord2.IsInitialRun);
             Assert.IsNull(actualRecord2.StartTimeUtc);
             Assert.IsNotNull(actualRecord2.FinishTimeUtc);
@@ -203,7 +203,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.Tests
 
             Assert.IsNotNull(actualRecord4);
             Assert.AreEqual(888, actualRecord4.RunId);
-            Assert.IsNull(actualRecord4.Ukprn);
+            Assert.AreEqual(2, actualRecord4.Ukprn);
             Assert.IsNull(actualRecord4.IsInitialRun);
             Assert.IsNull(actualRecord4.StartTimeUtc);
             Assert.IsNotNull(actualRecord4.FinishTimeUtc);

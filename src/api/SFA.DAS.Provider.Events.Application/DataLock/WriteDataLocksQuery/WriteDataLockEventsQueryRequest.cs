@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MediatR;
 
 namespace SFA.DAS.Provider.Events.Application.DataLock.WriteDataLocksQuery

@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using Dapper;
 using Microsoft.SqlServer.Dac;
-using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
 
 namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
@@ -25,7 +24,8 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
             //}
 
             var instance = new DacServices(_connectionString);
-            var path = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(TestDataHelperDeds).Assembly.Location),
+            var path = Path.GetFullPath(Path.Combine(
+                Path.GetDirectoryName(typeof(TestDataHelperDeds).Assembly.Location) ?? throw new InvalidOperationException("Failed to get assembly location path"),
                 @"..\..\..\SFA.DAS.Provider.Events.DataLockEventsDatabase\bin\Debug\SFA.DAS.Provider.Events.DataLockEventsDatabase.dacpac"));
 
             using (var dacpac = DacPackage.Load(path))

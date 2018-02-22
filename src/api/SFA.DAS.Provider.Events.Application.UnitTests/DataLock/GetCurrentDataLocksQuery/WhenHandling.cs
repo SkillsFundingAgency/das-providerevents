@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
 using SFA.DAS.Provider.Events.Application.DataLock.GetCurrentDataLocksQuery;
 using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Repositories;
-using SFA.DAS.Provider.Events.Application.Validation;
 using SFA.DAS.Provider.Events.Application.Validation.Rules;
 
 namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.GetCurrentDataLocksQuery

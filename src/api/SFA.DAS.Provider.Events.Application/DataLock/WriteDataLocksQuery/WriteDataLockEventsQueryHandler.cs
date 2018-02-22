@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
-using Newtonsoft.Json;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
 using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Repositories;
@@ -20,14 +19,6 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.WriteDataLocksQuery
         {
             _dataLockEventRepository = dataLockEventRepository;
             _mapper = mapper;
-        }
-
-        private string GetString<T>(IList<T> array)
-        {
-            if (array == null || array.Count == 0)
-                return null;
-
-            return JsonConvert.SerializeObject(array);
         }
 
         public async Task<WriteDataLocksQueryResponse> Handle(WriteDataLocksQueryRequest message)
