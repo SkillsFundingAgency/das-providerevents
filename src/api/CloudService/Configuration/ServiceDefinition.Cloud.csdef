@@ -18,6 +18,7 @@
       <Setting name="ApiTokenSecret" />
       <Setting name="ApiIssuer" />
       <Setting name="ApiAudiences" />
+      <Setting name="ConfigurationStorageConnectionString" />      
       <Setting name="LoggingRedisConnectionString"/>
       <Setting name="LoggingRedisKey"/>
       <Setting name="InstrumentationKey"/>
