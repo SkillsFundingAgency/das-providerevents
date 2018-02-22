@@ -41,7 +41,8 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 NiNumber = "AB12345C",
                 ApprenticeshipId = 1,
                 AcademicYear = "1617",
-                EmployerReferenceNumber = 123456
+                EmployerReferenceNumber = 123456,
+                EPAOrgId = "EPACodeI"
             };
 
             _submissionFrameworkEvent = new SubmissionEvent
@@ -63,7 +64,8 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 NiNumber = "AB12345C",
                 ApprenticeshipId = 9,
                 AcademicYear = "1617",
-                EmployerReferenceNumber = 123456
+                EmployerReferenceNumber = 123456,
+                EPAOrgId = "EPACodeI"
             };
 
             _httpClient = new Mock<SecureHttpClient>();
@@ -119,6 +121,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             var actual = await _client.GetSubmissionEvents();
 
             // Assert
+            //todo: should really clone the input data before using it as expected, in case the code under test mutates it
             Assert.IsNotNull(actual);
             Assert.IsTrue(EventsMatch(_submissionStandardEvent, actual.Items[0]));
             Assert.IsTrue(EventsMatch(_submissionFrameworkEvent, actual.Items[1]));
@@ -145,7 +148,8 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                    && original.NiNumber == client.NiNumber
                    && original.ApprenticeshipId == client.ApprenticeshipId
                    && original.AcademicYear == client.AcademicYear
-                   && original.EmployerReferenceNumber == client.EmployerReferenceNumber;
+                   && original.EmployerReferenceNumber == client.EmployerReferenceNumber
+                   && original.EPAOrgId == client.EPAOrgId;
         }
     }
 }

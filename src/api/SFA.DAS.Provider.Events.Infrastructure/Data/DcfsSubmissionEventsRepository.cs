@@ -16,9 +16,10 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                                        + "ComponentVersionNumber, "
                                        + "UKPRN, "
                                        + "ULN, "
-                                       + "LearnRefNumber, "
-                                       + "AimSeqNumber, "
-                                       + "PriceEpisodeIdentifier, "
+                                       // no need to fetch these, as SubmissionEventEntity doesn't contain them
+                                       // + "LearnRefNumber, "
+                                       // + "AimSeqNumber, "
+                                       // + "PriceEpisodeIdentifier, "
                                        + "StandardCode, "
                                        + "ProgrammeType, "
                                        + "FrameworkCode, "
@@ -31,7 +32,8 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                                        + "NINumber, "
                                        + "CommitmentId AS ApprenticeshipId, "
                                        + "AcademicYear, "
-                                       + "EmployerReferenceNumber";
+                                       + "EmployerReferenceNumber, "
+                                       + "EPAOrgId";
         private const string CountColumn = "COUNT(se.Id)";
         private const string Pagination = "ORDER BY se.Id OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY";
 
