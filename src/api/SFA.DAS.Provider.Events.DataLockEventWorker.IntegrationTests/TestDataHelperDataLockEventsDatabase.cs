@@ -81,7 +81,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
                 return connection.Query<DataLockEntity>("select * from DataLockEvents.LastDataLock").ToList();
         }
 
-        private static void Execute(string command, object param = null)
+        public static void Execute(string command, object param = null)
         {
             using (var connection = new SqlConnection(_connectionString))
                 connection.Execute(command, param);

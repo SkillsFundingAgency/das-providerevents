@@ -80,7 +80,6 @@
   <ItemGroup>
     <Compile Include="AutoFixture\AutoMoqDataAttribute.cs" />
     <Compile Include="DataLock\RecordProcessRunRecord\WhenHandling.cs" />
-    <Compile Include="DataLock\WriteDataLockEventsQuery\WhenHandling.cs" />
     <Compile Include="DataLock\WriteDataLocksQuery\WhenHandling.cs" />
     <Compile Include="DataLock\GetLatestDataLocksQuery\WhenHandling.cs" />
     <Compile Include="DataLock\GetDataLockEventsQuery\GetDataLockEventsQueryHandler\WhenHandling.cs" />

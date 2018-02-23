@@ -10,7 +10,6 @@ using SFA.DAS.Provider.Events.Application.DataLock.GetHistoricDataLockEventsQuer
 using SFA.DAS.Provider.Events.Application.DataLock.GetProvidersQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.RecordProcessorRun;
 using SFA.DAS.Provider.Events.Application.DataLock.UpdateProviderQuery;
-using SFA.DAS.Provider.Events.Application.DataLock.WriteDataLockEventsQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.WriteDataLocksQuery;
 
 namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.Tests
@@ -165,13 +164,12 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.Tests
 
             _mediatorMock.Setup(m => m.SendAsync(It.IsAny<WriteDataLocksQueryRequest>()))
                 .ReturnsAsync(new WriteDataLocksQueryResponse {IsValid = true })
-                .Callback<WriteDataLocksQueryRequest>(r => actualDataLocks = r.NewDataLocks)
+                .Callback<WriteDataLocksQueryRequest>(r =>
+                {
+                    actualDataLocks = r.NewDataLocks ?? actualDataLocks;
+                    actualDataLockEvents = r.DataLockEvents ?? actualDataLockEvents;
+                })
                 .Verifiable("Write new Data Locks was not called");
-
-            _mediatorMock.Setup(m => m.SendAsync(It.IsAny<WriteDataLockEventsQueryRequest>()))
-                .ReturnsAsync(new WriteDataLockEventsQueryResponse {IsValid = true})
-                .Callback<WriteDataLockEventsQueryRequest>(r => actualDataLockEvents = r.DataLockEvents)
-                .Verifiable("Write new Data Lock Events was not called");
 
             // act
             await _dataLockProcessor.ProcessDataLocks();
@@ -189,7 +187,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.Tests
             Assert.IsNotNull(actualRecord2);
             Assert.AreEqual(777, actualRecord2.RunId);
             Assert.AreEqual(1, actualRecord2.Ukprn);
-            Assert.IsNull(actualRecord2.IsInitialRun);
+            Assert.IsTrue(actualRecord2.IsInitialRun);
             Assert.IsNull(actualRecord2.StartTimeUtc);
             Assert.IsNotNull(actualRecord2.FinishTimeUtc);
             Assert.IsTrue(actualRecord2.IsSuccess);
@@ -204,7 +202,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.Tests
             Assert.IsNotNull(actualRecord4);
             Assert.AreEqual(888, actualRecord4.RunId);
             Assert.AreEqual(2, actualRecord4.Ukprn);
-            Assert.IsNull(actualRecord4.IsInitialRun);
+            Assert.IsTrue(actualRecord4.IsInitialRun);
             Assert.IsNull(actualRecord4.StartTimeUtc);
             Assert.IsNotNull(actualRecord4.FinishTimeUtc);
             Assert.IsTrue(actualRecord4.IsSuccess);

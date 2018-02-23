@@ -24,5 +24,6 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
         public decimal? IlrEndpointAssessorPrice { get; set; }
         public DateTime? IlrPriceEffectiveFromDate { get; set; }
         public DateTime? IlrPriceEffectiveToDate { get; set; }
+
     }
 }

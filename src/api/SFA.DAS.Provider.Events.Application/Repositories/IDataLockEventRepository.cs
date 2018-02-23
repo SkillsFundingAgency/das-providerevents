@@ -30,5 +30,7 @@ namespace SFA.DAS.Provider.Events.Application.Repositories
 
         Task SetProviderProcessor(long ukprn, int runId);
         Task ClearProviderProcessor(long ukprn);
+        Task ClearFailedInitialRun(long ukprn);
+        void ClearFailedBatch(Guid batchId);
     }
 }

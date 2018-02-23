@@ -51,7 +51,7 @@ IF OBJECT_ID('DataLock.PriceEpisodeMatch', 'U') IS NULL
     CREATE TABLE DataLock.PriceEpisodeMatch
     (
         [Ukprn] bigint NOT NULL,
-        [PriceEpisodeIdentifier] varchar(25) NOT NULL,
+        [PriceEpisodeIdentifier] varchar(26) NOT NULL,
         [LearnRefNumber] varchar(100) NOT NULL,
         [AimSeqNumber] bigint NOT NULL,
         [CommitmentId] varchar(50) NOT NULL,
@@ -65,7 +65,7 @@ IF OBJECT_ID('DataLock.PriceEpisodePeriodMatch', 'U') IS NULL
     CREATE TABLE DataLock.PriceEpisodePeriodMatch
     (
         [Ukprn] bigint NOT NULL,
-        [PriceEpisodeIdentifier] varchar(25) NOT NULL,
+        [PriceEpisodeIdentifier] varchar(26) NOT NULL,
         [LearnRefNumber] varchar(12) NOT NULL,
         [AimSeqNumber] int NOT NULL,
         [CommitmentId] bigint NOT NULL,
@@ -83,7 +83,7 @@ IF OBJECT_ID('DataLock.ValidationError', 'U') IS NULL
         [LearnRefNumber] varchar(12),
         [AimSeqNumber] int,
         [RuleId] varchar(50),
-        [PriceEpisodeIdentifier] varchar(25) NOT NULL
+        [PriceEpisodeIdentifier] varchar(26) NOT NULL
     );
 
 IF OBJECT_ID('Valid.LearningProvider', 'U') IS NULL
@@ -232,7 +232,7 @@ IF OBJECT_ID('Reference.DataLockPriceEpisode', 'U') IS NULL
 		[PathwayCode] int NULL,
 		[StartDate] date NOT NULL,
 		[NegotiatedPrice] int NOT NULL,
-		[PriceEpisodeIdentifier] varchar(25) NOT NULL,
+		[PriceEpisodeIdentifier] varchar(26) NOT NULL,
 		[EndDate] date NOT NULL,
 		[PriceEpisodeFirstAdditionalPaymentThresholdDate] date NULL,
 		[PriceEpisodeSecondAdditionalPaymentThresholdDate] date NULL,
@@ -271,7 +271,7 @@ IF OBJECT_ID('[Rulebase].[AEC_ApprenticeshipPriceEpisode]', 'U') IS NULL
 	(
 		[Ukprn] bigint NOT NULL,
 		[LearnRefNumber] varchar(12),
-		[PriceEpisodeIdentifier] varchar(25),
+		[PriceEpisodeIdentifier] varchar(26),
 		[EpisodeEffectiveTNPStartDate] date,
 		[EpisodeStartDate] date,
 		[PriceEpisodeActualEndDate] date,
@@ -331,7 +331,7 @@ IF OBJECT_ID('[DataLock].[DataLockEvents]', 'U') IS NULL
 		[ULN] [bigint] NOT NULL,
 		[LearnRefNumber] [varchar](12) NOT NULL,
 		[AimSeqNumber] [int] NOT NULL,
-		[PriceEpisodeIdentifier] [varchar](25) NOT NULL,
+		[PriceEpisodeIdentifier] [varchar](26) NOT NULL,
 		[CommitmentId] [bigint] NOT NULL,
 		[EmployerAccountId] [bigint] NOT NULL,
 		[EventSource] [int] NOT NULL,

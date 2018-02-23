@@ -255,7 +255,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
                     {ukprn, learnerRefNumber, aimSequenceNumber, startDate, standardCode, programmeType, frameworkCode, pathwayCode, learnAimRef, endDate });
         }
 
-        public static void AddDataLockEvent(long ukprn, DateTime processedDateTime, EventStatus status, string otherStrings, int otherNumbers, DateTime otherDates, string[] errors)
+        public static void AddDataLockEvent(long ukprn, DateTime processedDateTime, EventStatus status, int aimSeqNumber, string otherStrings, int otherNumbers, DateTime otherDates, string[] errors)
         {
             var id = Guid.NewGuid();
             Execute(@"
@@ -293,7 +293,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
                            ,@ukprn
                            ,@otherNumbers
                            ,@otherStrings
-                           ,@otherNumbers
+                           ,@aimSeqNumber
                            ,@otherStrings
                            ,@otherNumbers
                            ,@otherNumbers
@@ -309,7 +309,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
                            ,@otherDates
                            ,@otherDates
                            ,@status)
-                ", new {id, ukprn, otherDates, otherNumbers, otherStrings, processedDateTime, hasErrors = errors != null, status});
+                ", new {id, ukprn, otherDates, otherNumbers, otherStrings, processedDateTime, hasErrors = errors != null, status, aimSeqNumber});
 
             if (errors != null)
             {
@@ -329,7 +329,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
 
         }
 
-        private static void Execute(string command, object param = null)
+        public static void Execute(string command, object param = null)
         {
             using (var connection = new SqlConnection(_connectionString))
                 connection.Execute(command, param);

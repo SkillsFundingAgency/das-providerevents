@@ -12,14 +12,13 @@ using SFA.DAS.Provider.Events.Application.DataLock.GetLatestDataLocksQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.GetProvidersQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.RecordProcessorRun;
 using SFA.DAS.Provider.Events.Application.DataLock.UpdateProviderQuery;
-using SFA.DAS.Provider.Events.Application.DataLock.WriteDataLockEventsQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.WriteDataLocksQuery;
 
 namespace SFA.DAS.Provider.Events.DataLockEventWorker
 {
     public class DataLockProcessor : IDataLockProcessor
     {
-        private const int PageSize = 10000;
+        private int _pageSize;
         private readonly IMediator _mediator;
         private readonly ILog _logger;
 
@@ -29,9 +28,11 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
             _mediator = mediator;
         }
 
-        public async Task ProcessDataLocks()
+        public async Task ProcessDataLocks(int? pageSize = null)
         {
-            _logger.Debug("ProcessDataLocks started");
+            _pageSize = pageSize.GetValueOrDefault(10000);
+
+            _logger.Debug($"ProcessDataLocks started, page size: {_pageSize}");
 
             var providers = await GetProviders().ConfigureAwait(false);
 
@@ -44,21 +45,23 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
             Parallel.ForEach(providers, async provider =>
             {
                 int? runId = null;
+                var initialRun = provider.RequiresInitialImport;
+
                 try
                 {
                     runId = await RecordProcessStart(provider).ConfigureAwait(false);
 
-                    if (provider.RequiresInitialImport)
+                    if (initialRun)
                         await ProviderInitialImport(provider).ConfigureAwait(false);
                     else
                         await ProcessProvider(provider).ConfigureAwait(false);
 
-                    await RecordProcessEnd(provider.Ukprn, runId.Value).ConfigureAwait(false);
+                    await RecordProcessEnd(provider.Ukprn, runId.Value, initialRun).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
                     if (runId.HasValue)
-                        await RecordProcessEnd(provider.Ukprn, runId.Value, ex.ToString()).ConfigureAwait(false);
+                        await RecordProcessEnd(provider.Ukprn, runId.Value, initialRun, ex.ToString()).ConfigureAwait(false);
 
                     _logger.Error(ex, $"Error processing data locks for provider {provider.Ukprn}");
                 }
@@ -72,7 +75,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
 
             while (true)
             {
-                var query = new GetCurrentDataLocksQueryRequest {Ukprn = provider.Ukprn, PageNumber = page, PageSize = PageSize};
+                var query = new GetCurrentDataLocksQueryRequest {Ukprn = provider.Ukprn, PageNumber = page, PageSize = _pageSize};
                 var response = await _mediator.SendAsync(query).ConfigureAwait(false);
 
                 if (!response.IsValid)
@@ -91,7 +94,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                 if (!writeResponse.IsValid)
                     throw new ApplicationException($"Failed to write data locks for provider {provider.Ukprn} initial import", response.Exception);
 
-                if (response.Result.Items.Length < PageSize)
+                if (response.Result.Items.Length < _pageSize)
                     break;
 
                 page++;
@@ -101,7 +104,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
 
             while (true)
             {
-                var query = new GetHistoricDataLockEventsQueryRequest {Ukprn = provider.Ukprn, PageNumber = page, PageSize = PageSize};
+                var query = new GetHistoricDataLockEventsQueryRequest {Ukprn = provider.Ukprn, PageNumber = page, PageSize = _pageSize};
                 var response = await _mediator.SendAsync(query).ConfigureAwait(false);
 
                 if (!response.IsValid)
@@ -110,7 +113,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                 if (response.Result == null || response.Result.Items == null || response.Result.Items.Length == 0)
                     break;
 
-                var writeRequest = new WriteDataLockEventsQueryRequest
+                var writeRequest = new WriteDataLocksQueryRequest
                 {
                     DataLockEvents = response.Result.Items
                 };
@@ -119,7 +122,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                 if (!writeResponse.IsValid)
                     throw new ApplicationException($"Failed to write historic data lock events for provider {provider.Ukprn} initial import", response.Exception);
 
-                if (response.Result.Items.Length < PageSize)
+                if (response.Result.Items.Length < _pageSize)
                     break;
 
                 page++;
@@ -167,7 +170,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                         else
                         {
                             currentLockPage++;
-                            currentLocksDone = currentLocks.Count < PageSize;
+                            currentLocksDone = currentLocks.Count < _pageSize;
                         }
                     }
 
@@ -191,7 +194,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                         else
                         {
                             lastLockPage++;
-                            lastLocksDone = lastSeenLocks.Count < PageSize;
+                            lastLocksDone = lastSeenLocks.Count < _pageSize;
                         }
                     }
 
@@ -238,19 +241,12 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                     }
                 }
 
-
-                if (newDataLocks.Count + updatedDataLocks.Count + deletedDataLocks.Count > PageSize)
-                    await WriteDataLocks(newDataLocks, updatedDataLocks, deletedDataLocks, provider);
-
-                if (events.Count > PageSize)
-                    await WriteDataLockEvents(events, provider);
+                if (newDataLocks.Count + updatedDataLocks.Count + deletedDataLocks.Count >= _pageSize || events.Count >= _pageSize)
+                    await WriteDataLocks(newDataLocks, updatedDataLocks, deletedDataLocks, events, provider);
             }
 
-            if (newDataLocks.Count + updatedDataLocks.Count + deletedDataLocks.Count > 0)
-                await WriteDataLocks(newDataLocks, updatedDataLocks, deletedDataLocks, provider);
-
-            if (events.Count > 0)
-                await WriteDataLockEvents(events, provider);
+            if (newDataLocks.Count + updatedDataLocks.Count + deletedDataLocks.Count + events.Count > 0)
+                await WriteDataLocks(newDataLocks, updatedDataLocks, deletedDataLocks, events, provider);
 
             var updateProviderRequest = new UpdateProviderQueryRequest {Provider = provider};
             var updateProviderResponse = await _mediator.SendAsync(updateProviderRequest).ConfigureAwait(false);
@@ -258,24 +254,14 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                 throw new ApplicationException($"Failed to update provider {provider.Ukprn} submission date", updateProviderResponse.Exception);
         }
 
-        private async Task WriteDataLockEvents(List<DataLockEvent> events, ProviderEntity provider)
-        {
-            var writeDataLockEvents = new WriteDataLockEventsQueryRequest {DataLockEvents = events};
-
-            var dataLockEventsResponse = await _mediator.SendAsync(writeDataLockEvents).ConfigureAwait(false);
-            if (!dataLockEventsResponse.IsValid)
-                throw new ApplicationException($"Failed to save new data lock events for provider {provider.Ukprn}", dataLockEventsResponse.Exception);
-
-            events.Clear();
-        }
-
-        private async Task WriteDataLocks(List<DataLock> newDataLocks, List<DataLock> updatedDataLocks, List<DataLock> deletedDataLocks, ProviderEntity provider)
+        private async Task WriteDataLocks(List<DataLock> newDataLocks, List<DataLock> updatedDataLocks, List<DataLock> deletedDataLocks, List<DataLockEvent> dataLockEvents, ProviderEntity provider)
         {
             var writeDataLocks = new WriteDataLocksQueryRequest
             {
                 NewDataLocks = newDataLocks,
                 UpdatedDataLocks = updatedDataLocks,
-                RemovedDataLocks = deletedDataLocks
+                RemovedDataLocks = deletedDataLocks,
+                DataLockEvents = dataLockEvents
             };
 
             var response = await _mediator.SendAsync(writeDataLocks).ConfigureAwait(false);
@@ -285,6 +271,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
             newDataLocks.Clear();
             updatedDataLocks.Clear();
             deletedDataLocks.Clear();
+            dataLockEvents.Clear();
         }
 
         private static DataLockEvent FromDataLock(DataLock current, EventStatus status, ProviderEntity provider)
@@ -363,7 +350,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
 
         private async Task<Queue<DataLock>> GetLastDataLocks(ProviderEntity provider, int lastLockPage)
         {
-            var query = new GetLatestDataLocksQueryRequest {Ukprn = provider.Ukprn, PageNumber = lastLockPage, PageSize = PageSize};
+            var query = new GetLatestDataLocksQueryRequest {Ukprn = provider.Ukprn, PageNumber = lastLockPage, PageSize = _pageSize};
             var response = await _mediator.SendAsync(query).ConfigureAwait(false);
 
             if (!response.IsValid)
@@ -374,7 +361,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
 
         private async Task<Queue<DataLock>> GetCurrentDataLocks(ProviderEntity provider, int pageNumber)
         {
-            var query = new GetCurrentDataLocksQueryRequest {Ukprn = provider.Ukprn, PageNumber = pageNumber, PageSize = PageSize};
+            var query = new GetCurrentDataLocksQueryRequest {Ukprn = provider.Ukprn, PageNumber = pageNumber, PageSize = _pageSize};
             var response = await _mediator.SendAsync(query).ConfigureAwait(false);
 
             if (!response.IsValid)
@@ -411,7 +398,7 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
             return response.RunId;
         }
 
-        private async Task RecordProcessEnd(long ukprn, int runId, string error = null)
+        private async Task RecordProcessEnd(long ukprn, int runId, bool isInitialRun, string error = null)
         {
             var request = new RecordProcessorRunRequest
             {
@@ -419,7 +406,8 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
                 RunId = runId,
                 FinishTimeUtc = DateTime.UtcNow,
                 IsSuccess = error == null,
-                Error = error
+                Error = error,
+                IsInitialRun = isInitialRun
             };
 
             var response = await _mediator.SendAsync(request).ConfigureAwait(false);

@@ -4,6 +4,6 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
 {
     public interface IDataLockProcessor
     {
-        Task ProcessDataLocks();
+        Task ProcessDataLocks(int? pageSize = null);
     }
 }

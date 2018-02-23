@@ -23,6 +23,12 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.RecordProcessorRun
                 if (message.FinishTimeUtc.HasValue)
                 {
                     await _dataLockEventRepository.ClearProviderProcessor(message.Ukprn);
+
+                    if (message.IsSuccess.GetValueOrDefault(true) == false && message.IsInitialRun.GetValueOrDefault(false) == true)
+                    {
+                        // failed initial run
+                        await _dataLockEventRepository.ClearFailedInitialRun(message.Ukprn).ConfigureAwait(false);
+                    }
                 }
                 else
                 {

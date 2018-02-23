@@ -21,5 +21,6 @@
     [IlrEndpointAssessorPrice] DECIMAL(12, 5) NULL, 
     [IlrPriceEffectiveFromDate] DATETIME NULL, 
     [IlrPriceEffectiveToDate] DATETIME NULL, 
-    [ErrorCodes] VARCHAR(MAX) NULL
+    [ErrorCodes] VARCHAR(MAX) NULL, 
+    [BatchId] UNIQUEIDENTIFIER NOT NULL
 )

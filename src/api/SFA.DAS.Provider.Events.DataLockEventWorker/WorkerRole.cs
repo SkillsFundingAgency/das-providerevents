@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Azure;
 using Microsoft.WindowsAzure.ServiceRuntime;
 using StructureMap;
 
@@ -54,11 +55,16 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker
 
         private async Task RunAsync(CancellationToken cancellationToken)
         {
+            int? pageSize = null;
+            var pageSizeString = CloudConfigurationManager.GetSetting("PageSize");
+            if (!string.IsNullOrEmpty(pageSizeString) && int.TryParse(pageSizeString, out var size) && size > 0)
+                pageSize = size;
+
             // TODO: Replace the following with your own logic.
             while (!cancellationToken.IsCancellationRequested)
             {
                 Trace.TraceInformation("Working");
-                await _dataLockProcessor.ProcessDataLocks();
+                await _dataLockProcessor.ProcessDataLocks(pageSize);
                 try
                 {
                     await Task.Delay(60000, cancellationToken);

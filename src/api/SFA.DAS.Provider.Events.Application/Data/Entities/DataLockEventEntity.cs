@@ -31,5 +31,7 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
         //public DataLockEventApprenticeshipEntity[] Apprenticeships { get; set; }
 
         public string ErrorCodes { get;set; }
+        public Guid BatchId { get;set; }
+
     }
 }

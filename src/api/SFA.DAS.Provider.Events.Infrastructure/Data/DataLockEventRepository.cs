@@ -168,6 +168,24 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             }
         }
 
+        public async Task ClearFailedInitialRun(long ukprn)
+        {
+            using (var connection = new SqlConnection(CloudConfigurationManager.GetSetting(_connectionStringName)))
+            {
+                connection.Open();
+                await connection.ExecuteAsync("[DataLockEvents].[ClearFailedInitialRun]", new {ukprn}, commandType: CommandType.StoredProcedure).ConfigureAwait(false);
+            }
+        }
+
+        public void ClearFailedBatch(Guid batchId)
+        {
+            using (var connection = new SqlConnection(CloudConfigurationManager.GetSetting(_connectionStringName)))
+            {
+                connection.Open();
+                connection.Execute("delete from [DataLockEvents].[DataLockEvent] where BatchId = @batchId", new {batchId});
+            }
+        }
+
         private async Task WriteBulk<T>(IList<T> batch, string destination, params string[] excludeColumns)
         {
             var columns = typeof(T).GetProperties().Where(c => excludeColumns == null || Array.IndexOf(excludeColumns, c.Name) < 0).Select(p => p.Name).ToArray();

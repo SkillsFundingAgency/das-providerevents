@@ -138,6 +138,8 @@
     <Compile Include="Specs\WhenExistingDataLockProcessed.cs" />
     <Compile Include="Specs\WhenAnExistingEventIsNoLongerFound.cs" />
     <Compile Include="Specs\WhenPerformingInitialRun.cs" />
+    <Compile Include="Specs\WhenRegularRunGoesWrong.cs" />
+    <Compile Include="Specs\WhenInitialRunGoesWrong.cs" />
     <Compile Include="TestDataHelperDataLockEventsDatabase.cs" />
     <Compile Include="TestDataHelperDeds.cs" />
   </ItemGroup>

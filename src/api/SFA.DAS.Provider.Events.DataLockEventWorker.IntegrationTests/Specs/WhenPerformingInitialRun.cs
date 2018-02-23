@@ -17,11 +17,11 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests.Specs
             //Arrange
             TestDataHelperDeds.AddProvider(Ukprn, DateTime.Today);
             TestDataHelperDeds.AddDataLock(new[] {CommitmentId}, Ukprn, LearnerRefNumber, priceEpisodeIdentifier: "3", errorCodesCsv: "E1");
-            TestDataHelperDeds.AddDataLockEvent(Ukprn, DateTime.Today, EventStatus.Removed, "1", 1, DateTime.Today.AddDays(-1), null);
-            TestDataHelperDeds.AddDataLockEvent(Ukprn, DateTime.Today, EventStatus.Updated, "2", 2, DateTime.Today.AddDays(-1), new[] {"E1", "E2"});
+            TestDataHelperDeds.AddDataLockEvent(Ukprn, DateTime.Today, EventStatus.Removed, 1, "1", 1, DateTime.Today.AddDays(-1), null);
+            TestDataHelperDeds.AddDataLockEvent(Ukprn, DateTime.Today, EventStatus.Updated, 2, "2", 2, DateTime.Today.AddDays(-1), new[] {"E1", "E2"});
 
             //Act
-            Act(() => TestDataHelperDataLockEventsDatabase.Count("select count(*) from [DataLockEvents].[ProcessorRun] where [IsInitialRun] = 1 and FinishTimeUtc is not null") > 0);
+            Act(() => TestDataHelperDataLockEventsDatabase.Count("select count(*) from [DataLockEvents].[ProcessorRun] where [IsInitialRun] = 1 and FinishTimeUtc is not null") > 0, pageSize: 1);
 
             // Assert
             var providers = TestDataHelperDataLockEventsDatabase.GetAllProviders();

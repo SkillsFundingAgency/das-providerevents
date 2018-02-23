@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
 {
+    [SingleThreaded]
     public abstract class DataLockProcessorTestBase
     {
         private WorkerRole _workerRole;
@@ -32,11 +34,13 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
             );
         }
 
-        protected void Act(Func<bool> isComplete, int timeoutSeconds = 30)
+        protected void Act(Func<bool> isComplete, int timeoutSeconds = 30, int pageSize = 100)
         {
+            ConfigurationManager.AppSettings["PageSize"] = pageSize.ToString();
+
             var cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = cancellationTokenSource.Token;
-            Task.Run(() => _workerRole.Run(), cancellationToken);
+            var task = Task.Run(() => _workerRole.Run(), cancellationToken);
             var start = DateTime.Now;
 
             while (!isComplete())
@@ -45,10 +49,12 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.AcceptanceTests
                 if (DateTime.Now.Subtract(start).TotalSeconds > timeoutSeconds)
                 {
                     cancellationTokenSource.Cancel();
+                    task.Wait(3000);
                     Assert.Fail("Test timeout expired");
                 }
             }
-        }
 
+            task.Wait(3000);
+        }
     }
 }

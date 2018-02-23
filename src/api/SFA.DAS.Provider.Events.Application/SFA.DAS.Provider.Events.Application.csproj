@@ -74,9 +74,6 @@
     <Compile Include="DataLock\WriteDataLocksQuery\WriteDataLockEventsQueryHandler.cs" />
     <Compile Include="DataLock\WriteDataLocksQuery\WriteDataLockEventsQueryRequest.cs" />
     <Compile Include="DataLock\WriteDataLocksQuery\WriteDataLockEventsQueryResponse.cs" />
-    <Compile Include="DataLock\WriteDataLockEventsQuery\WriteDataLockEventsQueryHandler.cs" />
-    <Compile Include="DataLock\WriteDataLockEventsQuery\WriteDataLockEventsQueryRequest.cs" />
-    <Compile Include="DataLock\WriteDataLockEventsQuery\WriteDataLockEventsQueryResponse.cs" />
     <Compile Include="Data\Entities\DataLockCommitmentEntity.cs" />
     <Compile Include="Data\Entities\DataLockEntity.cs" />
     <Compile Include="Data\Entities\DataLockEventApprenticeshipEntity.cs" />

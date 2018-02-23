@@ -46,6 +46,16 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
                     AimSequenceNumber = source.AimSequenceNumber,
                     LearnerReferenceNumber = source.LearnerReferenceNumber
                 }).ToList());
+
+            _mapper
+                .Setup(m => m.Map<DataLockEventEntity>(It.IsAny<DataLockEvent>()))
+                .Returns((DataLockEvent e) =>
+                {
+                    var entity = new DataLockEventEntity();
+                    if (e.Errors != null)
+                        entity.ErrorCodes = JsonConvert.SerializeObject(e.Errors.Select(er => er.ErrorCode).ToArray());
+                    return entity;
+                });
             
             _dataLockEventRepository = new Mock<IDataLockEventRepository>();
             _handler = new WriteDataLocksQueryHandler(_dataLockEventRepository.Object, _mapper.Object);
@@ -97,7 +107,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
 
             Assert.IsNotNull(actual);
             Assert.IsFalse(actual.IsValid);
-            Assert.AreEqual("test ex", actual.Exception.Message);
+            Assert.AreEqual("test ex", actual.Exception.InnerException.Message);
         }
 
         [Test]
@@ -243,6 +253,119 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.DataLock.WriteDataLocksQ
             Assert.AreEqual("P2", actualEntities[1].PriceEpisodeIdentifier);
             Assert.AreEqual("[\"E1\",\"E2\"]", actualEntities[1].ErrorCodes);
             Assert.IsNotNull(actualEntities[1].DeletedUtc);
+        }
+
+        
+        [Test]
+        public async Task AndThereAreDataLockEventErrorsThenItShouldReturnValidResponse()
+        {
+            // Arrange
+            IList<DataLockEventEntity> actualEntities = null;
+
+            var dataLockEventErrors = new []
+            {
+                new DataLockEventError { ErrorCode = "E1", SystemDescription = "Blah"},
+                new DataLockEventError { ErrorCode = "E2", SystemDescription = "Blah"},
+                new DataLockEventError { ErrorCode = "E3", SystemDescription = "Blah"},
+                new DataLockEventError { ErrorCode = "E4", SystemDescription = "Blah"}
+            };
+
+            var dataLockEvent = new DataLockEvent {Ukprn = 1, Uln = 2, Errors = dataLockEventErrors};
+
+            var events = new List<DataLockEvent> { dataLockEvent };
+            _request.DataLockEvents = events;
+            _dataLockEventRepository.Setup(r => r.WriteDataLockEvents(It.IsAny<IList<DataLockEventEntity>>()))
+                .Returns(Task.FromResult(default(object)))
+                .Callback<IList<DataLockEventEntity>>(e => { actualEntities = e; })
+                .Verifiable();
+
+            // Act
+            var actual = await _handler.Handle(_request);
+
+            // Assert
+            _dataLockEventRepository.VerifyAll();
+
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(actual.IsValid);
+            Assert.IsNotNull(actualEntities);
+            Assert.AreEqual(1, actualEntities.Count);
+            Assert.AreEqual("[\"E1\",\"E2\",\"E3\",\"E4\"]", actualEntities[0].ErrorCodes);
+        }
+
+        [Test]
+        public async Task ThenItShouldNotFailWhenPassedEmptyList()
+        {
+            // Arrange
+            _request.DataLockEvents = new DataLockEvent[0];
+
+            // Act
+            var actual = await _handler.Handle(_request);
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(actual.IsValid);
+        }
+
+
+        [Test]
+        public async Task ThenItShouldWriteBothDataLocksAndEvents()
+        {
+            // Arrange
+            IList<DataLockEventEntity> actualEvents = null;
+            IList<DataLockEntity> actualDataLocks = null;
+
+            _request.NewDataLocks = new List<Api.Types.DataLock>
+            {
+                new Api.Types.DataLock
+                {
+                    Ukprn = 1,
+                    AimSequenceNumber = 1,
+                    LearnerReferenceNumber = "1",
+                    PriceEpisodeIdentifier = "1"
+                }
+            };
+
+            var dataLockEventErrors = new []
+            {
+                new DataLockEventError { ErrorCode = "E1", SystemDescription = "Blah"},
+                new DataLockEventError { ErrorCode = "E2", SystemDescription = "Blah"},
+                new DataLockEventError { ErrorCode = "E3", SystemDescription = "Blah"},
+                new DataLockEventError { ErrorCode = "E4", SystemDescription = "Blah"}
+            };
+
+            var dataLockEvent = new DataLockEvent {Ukprn = 1, Uln = 2, Errors = dataLockEventErrors};
+            var events = new List<DataLockEvent> { dataLockEvent };
+
+            _request.DataLockEvents = events;
+
+            _dataLockEventRepository.Setup(r => r.WriteDataLockEvents(It.IsAny<IList<DataLockEventEntity>>()))
+                .Returns(Task.FromResult(default(object)))
+                .Callback<IList<DataLockEventEntity>>(e => { actualEvents = e; });
+
+            _dataLockEventRepository.Setup(r => r.WriteDataLocks(It.IsAny<IList<DataLockEntity>>()))
+                .Returns(Task.FromResult(default(object)))
+                .Callback<IList<DataLockEntity>>(e => { actualDataLocks = e; });
+
+
+            // Act
+            var actual = await _handler.Handle(_request);
+
+
+            // Assert
+            _dataLockEventRepository.VerifyAll();
+
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(actual.IsValid);
+            Assert.IsNotNull(actualEvents);
+            Assert.AreEqual(1, actualEvents.Count);
+            Assert.AreEqual("[\"E1\",\"E2\",\"E3\",\"E4\"]", actualEvents[0].ErrorCodes);
+
+            Assert.AreEqual(1, actualDataLocks.Count);
+            Assert.AreEqual(1, actualDataLocks[0].Ukprn);
+            Assert.AreEqual(1, actualDataLocks[0].AimSequenceNumber);
+            Assert.AreEqual("1", actualDataLocks[0].LearnerReferenceNumber);
+            Assert.AreEqual("1", actualDataLocks[0].PriceEpisodeIdentifier);
+            Assert.IsNull(actualDataLocks[0].ErrorCodes);
         }
     }
 }

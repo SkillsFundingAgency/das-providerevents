@@ -10,7 +10,6 @@ using SFA.DAS.Provider.Events.Application.DataLock.GetLatestDataLocksQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.GetProvidersQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.RecordProcessorRun;
 using SFA.DAS.Provider.Events.Application.DataLock.UpdateProviderQuery;
-using SFA.DAS.Provider.Events.Application.DataLock.WriteDataLockEventsQuery;
 using SFA.DAS.Provider.Events.Application.DataLock.WriteDataLocksQuery;
 
 namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.Tests
@@ -83,7 +82,6 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.Tests
             };
 
             WriteDataLocksQueryRequest actualWriteDataLocksRequest = null;
-            WriteDataLockEventsQueryRequest actualWriteDataLockEventsRequest = null;
             
             _mediatorMock.Setup(m => m.SendAsync(It.IsAny<GetProvidersQueryRequest>())).ReturnsAsync(_getProvidersQueryResponse).Verifiable("Provider list was not requested");
             _mediatorMock.Setup(m => m.SendAsync(It.Is<GetCurrentDataLocksQueryRequest>(r => r.PageNumber == 1))).ReturnsAsync(currentDataLocksQueryResponse).Verifiable("Current Data Locks page 1 was not requested for provider");
@@ -96,11 +94,6 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.Tests
                 .ReturnsAsync(new WriteDataLocksQueryResponse {IsValid = true })
                 .Callback<WriteDataLocksQueryRequest>(r => actualWriteDataLocksRequest = DeepClone(r))
                 .Verifiable("Write new Data Locks was not called");
-
-            _mediatorMock.Setup(m => m.SendAsync(It.IsAny<WriteDataLockEventsQueryRequest>()))
-                .ReturnsAsync(new WriteDataLockEventsQueryResponse {IsValid = true})
-                .Callback<WriteDataLockEventsQueryRequest>(r => actualWriteDataLockEventsRequest = DeepClone(r))
-                .Verifiable("Write new Data Lock Events was not called");
 
             // act
             await _dataLockProcessor.ProcessDataLocks();
@@ -129,8 +122,8 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.Tests
             Assert.AreEqual(4, actualWriteDataLocksRequest.RemovedDataLocks[0].AimSequenceNumber);
 
             // 3 events
-            Assert.IsNotNull(actualWriteDataLockEventsRequest);
-            Assert.AreEqual(3, actualWriteDataLockEventsRequest.DataLockEvents.Count);
+            Assert.IsNotNull(actualWriteDataLocksRequest);
+            Assert.AreEqual(3, actualWriteDataLocksRequest.DataLockEvents.Count);
         }
 
 
@@ -195,7 +188,6 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.Tests
             };
 
             WriteDataLocksQueryRequest actualWriteDataLocksRequest = null;
-            WriteDataLockEventsQueryRequest actualWriteDataLockEventsRequest = null;
             
             _mediatorMock.Setup(m => m.SendAsync(It.IsAny<GetProvidersQueryRequest>())).ReturnsAsync(_getProvidersQueryResponse).Verifiable("Provider list was not requested");
             _mediatorMock.Setup(m => m.SendAsync(It.Is<GetCurrentDataLocksQueryRequest>(r => r.PageNumber == 1))).ReturnsAsync(currentDataLocksQueryResponse).Verifiable("Current Data Locks page 1 was not requested for provider");
@@ -208,11 +200,6 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.Tests
                 .ReturnsAsync(new WriteDataLocksQueryResponse {IsValid = true })
                 .Callback<WriteDataLocksQueryRequest>(r => actualWriteDataLocksRequest = DeepClone(r))
                 .Verifiable("Write new Data Locks was not called");
-
-            _mediatorMock.Setup(m => m.SendAsync(It.IsAny<WriteDataLockEventsQueryRequest>()))
-                .ReturnsAsync(new WriteDataLockEventsQueryResponse {IsValid = true})
-                .Callback<WriteDataLockEventsQueryRequest>(r => actualWriteDataLockEventsRequest = DeepClone(r))
-                .Verifiable("Write new Data Lock Events was not called");
 
             // act
             await _dataLockProcessor.ProcessDataLocks();
@@ -272,8 +259,8 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.Tests
             Assert.AreEqual("3", actualWriteDataLocksRequest.RemovedDataLocks[0].PriceEpisodeIdentifier);
 
             // 3 events
-            Assert.IsNotNull(actualWriteDataLockEventsRequest);
-            Assert.AreEqual(8, actualWriteDataLockEventsRequest.DataLockEvents.Count);
+            Assert.IsNotNull(actualWriteDataLocksRequest);
+            Assert.AreEqual(8, actualWriteDataLocksRequest.DataLockEvents.Count);
         }
 
 
@@ -323,7 +310,6 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.Tests
             };
 
             WriteDataLocksQueryRequest actualWriteDataLocksRequest = null;
-            WriteDataLockEventsQueryRequest actualWriteDataLockEventsRequest = null;
             
             _mediatorMock.Setup(m => m.SendAsync(It.IsAny<GetProvidersQueryRequest>())).ReturnsAsync(_getProvidersQueryResponse).Verifiable("Provider list was not requested");
             _mediatorMock.Setup(m => m.SendAsync(It.Is<GetCurrentDataLocksQueryRequest>(r => r.PageNumber == 1))).ReturnsAsync(currentDataLocksQueryResponse).Verifiable("Current Data Locks page 1 was not requested for provider");
@@ -334,11 +320,6 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.Tests
                 .ReturnsAsync(new WriteDataLocksQueryResponse {IsValid = true })
                 .Callback<WriteDataLocksQueryRequest>(r => actualWriteDataLocksRequest = DeepClone(r))
                 .Verifiable("Write new Data Locks was not called");
-
-            _mediatorMock.Setup(m => m.SendAsync(It.IsAny<WriteDataLockEventsQueryRequest>()))
-                .ReturnsAsync(new WriteDataLockEventsQueryResponse {IsValid = true})
-                .Callback<WriteDataLockEventsQueryRequest>(r => actualWriteDataLockEventsRequest = DeepClone(r))
-                .Verifiable("Write new Data Lock Events was not called");
 
             // act
             await _dataLockProcessor.ProcessDataLocks();
@@ -373,26 +354,25 @@ namespace SFA.DAS.Provider.Events.DataLockEventWorker.UnitTests.Tests
             Assert.AreEqual(7, actualWriteDataLocksRequest.NewDataLocks[0].CommitmentId);
 
             // 1 event
-            Assert.IsNotNull(actualWriteDataLockEventsRequest);
-            Assert.AreEqual(1, actualWriteDataLockEventsRequest.DataLockEvents.Count);
-            Assert.AreEqual(1, actualWriteDataLockEventsRequest.DataLockEvents[0].Ukprn);
-            Assert.AreEqual(1, actualWriteDataLockEventsRequest.DataLockEvents[0].Ukprn);
-            Assert.AreEqual(3L, actualWriteDataLockEventsRequest.DataLockEvents[0].AimSeqNumber);
-            Assert.AreEqual("1", actualWriteDataLockEventsRequest.DataLockEvents[0].PriceEpisodeIdentifier);
-            Assert.AreEqual(1L, actualWriteDataLockEventsRequest.DataLockEvents[0].Uln);
-            Assert.AreEqual(2, actualWriteDataLockEventsRequest.DataLockEvents[0].Errors.Length);
-            Assert.AreEqual("E1", actualWriteDataLockEventsRequest.DataLockEvents[0].Errors[0].ErrorCode);
-            Assert.AreEqual("E2", actualWriteDataLockEventsRequest.DataLockEvents[0].Errors[1].ErrorCode);
-            Assert.AreEqual(2M, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrEndpointAssessorPrice);
-            Assert.AreEqual(DateTime.Today, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrPriceEffectiveFromDate);
-            Assert.AreEqual(DateTime.Today, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrStartDate);
-            Assert.AreEqual(2M, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrTrainingPrice);
-            Assert.AreEqual(2, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrFrameworkCode);
-            Assert.AreEqual(2, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrPathwayCode);
-            Assert.AreEqual(2, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrProgrammeType);
-            Assert.AreEqual(2L, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrStandardCode);
-            Assert.AreEqual(DateTime.Today, actualWriteDataLockEventsRequest.DataLockEvents[0].IlrPriceEffectiveToDate);
-            Assert.AreEqual(7, actualWriteDataLockEventsRequest.DataLockEvents[0].ApprenticeshipId);
+            Assert.AreEqual(1, actualWriteDataLocksRequest.DataLockEvents.Count);
+            Assert.AreEqual(1, actualWriteDataLocksRequest.DataLockEvents[0].Ukprn);
+            Assert.AreEqual(1, actualWriteDataLocksRequest.DataLockEvents[0].Ukprn);
+            Assert.AreEqual(3L, actualWriteDataLocksRequest.DataLockEvents[0].AimSeqNumber);
+            Assert.AreEqual("1", actualWriteDataLocksRequest.DataLockEvents[0].PriceEpisodeIdentifier);
+            Assert.AreEqual(1L, actualWriteDataLocksRequest.DataLockEvents[0].Uln);
+            Assert.AreEqual(2, actualWriteDataLocksRequest.DataLockEvents[0].Errors.Length);
+            Assert.AreEqual("E1", actualWriteDataLocksRequest.DataLockEvents[0].Errors[0].ErrorCode);
+            Assert.AreEqual("E2", actualWriteDataLocksRequest.DataLockEvents[0].Errors[1].ErrorCode);
+            Assert.AreEqual(2M, actualWriteDataLocksRequest.DataLockEvents[0].IlrEndpointAssessorPrice);
+            Assert.AreEqual(DateTime.Today, actualWriteDataLocksRequest.DataLockEvents[0].IlrPriceEffectiveFromDate);
+            Assert.AreEqual(DateTime.Today, actualWriteDataLocksRequest.DataLockEvents[0].IlrStartDate);
+            Assert.AreEqual(2M, actualWriteDataLocksRequest.DataLockEvents[0].IlrTrainingPrice);
+            Assert.AreEqual(2, actualWriteDataLocksRequest.DataLockEvents[0].IlrFrameworkCode);
+            Assert.AreEqual(2, actualWriteDataLocksRequest.DataLockEvents[0].IlrPathwayCode);
+            Assert.AreEqual(2, actualWriteDataLocksRequest.DataLockEvents[0].IlrProgrammeType);
+            Assert.AreEqual(2L, actualWriteDataLocksRequest.DataLockEvents[0].IlrStandardCode);
+            Assert.AreEqual(DateTime.Today, actualWriteDataLocksRequest.DataLockEvents[0].IlrPriceEffectiveToDate);
+            Assert.AreEqual(7, actualWriteDataLocksRequest.DataLockEvents[0].ApprenticeshipId);
         }
 
         [Test]

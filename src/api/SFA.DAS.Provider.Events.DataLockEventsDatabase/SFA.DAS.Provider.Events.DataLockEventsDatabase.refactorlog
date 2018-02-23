@@ -49,4 +49,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="StartTimeUtc" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="f0a8ad1b-bad8-48ed-bf3b-3011b7115460" ChangeDateTime="02/23/2018 13:36:05">
+    <Property Name="ElementName" Value="[DataLockEvents].[DataLockEvent].[BatchId ]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[DataLockEvents].[DataLockEvent]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="BatchId" />
+  </Operation>
 </Operations>
