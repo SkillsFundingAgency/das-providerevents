@@ -33,12 +33,13 @@
   <!-- Items for the project -->
   <ItemGroup>
     <ServiceDefinition Include="ServiceDefinition.csdef" />
-    <None Include="Configuration\ServiceDefinition.PreProd.csdef" />
+    <None Include="Configuration\ServiceDefinition.Cloud.csdef" />
     <None Include="Configuration\ServiceDefinition.Prod.csdef" />
     <ServiceConfiguration Include="ServiceConfiguration.Prod.cscfg" />
     <ServiceConfiguration Include="ServiceConfiguration.PreProd.cscfg" />
     <ServiceConfiguration Include="ServiceConfiguration.Local.cscfg" />
     <ServiceConfiguration Include="ServiceConfiguration.Cloud.cscfg" />
+    <ServiceConfiguration Include="ServiceConfiguration.MO.cscfg" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Provider.Events.Api\SFA.DAS.Provider.Events.Api.csproj">

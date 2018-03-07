@@ -4,7 +4,7 @@
     <Sites>
       <Site name="Web">
         <Bindings>
-          <Binding name="Https" endpointName="https" />
+          <Binding name="Endpoint1" endpointName="Endpoint1" />
         </Bindings>
       </Site>
     </Sites>
@@ -18,18 +18,12 @@
       <Setting name="ApiTokenSecret" />
       <Setting name="ApiIssuer" />
       <Setting name="ApiAudiences" />
-      <Setting name="ConfigurationStorageConnectionString" />
       <Setting name="LoggingRedisConnectionString"/>
       <Setting name="LoggingRedisKey"/>
-          <Setting name="dmuser"/>
-      <Setting name="dmpwd"/>
+      <Setting name="InstrumentationKey"/>
     </ConfigurationSettings>
     <Endpoints>
-      <InputEndpoint name="https" protocol="https" port="443" certificate="WebSslCert" loadBalancer="das-pp-papi-ilb"/>
+      <InputEndpoint name="Endpoint1" protocol="http" port="80" />
     </Endpoints>
-    <Startup>
-      <Task commandLine="StartUp\IIS.bat" executionContext="elevated" taskType="background">
-      </Task>
-    </Startup>
   </WebRole>
 </ServiceDefinition>

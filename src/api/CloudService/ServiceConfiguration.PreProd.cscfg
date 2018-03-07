@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ServiceConfiguration serviceName="CloudService" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="4" osVersion="*" schemaVersion="2015-04.2.6">
   <Role name="SFA.DAS.Provider.Events.Api" vmName="DAS-PAPI-0">
-    <Instances count="2" />
+    <Instances count="3" />
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
       <Setting name="LogLevel" value="__LogLevel__" />
@@ -17,6 +17,7 @@
       <Setting name="LoggingRedisKey" value="__LoggingRedisKey__" />
       <Setting name="dmuser" value="__dmuser__" />
       <Setting name="dmpwd" value="__dmpwd__" />
+      <Setting name="InstrumentationKey" value="__InstrumentationKey__" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="WebSslCert" thumbprint="B16394AF94AFE1FBBB39687A512F52EF6D4ED041" thumbprintAlgorithm="sha1" />

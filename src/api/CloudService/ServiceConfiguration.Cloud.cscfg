@@ -14,6 +14,7 @@
       <Setting name="ApiAudiences" value="__ApiAudiences__" />
       <Setting name="LoggingRedisConnectionString" value="__LoggingRedisConnectionString__" />
       <Setting name="LoggingRedisKey" value="__LoggingRedisKey__" />
+      <Setting name="InstrumentationKey" value="__InstrumentationKey__" />
     </ConfigurationSettings>
   </Role>
 </ServiceConfiguration>
