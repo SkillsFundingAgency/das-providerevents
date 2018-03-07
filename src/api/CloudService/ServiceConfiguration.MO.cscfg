@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ServiceConfiguration serviceName="CloudService" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="4" osVersion="*" schemaVersion="2015-04.2.6">
-  <Role name="SFA.DAS.Provider.Events.Api" vmName="DAS-PAPI-0-MO">
+  <Role name="SFA.DAS.Provider.Events.Api" vmName="DASPAPIMO">
     <Instances count="3" />
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
@@ -21,7 +21,7 @@
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="WebSslCert" thumbprint="E280E23D933FE3A62AF335BE9768A2C9D65CCC9A" thumbprintAlgorithm="sha1" />
-    </Certificates>  
+    </Certificates>
   </Role>
   <NetworkConfiguration>
     <VirtualNetworkSite name="__Vnet__" />
