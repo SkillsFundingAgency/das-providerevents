@@ -5,6 +5,7 @@ using System.Web.Http.Routing;
 
 namespace SFA.DAS.Provider.Events.Api.Plumbing.WebApi
 {
+    /// <inheritdoc />
     /// <summary>
     /// Provides an attribute route that's restricted to a specific version of the api.
     /// </summary>

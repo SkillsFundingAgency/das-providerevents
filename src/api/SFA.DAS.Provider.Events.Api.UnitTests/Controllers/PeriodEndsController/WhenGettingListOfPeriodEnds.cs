@@ -8,11 +8,10 @@ using Moq;
 using NLog;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Application.Data;
+using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodsQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
-using SFA.DAS.Provider.Events.Domain;
-using SFA.DAS.Provider.Events.Domain.Mapping;
-using CalendarPeriod = SFA.DAS.Provider.Events.Api.Types.CalendarPeriod;
 
 namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PeriodEndsController
 {

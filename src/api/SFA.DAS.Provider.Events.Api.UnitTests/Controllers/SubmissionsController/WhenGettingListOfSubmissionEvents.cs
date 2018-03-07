@@ -7,16 +7,15 @@ using Moq;
 using NLog;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
-using SFA.DAS.Provider.Events.Domain.Mapping;
 
 namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsController
 {
     public class WhenGettingListOfSubmissionEvents
     {
         private Mock<IMediator> _mediator;
-        private Mock<IMapper> _mapper;
         private Mock<ILogger> _logger;
         private Api.Controllers.SubmissionsController _controller;
 
@@ -28,13 +27,13 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
                 .ReturnsAsync(new GetSubmissionEventsQueryResponse
                 {
                     IsValid = true,
-                    Result = new Domain.PageOfResults<Domain.SubmissionEvent>
+                    Result = new PageOfResults<SubmissionEvent>
                     {
                         PageNumber = 1,
                         TotalNumberOfPages = 10,
                         Items = new[]
                         {
-                            new Domain.SubmissionEvent
+                            new SubmissionEvent
                             {
                                 Id = 123
                             }
@@ -42,24 +41,9 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
                     }
                 });
 
-            _mapper = new Mock<IMapper>();
-            _mapper.Setup(m => m.Map<PageOfResults<SubmissionEvent>>(It.IsAny<Domain.PageOfResults<Domain.SubmissionEvent>>()))
-                .Returns((Domain.PageOfResults<Domain.SubmissionEvent> source) =>
-                {
-                    return new PageOfResults<SubmissionEvent>
-                    {
-                        PageNumber = source.PageNumber,
-                        TotalNumberOfPages = source.TotalNumberOfPages,
-                        Items = source.Items.Select(e => new SubmissionEvent
-                        {
-                            Id = e.Id
-                        }).ToArray()
-                    };
-                });
-
             _logger = new Mock<ILogger>();
 
-            _controller = new Api.Controllers.SubmissionsController(_mediator.Object, _mapper.Object, _logger.Object);
+            _controller = new Api.Controllers.SubmissionsController(_mediator.Object, _logger.Object);
         }
 
         [Test]

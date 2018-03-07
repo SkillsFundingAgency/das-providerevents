@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.Provider.Events.Domain;
-using SFA.DAS.Provider.Events.Domain.Data;
-using SFA.DAS.Provider.Events.Domain.Data.Entities;
-using SFA.DAS.Provider.Events.Domain.Mapping;
+using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Application.Mapping;
+using SFA.DAS.Provider.Events.Application.Repositories;
 
 namespace SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery
 {
@@ -23,32 +22,21 @@ namespace SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery
         {
             try
             {
-                PageOfEntities<PaymentEntity> payments;
-                if (message.Period != null && !string.IsNullOrEmpty(message.EmployerAccountId))
-                {
-                    payments = await _paymentRepository.GetPaymentsForAccountInPeriod(message.EmployerAccountId,
-                        message.Period.CalendarYear, message.Period.CalendarMonth, message.PageNumber, message.PageSize);
-                }
-                else if (message.Period != null)
-                {
-                    payments = await _paymentRepository.GetPaymentsForPeriod(message.Period.CalendarYear,
-                                    message.Period.CalendarMonth,
-                                    message.PageNumber, message.PageSize);
-                }
-                else if (!string.IsNullOrEmpty(message.EmployerAccountId))
-                {
-                    payments = await _paymentRepository.GetPaymentsForAccount(message.EmployerAccountId,
-                        message.PageNumber, message.PageSize);
-                }
-                else
-                {
-                    payments = await _paymentRepository.GetPayments(message.PageNumber, message.PageSize);
-                }
+                var payments = await _paymentRepository.GetPayments(
+                        message.PageNumber,
+                        message.PageSize,
+                        message.EmployerAccountId,
+                        message.Period?.CalendarYear,
+                        message.Period?.CalendarMonth,
+                        message.Ukprn)
+                    .ConfigureAwait(false);
+
+                var result = _mapper.Map<PageOfResults<Payment>>(payments);
 
                 return new GetPaymentsQueryResponse
                 {
                     IsValid = true,
-                    Result = _mapper.Map<PageOfResults<Payment>>(payments)
+                    Result = result,
                 };
             }
             catch (Exception ex)
@@ -56,7 +44,7 @@ namespace SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery
                 return new GetPaymentsQueryResponse
                 {
                     IsValid = false,
-                    Exception = ex
+                    Exception = ex,
                 };
             }
         }

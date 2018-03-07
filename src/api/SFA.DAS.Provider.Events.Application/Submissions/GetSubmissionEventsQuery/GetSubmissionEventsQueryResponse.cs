@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Provider.Events.Domain;
+﻿using SFA.DAS.Provider.Events.Api.Types;
 
 namespace SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsQuery
 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Provider.Events.Api.Types
 {
@@ -28,5 +29,6 @@ namespace SFA.DAS.Provider.Events.Api.Types
         public int? PathwayCode { get; set; }
 
         public ContractType ContractType { get; set; }
+        public List<Earning> EarningDetails { get; set; }
     }
 }

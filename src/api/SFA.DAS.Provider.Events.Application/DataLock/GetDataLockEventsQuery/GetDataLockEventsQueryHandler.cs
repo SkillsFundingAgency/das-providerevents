@@ -2,21 +2,25 @@
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Application.Data.Entities;
+using SFA.DAS.Provider.Events.Application.Mapping;
+using SFA.DAS.Provider.Events.Application.Repositories;
 using SFA.DAS.Provider.Events.Application.Validation;
-using SFA.DAS.Provider.Events.Domain;
-using SFA.DAS.Provider.Events.Domain.Data;
-using SFA.DAS.Provider.Events.Domain.Data.Entities;
-using SFA.DAS.Provider.Events.Domain.Mapping;
 
 namespace SFA.DAS.Provider.Events.Application.DataLock.GetDataLockEventsQuery
 {
-    public class GetDataLockEventsQueryHandler : IAsyncRequestHandler<GetDataLockEventsQueryRequest, GetDataLockEventsQueryResponse>
+    public class GetDataLockEventsQueryHandler : 
+        IAsyncRequestHandler<GetDataLockEventsQueryRequest, GetDataLockEventsQueryResponse>
     {
         private readonly IValidator<GetDataLockEventsQueryRequest> _validator;
         private readonly IDataLockRepository _dataLockEventsRepository;
         private readonly IMapper _mapper;
 
-        public GetDataLockEventsQueryHandler(IValidator<GetDataLockEventsQueryRequest> validator, IDataLockRepository dataLockEventsRepository, IMapper mapper)
+        public GetDataLockEventsQueryHandler(
+            IValidator<GetDataLockEventsQueryRequest> validator, 
+            IDataLockRepository dataLockEventsRepository, 
+            IMapper mapper)
         {
             _validator = validator;
             _dataLockEventsRepository = dataLockEventsRepository;
@@ -38,7 +42,7 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.GetDataLockEventsQuery
                     };
                 }
 
-                PageOfEntities<DataLockEventEntity> pageOfEntities;
+                PageOfResults<DataLockEventEntity> pageOfEntities;
 
 
                 if (message.Ukprn > 0 && !string.IsNullOrEmpty(message.EmployerAccountId))
@@ -99,7 +103,7 @@ namespace SFA.DAS.Provider.Events.Application.DataLock.GetDataLockEventsQuery
                 return new GetDataLockEventsQueryResponse
                 {
                     IsValid = true,
-                    Result = _mapper.Map<PageOfResults<DataLockEvent>>(pageOfEntities)
+                    Result = _mapper.Map<Api.Types.PageOfResults<DataLockEvent>>(pageOfEntities)
                 };
             }
             catch (Exception ex)

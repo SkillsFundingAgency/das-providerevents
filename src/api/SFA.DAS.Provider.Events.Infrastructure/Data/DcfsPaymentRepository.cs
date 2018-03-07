@@ -1,91 +1,106 @@
-﻿using System;
-using System.Threading.Tasks;
-using SFA.DAS.Provider.Events.Domain.Data;
-using SFA.DAS.Provider.Events.Domain.Data.Entities;
+﻿using System.Threading.Tasks;
+using Dapper;
+using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Application.Data.Entities;
+using SFA.DAS.Provider.Events.Application.Repositories;
+using SFA.DAS.Provider.Events.Infrastructure.Extensions;
+using SFA.DAS.Sql.Dapper;
+
 
 namespace SFA.DAS.Provider.Events.Infrastructure.Data
 {
     public class DcfsPaymentRepository : DcfsRepository, IPaymentRepository
     {
-        private const string Source = "Payments.Payments p INNER JOIN PaymentsDue.RequiredPayments rp ON p.RequiredPaymentId = rp.Id";
-        private const string Columns = "CAST(p.PaymentId as varchar(36)) [Id], "
-                                     + "rp.CommitmentId [ApprenticeshipId], "
-                                     + "rp.CommitmentVersionId [ApprenticeshipVersion], "
-                                     + "rp.Ukprn, "
-                                     + "rp.Uln, "
-                                     + "rp.AccountId [EmployerAccountId], "
-                                     + "rp.AccountVersionId [EmployerAccountVersion], "
-                                     + "p.DeliveryMonth [DeliveryPeriodMonth], "
-                                     + "p.DeliveryYear [DeliveryPeriodYear], "
-                                     + "p.CollectionPeriodName [CollectionPeriodId], "
-                                     + "p.CollectionPeriodMonth, "
-                                     + "p.CollectionPeriodYear, "
-                                     + "rp.IlrSubmissionDateTime [EvidenceSubmittedOn], "
-                                     + "p.FundingSource, "
-                                     + "p.TransactionType, "
-                                     + "p.Amount, "
-                                     + "rp.StandardCode, "
-                                     + "rp.FrameworkCode, "
-                                     + "rp.ProgrammeType, "
-                                     + "rp.PathwayCode, "
-                                     + "rp.ApprenticeshipContractType [ContractType]";
-        private const string CountColumn = "COUNT(p.PaymentId)";
-        private const string Pagination = "ORDER BY p.CollectionPeriodYear, p.CollectionPeriodMonth OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY";
+        // Using CTE for 2 reasons:
+        //  Get the column count at the same time as the query
+        //  Restrict the query to PageSize rows for the main query before joining the earnings data
+        private const string SqlTemplate = "WITH _data AS (" +
+                                           "" +
+                                           "    SELECT " +
+                                           "    CAST(p.PaymentId as varchar(36)) [Id], " +
+                                           "    rp.Id [DataRequiredPaymentId], " +
+                                           "    rp.CommitmentId [ApprenticeshipId], " +
+                                           "    rp.CommitmentVersionId [ApprenticeshipVersion], " +
+                                           "    rp.Ukprn, " +
+                                           "    rp.Uln, " +
+                                           "    rp.AccountId [EmployerAccountId], " +
+                                           "    rp.AccountVersionId [EmployerAccountVersion], " +
+                                           "    p.DeliveryMonth [DeliveryPeriodMonth], " +
+                                           "    p.DeliveryYear [DeliveryPeriodYear], " +
+                                           "    p.CollectionPeriodName [CollectionPeriodId], " +
+                                           "    p.CollectionPeriodMonth, " +
+                                           "    p.CollectionPeriodYear, " +
+                                           "    rp.IlrSubmissionDateTime [EvidenceSubmittedOn], " +
+                                           "    p.FundingSource, " +
+                                           "    p.TransactionType, " +
+                                           "    p.Amount, " +
+                                           "    rp.StandardCode, " +
+                                           "    rp.FrameworkCode, " +
+                                           "    rp.ProgrammeType, " +
+                                           "    rp.PathwayCode, " +
+                                           "    rp.ApprenticeshipContractType [ContractType]" +
+                                           "    FROM Payments.Payments p " +
+                                           "    INNER JOIN PaymentsDue.RequiredPayments rp ON p.RequiredPaymentId = rp.Id " +
+                                           "    " +
+                                           "    /**where**/ " + // Do not remove. Essential for SqlBuilder
+                                           "    " +
+                                           "),      " +
+                                           "    _count AS(" +
+                                           "        SELECT COUNT(1) AS TotalCount FROM _data" +
+                                           ") " +
+                                           "" +
+                                           "SELECT * FROM (" +
+                                           "    SELECT * FROM _data CROSS APPLY _count " +
+                                           "    ORDER BY Id " +
+                                           "    OFFSET (@PageIndex - 1) * @PageSize ROWS FETCH NEXT @PageSize ROWS ONLY " +
+                                           ") AS DATA " +
+                                           "LEFT OUTER JOIN PaymentsDue.Earnings e " +
+                                           "    ON e.RequiredPaymentId = DATA.DataRequiredPaymentId ";
 
-        public async Task<PageOfEntities<PaymentEntity>> GetPayments(int page, int pageSize)
+        public async Task<PageOfResults<PaymentEntity>> GetPayments(int page, int pageSize, string employerAccountId, int? collectionPeriodYear, int? collectionPeriodMonth, long? ukprn)
         {
-            return await GetPageOfPayments(string.Empty, page, pageSize);
-        }
+            var sqlBuilder = new SqlBuilder();
+            var query = sqlBuilder.AddTemplate(SqlTemplate);
 
-        public async Task<PageOfEntities<PaymentEntity>> GetPaymentsForPeriod(int collectionPeriodYear, int collectionPeriodMonth, int page, int pageSize)
-        {
-            var whereClause = $"WHERE p.CollectionPeriodYear = {collectionPeriodYear} AND p.CollectionPeriodMonth = {collectionPeriodMonth}";
+            BuildQueryParameters(employerAccountId, collectionPeriodYear, collectionPeriodMonth, ukprn, sqlBuilder);
 
-            return await GetPageOfPayments(whereClause, page, pageSize);
-        }
+            // TODO: Consider putting this in a decorator??
+            AddPagingInformation(page, pageSize, sqlBuilder);
 
-        public async Task<PageOfEntities<PaymentEntity>> GetPaymentsForAccount(string employerAccountId, int page, int pageSize)
-        {
-            var whereClause = $"WHERE rp.AccountId = '{employerAccountId.Replace("'", "''")}'";
-
-            return await GetPageOfPayments(whereClause, page, pageSize);
-        }
-
-        public async Task<PageOfEntities<PaymentEntity>> GetPaymentsForAccountInPeriod(string employerAccountId, int collectionPeriodYear, int collectionPeriodMonth,
-            int page, int pageSize)
-        {
-            var whereClause = $"WHERE rp.AccountId = '{employerAccountId.Replace("'", "''")}' AND p.CollectionPeriodYear = {collectionPeriodYear} AND p.CollectionPeriodMonth = {collectionPeriodMonth}";
-
-            return await GetPageOfPayments(whereClause, page, pageSize);
-        }
-
-
-        private async Task<PageOfEntities<PaymentEntity>> GetPageOfPayments(string whereClause, int page, int pageSize)
-        {
-            var numberOfPages = await GetNumberOfPages(whereClause, pageSize);
-
-            var payments = await GetPayments(whereClause, page, pageSize);
-
-            return new PageOfEntities<PaymentEntity>
+            using (var connection = await GetOpenConnection().ConfigureAwait(false))
             {
-                PageNumber = page,
-                TotalNumberOfPages = numberOfPages,
-                Items = payments
-            };
-        }
-        private async Task<PaymentEntity[]> GetPayments(string whereClause, int page, int pageSize)
-        {
-            var command = $"SELECT {Columns} FROM {Source} {whereClause} {Pagination}";
+                var result = await connection.MappedQueryAsync<PaymentEntity, PaymentsDueEarningEntity>(
+                    query.RawSql,
+                    query.Parameters,
+                    splitOn: c => c.RequiredPaymentId,
+                    parentIdentifier: p => p.Id,
+                    childCollection: p => p.PaymentsDueEarningEntities
+                ).ConfigureAwait(false);
 
-            var offset = (page - 1) * pageSize;
-            return await Query<PaymentEntity>(command, new { offset, pageSize });
+                var pagedResults =  PageResults(result, page, pageSize);
+                return pagedResults;
+            }
         }
-        private async Task<int> GetNumberOfPages(string whereClause, int pageSize)
-        {
-            var command = $"SELECT {CountColumn} FROM {Source} {whereClause}";
-            var count = await QuerySingle<int>(command);
 
-            return (int)Math.Ceiling(count / (float)pageSize);
+        private static void AddPagingInformation(int page, int pageSize, SqlBuilder sqlBuilder)
+        {
+            sqlBuilder.AddParameters(new {PageIndex = page, PageSize = pageSize});
+        }
+
+        private static void BuildQueryParameters(string employerAccountId, int? collectionPeriodYear,
+            int? collectionPeriodMonth, long? ukprn, SqlBuilder sqlBuilder)
+        {
+            sqlBuilder.Where(
+                "p.CollectionPeriodYear = @CollectionPeriodYear AND p.CollectionPeriodMonth = @CollectionPeriodMonth",
+                new {CollectionPeriodYear = collectionPeriodYear, CollectionPeriodMonth = collectionPeriodMonth},
+                includeIf: collectionPeriodYear.HasValue && collectionPeriodMonth.HasValue);
+
+            sqlBuilder.Where(
+                "rp.AccountId = @EmployerAccountId",
+                new {EmployerAccountId = employerAccountId?.Replace("'", "''")},
+                includeIf: !string.IsNullOrEmpty(employerAccountId));
+
+            sqlBuilder.Where("rp.Ukprn = @UkPrn", new {UkPrn = ukprn}, includeIf: ukprn.HasValue);
         }
     }
 }

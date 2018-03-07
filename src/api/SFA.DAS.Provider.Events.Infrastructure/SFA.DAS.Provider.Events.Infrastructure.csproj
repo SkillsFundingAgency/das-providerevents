@@ -38,6 +38,9 @@
       <HintPath>..\packages\Dapper.1.50.2\lib\net45\Dapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Dapper.SqlBuilder, Version=1.50.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.SqlBuilder.1.50.0\lib\net45\Dapper.SqlBuilder.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.WindowsAzure.Configuration, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.3.2.3\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
       <Private>True</Private>
@@ -46,9 +49,13 @@
       <HintPath>..\packages\NLog.4.3.10\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SFA.DAS.Sql.Dapper, Version=1.0.0.44965, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Sql.Dapper.1.0.0.44965\lib\net45\SFA.DAS.Sql.Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -62,19 +69,26 @@
     <Compile Include="Data\DcfsPeriodRepository.cs" />
     <Compile Include="Data\DcfsRepository.cs" />
     <Compile Include="Data\DcfsSubmissionEventsRepository.cs" />
+    <Compile Include="Extensions\SqlBuilderTemplateExtensions.cs" />
     <Compile Include="Logging\LoggingConfig.cs" />
     <Compile Include="Mapping\AutoMapperMapper.cs" />
     <Compile Include="Mapping\DomainAutoMapperConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Provider.Events.Domain\SFA.DAS.Provider.Events.Domain.csproj">
-      <Project>{CFBF1C38-4E74-4DD7-AA90-FEAB37B85FD7}</Project>
-      <Name>SFA.DAS.Provider.Events.Domain</Name>
+    <ProjectReference Include="..\SFA.DAS.Provider.Events.Api.Types\SFA.DAS.Provider.Events.Api.Types.csproj">
+      <Project>{a557e17c-eb78-4f2e-ac2a-ccacdc2c3172}</Project>
+      <Name>SFA.DAS.Provider.Events.Api.Types</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Provider.Events.Application\SFA.DAS.Provider.Events.Application.csproj">
+      <Project>{5df95ffe-d3ed-4eb9-9797-8056142e7591}</Project>
+      <Name>SFA.DAS.Provider.Events.Application</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

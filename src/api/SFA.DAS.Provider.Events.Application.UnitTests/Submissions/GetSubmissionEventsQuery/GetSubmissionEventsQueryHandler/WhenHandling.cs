@@ -3,12 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Application.Data.Entities;
+using SFA.DAS.Provider.Events.Application.Mapping;
+using SFA.DAS.Provider.Events.Application.Repositories;
 using SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
-using SFA.DAS.Provider.Events.Domain;
-using SFA.DAS.Provider.Events.Domain.Data;
-using SFA.DAS.Provider.Events.Domain.Data.Entities;
-using SFA.DAS.Provider.Events.Domain.Mapping;
 
 namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetSubmissionEventsQuery.GetSubmissionEventsQueryHandler
 {
@@ -29,7 +29,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetSubmissio
             _submissionEventsRepository = new Mock<ISubmissionEventsRepository>();
             _submissionEventsRepository
                 .Setup(r => r.GetSubmissionEventsSinceId(It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync(new PageOfEntities<SubmissionEventEntity>
+                .ReturnsAsync(new PageOfResults<SubmissionEventEntity>
                 {
                     PageNumber = 1,
                     TotalNumberOfPages = 2,
@@ -40,7 +40,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetSubmissio
                 });
             _submissionEventsRepository
                 .Setup(r => r.GetSubmissionEventsSinceTime(It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync(new PageOfEntities<SubmissionEventEntity>
+                .ReturnsAsync(new PageOfResults<SubmissionEventEntity>
                 {
                     PageNumber = 2,
                     TotalNumberOfPages = 3,
@@ -51,7 +51,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetSubmissio
                 });
             _submissionEventsRepository
                 .Setup(r => r.GetSubmissionEventsForProviderSinceId(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync(new PageOfEntities<SubmissionEventEntity>
+                .ReturnsAsync(new PageOfResults<SubmissionEventEntity>
                 {
                     PageNumber = 3,
                     TotalNumberOfPages = 4,
@@ -62,7 +62,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetSubmissio
                 });
             _submissionEventsRepository
                 .Setup(r => r.GetSubmissionEventsForProviderSinceTime(It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync(new PageOfEntities<SubmissionEventEntity>
+                .ReturnsAsync(new PageOfResults<SubmissionEventEntity>
                 {
                     PageNumber = 4,
                     TotalNumberOfPages = 5,
@@ -73,8 +73,8 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetSubmissio
                 });
 
             _mapper = new Mock<IMapper>();
-            _mapper.Setup(m => m.Map<PageOfResults<SubmissionEvent>>(It.IsAny<PageOfEntities<SubmissionEventEntity>>()))
-                .Returns((PageOfEntities<SubmissionEventEntity> source) =>
+            _mapper.Setup(m => m.Map<PageOfResults<SubmissionEvent>>(It.IsAny<PageOfResults<SubmissionEventEntity>>()))
+                .Returns((PageOfResults<SubmissionEventEntity> source) =>
                 {
                     return new PageOfResults<SubmissionEvent>
                     {
