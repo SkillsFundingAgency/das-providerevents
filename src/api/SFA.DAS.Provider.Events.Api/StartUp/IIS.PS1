@@ -76,7 +76,7 @@ Import-Module WebAdministration -Force
 
 $IISName= get-childitem -path iis:\apppools\ | where Name -NotLike ".Net*" | select name
 $IIS=$IISName.name
-$logger.Error("Setting App Pool Identity $Username, $Password, $IIS")
+$logger.Error("Setting App Pool Identity $Username, $IIS")
 
 Try {Set-ItemProperty iis:\apppools\$IIS -name processModel -value @{userName="$UserName";password="$Password";identitytype=3}}
 catch {
