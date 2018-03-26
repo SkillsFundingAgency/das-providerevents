@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SFA.DAS.Provider.Events.Api.Types;
+using System;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Provider.Events.Api.Client
 {
@@ -63,7 +63,7 @@ namespace SFA.DAS.Provider.Events.Api.Client
             return JsonConvert.DeserializeObject<PageOfResults<SubmissionEvent>>(response);
         }
 
-        public async Task<PageOfResults<DataLockEvent>> GetDataLockEvents(long sinceEventId = 0, DateTime? sinceTime = null, string employerAccountId = null, long  ukprn = 0, int page = 1)
+        public async Task<PageOfResults<DataLockEvent>> GetDataLockEvents(long sinceEventId = 0, DateTime? sinceTime = null, string employerAccountId = null, long ukprn = 0, int page = 1)
         {
             var url = $"{BaseUrl}api/datalock?page={page}";
             if (sinceEventId > 0)
@@ -87,5 +87,10 @@ namespace SFA.DAS.Provider.Events.Api.Client
             return JsonConvert.DeserializeObject<PageOfResults<DataLockEvent>>(response);
         }
 
+        public async Task<PageOfResults<Transfer>> GetAccountTransfers(string periodId, long employerAccountId)
+        {
+            var response = await _httpClient.GetAsync($"{BaseUrl}api/accountTransfers/{periodId}/{employerAccountId}");
+            return JsonConvert.DeserializeObject<PageOfResults<Transfer>>(response);
+        }
     }
 }

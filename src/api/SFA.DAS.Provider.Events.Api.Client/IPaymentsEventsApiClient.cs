@@ -1,6 +1,6 @@
-﻿using System;
+﻿using SFA.DAS.Provider.Events.Api.Types;
+using System;
 using System.Threading.Tasks;
-using SFA.DAS.Provider.Events.Api.Types;
 
 namespace SFA.DAS.Provider.Events.Api.Client
 {
@@ -42,5 +42,15 @@ namespace SFA.DAS.Provider.Events.Api.Client
         /// <param name="page">The page number to view. Default is 1</param>
         /// <returns>A task that yields a page of data lock events</returns>
         Task<PageOfResults<DataLockEvent>> GetDataLockEvents(long sinceEventId = 0, DateTime? sinceTime = null, string employerAccountId = null, long ukprn = 0, int page = 1);
+
+        /// <summary>
+        /// [CURRENTLY NOT AVAILABLE] Gets transfers for a particular account and period end
+        /// </summary>
+        /// <param name="periodId">Period end id of the selected period</param>
+        /// <param name="employerAccountId">Account id of the selected account</param>
+        /// <returns>Transfers for that account and period</returns>
+        [Obsolete("This method supports undeveloped features which may change without warning.")]
+        Task<PageOfResults<Transfer>> GetAccountTransfers(string periodId, long employerAccountId);
+
     }
 }
