@@ -4,6 +4,7 @@ using System.Web.Http;
 using MediatR;
 using NLog;
 using SFA.DAS.Provider.Events.Api.Plumbing.WebApi;
+using SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsByUlnQuery;
 using SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
 
@@ -56,6 +57,40 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             catch (Exception ex)
             {
                 _logger.Error(ex, $"Unexpected error processing GetSubmissionEvents - {ex.Message}");
+                return InternalServerError();
+            }
+        }
+
+        [Route("api/v2/submissions", Name = "SubmissionEventsListByUln")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetSubmissionEventsByUln(long uln, long sinceEventId = 0)
+        {
+            try
+            {
+                _logger.Debug($"Processing GetSubmissionEventsByUln, uln={uln}, sinceEventId={sinceEventId}");
+
+                var queryResponse = await _mediator.SendAsync(new GetSubmissionEventsByUlnQueryRequest
+                    {
+                        SinceEventId = sinceEventId,
+                        Uln = uln
+                    })
+                    .ConfigureAwait(false);
+                
+                if (!queryResponse.IsValid)
+                {
+                    throw queryResponse.Exception;
+                }
+                
+                return Ok(queryResponse.Result);
+            }
+            catch (ValidationException ex)
+            {
+                _logger.Info($"Bad request received to GetSubmissionEventsByUln - {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Unexpected error processing GetSubmissionEventsByUln - {ex.Message}");
                 return InternalServerError();
             }
         }

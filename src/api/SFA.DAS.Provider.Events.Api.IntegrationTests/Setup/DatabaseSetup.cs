@@ -36,6 +36,9 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
         {
             Debug.WriteLine("Populating submission events table, this could take a while");
 
+            await PopulateEventsForByUln(1000000160, 2);
+            await PopulateEventsForByUln(1000000190, 1);
+
             TestData.SubmissionEvents = new Fixture().CreateMany<ItSubmissionEvent>(10).ToList();
             foreach (var @event in TestData.SubmissionEvents)
             {
@@ -48,6 +51,24 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
                 @event.FileDateTime = @event.FileDateTime.AddTicks(-(@event.FileDateTime.Ticks % TimeSpan.TicksPerSecond));
             }
             await _populate.BulkInsertSubmissionEvents(TestData.SubmissionEvents);
+        }
+
+        private async Task PopulateEventsForByUln(long uln, int count)
+        {
+            TestData.SubmissionEventsForUln = new Fixture().CreateMany<ItSubmissionEvent>(count).ToList();
+            foreach (var @event in TestData.SubmissionEventsForUln)
+            {
+                @event.Uln = uln;
+                // these fields are just date's in the db
+                @event.ActualStartDate = @event.ActualStartDate.Value.Date;
+                @event.ActualEndDate = @event.ActualEndDate.Value.Date;
+                @event.PlannedEndDate = @event.PlannedEndDate.Value.Date;
+                // these fields are datetime's in the db, so can't match the precision of c#'s datetime, so we chop off the milliseconds
+                @event.SubmittedDateTime =
+                    @event.SubmittedDateTime.AddTicks(-(@event.SubmittedDateTime.Ticks % TimeSpan.TicksPerSecond));
+                @event.FileDateTime = @event.FileDateTime.AddTicks(-(@event.FileDateTime.Ticks % TimeSpan.TicksPerSecond));
+            }
+            await _populate.BulkInsertSubmissionEvents(TestData.SubmissionEventsForUln);
         }
 
         private async Task PopulateAllData()

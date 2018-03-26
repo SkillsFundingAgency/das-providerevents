@@ -76,6 +76,10 @@
     <Compile Include="Repositories\IPeriodRepository.cs" />
     <Compile Include="Repositories\ISubmissionEventsRepository.cs" />
     <Compile Include="Response.cs" />
+    <Compile Include="Submissions\GetSubmissionEventsByUlnQuery\GetSubmissionEventsByUlnQueryHandler.cs" />
+    <Compile Include="Submissions\GetSubmissionEventsByUlnQuery\GetSubmissionEventsByUlnQueryRequest.cs" />
+    <Compile Include="Submissions\GetSubmissionEventsByUlnQuery\GetSubmissionEventsByUlnQueryRequestValidator.cs" />
+    <Compile Include="Submissions\GetSubmissionEventsByUlnQuery\GetSubmissionEventsByUlnQueryResponse.cs" />
     <Compile Include="Submissions\GetSubmissionEventsQuery\GetSubmissionEventsQueryHandler.cs" />
     <Compile Include="Submissions\GetSubmissionEventsQuery\GetSubmissionEventsQueryRequest.cs" />
     <Compile Include="Submissions\GetSubmissionEventsQuery\GetSubmissionEventsQueryRequestValidator.cs" />

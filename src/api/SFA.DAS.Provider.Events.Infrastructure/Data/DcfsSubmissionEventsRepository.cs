@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
 using SFA.DAS.Provider.Events.Application.Repositories;
@@ -72,6 +75,31 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                 .ConfigureAwait(false);
         }
 
+        public async Task<IEnumerable<SubmissionEventEntity>> GetSubmissionEventsForUln(long eventId, long uln)
+        {
+            var eventIdFilterClause = eventId > 0 ? $"filteredSe.Id > {eventId} AND" : "";
+
+            var command = $@"SELECT * FROM Submissions.SubmissionEvents se
+                        INNER JOIN(SELECT MAX(IdFilteredEvents.id) AS Id, IdFilteredEvents.StandardCode 
+                            FROM (SELECT filteredSe.Id, filteredSe.StandardCode, filteredSe.ULN FROM Submissions.SubmissionEvents filteredSe 
+                            WHERE {eventIdFilterClause} filteredSe.ULN = {uln}) as IdFilteredEvents
+                            GROUP BY IdFilteredEvents.StandardCode) AS GroupedEvents ON GroupedEvents.Id = se.Id";
+
+            //SELECT* FROM Submissions.SubmissionEvents se
+            //INNER JOIN(SELECT MAX(IdFilteredEvents.id) AS Id, IdFilteredEvents.StandardCode
+            //FROM (
+            //    SELECT filteredSe.Id, filteredSe.StandardCode, filteredSe.ULN
+            //    FROM Submissions.SubmissionEvents filteredSe
+
+            //WHERE filteredSe.Id > @eventId AND filteredSe.ULN = @uln) as IdFilteredEvents
+            //    GROUP BY IdFilteredEvents.StandardCode) AS GroupedEvents ON GroupedEvents.Id = se.Id
+
+            using (var connection = await GetOpenConnection().ConfigureAwait(false))
+            {
+                return await connection.QueryAsync<SubmissionEventEntity>(command).ConfigureAwait(false);
+            }
+        }
+
 
         private async Task<PageOfResults<SubmissionEventEntity>> GetPageOfSubmissionEvents(string whereClause, int page, int pageSize)
         {
@@ -93,7 +121,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             var command = $"SELECT {Columns} FROM {Source} {whereClause} {Pagination}";
 
             var offset = (page - 1) * pageSize;
-            return await Query<SubmissionEventEntity>(command, new {offset, pageSize})
+            return await Query<SubmissionEventEntity>(command, new { offset, pageSize })
                 .ConfigureAwait(false);
         }
 

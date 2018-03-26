@@ -78,6 +78,8 @@
     <Compile Include="Period\GetPeriodQuery\GetPeriodQueryRequestValidator\WhenValidating.cs" />
     <Compile Include="Period\GetPeriodsQuery\GetPeriodsQueryHandler\WhenHandling.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Submissions\GetSubmissionEventsByUlnQuery\GetSubmissionEventsByUlnQueryHandler\WhenHandling.cs" />
+    <Compile Include="Submissions\GetSubmissionEventsByUlnQuery\GetSubmissionEventsByUlnQueryRequestValidator\WhenValidating.cs" />
     <Compile Include="Submissions\GetSubmissionEventsQuery\GetSubmissionEventsQueryHandler\WhenHandling.cs" />
     <Compile Include="Submissions\GetSubmissionEventsQuery\GetSubmissionEventsQueryRequestValidator\WhenValidating.cs" />
     <Compile Include="Validation\Rules\PageNumberMustBeAtLeastOneRule\WhenValidating.cs" />
