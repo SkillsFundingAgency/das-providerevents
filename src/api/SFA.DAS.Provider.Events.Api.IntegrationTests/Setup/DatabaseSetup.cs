@@ -27,7 +27,10 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
                 await PopulateAllData().ConfigureAwait(false);
 
             if (await _populate.IsSubmissionEventsTablePopulated())
+            {
                 await ReadSubmissionEvents();
+                await ReadSubmissionEventsForUlnCheck();
+            }
             else
                 await PopulateSubmissionEvents();
         }
@@ -92,12 +95,23 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
 
         private async Task ReadSubmissionEvents()
         {
-            const string submissionEventsSql = "SELECT * FROM [Submissions].[SubmissionEvents]";
+            const string submissionEventsSql = "SELECT * FROM [Submissions].[SubmissionEvents] WHERE Id > 3";
 
             using (var conn = DatabaseConnection.Connection())
             {
                 await conn.OpenAsync();
                 TestData.SubmissionEvents = (await conn.QueryAsync<ItSubmissionEvent>(submissionEventsSql)).ToList();
+            }
+        }
+
+        private async Task ReadSubmissionEventsForUlnCheck()
+        {
+            const string submissionEventsSql = "SELECT * FROM [Submissions].[SubmissionEvents] WHERE Id <= 3";
+
+            using (var conn = DatabaseConnection.Connection())
+            {
+                await conn.OpenAsync();
+                TestData.SubmissionEventsForUln = (await conn.QueryAsync<ItSubmissionEvent>(submissionEventsSql)).ToList();
             }
         }
 
