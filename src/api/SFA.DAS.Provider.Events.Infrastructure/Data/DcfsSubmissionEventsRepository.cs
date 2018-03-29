@@ -77,22 +77,13 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 
         public async Task<IEnumerable<SubmissionEventEntity>> GetSubmissionEventsForUln(long eventId, long uln)
         {
-            var eventIdFilterClause = eventId > 0 ? $"filteredSe.Id > {eventId} AND" : "";
+            var eventIdFilterClause = eventId > 0 ? $"se.Id > {eventId} AND " : "";
 
-            var command = $@"SELECT * FROM Submissions.SubmissionEvents se
-                        INNER JOIN(SELECT MAX(IdFilteredEvents.id) AS Id, IdFilteredEvents.StandardCode 
-                            FROM (SELECT filteredSe.Id, filteredSe.StandardCode, filteredSe.ULN FROM Submissions.SubmissionEvents filteredSe 
-                            WHERE {eventIdFilterClause} filteredSe.ULN = {uln}) as IdFilteredEvents
-                            GROUP BY IdFilteredEvents.StandardCode) AS GroupedEvents ON GroupedEvents.Id = se.Id";
-
-            //SELECT* FROM Submissions.SubmissionEvents se
-            //INNER JOIN(SELECT MAX(IdFilteredEvents.id) AS Id, IdFilteredEvents.StandardCode
-            //FROM (
-            //    SELECT filteredSe.Id, filteredSe.StandardCode, filteredSe.ULN
-            //    FROM Submissions.SubmissionEvents filteredSe
-
-            //WHERE filteredSe.Id > @eventId AND filteredSe.ULN = @uln) as IdFilteredEvents
-            //    GROUP BY IdFilteredEvents.StandardCode) AS GroupedEvents ON GroupedEvents.Id = se.Id
+            var command = $@"SELECT* FROM(
+                SELECT ROW_NUMBER() OVER (PARTITION BY se.StandardCode ORDER BY se.Id DESC) rownumber, se.*
+                FROM Submissions.SubmissionEvents se
+            WHERE {eventIdFilterClause} se.ULN = {uln}) subEvents  
+            WHERE rownumber = 1";
 
             using (var connection = await GetOpenConnection().ConfigureAwait(false))
             {
