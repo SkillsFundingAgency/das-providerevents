@@ -142,6 +142,7 @@ CREATE TABLE [Payments].[Payments](
 	[CollectionPeriodMonth] [int] NOT NULL,
 	[CollectionPeriodYear] [int] NOT NULL,
 	[FundingSource] [int] NOT NULL,
+	[FundingAccountId] [bigint] NULL,
 	[TransactionType] [int] NOT NULL,
 	[Amount] [decimal](15, 5) NULL,
 PRIMARY KEY CLUSTERED 

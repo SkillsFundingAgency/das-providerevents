@@ -14,48 +14,48 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         // Using CTE for 2 reasons:
         //  Get the column count at the same time as the query
         //  Restrict the query to PageSize rows for the main query before joining the earnings data
-        private const string SqlTemplate = "WITH _data AS (" +
-                                           "" +
-                                           "    SELECT " +
-                                           "    CAST(p.PaymentId as varchar(36)) [Id], " +
-                                           "    rp.Id [DataRequiredPaymentId], " +
-                                           "    rp.CommitmentId [ApprenticeshipId], " +
-                                           "    rp.CommitmentVersionId [ApprenticeshipVersion], " +
-                                           "    rp.Ukprn, " +
-                                           "    rp.Uln, " +
-                                           "    rp.AccountId [EmployerAccountId], " +
-                                           "    rp.AccountVersionId [EmployerAccountVersion], " +
-                                           "    p.DeliveryMonth [DeliveryPeriodMonth], " +
-                                           "    p.DeliveryYear [DeliveryPeriodYear], " +
-                                           "    p.CollectionPeriodName [CollectionPeriodId], " +
-                                           "    p.CollectionPeriodMonth, " +
-                                           "    p.CollectionPeriodYear, " +
-                                           "    rp.IlrSubmissionDateTime [EvidenceSubmittedOn], " +
-                                           "    p.FundingSource, " +
-                                           "    p.TransactionType, " +
-                                           "    p.Amount, " +
-                                           "    rp.StandardCode, " +
-                                           "    rp.FrameworkCode, " +
-                                           "    rp.ProgrammeType, " +
-                                           "    rp.PathwayCode, " +
-                                           "    rp.ApprenticeshipContractType [ContractType]" +
-                                           "    FROM Payments.Payments p " +
-                                           "    INNER JOIN PaymentsDue.RequiredPayments rp ON p.RequiredPaymentId = rp.Id " +
-                                           "    " +
-                                           "    /**where**/ " + // Do not remove. Essential for SqlBuilder
-                                           "    " +
-                                           "),      " +
-                                           "    _count AS(" +
-                                           "        SELECT COUNT(1) AS TotalCount FROM _data" +
-                                           ") " +
-                                           "" +
-                                           "SELECT * FROM (" +
-                                           "    SELECT * FROM _data CROSS APPLY _count " +
-                                           "    ORDER BY Id " +
-                                           "    OFFSET (@PageIndex - 1) * @PageSize ROWS FETCH NEXT @PageSize ROWS ONLY " +
-                                           ") AS DATA " +
-                                           "LEFT OUTER JOIN PaymentsDue.Earnings e " +
-                                           "    ON e.RequiredPaymentId = DATA.DataRequiredPaymentId ";
+        private const string SqlTemplate = @"
+            WITH _data AS (
+                SELECT 
+                    CAST(p.PaymentId as varchar(36)) [Id], 
+                    rp.Id [DataRequiredPaymentId], 
+                    rp.CommitmentId [ApprenticeshipId], 
+                    rp.CommitmentVersionId [ApprenticeshipVersion], 
+                    rp.Ukprn, 
+                    rp.Uln, 
+                    rp.AccountId [EmployerAccountId], 
+                    rp.AccountVersionId [EmployerAccountVersion], 
+                    p.DeliveryMonth [DeliveryPeriodMonth], 
+                    p.DeliveryYear [DeliveryPeriodYear], 
+                    p.CollectionPeriodName [CollectionPeriodId], 
+                    p.CollectionPeriodMonth, 
+                    p.CollectionPeriodYear, 
+                    rp.IlrSubmissionDateTime [EvidenceSubmittedOn], 
+                    p.FundingSource, 
+                    p.FundingAccountId, 
+                    p.TransactionType, 
+                    p.Amount, 
+                    rp.StandardCode, 
+                    rp.FrameworkCode, 
+                    rp.ProgrammeType, 
+                    rp.PathwayCode, 
+                    rp.ApprenticeshipContractType [ContractType]
+                FROM 
+                    Payments.Payments p 
+                    INNER JOIN PaymentsDue.RequiredPayments rp ON p.RequiredPaymentId = rp.Id 
+                /**where**/ -- Do not remove. Essential for SqlBuilder
+            ),
+            _count AS (
+                SELECT COUNT(1) AS TotalCount FROM _data
+            ) 
+            SELECT * FROM 
+            (
+                SELECT * FROM _data CROSS APPLY _count 
+                ORDER BY Id 
+                OFFSET (@PageIndex - 1) * @PageSize ROWS FETCH NEXT @PageSize ROWS ONLY 
+            ) AS DATA 
+            LEFT OUTER JOIN PaymentsDue.Earnings e 
+                ON e.RequiredPaymentId = DATA.DataRequiredPaymentId ";
 
         public async Task<PageOfResults<PaymentEntity>> GetPayments(int page, int pageSize, string employerAccountId, int? collectionPeriodYear, int? collectionPeriodMonth, long? ukprn)
         {
@@ -87,8 +87,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             sqlBuilder.AddParameters(new {PageIndex = page, PageSize = pageSize});
         }
 
-        private static void BuildQueryParameters(string employerAccountId, int? collectionPeriodYear,
-            int? collectionPeriodMonth, long? ukprn, SqlBuilder sqlBuilder)
+        private static void BuildQueryParameters(string employerAccountId, int? collectionPeriodYear, int? collectionPeriodMonth, long? ukprn, SqlBuilder sqlBuilder)
         {
             sqlBuilder.Where(
                 "p.CollectionPeriodYear = @CollectionPeriodYear AND p.CollectionPeriodMonth = @CollectionPeriodMonth",

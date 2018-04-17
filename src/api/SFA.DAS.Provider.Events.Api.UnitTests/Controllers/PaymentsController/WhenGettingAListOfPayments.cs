@@ -54,6 +54,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                 EmployerAccountVersion = "20170601",
                 ApprenticeshipVersion = "V1",
                 FundingSource = FundingSource.Levy,
+                FundingAccountId = 666,
                 TransactionType = TransactionType.Learning,
                 Amount = 1234.56m,
                 StandardCode = 25,
@@ -142,6 +143,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                 EmployerAccountVersion = "20170601",
                 ApprenticeshipVersion = "V1",
                 FundingSource = FundingSource.Levy,
+                FundingAccountId = 777,
                 TransactionType = TransactionType.Learning,
                 Amount = 1234.56m,
                 StandardCode = standardCode,
@@ -193,6 +195,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
             Assert.AreEqual(payment.EmployerAccountVersion, actualPayment.EmployerAccountVersion);
             Assert.AreEqual(payment.ApprenticeshipVersion, actualPayment.ApprenticeshipVersion);
             Assert.AreEqual((int)payment.FundingSource, (int)actualPayment.FundingSource);
+            Assert.AreEqual(payment.FundingAccountId, actualPayment.FundingAccountId);
             Assert.AreEqual((int)payment.TransactionType, (int)actualPayment.TransactionType);
             Assert.AreEqual(payment.Amount, actualPayment.Amount);
             Assert.AreEqual(payment.StandardCode, actualPayment.StandardCode);

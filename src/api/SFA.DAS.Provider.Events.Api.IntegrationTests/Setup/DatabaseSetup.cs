@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Castle.Components.DictionaryAdapter;
 using Dapper;
 using Ploeh.AutoFixture;
 using SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess;
@@ -56,11 +59,12 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
 
             var data = _populate;
 
+            var requiredPayments = new IEnumerable<ItRequiredPayment>[8];
             var fixture = new Fixture().Customize(new IntegrationTestCustomisation());
-            var requiredPayments = fixture.CreateMany<ItRequiredPayment>(20000).ToList();
+            Parallel.For(0, 8, i => requiredPayments[i] = fixture.CreateMany<ItRequiredPayment>(2500));
 
-            TestData.RequiredPayments = requiredPayments;
-            TestData.Payments = requiredPayments.SelectMany(x => x.Payments).ToList();
+            TestData.RequiredPayments = requiredPayments.SelectMany(p => p).ToList();
+            TestData.Payments = TestData.RequiredPayments.SelectMany(x => x.Payments).ToList();
             TestData.Earnings = TestData.Payments.SelectMany(x => x.Earnings).ToList();
 
             await data.BulkInsertPayments(TestData.Payments).ConfigureAwait(false);
