@@ -2,11 +2,11 @@
 using System.Threading.Tasks;
 using SFA.DAS.Provider.Events.Application.Validation;
 
-namespace SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsByUlnQuery
+namespace SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventByStandardQuery
 {
-    public class GetSubmissionEventsByUlnQueryRequestValidator : IValidator<GetSubmissionEventsByUlnQueryRequest>
+    public class GetLatestLearnerEventByStandardQueryRequestValidator : IValidator<GetLatestLearnerEventByStandardQueryRequest>
     {
-        public async Task<ValidationResult> Validate(GetSubmissionEventsByUlnQueryRequest item)
+        public async Task<ValidationResult> Validate(GetLatestLearnerEventByStandardQueryRequest item)
         {
             var validationErrors = new[]
             {

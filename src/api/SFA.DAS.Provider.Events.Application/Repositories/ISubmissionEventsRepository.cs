@@ -12,6 +12,6 @@ namespace SFA.DAS.Provider.Events.Application.Repositories
         Task<PageOfResults<SubmissionEventEntity>> GetSubmissionEventsSinceTime(DateTime time, int page, int pageSize);
         Task<PageOfResults<SubmissionEventEntity>> GetSubmissionEventsForProviderSinceId(long ukprn, long eventId, int page, int pageSize);
         Task<PageOfResults<SubmissionEventEntity>> GetSubmissionEventsForProviderSinceTime(long ukprn, DateTime time, int page, int pageSize);
-        Task<IEnumerable<SubmissionEventEntity>> GetSubmissionEventsForUln(long eventId, long uln);
+        Task<IEnumerable<SubmissionEventEntity>> GetLatestLearnerEventByStandard(long eventId, long uln);
     }
 }

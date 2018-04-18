@@ -136,7 +136,7 @@
     <Compile Include="TestData.cs" />
     <Compile Include="Tests\PaymentsApiTests\When\RequestingALargeAmountOfData.cs" />
     <Compile Include="Tests\PaymentsApiTests\When\RequestingASubsetOfTheData.cs" />
-    <Compile Include="Tests\SubmissionsApiTests\When\RequestingSubmissionEventsByUln.cs" />
+    <Compile Include="Tests\SubmissionsApiTests\When\RequestingLatestLearnerEventByStandard.cs" />
     <Compile Include="Tests\SubmissionsApiTests\When\RequestingSubmissionEvents.cs" />
     <Content Include="SetupScripts\DataSetup-Payments.Periods.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

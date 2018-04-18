@@ -4,39 +4,39 @@ using MediatR;
 using SFA.DAS.Provider.Events.Application.Repositories;
 using SFA.DAS.Provider.Events.Application.Validation;
 
-namespace SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsByUlnQuery
+namespace SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventByStandardQuery
 {
-    public class GetSubmissionEventsByUlnQueryHandler : 
-        IAsyncRequestHandler<GetSubmissionEventsByUlnQueryRequest, GetSubmissionEventsByUlnQueryResponse>
+    public class GetLatestLearnerEventByStandardQueryHandler : 
+        IAsyncRequestHandler<GetLatestLearnerEventByStandardQueryRequest, GetLatestLearnerEventByStandardQueryResponse>
     {
-        private readonly IValidator<GetSubmissionEventsByUlnQueryRequest> _validator;
+        private readonly IValidator<GetLatestLearnerEventByStandardQueryRequest> _validator;
         private readonly ISubmissionEventsRepository _submissionEventsRepository;
 
-        public GetSubmissionEventsByUlnQueryHandler(
-            IValidator<GetSubmissionEventsByUlnQueryRequest> validator, 
+        public GetLatestLearnerEventByStandardQueryHandler(
+            IValidator<GetLatestLearnerEventByStandardQueryRequest> validator, 
             ISubmissionEventsRepository submissionEventsRepository)
         {
             _validator = validator;
             _submissionEventsRepository = submissionEventsRepository;
         }
 
-        public async Task<GetSubmissionEventsByUlnQueryResponse> Handle(GetSubmissionEventsByUlnQueryRequest message)
+        public async Task<GetLatestLearnerEventByStandardQueryResponse> Handle(GetLatestLearnerEventByStandardQueryRequest message)
         {
             try
             {
                 var validationResult = await _validator.Validate(message);
                 if (!validationResult.IsValid)
                 {
-                    return new GetSubmissionEventsByUlnQueryResponse
+                    return new GetLatestLearnerEventByStandardQueryResponse
                     {
                         IsValid = false,
                         Exception = new ValidationException(validationResult.ValidationMessages)
                     };
                 }
 
-                var entities = await _submissionEventsRepository.GetSubmissionEventsForUln(message.SinceEventId, message.Uln);
+                var entities = await _submissionEventsRepository.GetLatestLearnerEventByStandard(message.SinceEventId, message.Uln);
 
-                return new GetSubmissionEventsByUlnQueryResponse
+                return new GetLatestLearnerEventByStandardQueryResponse
                 {
                     IsValid = true,
                     Result = entities
@@ -44,7 +44,7 @@ namespace SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsByU
             }
             catch (Exception ex)
             {
-                return new GetSubmissionEventsByUlnQueryResponse
+                return new GetLatestLearnerEventByStandardQueryResponse
                 {
                     IsValid = false,
                     Exception = ex

@@ -75,7 +75,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                 .ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<SubmissionEventEntity>> GetSubmissionEventsForUln(long eventId, long uln)
+        public async Task<IEnumerable<SubmissionEventEntity>> GetLatestLearnerEventByStandard(long eventId, long uln)
         {
             var eventIdFilterClause = eventId > 0 ? $"se.Id > {eventId} AND " : "";
 

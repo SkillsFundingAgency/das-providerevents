@@ -4,7 +4,7 @@ using System.Web.Http;
 using MediatR;
 using NLog;
 using SFA.DAS.Provider.Events.Api.Plumbing.WebApi;
-using SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsByUlnQuery;
+using SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventByStandardQuery;
 using SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
 
@@ -61,15 +61,15 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             }
         }
 
-        [Route("api/v2/submissions", Name = "SubmissionEventsListByUln")]
+        [Route("api/v2/submissions", Name = "GetLatestLearnerEventByStandard")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetSubmissionEventsByUln(long uln, long sinceEventId = 0)
+        public async Task<IHttpActionResult> GetLatestLearnerEventByStandard(long uln, long sinceEventId = 0)
         {
             try
             {
-                _logger.Debug($"Processing GetSubmissionEventsByUln, uln={uln}, sinceEventId={sinceEventId}");
+                _logger.Debug($"Processing GetLatestLearnerEventByStandard, uln={uln}, sinceEventId={sinceEventId}");
 
-                var queryResponse = await _mediator.SendAsync(new GetSubmissionEventsByUlnQueryRequest
+                var queryResponse = await _mediator.SendAsync(new GetLatestLearnerEventByStandardQueryRequest
                     {
                         SinceEventId = sinceEventId,
                         Uln = uln
@@ -85,12 +85,12 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             }
             catch (ValidationException ex)
             {
-                _logger.Info($"Bad request received to GetSubmissionEventsByUln - {ex.Message}");
+                _logger.Info($"Bad request received to GetLatestLearnerEventByStandard - {ex.Message}");
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, $"Unexpected error processing GetSubmissionEventsByUln - {ex.Message}");
+                _logger.Error(ex, $"Unexpected error processing GetLatestLearnerEventByStandard - {ex.Message}");
                 return InternalServerError();
             }
         }
