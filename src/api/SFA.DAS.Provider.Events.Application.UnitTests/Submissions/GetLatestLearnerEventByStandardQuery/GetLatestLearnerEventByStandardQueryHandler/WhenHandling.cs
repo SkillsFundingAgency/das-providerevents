@@ -29,7 +29,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetLatestLea
             _handler = new Application.Submissions.GetLatestLearnerEventByStandardQuery.GetLatestLearnerEventByStandardQueryHandler(
                 _validator.Object, _submissionEventsRepository.Object);
 
-            _request = new GetLatestLearnerEventByStandardQueryRequest();
+            _request = new GetLatestLearnerEventByStandardQueryRequest(){SinceEventId = 22, Uln = 12345678};
         }
 
         [Test]
@@ -51,24 +51,9 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetLatestLea
         }
 
         [Test]
-        public void ThenItShouldReturnInvalidResponseWhenAnExceptionIsThrown()
-        {
-            _validator.Setup(v => v.Validate(It.IsAny<GetLatestLearnerEventByStandardQueryRequest>()))
-                .Throws<Exception>();
-
-            // Act
-            var actual = _handler.Handle(_request).Result;
-
-            // Assert
-            Assert.IsNotNull(actual);
-            Assert.IsFalse(actual.IsValid);
-            Assert.IsInstanceOf<Exception>(actual.Exception);
-        }
-
-        [Test]
         public void ThenItShouldReturnValidResults()
         {
-            _submissionEventsRepository.Setup(r => r.GetLatestLearnerEventByStandard(It.IsAny<long>(), It.IsAny<long>()))
+            _submissionEventsRepository.Setup(r => r.GetLatestLearnerEventByStandard(22, 12345678))
                 .ReturnsAsync(new List<SubmissionEventEntity>
                 {
                     new SubmissionEventEntity() {Id = 1},

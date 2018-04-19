@@ -45,6 +45,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
             TestData.SubmissionEvents = new Fixture().CreateMany<ItSubmissionEvent>(10).ToList();
             foreach (var @event in TestData.SubmissionEvents)
             {
+                @event.Uln = 0;
                 // these fields are just date's in the db
                 @event.ActualStartDate = @event.ActualStartDate.Value.Date;
                 @event.ActualEndDate = @event.ActualEndDate.Value.Date;
@@ -95,7 +96,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
 
         private async Task ReadSubmissionEvents()
         {
-            const string submissionEventsSql = "SELECT * FROM [Submissions].[SubmissionEvents] WHERE Id > 3";
+            const string submissionEventsSql = "SELECT * FROM [Submissions].[SubmissionEvents] WHERE Uln = 0";
 
             using (var conn = DatabaseConnection.Connection())
             {
@@ -106,7 +107,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
 
         private async Task ReadSubmissionEventsForUlnCheck()
         {
-            const string submissionEventsSql = "SELECT * FROM [Submissions].[SubmissionEvents] WHERE Id <= 3";
+            const string submissionEventsSql = "SELECT * FROM [Submissions].[SubmissionEvents] WHERE Uln != 0";
 
             using (var conn = DatabaseConnection.Connection())
             {

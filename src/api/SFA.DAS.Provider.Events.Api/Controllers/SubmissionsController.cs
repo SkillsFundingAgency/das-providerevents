@@ -76,11 +76,6 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
                     })
                     .ConfigureAwait(false);
                 
-                if (!queryResponse.IsValid)
-                {
-                    throw queryResponse.Exception;
-                }
-                
                 return Ok(queryResponse.Result);
             }
             catch (ValidationException ex)
