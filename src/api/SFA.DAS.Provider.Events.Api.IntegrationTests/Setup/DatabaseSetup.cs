@@ -66,10 +66,12 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
             TestData.RequiredPayments = requiredPayments.SelectMany(p => p).ToList();
             TestData.Payments = TestData.RequiredPayments.SelectMany(x => x.Payments).ToList();
             TestData.Earnings = TestData.Payments.SelectMany(x => x.Earnings).ToList();
+            TestData.Transfers = TestData.RequiredPayments.SelectMany(x => x.Transfers).ToList();
 
             await data.BulkInsertPayments(TestData.Payments).ConfigureAwait(false);
             await data.BulkInsertEarnings(TestData.Earnings).ConfigureAwait(false);
             await data.BulkInsertRequiredPayments(TestData.RequiredPayments).ConfigureAwait(false);
+            await data.BulkInsertTransfers(TestData.Transfers).ConfigureAwait(false);
             await data.CreatePeriods().ConfigureAwait(false);
         }
 

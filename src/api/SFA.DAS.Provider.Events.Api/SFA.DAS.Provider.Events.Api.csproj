@@ -144,7 +144,6 @@
       <HintPath>..\packages\StructureMap.4.4.1\lib\net45\StructureMap.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.4.0\lib\net45\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
@@ -206,6 +205,7 @@
     <Compile Include="Controllers\PaymentsController.cs" />
     <Compile Include="Controllers\PeriodEndsController.cs" />
     <Compile Include="Controllers\SubmissionsController.cs" />
+    <Compile Include="Controllers\TansfersController.cs" />
     <Compile Include="ObsoleteModels\DataLockEventApprenticeshipV1.cs" />
     <Compile Include="ObsoleteModels\DataLockEventPeriodV1.cs" />
     <Compile Include="ObsoleteModels\DataLockEventV1.cs" />

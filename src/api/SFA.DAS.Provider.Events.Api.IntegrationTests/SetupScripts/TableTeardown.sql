@@ -16,3 +16,5 @@ DROP TABLE IF EXISTS [PaymentsDue].[Earnings]
 GO
 DROP TABLE IF EXISTS [Submissions].[SubmissionEvents]
 GO
+DROP TABLE IF EXISTS [TransferPayments].[AccountTransfers]
+GO

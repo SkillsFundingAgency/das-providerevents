@@ -80,6 +80,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Submissions\GetSubmissionEventsQuery\GetSubmissionEventsQueryHandler\WhenHandling.cs" />
     <Compile Include="Submissions\GetSubmissionEventsQuery\GetSubmissionEventsQueryRequestValidator\WhenValidating.cs" />
+    <Compile Include="Transfers\GetTransfersQuery\WhenHandling.cs" />
     <Compile Include="Validation\Rules\PageNumberMustBeAtLeastOneRule\WhenValidating.cs" />
     <Compile Include="Validation\Rules\PeriodIdFormatValidationRule\WhenValidating.cs" />
   </ItemGroup>

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Threading.Tasks;
 using Dapper;
 using FastMember;
 using SFA.DAS.Provider.Events.Api.IntegrationTests.RawEntities;
-using SFA.DAS.Provider.Events.Api.Types;
 
 namespace SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess
 {
@@ -56,6 +54,21 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess
                     "FundingSource", "TransactionType", "Amount"))
                 {
                     bcp.DestinationTableName = "[Payments].[Payments]";
+                    await bcp.WriteToServerAsync(reader).ConfigureAwait(false);
+                }
+            }
+        }
+
+        public async Task BulkInsertTransfers(List<ItTransfer> transfers)
+        {
+            using (var conn = DatabaseConnection.Connection())
+            {
+                await conn.OpenAsync().ConfigureAwait(false);
+                using (var bcp = new SqlBulkCopy(conn))
+                using (var reader = ObjectReader.Create(transfers, "Id", "SendingAccountId", "RecievingAccountId", 
+                    "RequiredPaymentId", "CommitmentId",  "Amount", "TransferType", "TransferDate", "CollectionPeriodName"))
+                {
+                    bcp.DestinationTableName = "[AccountTransfers].[TransferPayments]";
                     await bcp.WriteToServerAsync(reader).ConfigureAwait(false);
                 }
             }

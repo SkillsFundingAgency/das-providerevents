@@ -59,6 +59,12 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
                     };
                 });
             cfg.CreateMap<DataLockEventApprenticeshipEntity, DataLockEventApprenticeship>();
+
+            cfg.CreateMap<TransferEntity, AccountTransfer>()
+                .ForMember(t => t.SenderAccountId, o => o.MapFrom(s => s.SendingAccountId))
+                .ForMember(t => t.ReceiverAccountId, o => o.MapFrom(s => s.RecievingAccountId))
+                .AfterMap((s, t) => t.Type = s.TransferType.ToString());
+            cfg.CreateMap<PageOfResults<TransferEntity>, PageOfResults<AccountTransfer>>();
         }
     }
 }

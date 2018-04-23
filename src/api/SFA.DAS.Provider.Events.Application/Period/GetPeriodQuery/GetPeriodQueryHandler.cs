@@ -52,7 +52,8 @@ namespace SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery
                     {
                         Id = period.Id,
                         CalendarMonth = period.CalendarMonth,
-                        CalendarYear = period.CalendarYear
+                        CalendarYear = period.CalendarYear,
+                        PeriodName = message.PeriodId
                     }
                 };
             }

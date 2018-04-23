@@ -57,6 +57,7 @@
     <Compile Include="HealthStatus.cs" />
     <Compile Include="NamedCalendarPeriod.cs" />
     <Compile Include="PageOfResults.cs" />
+    <Compile Include="AccountTransfer.cs" />
     <Compile Include="Payment.cs" />
     <Compile Include="PeriodEnd.cs" />
     <Compile Include="PeriodEndLinks.cs" />

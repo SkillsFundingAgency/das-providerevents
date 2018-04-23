@@ -12,6 +12,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.EntityBuilders.Customisat
                     new EarningCustomisation(),
                     new DataLockEventCustomisation(),
                     new RequiredPaymentCustomisation(),
+                    new TransferCustomisation(),
                     new RandomRangedNumberCustomization()
                 ));
         }

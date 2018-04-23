@@ -28,7 +28,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess
             {
                 // doesn't work so well when initialisation script fails mid way through
                 // wrap creation script in transaction?
-                const string sql = "SELECT (CASE WHEN OBJECT_ID('[Payments].[FundingAccountId]', 'U') IS NULL THEN 0 ELSE 1 END)";
+                const string sql = "SELECT (CASE WHEN OBJECT_ID('[TransferPayments].[SendingAccountId]', 'U') IS NULL THEN 0 ELSE 1 END)";
                 return await connection.ExecuteScalarAsync<int>(sql).ConfigureAwait(false) == 1;
             }
         }
