@@ -11,5 +11,7 @@ namespace SFA.DAS.Provider.Events.Api.Types
         public decimal Amount { get; set; }
         public string Type { get; set; }
         public DateTime TransferDate { get; set; }
+        public long CommitmentId { get; set; }
+        public string CollectionPeriodName {get; set; }
     }
 }
