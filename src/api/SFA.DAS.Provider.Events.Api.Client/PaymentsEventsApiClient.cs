@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SFA.DAS.Provider.Events.Api.Types;
@@ -41,6 +42,21 @@ namespace SFA.DAS.Provider.Events.Api.Client
         {
             var response = await _httpClient.GetAsync($"{BaseUrl}api/payments?page={page}&periodId={periodId}&employerAccountId={employerAccountId}&ukprn={ukprn}");
             return JsonConvert.DeserializeObject<PageOfResults<Payment>>(response);
+        }
+
+        public async Task<PageOfResults<AccountTransfer>> GetTransfers(string periodId = null, long? senderAccountId = null, long? receiverAccountId = null, int page = 1)
+        {
+            var parameters = new List<string> {$"page={page}"};
+
+            if (!string.IsNullOrEmpty(periodId))
+                parameters.Add($"periodId={periodId}");
+            if (senderAccountId.HasValue)
+                parameters.Add($"senderAccountId={senderAccountId}");
+            if (receiverAccountId.HasValue)
+                parameters.Add($"receiverAccountId={receiverAccountId}");
+
+            var response = await _httpClient.GetAsync($"{BaseUrl}api/transfers?" + string.Join("&", parameters));
+            return JsonConvert.DeserializeObject<PageOfResults<AccountTransfer>>(response);
         }
 
         public async Task<PageOfResults<SubmissionEvent>> GetSubmissionEvents(long sinceEventId = 0, DateTime? sinceTime = null, long ukprn = 0, int page = 1)
