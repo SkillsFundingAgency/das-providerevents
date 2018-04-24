@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SFA.DAS.Provider.Events.Api.Types;
@@ -11,11 +12,13 @@ namespace SFA.DAS.Provider.Events.Api.Client
         private readonly IPaymentsEventsApiConfiguration _configuration;
         private readonly SecureHttpClient _httpClient;
 
+        [ExcludeFromCodeCoverage]
         public PaymentsEventsApiClient(IPaymentsEventsApiConfiguration configuration)
         {
             _configuration = configuration;
             _httpClient = new SecureHttpClient(configuration.ClientToken);
         }
+
         internal PaymentsEventsApiClient(IPaymentsEventsApiConfiguration configuration, SecureHttpClient httpClient)
         {
             _configuration = configuration;
