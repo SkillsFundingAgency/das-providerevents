@@ -16,7 +16,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.TransfersController
     [TestFixture]
     public class WhenTransfersRequested
     {
-        private TansfersController _controller;
+        private Api.Controllers.TransfersController _controller;
         private Mock<ILogger> _mockLogger;
         private Mock<IMediator> _mockMediator;
 
@@ -26,7 +26,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.TransfersController
             _mockMediator = new Mock<IMediator>(MockBehavior.Strict);
             _mockLogger = new Mock<ILogger>();
 
-            _controller = new TansfersController(_mockLogger.Object, _mockMediator.Object);
+            _controller = new Api.Controllers.TransfersController(_mockLogger.Object, _mockMediator.Object);
         }
 
         [Test]

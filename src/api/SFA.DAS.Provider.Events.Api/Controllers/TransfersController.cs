@@ -13,13 +13,13 @@ using SFA.DAS.Provider.Events.Application.Validation;
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
     [AuthorizeRemoteOnly(Roles = "ReadPayments")]
-    public class TansfersController : ApiController
+    public class TransfersController : ApiController
     {
         private const int PageSize = 10000;
         private readonly ILogger _logger;
         private readonly IMediator _mediator;
 
-        public TansfersController(ILogger logger, IMediator mediator)
+        public TransfersController(ILogger logger, IMediator mediator)
         {
             _logger = logger;
             _mediator = mediator;

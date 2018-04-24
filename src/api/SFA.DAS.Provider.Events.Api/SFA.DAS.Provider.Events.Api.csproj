@@ -205,7 +205,7 @@
     <Compile Include="Controllers\PaymentsController.cs" />
     <Compile Include="Controllers\PeriodEndsController.cs" />
     <Compile Include="Controllers\SubmissionsController.cs" />
-    <Compile Include="Controllers\TansfersController.cs" />
+    <Compile Include="Controllers\TransfersController.cs" />
     <Compile Include="ObsoleteModels\DataLockEventApprenticeshipV1.cs" />
     <Compile Include="ObsoleteModels\DataLockEventPeriodV1.cs" />
     <Compile Include="ObsoleteModels\DataLockEventV1.cs" />
