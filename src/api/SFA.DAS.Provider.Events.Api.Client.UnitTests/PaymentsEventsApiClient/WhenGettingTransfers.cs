@@ -25,11 +25,9 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 
             _transfer = new AccountTransfer
             {
-                Id = Guid.NewGuid(),
                 SenderAccountId = 666,
                 ReceiverAccountId = 777,
                 Type = "Levy",
-                TransferDate = DateTime.Today,
                 RequiredPaymentId = Guid.NewGuid(),
                 Amount = 888
             };
@@ -83,13 +81,11 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 
         private bool TransfersMatch(AccountTransfer original, AccountTransfer client)
         {
-            return original.Id == client.Id
-                   && original.SenderAccountId == client.SenderAccountId
+            return original.SenderAccountId == client.SenderAccountId
                    && original.ReceiverAccountId == client.ReceiverAccountId
                    && original.Amount == client.Amount
                    && original.Type == client.Type
-                   && original.RequiredPaymentId == client.RequiredPaymentId
-                   && original.TransferDate == client.TransferDate;
+                   && original.RequiredPaymentId == client.RequiredPaymentId;
         }
     }
 }

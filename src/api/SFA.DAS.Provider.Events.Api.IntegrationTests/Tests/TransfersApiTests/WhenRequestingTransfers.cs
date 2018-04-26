@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Newtonsoft.Json;
@@ -19,14 +17,14 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.TransfersApiTests
         [Test]
         [TestCase("CollectionPeriodName", "periodId")]
         [TestCase("SendingAccountId", "senderAccountId")]
-        [TestCase("RecievingAccountId", "receiverAccountId")]
+        [TestCase("ReceivingAccountId", "receiverAccountId")]
         public async Task ThenTheNumberOfRecordsIsCorrect(string propertyName, string apiParameterName)
         {
             var propertyInfo = typeof(ItTransfer).GetProperty(propertyName);
             
             var transfer = TestData.Transfers.First();
             var propertyValue = GetValue(propertyInfo, transfer);
-            var allTransfers = TestData.Transfers.Where(y => GetValue(propertyInfo, y) == propertyValue).Select(x => x.Id).ToList();
+            var allTransfers = TestData.Transfers.Where(y => GetValue(propertyInfo, y) == propertyValue).Select(x => x.RequiredPaymentId).ToList();
 
             var results = await IntegrationTestServer.Client.GetAsync($"/api/transfers?{apiParameterName}={propertyValue}").ConfigureAwait(false);
 
@@ -42,15 +40,14 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.TransfersApiTests
         }
 
         [Test]
-        [TestCase("SendingAccountId", "senderAccountId", "RecievingAccountId", "receiverAccountId")]
+        [TestCase("SendingAccountId", "senderAccountId", "ReceivingAccountId", "receiverAccountId")]
         [TestCase("CollectionPeriodName", "periodId", "SendingAccountId", "senderAccountId")]
-        [TestCase("CollectionPeriodName", "periodId", "SendingAccountId", "senderAccountId", "RecievingAccountId", "receiverAccountId")]
+        [TestCase("CollectionPeriodName", "periodId", "SendingAccountId", "senderAccountId", "ReceivingAccountId", "receiverAccountId")]
         public async Task ThenTheNumberOfRecordsIsCorrectWhenUsingTwoParameters(params object[] properties)
         {
             var transfer = TestData.Transfers.First();
 
             var propertyInfos = new List<PropertyInfo>();
-            var paramNames = new List<string>();
             var propertyValues = new List<string>();
             var queryString = new List<string>();
 
@@ -61,7 +58,6 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.TransfersApiTests
                 var propertyValue = GetValue(property, transfer);
 
                 propertyInfos.Add(property);
-                paramNames.Add(apiParameterName);
                 propertyValues.Add(propertyValue);
 
                 queryString.Add($"{apiParameterName}={propertyValue}");
@@ -76,9 +72,9 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.TransfersApiTests
                         return false;
                 }
                 return true;
-            }).Select(x => x.Id).ToList();
+            }).Select(x => x.RequiredPaymentId).ToList();
 
-            var results = await IntegrationTestServer.Client.GetAsync($"/api/transfers?" + string.Join("&", queryString)).ConfigureAwait(false);
+            var results = await IntegrationTestServer.Client.GetAsync("/api/transfers?" + string.Join("&", queryString)).ConfigureAwait(false);
 
             var resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<PageOfResults<AccountTransfer>>(resultsAsString);
@@ -89,19 +85,19 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.TransfersApiTests
         [Test]
         public async Task ThenPagesReturnedCorrectly()
         {
-            var results = await IntegrationTestServer.Client.GetAsync($"/api/transfers?page=1").ConfigureAwait(false);
+            var results = await IntegrationTestServer.Client.GetAsync("/api/transfers?page=1").ConfigureAwait(false);
             var resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<PageOfResults<AccountTransfer>>(resultsAsString);
             items.PageNumber.Should().Be(1);
             items.Items.Should().HaveCount(10000);
 
-            results = await IntegrationTestServer.Client.GetAsync($"/api/transfers?page=6").ConfigureAwait(false);
+            results = await IntegrationTestServer.Client.GetAsync("/api/transfers?page=6").ConfigureAwait(false);
             resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
             items = JsonConvert.DeserializeObject<PageOfResults<AccountTransfer>>(resultsAsString);
             items.PageNumber.Should().Be(6);
             items.Items.Should().HaveCount(10000);
 
-            results = await IntegrationTestServer.Client.GetAsync($"/api/transfers?page=7").ConfigureAwait(false);
+            results = await IntegrationTestServer.Client.GetAsync("/api/transfers?page=7").ConfigureAwait(false);
             resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
             items = JsonConvert.DeserializeObject<PageOfResults<AccountTransfer>>(resultsAsString);
             items.PageNumber.Should().Be(7);

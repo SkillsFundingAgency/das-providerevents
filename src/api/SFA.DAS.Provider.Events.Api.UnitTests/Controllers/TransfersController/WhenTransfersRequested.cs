@@ -46,7 +46,6 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.TransfersController
                 ReceiverAccountId = 2,
                 Amount = 3,
                 RequiredPaymentId = Guid.Empty,
-                TransferDate = DateTime.Today,
                 Type = "taun"
             };
 

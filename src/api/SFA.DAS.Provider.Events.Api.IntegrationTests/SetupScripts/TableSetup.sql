@@ -269,15 +269,15 @@ IF NOT EXISTS(SELECT NULL FROM
 BEGIN
 	CREATE TABLE [AccountTransfers].[TransferPayments]
 	(
-		Id uniqueidentifier PRIMARY KEY DEFAULT(NEWID()),
 		SendingAccountId bigint NOT NULL,
-		RecievingAccountId bigint NOT NULL,
+		ReceivingAccountId bigint NOT NULL,
 		RequiredPaymentId uniqueidentifier NOT NULL,
 		CommitmentId bigint NOT NULL,
 		Amount decimal(15,5) NOT NULL,
 		TransferType int NOT NULL,
-		TransferDate DateTime NOT NULL,
-		CollectionPeriodName varchar(8) NOT NULL
+		CollectionPeriodName varchar(8) NOT NULL,
+		CollectionPeriodMonth int NOT NULL,
+		CollectionPeriodYear int NOT NULL
 	)
 END
 GO

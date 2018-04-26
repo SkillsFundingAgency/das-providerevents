@@ -25,8 +25,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.EntityBuilders
                 {
                     transfer.RequiredPaymentId = requiredPayment.Id;
                     transfer.Amount = requiredPayment.AmountDue;
-                    transfer.RecievingAccountId = requiredPayment.AccountId;
-                    transfer.TransferDate = requiredPayment.IlrSubmissionDateTime;
+                    transfer.ReceivingAccountId = requiredPayment.AccountId;
                     transfer.CommitmentId = requiredPayment.CommitmentId;
                     transfer.CollectionPeriodName = requiredPayment.CollectionPeriodName;
                 }

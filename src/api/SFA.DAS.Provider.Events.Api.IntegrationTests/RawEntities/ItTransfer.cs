@@ -6,12 +6,10 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.RawEntities
 {
     class ItTransfer
     {
-        public Guid Id { get; set; }
-
         [Range(10000000, 10000100)]
         public long SendingAccountId { get; set; }
 
-        public long RecievingAccountId { get; set; }
+        public long ReceivingAccountId { get; set; }
 
         public Guid RequiredPaymentId { get; set; }
 
@@ -22,8 +20,12 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.RawEntities
         [Range(1, 15)]
         public int TransferType { get; set; }
 
-        public DateTime TransferDate { get; set; }
-
         public string CollectionPeriodName { get; set; }
+
+        [Range(1, 12)]
+        public int CollectionPeriodMonth { get; set; }
+
+        [Range(2016, 2020)]
+        public int CollectionPeriodYear { get; set; }
     }
 }

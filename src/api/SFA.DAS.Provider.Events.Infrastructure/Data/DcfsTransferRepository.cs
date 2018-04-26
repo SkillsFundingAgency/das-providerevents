@@ -16,14 +16,12 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         //  Restrict the query to PageSize rows for the main query before joining the earnings data
         private const string SqlTemplate = @"
             WITH _data AS (
-                SELECT [Id]
-                      ,[SendingAccountId]
-                      ,[RecievingAccountId]
+                SELECT [SendingAccountId]
+                      ,[ReceivingAccountId]
                       ,[RequiredPaymentId]
                       ,[CommitmentId]
                       ,[Amount]
                       ,[TransferType]
-                      ,[TransferDate]
                       ,[CollectionPeriodName]
                   FROM [AccountTransfers].[TransferPayments]
                 /**where**/ -- Do not remove. Essential for SqlBuilder
@@ -34,7 +32,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             SELECT * FROM 
             (
                 SELECT * FROM _data CROSS APPLY _count 
-                ORDER BY Id 
+                ORDER BY [RequiredPaymentId]
                 OFFSET (@PageIndex - 1) * @PageSize ROWS FETCH NEXT @PageSize ROWS ONLY 
             ) AS DATA ";
 
@@ -51,7 +49,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                 includeIf: senderAccountId.HasValue);
 
             sqlBuilder.Where(
-                "RecievingAccountId = @receiverAccountId",
+                "ReceivingAccountId = @receiverAccountId",
                 new {receiverAccountId},
                 includeIf: receiverAccountId.HasValue);
         }

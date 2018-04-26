@@ -65,8 +65,8 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess
             {
                 await conn.OpenAsync().ConfigureAwait(false);
                 using (var bcp = new SqlBulkCopy(conn))
-                using (var reader = ObjectReader.Create(transfers, "Id", "SendingAccountId", "RecievingAccountId", 
-                    "RequiredPaymentId", "CommitmentId",  "Amount", "TransferType", "TransferDate", "CollectionPeriodName"))
+                using (var reader = ObjectReader.Create(transfers, "SendingAccountId", "ReceivingAccountId", 
+                    "RequiredPaymentId", "CommitmentId",  "Amount", "TransferType", "CollectionPeriodName", "CollectionPeriodMonth", "CollectionPeriodYear"))
                 {
                     bcp.DestinationTableName = "[AccountTransfers].[TransferPayments]";
                     await bcp.WriteToServerAsync(reader).ConfigureAwait(false);
