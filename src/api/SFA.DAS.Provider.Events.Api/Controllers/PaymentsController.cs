@@ -7,6 +7,7 @@ using SFA.DAS.Provider.Events.Api.Plumbing.WebApi;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data;
 using SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery;
+using SFA.DAS.Provider.Events.Application.Payments.GetPaymentsStatistics;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
 
@@ -69,6 +70,31 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
                 return InternalServerError();
             }
         }
+
+        [HttpGet]
+        [Route("api/v2/payments/statistics", Name = "PaymentsStatistics")]
+        public async Task<IHttpActionResult> GetPaymentStatistics()
+        {
+            try
+            {
+                var paymentsResponse = await _mediator
+                    .SendAsync(new GetPaymentsStatisticsRequest()
+                   ).ConfigureAwait(false);
+
+                if (!paymentsResponse.IsValid)
+                {
+                    throw paymentsResponse.Exception;
+                }
+
+                return Ok(paymentsResponse.Result);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, ex.Message);
+                return InternalServerError();
+            }
+        }
+
 
         private static bool PeriodNotFound(Period period)
         {

@@ -43,6 +43,12 @@ namespace SFA.DAS.Provider.Events.Api.Client
             return JsonConvert.DeserializeObject<PageOfResults<Payment>>(response);
         }
 
+        public async Task<PaymentStatistics> GetPaymentStatisctics()
+        {
+            var response = await _httpClient.GetAsync($"{BaseUrl}api/payments/statistics");
+            return JsonConvert.DeserializeObject<PaymentStatistics>(response);
+        }
+
         public async Task<PageOfResults<SubmissionEvent>> GetSubmissionEvents(long sinceEventId = 0, DateTime? sinceTime = null, long ukprn = 0, int page = 1)
         {
             var url = $"{BaseUrl}api/submissions?page={page}";
