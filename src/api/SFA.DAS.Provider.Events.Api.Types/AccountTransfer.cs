@@ -4,6 +4,7 @@ namespace SFA.DAS.Provider.Events.Api.Types
 {
     public class AccountTransfer
     {
+        public long TransferId { get;set; }
         public long SenderAccountId { get; set; }
         public long ReceiverAccountId { get; set; }
         public Guid RequiredPaymentId { get; set; }

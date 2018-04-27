@@ -24,7 +24,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.TransfersApiTests
             
             var transfer = TestData.Transfers.First();
             var propertyValue = GetValue(propertyInfo, transfer);
-            var allTransfers = TestData.Transfers.Where(y => GetValue(propertyInfo, y) == propertyValue).Select(x => x.RequiredPaymentId).ToList();
+            var allTransfers = TestData.Transfers.Where(y => GetValue(propertyInfo, y) == propertyValue).Select(x => x.TransferId).ToList();
 
             var results = await IntegrationTestServer.Client.GetAsync($"/api/transfers?{apiParameterName}={propertyValue}").ConfigureAwait(false);
 
@@ -72,7 +72,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.TransfersApiTests
                         return false;
                 }
                 return true;
-            }).Select(x => x.RequiredPaymentId).ToList();
+            }).Select(x => x.TransferId).ToList();
 
             var results = await IntegrationTestServer.Client.GetAsync("/api/transfers?" + string.Join("&", queryString)).ConfigureAwait(false);
 

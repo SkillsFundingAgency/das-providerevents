@@ -6,6 +6,8 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.RawEntities
 {
     class ItTransfer
     {
+        public long TransferId {get; set; }
+
         [Range(10000000, 10000100)]
         public long SendingAccountId { get; set; }
 

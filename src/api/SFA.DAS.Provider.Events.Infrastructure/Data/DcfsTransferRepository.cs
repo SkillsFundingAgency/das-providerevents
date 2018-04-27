@@ -16,7 +16,8 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         //  Restrict the query to PageSize rows for the main query before joining the earnings data
         private const string SqlTemplate = @"
             WITH _data AS (
-                SELECT [SendingAccountId]
+                SELECT [TransferId]
+                      ,[SendingAccountId]
                       ,[ReceivingAccountId]
                       ,[RequiredPaymentId]
                       ,[CommitmentId]
@@ -32,7 +33,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             SELECT * FROM 
             (
                 SELECT * FROM _data CROSS APPLY _count 
-                ORDER BY [RequiredPaymentId]
+                ORDER BY [TransferId]
                 OFFSET (@PageIndex - 1) * @PageSize ROWS FETCH NEXT @PageSize ROWS ONLY 
             ) AS DATA ";
 

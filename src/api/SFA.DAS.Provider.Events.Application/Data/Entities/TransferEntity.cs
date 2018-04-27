@@ -4,6 +4,7 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
 {
     public class TransferEntity : IAmAPageableEntity
     {
+        public long TransferId {get; set; }
         public long SendingAccountId {get; set; }
         public long ReceivingAccountId {get; set; }
         public Guid RequiredPaymentId {get; set; }

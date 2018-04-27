@@ -269,6 +269,7 @@ IF NOT EXISTS(SELECT NULL FROM
 BEGIN
 	CREATE TABLE [AccountTransfers].[TransferPayments]
 	(
+		TransferId bigint NOT NULL PRIMARY KEY,
 		SendingAccountId bigint NOT NULL,
 		ReceivingAccountId bigint NOT NULL,
 		RequiredPaymentId uniqueidentifier NOT NULL,

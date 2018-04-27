@@ -42,6 +42,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.TransfersController
 
             var transfer = new AccountTransfer
             {
+                TransferId = 1,
                 SenderAccountId = 1,
                 ReceiverAccountId = 2,
                 Amount = 3,

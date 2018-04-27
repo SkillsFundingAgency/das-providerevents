@@ -25,6 +25,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 
             _transfer = new AccountTransfer
             {
+                TransferId = 1,
                 SenderAccountId = 666,
                 ReceiverAccountId = 777,
                 Type = "Levy",
@@ -81,7 +82,8 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 
         private bool TransfersMatch(AccountTransfer original, AccountTransfer client)
         {
-            return original.SenderAccountId == client.SenderAccountId
+            return original.TransferId == client.TransferId
+                   && original.SenderAccountId == client.SenderAccountId
                    && original.ReceiverAccountId == client.ReceiverAccountId
                    && original.Amount == client.Amount
                    && original.Type == client.Type
