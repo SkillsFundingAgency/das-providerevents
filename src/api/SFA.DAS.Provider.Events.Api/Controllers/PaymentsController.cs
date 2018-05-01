@@ -79,22 +79,17 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             {
                 var paymentsResponse = await _mediator
                     .SendAsync(new GetPaymentsStatisticsRequest()
-                   ).ConfigureAwait(false);
-
-                if (!paymentsResponse.IsValid)
-                {
-                    throw paymentsResponse.Exception;
-                }
+                    ).ConfigureAwait(false);
 
                 return Ok(paymentsResponse.Result);
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, ex.Message);
-                return InternalServerError();
+                throw;
             }
+              
         }
-
 
         private static bool PeriodNotFound(Period period)
         {

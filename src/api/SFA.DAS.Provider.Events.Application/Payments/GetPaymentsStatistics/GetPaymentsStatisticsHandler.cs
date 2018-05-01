@@ -20,26 +20,14 @@ namespace SFA.DAS.Provider.Events.Application.Payments.GetPaymentsStatistics
 
         public async Task<GetPaymentsStatisticsResponse> Handle(GetPaymentsStatisticsRequest message)
         {
-            try
-            {
                 var payments = await _paymentRepository.GetStatistics()
                     .ConfigureAwait(false);
                 
-
                 return new GetPaymentsStatisticsResponse
                 {
                     IsValid = true,
                     Result = payments,
                 };
-            }
-            catch (Exception ex)
-            {
-                return new GetPaymentsStatisticsResponse
-                {
-                    IsValid = false,
-                    Exception = ex,
-                };
-            }
         }
     }
 }

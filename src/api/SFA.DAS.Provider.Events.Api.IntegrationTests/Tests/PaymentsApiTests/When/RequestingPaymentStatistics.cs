@@ -23,7 +23,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.PaymentsApiTests.When
             var resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<PaymentStatistics>(resultsAsString);
 
-            items.TotalPayments.Should().Be(paymentCount);
+            items.TotalNumberOfPayments.Should().Be(paymentCount);
         }
     }
 }

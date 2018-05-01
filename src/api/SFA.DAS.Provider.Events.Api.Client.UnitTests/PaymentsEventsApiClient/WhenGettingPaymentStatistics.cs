@@ -25,24 +25,15 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 
       
             _httpClient = new Mock<SecureHttpClient>();
-            _httpClient.Setup(c => c.GetAsync(It.IsAny<string>()))
+            _httpClient.Setup(c => c.GetAsync( "some-url/api/payments/statistics"))
                 .Returns(Task.FromResult(JsonConvert.SerializeObject(new PaymentStatistics()
                 {
-                    TotalPayments = 500
+                    TotalNumberOfPayments = 500
                 })));
 
             _client = new Client.PaymentsEventsApiClient(_configuration, _httpClient.Object);
         }
 
-        [Test]
-        public async Task ThenItShouldCallTheCorrectUrl()
-        {
-            // Act
-            await _client.GetPaymentStatisctics();
-
-            // Assert
-            _httpClient.Verify(c => c.GetAsync("some-url/api/payments/statistics"), Times.Once);
-        }
         
         [Test]
         public async Task ThenItShouldReturnResultFromApi()
@@ -52,7 +43,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 
             // Assert
             Assert.IsNotNull(actual);
-            actual.TotalPayments.Should().Be(500);
+            actual.TotalNumberOfPayments.Should().Be(500);
         }
 
     
