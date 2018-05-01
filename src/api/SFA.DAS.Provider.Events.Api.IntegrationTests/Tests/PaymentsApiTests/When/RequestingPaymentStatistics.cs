@@ -16,7 +16,8 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.PaymentsApiTests.When
         {
             
             var requiredPaymentList = TestData.RequiredPayments.Select(x => x.Id).ToList();
-            var paymentCount = TestData.Payments.Count(x => requiredPaymentList.Contains(x.RequiredPaymentId));
+            var receivedPaymentCount = TestData.Payments.Count(x => requiredPaymentList.Contains(x.RequiredPaymentId));
+            var paymentCount = TestData.Payments.Count();
 
             var results = await IntegrationTestServer.Client.GetAsync($"/api/v2/payments/statistics").ConfigureAwait(false);
 
@@ -24,6 +25,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.PaymentsApiTests.When
             var items = JsonConvert.DeserializeObject<PaymentStatistics>(resultsAsString);
 
             items.TotalNumberOfPayments.Should().Be(paymentCount);
+            items.TotalNumberOfRecievedPayments.Should().Be(receivedPaymentCount);
         }
     }
 }

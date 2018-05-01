@@ -28,7 +28,8 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             _httpClient.Setup(c => c.GetAsync( "some-url/api/payments/statistics"))
                 .Returns(Task.FromResult(JsonConvert.SerializeObject(new PaymentStatistics()
                 {
-                    TotalNumberOfPayments = 500
+                    TotalNumberOfPayments = 500,
+                    TotalNumberOfRecievedPayments = 470
                 })));
 
             _client = new Client.PaymentsEventsApiClient(_configuration, _httpClient.Object);
@@ -44,6 +45,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             // Assert
             Assert.IsNotNull(actual);
             actual.TotalNumberOfPayments.Should().Be(500);
+            actual.TotalNumberOfRecievedPayments.Should().Be(470);
         }
 
     

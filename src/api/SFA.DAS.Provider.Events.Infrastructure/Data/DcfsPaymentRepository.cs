@@ -87,9 +87,11 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         {
             using (var connection = await GetOpenConnection().ConfigureAwait(false))
             {
-                var sql = "    SELECT count(1) as TotalNumberOfPayments" +
-                          "    FROM Payments.Payments p " +
-                          "    INNER JOIN PaymentsDue.RequiredPayments rp ON p.RequiredPaymentId = rp.Id ";
+                var sql = "  SELECT  (SELECT count(1) " +
+                          "  FROM Payments.Payments p" +
+                          "  INNER JOIN PaymentsDue.RequiredPayments rp ON p.RequiredPaymentId = rp.Id) as TotalNumberOfRecievedPayments," +
+                          "  (SELECT count(1) " +
+                          "  FROM Payments.Payments) as TotalNumberOfPayments";
 
                 return connection.Query<PaymentStatistics>(sql).FirstOrDefault();
             }
