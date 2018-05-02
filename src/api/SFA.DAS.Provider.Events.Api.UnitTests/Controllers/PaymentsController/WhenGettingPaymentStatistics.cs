@@ -5,6 +5,7 @@ using FluentAssertions;
 using MediatR;
 using Moq;
 using NLog;
+using NLog.Time;
 using NUnit.Framework;
 using Ploeh.AutoFixture.NUnit3;
 using SFA.DAS.Provider.Events.Api.Types;
@@ -44,7 +45,8 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
             //Arrange
             _statistics = new PaymentStatistics()
             {
-                TotalNumberOfPayments = 13000
+                TotalNumberOfPayments = 13000,
+                TotalNumberOfPaymentsWithRequired = 11000
             };
             _mediator.Setup(m => m.SendAsync(It.IsAny<GetPaymentsStatisticsRequest>()))
                 .ReturnsAsync(new GetPaymentsStatisticsResponse()
@@ -61,8 +63,13 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
             // Assert
             Assert.IsNotNull(actual);
             Assert.IsInstanceOf<OkNegotiatedContentResult<PaymentStatistics>>(actual);
+
+            var paymentStatistics = ((OkNegotiatedContentResult<PaymentStatistics>) actual).Content;
+
+            paymentStatistics.TotalNumberOfPayments.Should().Be(13000);
+            paymentStatistics.TotalNumberOfPaymentsWithRequired.Should().Be(11000);
         }
-        
+
         [Test]
         [Ignore("Needs to be fixed")]
         public async Task AndAnExceptionReturnedThenItShouldthrowError()
