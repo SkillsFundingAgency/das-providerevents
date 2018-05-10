@@ -29,7 +29,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 .Returns(Task.FromResult(JsonConvert.SerializeObject(new PaymentStatistics()
                 {
                     TotalNumberOfPayments = 500,
-                    TotalNumberOfPaymentsWithRequired = 470
+                    TotalNumberOfPaymentsWithRequiredPayment = 470
                 })));
 
             _client = new Client.PaymentsEventsApiClient(_configuration, _httpClient.Object);
@@ -40,12 +40,12 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
         public async Task ThenItShouldReturnResultFromApi()
         {
             // Act
-            var actual = await _client.GetPaymentStatisctics();
+            var actual = await _client.GetPaymentStatistics();
 
             // Assert
             Assert.IsNotNull(actual);
             actual.TotalNumberOfPayments.Should().Be(500);
-            actual.TotalNumberOfPaymentsWithRequired.Should().Be(470);
+            actual.TotalNumberOfPaymentsWithRequiredPayment.Should().Be(470);
         }
 
     

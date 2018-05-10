@@ -46,7 +46,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
             _statistics = new PaymentStatistics()
             {
                 TotalNumberOfPayments = 13000,
-                TotalNumberOfPaymentsWithRequired = 11000
+                TotalNumberOfPaymentsWithRequiredPayment = 11000
             };
             _mediator.Setup(m => m.SendAsync(It.IsAny<GetPaymentsStatisticsRequest>()))
                 .ReturnsAsync(new GetPaymentsStatisticsResponse()
@@ -67,25 +67,18 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
             var paymentStatistics = ((OkNegotiatedContentResult<PaymentStatistics>) actual).Content;
 
             paymentStatistics.TotalNumberOfPayments.Should().Be(13000);
-            paymentStatistics.TotalNumberOfPaymentsWithRequired.Should().Be(11000);
+            paymentStatistics.TotalNumberOfPaymentsWithRequiredPayment.Should().Be(11000);
         }
 
         [Test]
-        [Ignore("Needs to be fixed")]
         public async Task AndAnExceptionReturnedThenItShouldthrowError()
         {
             // Arrange
             _mediator.Setup(m => m.SendAsync(It.IsAny<GetPaymentsStatisticsRequest>()))
                 .Throws(new Exception("Unit tests"));
 
-            // Act
-            _controller.Invoking(async y => await y.GetPaymentStatistics()).Should().BeNull("If an error is raised then null should be returned");
-          //  Action act = async () => await _controller.GetPaymentStatistics();
-
-            //act.ShouldThrow<Exception>().WithMessage("Unit test");
-            // Assert
-
-            //Assert.IsInstanceOf<InternalServerErrorResult>(actual);
+            // Act/Assert
+            Assert.ThrowsAsync<Exception>(() => _controller.GetPaymentStatistics());
         }
     }
 }
