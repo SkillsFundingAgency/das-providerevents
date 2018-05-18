@@ -45,7 +45,7 @@ namespace SFA.DAS.Provider.Events.Api.Client
 
         public async Task<PaymentStatistics> GetPaymentStatistics()
         {
-            var response = await _httpClient.GetAsync($"{BaseUrl}api/payments/statistics");
+            var response = await _httpClient.GetAsync($"{BaseUrl}api/v2/payments/statistics");
             return JsonConvert.DeserializeObject<PaymentStatistics>(response);
         }
 

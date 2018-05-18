@@ -25,12 +25,12 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 
       
             _httpClient = new Mock<SecureHttpClient>();
-            _httpClient.Setup(c => c.GetAsync( "some-url/api/payments/statistics"))
-                .Returns(Task.FromResult(JsonConvert.SerializeObject(new PaymentStatistics()
+            _httpClient.Setup(c => c.GetAsync( "some-url/api/v2/payments/statistics"))
+                .ReturnsAsync(JsonConvert.SerializeObject(new PaymentStatistics()
                 {
                     TotalNumberOfPayments = 500,
                     TotalNumberOfPaymentsWithRequiredPayment = 470
-                })));
+                }));
 
             _client = new Client.PaymentsEventsApiClient(_configuration, _httpClient.Object);
         }

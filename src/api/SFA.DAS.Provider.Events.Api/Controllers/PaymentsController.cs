@@ -72,7 +72,9 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         }
 
         [HttpGet]
-        [Route("api/v2/payments/statistics", Name = "PaymentsStatistics")]
+        [VersionedRoute("api/payments/statistics", 1, Name = "PaymentsStatistics")]
+        [VersionedRoute("api/payments/statistics", 2, Name = "PaymentsStatisticsV2H")]
+        [Route("api/v2/payments/statistics", Name = "PaymentsStatisticsV2")]
         public async Task<IHttpActionResult> GetPaymentStatistics()
         {
             try
