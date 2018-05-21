@@ -7,10 +7,12 @@ namespace SFA.DAS.Provider.Events.Application.Repositories
     public interface IPaymentRepository
     {
         Task<PageOfResults<PaymentEntity>> GetPayments(
-            int page, int pageSize, 
-            string employerAccountId= null, 
-            int? collectionPeriodYear = null, 
-            int? collectionPeriodMonth = null, 
+            int page, int pageSize,
+            string employerAccountId = null,
+            int? collectionPeriodYear = null,
+            int? collectionPeriodMonth = null,
             long? ukprn = null);
+
+        Task<PaymentStatistics> GetStatistics();
     }
 }

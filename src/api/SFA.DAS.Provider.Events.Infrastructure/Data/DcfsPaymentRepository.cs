@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Dapper;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
@@ -77,14 +78,26 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                     childCollection: p => p.PaymentsDueEarningEntities
                 ).ConfigureAwait(false);
 
-                var pagedResults =  PageResults(result, page, pageSize);
+                var pagedResults = PageResults(result, page, pageSize);
                 return pagedResults;
+            }
+        }
+
+        public async Task<PaymentStatistics> GetStatistics()
+        {
+            using (var connection = await GetOpenConnection().ConfigureAwait(false))
+            {
+                var sql = "  SELECT count(PaymentId) as TotalNumberOfPayments, count(rp.Id) as TotalNumberOfPaymentsWithRequiredPayment " + 
+                            "FROM Payments.Payments p " +
+                            "LEFT JOIN PaymentsDue.RequiredPayments rp ON p.RequiredPaymentId = rp.Id";
+
+                return connection.Query<PaymentStatistics>(sql).FirstOrDefault();
             }
         }
 
         private static void AddPagingInformation(int page, int pageSize, SqlBuilder sqlBuilder)
         {
-            sqlBuilder.AddParameters(new {PageIndex = page, PageSize = pageSize});
+            sqlBuilder.AddParameters(new { PageIndex = page, PageSize = pageSize });
         }
 
         private static void BuildQueryParameters(string employerAccountId, int? collectionPeriodYear,
@@ -92,15 +105,15 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         {
             sqlBuilder.Where(
                 "p.CollectionPeriodYear = @CollectionPeriodYear AND p.CollectionPeriodMonth = @CollectionPeriodMonth",
-                new {CollectionPeriodYear = collectionPeriodYear, CollectionPeriodMonth = collectionPeriodMonth},
+                new { CollectionPeriodYear = collectionPeriodYear, CollectionPeriodMonth = collectionPeriodMonth },
                 includeIf: collectionPeriodYear.HasValue && collectionPeriodMonth.HasValue);
 
             sqlBuilder.Where(
                 "rp.AccountId = @EmployerAccountId",
-                new {EmployerAccountId = employerAccountId?.Replace("'", "''")},
+                new { EmployerAccountId = employerAccountId?.Replace("'", "''") },
                 includeIf: !string.IsNullOrEmpty(employerAccountId));
 
-            sqlBuilder.Where("rp.Ukprn = @UkPrn", new {UkPrn = ukprn}, includeIf: ukprn.HasValue);
+            sqlBuilder.Where("rp.Ukprn = @UkPrn", new { UkPrn = ukprn }, includeIf: ukprn.HasValue);
         }
     }
 }

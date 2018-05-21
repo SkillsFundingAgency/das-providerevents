@@ -56,10 +56,12 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
 
             var data = _populate;
 
-            var fixture = new Fixture().Customize(new IntegrationTestCustomisation());
-            var requiredPayments = fixture.CreateMany<ItRequiredPayment>(20000).ToList();
+            var requiredPaymentsCount = 20000;
 
-            TestData.RequiredPayments = requiredPayments;
+            var fixture = new Fixture().Customize(new IntegrationTestCustomisation());
+            var requiredPayments = fixture.CreateMany<ItRequiredPayment>(requiredPaymentsCount).ToList();
+
+            TestData.RequiredPayments = requiredPayments.Take(requiredPaymentsCount - 1).ToList();
             TestData.Payments = requiredPayments.SelectMany(x => x.Payments).ToList();
             TestData.Earnings = TestData.Payments.SelectMany(x => x.Earnings).ToList();
 
