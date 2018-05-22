@@ -52,5 +52,10 @@ namespace SFA.DAS.Provider.Events.Api.Client
         /// <param name="page">The page number to view. Default is 1</param>
         /// <returns>A task that yields a page of data lock events</returns>
         Task<PageOfResults<DataLockEvent>> GetDataLockEvents(long sinceEventId = 0, DateTime? sinceTime = null, string employerAccountId = null, long ukprn = 0, int page = 1);
+        /// <summary>
+        /// Get a breakdown of statistics for total payments
+        /// </summary>
+        ///<returns>A task that yields payment statistics</returns>
+        Task<PaymentStatistics> GetPaymentStatistics();
     }
 }

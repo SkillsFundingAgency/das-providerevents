@@ -60,6 +60,9 @@
     <Compile Include="Data\IAmAPageableEntity.cs" />
     <Compile Include="Data\Period.cs" />
     <Compile Include="Mapping\IMapper.cs" />
+    <Compile Include="Payments\GetPaymentsStatistics\GetPaymentsStatisticsHandler.cs" />
+    <Compile Include="Payments\GetPaymentsStatistics\GetPaymentsStatisticsRequest.cs" />
+    <Compile Include="Payments\GetPaymentsStatistics\GetPaymentsStatisticsResponse.cs" />
     <Compile Include="Payments\GetPaymentsQuery\GetPaymentsQueryHandler.cs" />
     <Compile Include="Payments\GetPaymentsQuery\GetPaymentsQueryRequest.cs" />
     <Compile Include="Payments\GetPaymentsQuery\GetPaymentsQueryResponse.cs" />

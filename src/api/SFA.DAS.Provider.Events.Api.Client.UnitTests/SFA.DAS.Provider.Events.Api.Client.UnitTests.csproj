@@ -73,6 +73,7 @@
     <Compile Include="AutoFixture\AutoMoqDataAttribute.cs" />
     <Compile Include="PaymentsEventsApiClient\WhenGettingDataLockEvents.cs" />
     <Compile Include="PaymentsEventsApiClient\WhenGettingTransfers.cs" />
+    <Compile Include="PaymentsEventsApiClient\WhenGettingPaymentStatistics.cs" />
     <Compile Include="PaymentsEventsApiClient\WhenGettingPayments.cs" />
     <Compile Include="PaymentsEventsApiClient\WhenGettingPeriodEnds.cs" />
     <Compile Include="PaymentsEventsApiClient\WhenGettingSubmissionEvents.cs" />
