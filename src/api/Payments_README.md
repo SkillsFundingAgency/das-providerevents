@@ -202,6 +202,21 @@ Response **Items** structure:
 | ContractWithEmployer | levy contract |
 | ContractWithSfa | non levy contract |
 
+## Get payment statistics
+
+Getting payment statistics can be done by consuming the following URI:
+
+```
+GET https://host:port/api/payments/statistics
+```
+
+Response:
+```json
+{
+  "TotalPayments": 1000,
+  "TotalPaymentsWithRequestedPayment": 999
+}
+  ```
 ## Using the client
 
 A .NET client also exists to easy calling the api and encapsulates the authentication and deserialization. It can be added from nuget:
