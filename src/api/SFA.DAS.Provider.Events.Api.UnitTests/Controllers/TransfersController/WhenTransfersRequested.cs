@@ -5,7 +5,6 @@ using MediatR;
 using Moq;
 using NLog;
 using NUnit.Framework;
-using SFA.DAS.Provider.Events.Api.Controllers;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery;
@@ -47,7 +46,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.TransfersController
                 ReceiverAccountId = 2,
                 Amount = 3,
                 RequiredPaymentId = Guid.Empty,
-                Type = "taun"
+                Type = TransferType.Levy
             };
 
             _mockMediator.Setup(m => m.SendAsync(It.IsAny<GetPeriodQueryRequest>())).ReturnsAsync(periodQueryResponse).Verifiable("GetPeriod was never called");

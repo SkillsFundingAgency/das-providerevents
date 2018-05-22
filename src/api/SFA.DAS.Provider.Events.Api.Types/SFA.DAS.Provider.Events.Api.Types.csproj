@@ -66,6 +66,7 @@
     <Compile Include="ReferenceDataDetails.cs" />
     <Compile Include="SubmissionEvent.cs" />
     <Compile Include="TransactionType.cs" />
+    <Compile Include="TransferType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

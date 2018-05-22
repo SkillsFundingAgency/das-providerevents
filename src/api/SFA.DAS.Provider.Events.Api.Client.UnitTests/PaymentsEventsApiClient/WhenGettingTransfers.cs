@@ -28,7 +28,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 TransferId = 1,
                 SenderAccountId = 666,
                 ReceiverAccountId = 777,
-                Type = "Levy",
+                Type = TransferType.Levy,
                 RequiredPaymentId = Guid.NewGuid(),
                 Amount = 888
             };

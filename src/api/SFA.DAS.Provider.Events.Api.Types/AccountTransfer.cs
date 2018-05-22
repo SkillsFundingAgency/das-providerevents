@@ -9,7 +9,7 @@ namespace SFA.DAS.Provider.Events.Api.Types
         public long ReceiverAccountId { get; set; }
         public Guid RequiredPaymentId { get; set; }
         public decimal Amount { get; set; }
-        public string Type { get; set; }
+        public TransferType Type { get; set; }
         public long CommitmentId { get; set; }
         public string CollectionPeriodName {get; set; }
     }
