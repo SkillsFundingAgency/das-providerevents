@@ -213,8 +213,8 @@ GET https://host:port/api/payments/statistics
 Response:
 ```json
 {
-  "TotalPayments": 1000,
-  "TotalPaymentsWithRequestedPayment": 999
+  "TotalNumberOfPayments": 1000,
+  "TotalNumberOfPaymentsWithRequiredPayment": 999
 }
   ```
 ## Using the client
