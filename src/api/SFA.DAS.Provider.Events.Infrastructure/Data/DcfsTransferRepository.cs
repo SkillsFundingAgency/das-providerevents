@@ -24,7 +24,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                       ,[Amount]
                       ,[TransferType]
                       ,[CollectionPeriodName]
-                  FROM [AccountTransfers].[TransferPayments]
+                  FROM [TransferPayments].[AccountTransfers]
                 /**where**/ -- Do not remove. Essential for SqlBuilder
             ),
             _count AS (
