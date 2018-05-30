@@ -33,7 +33,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                     p.CollectionPeriodYear, 
                     rp.IlrSubmissionDateTime [EvidenceSubmittedOn], 
                     p.FundingSource, 
-                    p.FundingAccountId, 
+                    NULL AS FundingAccountId, 
                     p.TransactionType, 
                     p.Amount, 
                     rp.StandardCode, 
