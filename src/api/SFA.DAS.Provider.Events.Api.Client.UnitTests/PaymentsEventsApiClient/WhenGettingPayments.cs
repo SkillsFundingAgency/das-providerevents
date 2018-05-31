@@ -45,6 +45,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 EmployerAccountVersion = "A",
                 ApprenticeshipVersion = "B",
                 FundingSource = FundingSource.Levy,
+                FundingAccountId = 69,
                 TransactionType = TransactionType.Learning,
                 Amount = 1234.56m,
                 StandardCode = 25,
@@ -140,6 +141,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                    && original.EmployerAccountVersion == client.EmployerAccountVersion
                    && original.ApprenticeshipVersion == client.ApprenticeshipVersion
                    && original.FundingSource == client.FundingSource
+                   && original.FundingAccountId == client.FundingAccountId
                    && original.TransactionType == client.TransactionType
                    && original.Amount == client.Amount
                    && original.StandardCode == client.StandardCode

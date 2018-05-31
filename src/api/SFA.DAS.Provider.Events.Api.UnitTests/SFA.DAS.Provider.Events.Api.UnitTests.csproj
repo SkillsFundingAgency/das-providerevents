@@ -95,6 +95,8 @@
     <Compile Include="Controllers\PaymentsController\WhenGettingAListOfPayments.cs" />
     <Compile Include="Controllers\PeriodEndsController\WhenGettingListOfPeriodEnds.cs" />
     <Compile Include="Controllers\SubmissionsController\WhenGettingListOfSubmissionEvents.cs" />
+    <Compile Include="Controllers\TransfersController\WhenThingsGoWrong.cs" />
+    <Compile Include="Controllers\TransfersController\WhenTransfersRequested.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

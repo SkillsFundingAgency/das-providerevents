@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Castle.Components.DictionaryAdapter;
 using Dapper;
 using Ploeh.AutoFixture;
 using SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess;
@@ -56,18 +59,22 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
 
             var data = _populate;
 
-            var requiredPaymentsCount = 20000;
-
+            var requiredPayments = new IEnumerable<ItRequiredPayment>[8];
             var fixture = new Fixture().Customize(new IntegrationTestCustomisation());
-            var requiredPayments = fixture.CreateMany<ItRequiredPayment>(requiredPaymentsCount).ToList();
+            Parallel.For(0, 8, i => requiredPayments[i] = fixture.CreateMany<ItRequiredPayment>(2500));
 
-            TestData.RequiredPayments = requiredPayments.Take(requiredPaymentsCount - 1).ToList();
-            TestData.Payments = requiredPayments.SelectMany(x => x.Payments).ToList();
+            TestData.RequiredPayments = requiredPayments.SelectMany(p => p).ToList();
+            TestData.Payments = TestData.RequiredPayments.SelectMany(x => x.Payments).ToList();
             TestData.Earnings = TestData.Payments.SelectMany(x => x.Earnings).ToList();
+            TestData.Transfers = TestData.RequiredPayments.SelectMany(x => x.Transfers).ToList();
+
+            for (int i = 0; i < TestData.Transfers.Count; i++)
+                TestData.Transfers[i].TransferId = i;
 
             await data.BulkInsertPayments(TestData.Payments).ConfigureAwait(false);
             await data.BulkInsertEarnings(TestData.Earnings).ConfigureAwait(false);
             await data.BulkInsertRequiredPayments(TestData.RequiredPayments).ConfigureAwait(false);
+            await data.BulkInsertTransfers(TestData.Transfers).ConfigureAwait(false);
             await data.CreatePeriods().ConfigureAwait(false);
         }
 

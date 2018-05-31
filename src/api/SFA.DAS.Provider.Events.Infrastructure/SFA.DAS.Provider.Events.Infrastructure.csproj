@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\DcfsDataLockRepository.cs" />
+    <Compile Include="Data\DcfsTransferRepository.cs" />
     <Compile Include="Data\DcfsPaymentRepository.cs" />
     <Compile Include="Data\DcfsPeriodRepository.cs" />
     <Compile Include="Data\DcfsRepository.cs" />
