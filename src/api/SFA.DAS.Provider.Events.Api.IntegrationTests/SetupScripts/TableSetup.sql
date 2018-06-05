@@ -19,6 +19,12 @@ IF NOT EXISTS (SELECT [schema_id] FROM sys.schemas WHERE [name] = 'PaymentsDue')
 	END
 GO
 
+IF NOT EXISTS (SELECT [schema_id] FROM sys.schemas WHERE [name] = 'AccountTransfers')
+	BEGIN
+		EXEC('CREATE SCHEMA AccountTransfers')
+	END
+GO
+
 
 -------------------------------------------------------------
 ---		DataLock.DataLockEvents
@@ -142,6 +148,7 @@ CREATE TABLE [Payments].[Payments](
 	[CollectionPeriodMonth] [int] NOT NULL,
 	[CollectionPeriodYear] [int] NOT NULL,
 	[FundingSource] [int] NOT NULL,
+	[FundingAccountId] [bigint] NULL,
 	[TransactionType] [int] NOT NULL,
 	[Amount] [decimal](15, 5) NULL,
 PRIMARY KEY CLUSTERED 
@@ -190,7 +197,7 @@ CREATE TABLE [PaymentsDue].[RequiredPayments](
 	[Id] [uniqueidentifier] NOT NULL,
 	[CommitmentId] [bigint] NULL,
 	[CommitmentVersionId] [varchar](25) NULL,
-	[AccountId] [varchar](50) NULL,
+	[AccountId] [bigint] NULL,
 	[AccountVersionId] [varchar](50) NULL,
 	[Uln] [bigint] NULL,
 	[LearnRefNumber] [varchar](12) NULL,
@@ -245,4 +252,33 @@ CREATE TABLE [PaymentsDue].[Earnings](
 	[TotalInstallments] [int] NOT NULL,
 	[EndpointAssessorId] varchar(7) NULL
 ) ON [PRIMARY]
+GO
+
+-------------------------------------------------------------
+---		TransferPayments.AccountTransfers
+-------------------------------------------------------------
+IF EXISTS (SELECT [object_id] FROM sys.tables WHERE [name] = 'TransferPayments' AND [schema_id] = SCHEMA_ID('AccountTransfers'))
+	BEGIN
+		DROP TABLE [AccountTransfers].[TransferPayments]
+	END
+GO
+IF NOT EXISTS(SELECT NULL FROM 
+	sys.tables t INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
+	WHERE t.name='TransferPayments' AND s.name='AccountTransfers'
+)
+BEGIN
+	CREATE TABLE [AccountTransfers].[TransferPayments]
+	(
+		TransferId bigint NOT NULL PRIMARY KEY,
+		SendingAccountId bigint NOT NULL,
+		ReceivingAccountId bigint NOT NULL,
+		RequiredPaymentId uniqueidentifier NOT NULL,
+		CommitmentId bigint NOT NULL,
+		Amount decimal(15,5) NOT NULL,
+		TransferType int NOT NULL,
+		CollectionPeriodName varchar(8) NOT NULL,
+		CollectionPeriodMonth int NOT NULL,
+		CollectionPeriodYear int NOT NULL
+	)
+END
 GO

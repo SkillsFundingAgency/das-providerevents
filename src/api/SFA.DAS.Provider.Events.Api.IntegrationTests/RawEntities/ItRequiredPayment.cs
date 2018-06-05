@@ -10,8 +10,8 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.RawEntities
         public long CommitmentId { get; set; }
         [StringLength(25)]
         public string CommitmentVersionId { get; set; }
-        [StringLength(50)]
-        public string AccountId { get; set; }
+        [Range(1000000000, 1000001000)]
+        public long AccountId { get; set; }
         [StringLength(50)]
         public string AccountVersionId { get; set; }
         [Range(1000000000, 1000001000)]
@@ -52,6 +52,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.RawEntities
         public string LearnAimRef { get; set; }
         public DateTime LearningStartDate { get; set; }
         public List<ItPayment> Payments { get; set; }
+        public List<ItTransfer> Transfers { get; set; }
 
         string CalculateCollectionPeriodName()
         {

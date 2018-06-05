@@ -57,6 +57,8 @@
     <Compile Include="HealthStatus.cs" />
     <Compile Include="NamedCalendarPeriod.cs" />
     <Compile Include="PageOfResults.cs" />
+    <Compile Include="AccountTransfer.cs" />
+    <Compile Include="PaymentStatistics.cs" />
     <Compile Include="Payment.cs" />
     <Compile Include="PeriodEnd.cs" />
     <Compile Include="PeriodEndLinks.cs" />
@@ -64,6 +66,7 @@
     <Compile Include="ReferenceDataDetails.cs" />
     <Compile Include="SubmissionEvent.cs" />
     <Compile Include="TransactionType.cs" />
+    <Compile Include="TransferType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

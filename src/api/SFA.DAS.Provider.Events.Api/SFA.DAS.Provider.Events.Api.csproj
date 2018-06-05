@@ -17,7 +17,7 @@
     <AssemblyName>SFA.DAS.Provider.Events.Api</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort />
+    <IISExpressSSLPort>44359</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -144,7 +144,6 @@
       <HintPath>..\packages\StructureMap.4.4.1\lib\net45\StructureMap.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.4.0\lib\net45\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
@@ -206,6 +205,7 @@
     <Compile Include="Controllers\PaymentsController.cs" />
     <Compile Include="Controllers\PeriodEndsController.cs" />
     <Compile Include="Controllers\SubmissionsController.cs" />
+    <Compile Include="Controllers\TransfersController.cs" />
     <Compile Include="ObsoleteModels\DataLockEventApprenticeshipV1.cs" />
     <Compile Include="ObsoleteModels\DataLockEventPeriodV1.cs" />
     <Compile Include="ObsoleteModels\DataLockEventV1.cs" />
@@ -276,6 +276,8 @@
           <DevelopmentServerPort>57968</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:57968/</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>https://localhost:44359/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

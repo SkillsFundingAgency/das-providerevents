@@ -23,6 +23,7 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
         public string ApprenticeshipVersion { get; set; }
 
         public int FundingSource { get; set; }
+        public long? FundingAccountId { get; set; }
         public int TransactionType { get; set; }
         public decimal Amount { get; set; }
 

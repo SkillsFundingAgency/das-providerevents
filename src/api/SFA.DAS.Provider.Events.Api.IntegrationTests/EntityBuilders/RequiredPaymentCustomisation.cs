@@ -20,6 +20,15 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.EntityBuilders
                         earning.RequiredPaymentId = payment.RequiredPaymentId;
                     }
                 }
+
+                foreach (var transfer in requiredPayment.Transfers)
+                {
+                    transfer.RequiredPaymentId = requiredPayment.Id;
+                    transfer.Amount = requiredPayment.AmountDue;
+                    transfer.ReceivingAccountId = requiredPayment.AccountId;
+                    transfer.CommitmentId = requiredPayment.CommitmentId;
+                    transfer.CollectionPeriodName = requiredPayment.CollectionPeriodName;
+                }
                 return requiredPayment;
             });
         }
