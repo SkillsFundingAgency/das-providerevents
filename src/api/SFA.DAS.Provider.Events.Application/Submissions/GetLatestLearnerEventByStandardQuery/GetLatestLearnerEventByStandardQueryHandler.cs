@@ -1,5 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Repositories;
 using SFA.DAS.Provider.Events.Application.Validation;
 
@@ -10,13 +13,15 @@ namespace SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventB
     {
         private readonly IValidator<GetLatestLearnerEventByStandardQueryRequest> _validator;
         private readonly ISubmissionEventsRepository _submissionEventsRepository;
+        private readonly IMapper _mapper;
 
         public GetLatestLearnerEventByStandardQueryHandler(
             IValidator<GetLatestLearnerEventByStandardQueryRequest> validator,
-            ISubmissionEventsRepository submissionEventsRepository)
+            ISubmissionEventsRepository submissionEventsRepository, IMapper mapper)
         {
             _validator = validator;
             _submissionEventsRepository = submissionEventsRepository;
+            _mapper = mapper;
         }
 
         public async Task<GetLatestLearnerEventByStandardQueryResponse> Handle(GetLatestLearnerEventByStandardQueryRequest message)
@@ -31,12 +36,14 @@ namespace SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventB
                 };
             }
 
-            var entities = await _submissionEventsRepository.GetLatestLearnerEventByStandard(message.SinceEventId, message.Uln);
+            var eventEntity = await _submissionEventsRepository.GetLatestLearnerEventByStandard(message.SinceEventId, message.Uln);
+
+            var submissionEvents = _mapper.Map<List<SubmissionEvent>>(eventEntity);
 
             return new GetLatestLearnerEventByStandardQueryResponse
             {
                 IsValid = true,
-                Result = entities
+                Result = submissionEvents
             };
         }
     }

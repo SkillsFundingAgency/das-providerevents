@@ -75,13 +75,11 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
                         Uln = uln
                     })
                     .ConfigureAwait(false);
-                
-                return Ok(queryResponse.Result);
-            }
-            catch (ValidationException ex)
-            {
-                _logger.Info($"Bad request received to GetLatestLearnerEventByStandard - {ex.Message}");
-                return BadRequest(ex.Message);
+
+                if (queryResponse.IsValid) return Ok(queryResponse.Result);
+
+                _logger.Info($"Bad request received to GetLatestLearnerEventByStandard - {queryResponse.Exception.Message}");
+                return BadRequest(queryResponse.Exception.Message);
             }
             catch (Exception ex)
             {

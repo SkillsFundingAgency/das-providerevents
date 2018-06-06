@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
+using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Repositories;
 using SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventByStandardQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
@@ -25,9 +28,17 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetLatestLea
                 .ReturnsAsync(new ValidationResult());
 
             _submissionEventsRepository = new Mock<ISubmissionEventsRepository>();
-
+            var _mapper = new Mock<IMapper>();
+            _mapper.Setup(m => m.Map<List<SubmissionEvent>>(It.IsAny<IEnumerable<SubmissionEventEntity>>()))
+                .Returns((IEnumerable<SubmissionEventEntity> source) =>
+                {
+                    return source.ToList().Select(e => new SubmissionEvent
+                    {
+                        Id = e.Id
+                    }).ToList();
+                });
             _handler = new Application.Submissions.GetLatestLearnerEventByStandardQuery.GetLatestLearnerEventByStandardQueryHandler(
-                _validator.Object, _submissionEventsRepository.Object);
+                _validator.Object, _submissionEventsRepository.Object, _mapper.Object);
 
             _request = new GetLatestLearnerEventByStandardQueryRequest(){SinceEventId = 22, Uln = 12345678};
         }
