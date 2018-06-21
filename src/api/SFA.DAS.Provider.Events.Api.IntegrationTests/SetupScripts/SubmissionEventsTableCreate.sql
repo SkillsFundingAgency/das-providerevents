@@ -41,8 +41,8 @@ CREATE TABLE [Submissions].[SubmissionEvents](
 	[EmployerReferenceNumber] [int] NULL,
 	[EPAOrgId] [VARCHAR](7) NULL,
 	[GivenNames] [varchar](100) NOT NULL,
-	[FamilyName] [varchar](100) NOT NULL
-
+	[FamilyName] [varchar](100) NOT NULL,
+	[CompStatus] [int] NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

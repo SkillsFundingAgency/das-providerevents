@@ -46,7 +46,8 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                     EmployerReferenceNumber = 123456,
                     EPAOrgId = "EPACodeI",
                     FamilyName = "Jones",
-                    GivenNames = "David"
+                    GivenNames = "David",
+                    CompStatus = 1
                 },
                 new SubmissionEvent
                 {
@@ -71,7 +72,8 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                     EPAOrgId = "EPACodeI",
                     FamilyName = "Jones",
                     GivenNames = "David",
-                    StandardCode = 12
+                    StandardCode = 12,
+                    CompStatus = 1
                 }
             };
             _httpClient = new Mock<SecureHttpClient>();
@@ -138,7 +140,8 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                    && original.EmployerReferenceNumber == client.EmployerReferenceNumber
                    && original.EPAOrgId == client.EPAOrgId
                     && original.FamilyName == client.FamilyName
-                    && original.GivenNames == client.GivenNames;
+                    && original.GivenNames == client.GivenNames
+                    && original.CompStatus == client.CompStatus;
         }
     }
 }

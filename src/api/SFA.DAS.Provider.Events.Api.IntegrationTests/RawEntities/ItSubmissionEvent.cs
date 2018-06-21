@@ -41,5 +41,6 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.RawEntities
         public string GivenNames { get; set; }
         [StringLength(100)]
         public string FamilyName { get; set; }
+        public int? CompStatus { get; set; }
     }
 }

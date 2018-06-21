@@ -27,5 +27,6 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
         public string EPAOrgId { get; set; }
         public string GivenNames { get; set; }
         public string FamilyName { get; set; }
+        public int? CompStatus { get; set; }
     }
 }
