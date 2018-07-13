@@ -202,6 +202,7 @@
     <Compile Include="Controllers\DataLockController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HealthCheckController.cs" />
+    <Compile Include="Controllers\LearnersController.cs" />
     <Compile Include="Controllers\PaymentsController.cs" />
     <Compile Include="Controllers\PeriodEndsController.cs" />
     <Compile Include="Controllers\SubmissionsController.cs" />
