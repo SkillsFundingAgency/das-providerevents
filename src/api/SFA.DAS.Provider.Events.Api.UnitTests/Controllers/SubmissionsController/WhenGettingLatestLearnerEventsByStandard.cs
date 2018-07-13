@@ -20,7 +20,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
     {
         private Mock<IMediator> _mediator;
         private Mock<ILogger> _logger;
-        private Api.Controllers.SubmissionsController _controller;
+        private Api.Controllers.LearnersController _controller;
 
         [SetUp]
         public void Arrange()
@@ -45,7 +45,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
 
             _logger = new Mock<ILogger>();
 
-            _controller = new Api.Controllers.SubmissionsController(_mediator.Object, _logger.Object);
+            _controller = new Api.Controllers.LearnersController(_mediator.Object, _logger.Object);
         }
 
         [Test]
@@ -114,7 +114,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
                 .ThrowsAsync(new Exception("Something really bad happened"));
 
             // Act
-            var actual = await _controller.GetSubmissionEvents();
+            var actual = await _controller.GetLatestLearnerEventByStandard(3);
 
             // Assert
             actual.Should().NotBeNull();
