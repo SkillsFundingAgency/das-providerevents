@@ -19,15 +19,15 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         }
 
 
-        [Route("api/v2/learners", Name = "GetLatestLearnerEventByStandard")]
+        [Route("api/v1/learners", Name = "GetLatestLearnerEventForStandards")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetLatestLearnerEventByStandard(long uln, long sinceEventId = 0)
+        public async Task<IHttpActionResult> GetLatestLearnerEventForStandards(long uln, long sinceEventId = 0)
         {
             try
             {
-                _logger.Debug($"Processing GetLatestLearnerEventByStandard, uln={uln}, sinceEventId={sinceEventId}");
+                _logger.Debug($"Processing GetLatestLearnerEventForStandards, uln={uln}, sinceEventId={sinceEventId}");
 
-                var queryResponse = await _mediator.SendAsync(new GetLatestLearnerEventByStandardQueryRequest
+                var queryResponse = await _mediator.SendAsync(new GetLatestLearnerEventForStandardsQueryRequest
                     {
                         SinceEventId = sinceEventId,
                         Uln = uln
@@ -36,12 +36,12 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
 
                 if (queryResponse.IsValid) return Ok(queryResponse.Result);
 
-                _logger.Info($"Bad request received to GetLatestLearnerEventByStandard - {queryResponse.Exception.Message}");
+                _logger.Info($"Bad request received to GetLatestLearnerEventForStandards - {queryResponse.Exception.Message}");
                 return BadRequest(queryResponse.Exception.Message);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, $"Unexpected error processing GetLatestLearnerEventByStandard - {ex.Message}");
+                _logger.Error(ex, $"Unexpected error processing GetLatestLearnerEventForStandards - {ex.Message}");
                 return InternalServerError();
             }
         }

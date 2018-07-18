@@ -5,9 +5,9 @@ using SFA.DAS.Provider.Events.Application.Validation;
 
 namespace SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventByStandardQuery
 {
-    public class GetLatestLearnerEventByStandardQueryRequestValidator : IValidator<GetLatestLearnerEventByStandardQueryRequest>
+    public class GetLatestLearnerEventByStandardQueryRequestValidator : IValidator<GetLatestLearnerEventForStandardsQueryRequest>
     {
-        public async Task<ValidationResult> Validate(GetLatestLearnerEventByStandardQueryRequest item)
+        public async Task<ValidationResult> Validate(GetLatestLearnerEventForStandardsQueryRequest item)
         {
             var validationErrors = new List<string>();
 

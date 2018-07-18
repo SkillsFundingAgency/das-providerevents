@@ -4,7 +4,7 @@ using SFA.DAS.Provider.Events.Application.Data.Entities;
 
 namespace SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventByStandardQuery
 {
-    public class GetLatestLearnerEventByStandardQueryResponse : QueryResponse<List<SubmissionEvent>>
+    public class GetLatestLearnerEventForStandardsQueryResponse : QueryResponse<List<SubmissionEvent>>
     {
     }
 }

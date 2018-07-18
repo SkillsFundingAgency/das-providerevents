@@ -26,8 +26,8 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
         public void Arrange()
         {
             _mediator = new Mock<IMediator>();
-            _mediator.Setup(m => m.SendAsync(It.IsAny<GetLatestLearnerEventByStandardQueryRequest>()))
-                .ReturnsAsync(new GetLatestLearnerEventByStandardQueryResponse
+            _mediator.Setup(m => m.SendAsync(It.IsAny<GetLatestLearnerEventForStandardsQueryRequest>()))
+                .ReturnsAsync(new GetLatestLearnerEventForStandardsQueryResponse
                 {
                     IsValid = true,
                     Result = new List<SubmissionEvent>
@@ -52,7 +52,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
         public async Task ThenItShouldReturnAnOkResult()
         {
             // Act
-            var actual = await _controller.GetLatestLearnerEventByStandard(1111111111);
+            var actual = await _controller.GetLatestLearnerEventForStandards(1111111111);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -63,7 +63,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
         public async Task ThenItShouldReturnCorrectListOfEvents()
         {
             // Act
-            var actual = ((OkNegotiatedContentResult<List<SubmissionEvent>>)await _controller.GetLatestLearnerEventByStandard(1111111111)).Content;
+            var actual = ((OkNegotiatedContentResult<List<SubmissionEvent>>)await _controller.GetLatestLearnerEventForStandards(1111111111)).Content;
 
             // Assert
             actual.Should().NotBeNull();
@@ -77,12 +77,12 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
         public async Task ThenItShouldQueryWithTheRequestedFilters(long uln, long sinceEventId)
         {
             // Act
-            await _controller.GetLatestLearnerEventByStandard(uln, sinceEventId);
+            await _controller.GetLatestLearnerEventForStandards(uln, sinceEventId);
 
             // Assert
             _mediator.Verify(
                 m => m.SendAsync(
-                    It.Is<GetLatestLearnerEventByStandardQueryRequest>(r =>
+                    It.Is<GetLatestLearnerEventForStandardsQueryRequest>(r =>
                         r.SinceEventId == sinceEventId && r.Uln == uln)), Times.Once);
         }
         
@@ -91,14 +91,14 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
         {
             // Arrange
             var validationErrorMessage = "Your request is not valid for some reason";
-            _mediator.Setup(m => m.SendAsync(It.IsAny<GetLatestLearnerEventByStandardQueryRequest>()))
-                .ReturnsAsync(new GetLatestLearnerEventByStandardQueryResponse()
+            _mediator.Setup(m => m.SendAsync(It.IsAny<GetLatestLearnerEventForStandardsQueryRequest>()))
+                .ReturnsAsync(new GetLatestLearnerEventForStandardsQueryResponse()
                 {
                     Exception = new ValidationException(new[] {validationErrorMessage})
                 });
 
             // Act
-            var actual = await _controller.GetLatestLearnerEventByStandard(1111111111);
+            var actual = await _controller.GetLatestLearnerEventForStandards(1111111111);
 
             // Assert
             actual.Should().NotBeNull();
@@ -110,11 +110,11 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
         public async Task ThenItShouldReturnInternalServerErrorWhenGeneralExceptionOccurs()
         {
             // Arrange
-            _mediator.Setup(m => m.SendAsync(It.IsAny<GetLatestLearnerEventByStandardQueryRequest>()))
+            _mediator.Setup(m => m.SendAsync(It.IsAny<GetLatestLearnerEventForStandardsQueryRequest>()))
                 .ThrowsAsync(new Exception("Something really bad happened"));
 
             // Act
-            var actual = await _controller.GetLatestLearnerEventByStandard(3);
+            var actual = await _controller.GetLatestLearnerEventForStandards(3);
 
             // Assert
             actual.Should().NotBeNull();

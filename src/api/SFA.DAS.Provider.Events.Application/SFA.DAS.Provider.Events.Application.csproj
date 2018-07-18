@@ -81,10 +81,10 @@
     <Compile Include="Repositories\IPeriodRepository.cs" />
     <Compile Include="Repositories\ISubmissionEventsRepository.cs" />
     <Compile Include="Response.cs" />
-    <Compile Include="Submissions\GetLatestLearnerEventByStandardQuery\GetLatestLearnerEventByStandardQueryHandler.cs" />
-    <Compile Include="Submissions\GetLatestLearnerEventByStandardQuery\GetLatestLearnerEventByStandardQueryRequest.cs" />
+    <Compile Include="Submissions\GetLatestLearnerEventByStandardQuery\GetLatestLearnerEventForStandardsQueryHandler.cs" />
+    <Compile Include="Submissions\GetLatestLearnerEventByStandardQuery\GetLatestLearnerEventForStandardsQueryRequest.cs" />
     <Compile Include="Submissions\GetLatestLearnerEventByStandardQuery\GetLatestLearnerEventByStandardQueryRequestValidator.cs" />
-    <Compile Include="Submissions\GetLatestLearnerEventByStandardQuery\GetLatestLearnerEventByStandardQueryResponse.cs" />
+    <Compile Include="Submissions\GetLatestLearnerEventByStandardQuery\GetLatestLearnerEventForStandardsQueryResponse.cs" />
     <Compile Include="Submissions\GetSubmissionEventsQuery\GetSubmissionEventsQueryHandler.cs" />
     <Compile Include="Submissions\GetSubmissionEventsQuery\GetSubmissionEventsQueryRequest.cs" />
     <Compile Include="Submissions\GetSubmissionEventsQuery\GetSubmissionEventsQueryRequestValidator.cs" />

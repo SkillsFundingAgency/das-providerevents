@@ -41,9 +41,9 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
         private async Task PopulateSubmissionEvents()
         {
             Debug.WriteLine("Populating submission events table, this could take a while");
-
-            await PopulateEventsForByUln(1000000160, 2);
-            await PopulateEventsForByUln(1000000190, 1);
+            
+            await PopulateEventsForByUln(1002105691, 2);
+            await PopulateEventsForByUln(1002105888, 1);
 
             TestData.SubmissionEvents = new Fixture().CreateMany<ItSubmissionEvent>(10).ToList();
             foreach (var @event in TestData.SubmissionEvents)

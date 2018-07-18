@@ -15,16 +15,16 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetLatestLea
 {
     public class WhenHandling
     {
-        private Mock<IValidator<GetLatestLearnerEventByStandardQueryRequest>> _validator;
+        private Mock<IValidator<GetLatestLearnerEventForStandardsQueryRequest>> _validator;
         private Mock<ISubmissionEventsRepository> _submissionEventsRepository;
-        private Application.Submissions.GetLatestLearnerEventByStandardQuery.GetLatestLearnerEventByStandardQueryHandler _handler;
-        private GetLatestLearnerEventByStandardQueryRequest _request;
+        private Application.Submissions.GetLatestLearnerEventByStandardQuery.GetLatestLearnerEventForStandardsQueryHandler _handler;
+        private GetLatestLearnerEventForStandardsQueryRequest _request;
 
         [SetUp]
         public void Arrange()
         {
-            _validator = new Mock<IValidator<GetLatestLearnerEventByStandardQueryRequest>>();
-            _validator.Setup(v => v.Validate(It.IsAny<GetLatestLearnerEventByStandardQueryRequest>()))
+            _validator = new Mock<IValidator<GetLatestLearnerEventForStandardsQueryRequest>>();
+            _validator.Setup(v => v.Validate(It.IsAny<GetLatestLearnerEventForStandardsQueryRequest>()))
                 .ReturnsAsync(new ValidationResult());
 
             _submissionEventsRepository = new Mock<ISubmissionEventsRepository>();
@@ -37,16 +37,16 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetLatestLea
                         Id = e.Id
                     }).ToList();
                 });
-            _handler = new Application.Submissions.GetLatestLearnerEventByStandardQuery.GetLatestLearnerEventByStandardQueryHandler(
+            _handler = new Application.Submissions.GetLatestLearnerEventByStandardQuery.GetLatestLearnerEventForStandardsQueryHandler(
                 _validator.Object, _submissionEventsRepository.Object, _mapper.Object);
 
-            _request = new GetLatestLearnerEventByStandardQueryRequest(){SinceEventId = 22, Uln = 12345678};
+            _request = new GetLatestLearnerEventForStandardsQueryRequest(){SinceEventId = 22, Uln = 12345678};
         }
 
         [Test]
         public void ThenItShouldReturnInvalidResponseWhenValidatorFails()
         {
-            _validator.Setup(v => v.Validate(It.IsAny<GetLatestLearnerEventByStandardQueryRequest>()))
+            _validator.Setup(v => v.Validate(It.IsAny<GetLatestLearnerEventForStandardsQueryRequest>()))
                 .ReturnsAsync(new ValidationResult
                 {
                     ValidationMessages = new[] { "Invalid" }

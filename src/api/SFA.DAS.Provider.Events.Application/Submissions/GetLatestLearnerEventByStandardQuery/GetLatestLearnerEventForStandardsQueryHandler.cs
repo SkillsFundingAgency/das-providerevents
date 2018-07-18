@@ -8,15 +8,15 @@ using SFA.DAS.Provider.Events.Application.Validation;
 
 namespace SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventByStandardQuery
 {
-    public class GetLatestLearnerEventByStandardQueryHandler :
-        IAsyncRequestHandler<GetLatestLearnerEventByStandardQueryRequest, GetLatestLearnerEventByStandardQueryResponse>
+    public class GetLatestLearnerEventForStandardsQueryHandler :
+        IAsyncRequestHandler<GetLatestLearnerEventForStandardsQueryRequest, GetLatestLearnerEventForStandardsQueryResponse>
     {
-        private readonly IValidator<GetLatestLearnerEventByStandardQueryRequest> _validator;
+        private readonly IValidator<GetLatestLearnerEventForStandardsQueryRequest> _validator;
         private readonly ISubmissionEventsRepository _submissionEventsRepository;
         private readonly IMapper _mapper;
 
-        public GetLatestLearnerEventByStandardQueryHandler(
-            IValidator<GetLatestLearnerEventByStandardQueryRequest> validator,
+        public GetLatestLearnerEventForStandardsQueryHandler(
+            IValidator<GetLatestLearnerEventForStandardsQueryRequest> validator,
             ISubmissionEventsRepository submissionEventsRepository, IMapper mapper)
         {
             _validator = validator;
@@ -24,12 +24,12 @@ namespace SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventB
             _mapper = mapper;
         }
 
-        public async Task<GetLatestLearnerEventByStandardQueryResponse> Handle(GetLatestLearnerEventByStandardQueryRequest message)
+        public async Task<GetLatestLearnerEventForStandardsQueryResponse> Handle(GetLatestLearnerEventForStandardsQueryRequest message)
         {
             var validationResult = await _validator.Validate(message);
             if (!validationResult.IsValid)
             {
-                return new GetLatestLearnerEventByStandardQueryResponse
+                return new GetLatestLearnerEventForStandardsQueryResponse
                 {
                     IsValid = false,
                     Exception = new ValidationException(validationResult.ValidationMessages)
@@ -40,7 +40,7 @@ namespace SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventB
 
             var submissionEvents = _mapper.Map<List<SubmissionEvent>>(eventEntity);
 
-            return new GetLatestLearnerEventByStandardQueryResponse
+            return new GetLatestLearnerEventForStandardsQueryResponse
             {
                 IsValid = true,
                 Result = submissionEvents
