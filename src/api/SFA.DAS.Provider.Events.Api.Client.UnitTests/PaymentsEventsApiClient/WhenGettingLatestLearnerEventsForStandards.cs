@@ -8,7 +8,7 @@ using SFA.DAS.Provider.Events.Api.Types;
 
 namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 {
-    public class WhenGettingLatestLearnerEventsByStandard
+    public class WhenGettingLatestLearnerEventsForStandards
     {
         private PaymentsEventsApiConfiguration _configuration;
         private List<SubmissionEvent> _submissionEvents;
@@ -87,27 +87,27 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
         public async Task ThenItShouldCallTheCorrectUrlForSinceEventIdFilter()
         {
             // Act
-            await _client.GetLatestLearnerEventByStandard(1111111111, 12345);
+            await _client.GetLatestLearnerEventForStandards(1111111111, 12345);
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("some-url/api/submissions?uln=1111111111&sinceEventId=12345"), Times.Once);
+            _httpClient.Verify(c => c.GetAsync("some-url/api/learners?uln=1111111111&sinceEventId=12345"), Times.Once);
         }
 
         [Test]
         public async Task ThenItShouldCallTheCorrectUrlForUlnFilter()
         {
             // Act
-            await _client.GetLatestLearnerEventByStandard(1111111111);
+            await _client.GetLatestLearnerEventForStandards(1111111111);
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("some-url/api/submissions?uln=1111111111"), Times.Once);
+            _httpClient.Verify(c => c.GetAsync("some-url/api/learners?uln=1111111111"), Times.Once);
         }
 
         [Test]
         public async Task ThenItShouldReturnResultFromApi()
         {
             // Act
-            var actual = await _client.GetLatestLearnerEventByStandard(1111111111, 12345);
+            var actual = await _client.GetLatestLearnerEventForStandards(1111111111, 12345);
 
             // Assert
             //todo: should really clone the input data before using it as expected, in case the code under test mutates it

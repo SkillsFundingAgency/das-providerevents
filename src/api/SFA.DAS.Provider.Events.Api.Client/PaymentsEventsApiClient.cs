@@ -88,9 +88,9 @@ namespace SFA.DAS.Provider.Events.Api.Client
             return JsonConvert.DeserializeObject<PageOfResults<SubmissionEvent>>(response);
         }
 
-        public async Task<List<SubmissionEvent>> GetLatestLearnerEventByStandard(long uln, long sinceEventId = 0)
+        public async Task<List<SubmissionEvent>> GetLatestLearnerEventForStandards(long uln, long sinceEventId = 0)
         {
-            var url = $"{BaseUrl}api/submissions?uln={uln}";
+            var url = $"{BaseUrl}api/learners?uln={uln}";
             if (sinceEventId > 0)
             {
                 url += $"&sinceEventId={sinceEventId}";

@@ -16,7 +16,7 @@ using SFA.DAS.Provider.Events.Application.Validation;
 
 namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsController
 {
-    public class WhenGettingLatestLearnerEventsByStandard
+    public class WhenGettingLatestLearnerEventsForStandards
     {
         private Mock<IMediator> _mediator;
         private Mock<ILogger> _logger;
@@ -55,8 +55,8 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
             var actual = await _controller.GetLatestLearnerEventForStandards(1111111111);
 
             // Assert
-            Assert.IsNotNull(actual);
-            Assert.IsInstanceOf<OkNegotiatedContentResult<List<SubmissionEvent>>>(actual);
+            actual.Should().NotBeNull();
+            actual.Should().BeOfType<OkNegotiatedContentResult<List<SubmissionEvent>>>();
         }
 
         [Test]

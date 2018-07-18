@@ -19,7 +19,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         }
 
 
-        [Route("api/v1/learners", Name = "GetLatestLearnerEventForStandards")]
+        [Route("api/learners", Name = "GetLatestLearnerEventForStandards")]
         [HttpGet]
         public async Task<IHttpActionResult> GetLatestLearnerEventForStandards(long uln, long sinceEventId = 0)
         {

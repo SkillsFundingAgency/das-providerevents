@@ -14,7 +14,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.SubmissionsApiTests.When
         [Test]
         public async Task ThenTheEventDataIsCorrect()
         {
-            var results = await IntegrationTestServer.Client.GetAsync("/api/v1/learners?sinceEventId=0&uln=1002105691").ConfigureAwait(false);
+            var results = await IntegrationTestServer.Client.GetAsync("/api/learners?sinceEventId=0&uln=1002105691").ConfigureAwait(false);
 
             var resultsAsString = await results.Content.ReadAsStringAsync();
             var events = JsonConvert.DeserializeObject<List<SubmissionEvent>>(resultsAsString);
