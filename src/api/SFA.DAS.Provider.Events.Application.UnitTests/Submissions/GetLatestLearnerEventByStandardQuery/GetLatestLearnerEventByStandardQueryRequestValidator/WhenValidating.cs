@@ -17,6 +17,9 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetLatestLea
         [TestCase(999999999)]
         [TestCase(0)]
         [TestCase(10000000000)]
+        [TestCase(1002216014)]
+        [TestCase(9999999999)]
+        [TestCase(5555555555)]
         public void ThenAnInvalidValueForUlnShouldReturnInvalid(long ulnValue)
         {
             var result = _validator.Validate(new GetLatestLearnerEventByStandardQueryRequest(){SinceEventId = 0, Uln = ulnValue });
@@ -25,8 +28,9 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetLatestLea
         }
 
         [TestCase(1000000000)]
-        [TestCase(5555555555)]
-        [TestCase(9999999999)]
+        [TestCase(5555555554)]
+        [TestCase(9999999998)]
+        [TestCase(1002116014)]
         public void ThenAnValidValueForUlnShouldReturnValid(long ulnValue)
         {
             var result = _validator.Validate(new GetLatestLearnerEventByStandardQueryRequest() { SinceEventId = 0, Uln = ulnValue });
