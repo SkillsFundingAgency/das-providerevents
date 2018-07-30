@@ -77,20 +77,19 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 
         public async Task<IEnumerable<SubmissionEventEntity>> GetLatestLearnerEventByStandard(long eventId, long uln)
         {
-            var eventIdFilterClause = eventId > 0 ? $"se.Id > {eventId} AND " : "";
+            var eventIdFilterClause = eventId > 0 ? $"se.Id > @eventId AND " : "";
 
             var command = $@"SELECT *, CommitmentId AS ApprenticeshipId FROM(
                 SELECT ROW_NUMBER() OVER (PARTITION BY se.StandardCode ORDER BY se.Id DESC) rownumber, se.*
                 FROM Submissions.SubmissionEvents se
-            WHERE {eventIdFilterClause} se.ULN = {uln}) subEvents  
+            WHERE {eventIdFilterClause} se.ULN = @uln) subEvents  
             WHERE rownumber = 1";
 
             using (var connection = await GetOpenConnection().ConfigureAwait(false))
             {
-                return await connection.QueryAsync<SubmissionEventEntity>(command).ConfigureAwait(false);
+                return await connection.QueryAsync<SubmissionEventEntity>(command, new {uln, eventId}).ConfigureAwait(false);
             }
         }
-
 
         private async Task<PageOfResults<SubmissionEventEntity>> GetPageOfSubmissionEvents(string whereClause, int page, int pageSize)
         {
