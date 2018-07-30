@@ -79,7 +79,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         {
             var eventIdFilterClause = eventId > 0 ? $"se.Id > {eventId} AND " : "";
 
-            var command = $@"SELECT* FROM(
+            var command = $@"SELECT *, CommitmentId AS ApprenticeshipId FROM(
                 SELECT ROW_NUMBER() OVER (PARTITION BY se.StandardCode ORDER BY se.Id DESC) rownumber, se.*
                 FROM Submissions.SubmissionEvents se
             WHERE {eventIdFilterClause} se.ULN = {uln}) subEvents  
