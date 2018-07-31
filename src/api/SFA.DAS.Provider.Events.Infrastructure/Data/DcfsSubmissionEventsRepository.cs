@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
 using SFA.DAS.Provider.Events.Application.Repositories;
@@ -72,6 +75,21 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                 .ConfigureAwait(false);
         }
 
+        public async Task<IEnumerable<SubmissionEventEntity>> GetLatestLearnerEventByStandard(long eventId, long uln)
+        {
+            var eventIdFilterClause = eventId > 0 ? $"se.Id > @eventId AND " : "";
+
+            var command = $@"SELECT *, CommitmentId AS ApprenticeshipId FROM(
+                SELECT ROW_NUMBER() OVER (PARTITION BY se.StandardCode ORDER BY se.Id DESC) rownumber, se.*
+                FROM Submissions.SubmissionEvents se
+            WHERE {eventIdFilterClause} se.ULN = @uln) subEvents  
+            WHERE rownumber = 1";
+
+            using (var connection = await GetOpenConnection().ConfigureAwait(false))
+            {
+                return await connection.QueryAsync<SubmissionEventEntity>(command, new {uln, eventId}).ConfigureAwait(false);
+            }
+        }
 
         private async Task<PageOfResults<SubmissionEventEntity>> GetPageOfSubmissionEvents(string whereClause, int page, int pageSize)
         {
@@ -93,7 +111,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             var command = $"SELECT {Columns} FROM {Source} {whereClause} {Pagination}";
 
             var offset = (page - 1) * pageSize;
-            return await Query<SubmissionEventEntity>(command, new {offset, pageSize})
+            return await Query<SubmissionEventEntity>(command, new { offset, pageSize })
                 .ConfigureAwait(false);
         }
 

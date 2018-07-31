@@ -30,7 +30,10 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
                 await PopulateAllData().ConfigureAwait(false);
 
             if (await _populate.IsSubmissionEventsTablePopulated())
+            {
                 await ReadSubmissionEvents();
+                await ReadSubmissionEventsForUlnCheck();
+            }
             else
                 await PopulateSubmissionEvents();
         }
@@ -38,10 +41,14 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
         private async Task PopulateSubmissionEvents()
         {
             Debug.WriteLine("Populating submission events table, this could take a while");
+            
+            await PopulateEventsForByUln(1002105691, 2);
+            await PopulateEventsForByUln(1002105888, 1);
 
             TestData.SubmissionEvents = new Fixture().CreateMany<ItSubmissionEvent>(10).ToList();
             foreach (var @event in TestData.SubmissionEvents)
             {
+                @event.Uln = 0;
                 // these fields are just date's in the db
                 @event.ActualStartDate = @event.ActualStartDate.Value.Date;
                 @event.ActualEndDate = @event.ActualEndDate.Value.Date;
@@ -51,6 +58,24 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
                 @event.FileDateTime = @event.FileDateTime.AddTicks(-(@event.FileDateTime.Ticks % TimeSpan.TicksPerSecond));
             }
             await _populate.BulkInsertSubmissionEvents(TestData.SubmissionEvents);
+        }
+
+        private async Task PopulateEventsForByUln(long uln, int count)
+        {
+            TestData.SubmissionEventsForUln = new Fixture().CreateMany<ItSubmissionEvent>(count).ToList();
+            foreach (var @event in TestData.SubmissionEventsForUln)
+            {
+                @event.Uln = uln;
+                // these fields are just date's in the db
+                @event.ActualStartDate = @event.ActualStartDate.Value.Date;
+                @event.ActualEndDate = @event.ActualEndDate.Value.Date;
+                @event.PlannedEndDate = @event.PlannedEndDate.Value.Date;
+                // these fields are datetime's in the db, so can't match the precision of c#'s datetime, so we chop off the milliseconds
+                @event.SubmittedDateTime =
+                    @event.SubmittedDateTime.AddTicks(-(@event.SubmittedDateTime.Ticks % TimeSpan.TicksPerSecond));
+                @event.FileDateTime = @event.FileDateTime.AddTicks(-(@event.FileDateTime.Ticks % TimeSpan.TicksPerSecond));
+            }
+            await _populate.BulkInsertSubmissionEvents(TestData.SubmissionEventsForUln);
         }
 
         private async Task PopulateAllData()
@@ -80,12 +105,23 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.Setup
 
         private async Task ReadSubmissionEvents()
         {
-            const string submissionEventsSql = "SELECT * FROM [Submissions].[SubmissionEvents]";
+            const string submissionEventsSql = "SELECT * FROM [Submissions].[SubmissionEvents] WHERE Uln = 0";
 
             using (var conn = DatabaseConnection.Connection())
             {
                 await conn.OpenAsync();
                 TestData.SubmissionEvents = (await conn.QueryAsync<ItSubmissionEvent>(submissionEventsSql)).ToList();
+            }
+        }
+
+        private async Task ReadSubmissionEventsForUlnCheck()
+        {
+            const string submissionEventsSql = "SELECT * FROM [Submissions].[SubmissionEvents] WHERE Uln != 0";
+
+            using (var conn = DatabaseConnection.Connection())
+            {
+                await conn.OpenAsync();
+                TestData.SubmissionEventsForUln = (await conn.QueryAsync<ItSubmissionEvent>(submissionEventsSql)).ToList();
             }
         }
 

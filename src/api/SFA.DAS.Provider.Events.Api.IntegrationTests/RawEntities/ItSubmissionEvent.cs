@@ -37,5 +37,10 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.RawEntities
         public int? EmployerReferenceNumber { get; set; }
         [StringLength(7)]
         public string EPAOrgId { get; set; }
+        [StringLength(100)]
+        public string GivenNames { get; set; }
+        [StringLength(100)]
+        public string FamilyName { get; set; }
+        public int? CompStatus { get; set; }
     }
 }
