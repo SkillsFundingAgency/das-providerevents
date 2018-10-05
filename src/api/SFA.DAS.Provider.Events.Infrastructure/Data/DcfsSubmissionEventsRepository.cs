@@ -79,10 +79,12 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         {
             var eventIdFilterClause = eventId > 0 ? $"se.Id > @eventId AND " : "";
 
+            var ulnFilterClause = uln == 0 ? "se.ULN > 0" : "se.ULN = @uln";
+
             var command = $@"SELECT *, CommitmentId AS ApprenticeshipId FROM(
                 SELECT ROW_NUMBER() OVER (PARTITION BY se.StandardCode ORDER BY se.Id DESC) rownumber, se.*
                 FROM Submissions.SubmissionEvents se
-            WHERE {eventIdFilterClause} se.ULN = @uln) subEvents  
+            WHERE {eventIdFilterClause} {ulnFilterClause}) subEvents  
             WHERE rownumber = 1";
 
             using (var connection = await GetOpenConnection().ConfigureAwait(false))

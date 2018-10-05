@@ -10,16 +10,18 @@ namespace SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventB
         public async Task<ValidationResult> Validate(GetLatestLearnerEventForStandardsQueryRequest item)
         {
             var validationErrors = new List<string>();
-
-            if (item.Uln < 1000000000 || item.Uln > 9999999999)
+            if (item.Uln != 0)
             {
-                validationErrors.Add("Uln must be between 1111111111 and 9999999999");
+                if (item.Uln < 1000000000 || item.Uln > 9999999999)
+                {
+                    validationErrors.Add("Uln must be between 1111111111 and 9999999999");
+                }
+                else if (!IsValidCheckDigit(item.Uln))
+                {
+                    validationErrors.Add("Uln is not valid. Check digit incorrect");
+                }
             }
-            else if (!IsValidCheckDigit(item.Uln))
-            {
-                validationErrors.Add("Uln is not valid. Check digit incorrect");
-            }
-
+            
             return new ValidationResult
             {
                 ValidationMessages = validationErrors.Where(e => !string.IsNullOrEmpty(e)).ToArray()

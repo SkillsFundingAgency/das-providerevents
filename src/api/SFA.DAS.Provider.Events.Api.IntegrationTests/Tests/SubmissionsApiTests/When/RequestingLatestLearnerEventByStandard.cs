@@ -12,7 +12,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.SubmissionsApiTests.When
     public class RequestingLatestLearnerEventByStandard
     {
         [Test]
-        public async Task ThenTheEventDataIsCorrect()
+        public async Task ThenTheUlnSpecificEventDataIsCorrect()
         {
             var results = await IntegrationTestServer.Client.GetAsync("/api/learners?sinceEventId=0&uln=1002105691").ConfigureAwait(false);
 
@@ -21,6 +21,18 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.SubmissionsApiTests.When
 
             Assert.IsNotNull(events);
             events.Count.Should().Be(2);
+        }
+
+        [Test]
+        public async Task ThenAllEventDataIsCorrect()
+        {
+            var results = await IntegrationTestServer.Client.GetAsync("/api/learners?sinceEventId=0").ConfigureAwait(false);
+
+            var resultsAsString = await results.Content.ReadAsStringAsync();
+            var events = JsonConvert.DeserializeObject<List<SubmissionEvent>>(resultsAsString);
+
+            Assert.IsNotNull(events);
+            events.Count.Should().Be(3);
         }
     }
 }
