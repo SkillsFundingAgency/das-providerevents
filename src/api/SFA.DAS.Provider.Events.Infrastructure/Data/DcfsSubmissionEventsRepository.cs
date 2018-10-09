@@ -75,20 +75,32 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                 .ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<SubmissionEventEntity>> GetLatestLearnerEventByStandard(long eventId, long uln)
+        public async Task<PageOfResults<SubmissionEventEntity>> GetLatestLearnerEventByStandard(long? uln, long eventId, int page, int pageSize)
         {
-            var eventIdFilterClause = eventId > 0 ? $"se.Id > @eventId AND " : "";
+            var eventIdFilterClause = eventId > 0 ? $"se.Id > @eventId" : "se.Id = se.Id";
+            var ulnFilterClause = uln.HasValue ? $"se.ULN = @uln" : "se.ULN > 0";
 
-            var command = $@"SELECT *, CommitmentId AS ApprenticeshipId FROM(
-                SELECT ROW_NUMBER() OVER (PARTITION BY se.StandardCode ORDER BY se.Id DESC) rownumber, se.*
-                FROM Submissions.SubmissionEvents se
-            WHERE {eventIdFilterClause} se.ULN = @uln) subEvents  
-            WHERE rownumber = 1";
+            var source =    $"( SELECT ROW_NUMBER() OVER(PARTITION BY se.StandardCode ORDER BY se.Id DESC) rownumber, se.*"
+                            + $" FROM Submissions.SubmissionEvents se"
+                            + $" WHERE { eventIdFilterClause} AND {ulnFilterClause} ) subEvents";
 
-            using (var connection = await GetOpenConnection().ConfigureAwait(false))
+            var whereClause = "WHERE rownumber = 1";
+            var pagination = "ORDER BY Id OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY";
+
+            var pagesCommand = $"SELECT COUNT(Id) FROM {source} {whereClause}";
+            var count = await QuerySingle<int>(pagesCommand, new { uln, eventId }).ConfigureAwait(false);
+            var numberOfPages = NumberOfPages(count, pageSize);
+
+            var offset = (page - 1) * pageSize;
+            var resultCommand = $"SELECT {Columns} FROM {source} {whereClause} {pagination}";
+            var items = await Query<SubmissionEventEntity>(resultCommand, new { uln, eventId, offset, pageSize }).ConfigureAwait(false);
+
+            return new PageOfResults<SubmissionEventEntity>
             {
-                return await connection.QueryAsync<SubmissionEventEntity>(command, new {uln, eventId}).ConfigureAwait(false);
-            }
+                PageNumber = page,
+                TotalNumberOfPages = numberOfPages,
+                Items = items
+            };
         }
 
         private async Task<PageOfResults<SubmissionEventEntity>> GetPageOfSubmissionEvents(string whereClause, int page, int pageSize)

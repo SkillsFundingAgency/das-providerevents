@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using SFA.DAS.Provider.Events.Application.Validation;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.Provider.Events.Application.Validation;
 
 namespace SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventByStandardQuery
 {
@@ -11,19 +11,26 @@ namespace SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventB
         {
             var validationErrors = new List<string>();
 
-            if (item.Uln < 1000000000 || item.Uln > 9999999999)
+            if (item.Uln.HasValue)
             {
-                validationErrors.Add("Uln must be between 1111111111 and 9999999999");
-            }
-            else if (!IsValidCheckDigit(item.Uln))
-            {
-                validationErrors.Add("Uln is not valid. Check digit incorrect");
+                long uln = item.Uln.Value;
+
+                if (uln < 1000000000 || uln > 9999999999)
+                {
+                    validationErrors.Add("Uln must be between 1111111111 and 9999999999");
+                }
+                else if (!IsValidCheckDigit(uln))
+                {
+                    validationErrors.Add("Uln is not valid. Check digit incorrect");
+                }
             }
 
-            return new ValidationResult
+            var result = new ValidationResult
             {
                 ValidationMessages = validationErrors.Where(e => !string.IsNullOrEmpty(e)).ToArray()
             };
+
+            return await Task.FromResult(result);
         }
 
         private bool IsValidCheckDigit(long uln)

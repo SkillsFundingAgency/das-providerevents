@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Moq;
+﻿using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.Types;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 {
     public class WhenGettingLatestLearnerEventsForStandards
     {
         private PaymentsEventsApiConfiguration _configuration;
-        private List<SubmissionEvent> _submissionEvents;
+        private PageOfResults<SubmissionEvent> _submissionEvents;
         private Client.PaymentsEventsApiClient _client;
         private Mock<SecureHttpClient> _httpClient;
 
@@ -24,57 +24,62 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 ClientToken = "super_secure_token"
             };
 
-            _submissionEvents = new List<SubmissionEvent>
+            _submissionEvents = new PageOfResults<SubmissionEvent>
             {
-                new SubmissionEvent
-                {
-                    Id = 1,
-                    IlrFileName = "ILR-123456",
-                    FileDateTime = new DateTime(2017, 2, 10, 8, 55, 23),
-                    SubmittedDateTime = new DateTime(2017, 2, 10, 8, 59, 13),
-                    ComponentVersionNumber = 1,
-                    Ukprn = 123456,
-                    Uln = 987654321,
-                    StandardCode = 27,
-                    ActualStartDate = new DateTime(2017, 4, 1),
-                    PlannedEndDate =  new DateTime(2018, 5, 1),
-                    TrainingPrice = 12000m,
-                    EndpointAssessorPrice = 3000m,
-                    NiNumber = "AB12345C",
-                    ApprenticeshipId = 1,
-                    AcademicYear = "1617",
-                    EmployerReferenceNumber = 123456,
-                    EPAOrgId = "EPACodeI",
-                    FamilyName = "Jones",
-                    GivenNames = "David",
-                    CompStatus = 1
-                },
-                new SubmissionEvent
-                {
-                    Id = 1,
-                    IlrFileName = "ILR-123456",
-                    FileDateTime = new DateTime(2017, 2, 10, 8, 55, 23),
-                    SubmittedDateTime = new DateTime(2017, 2, 10, 8, 59, 13),
-                    ComponentVersionNumber = 1,
-                    Ukprn = 123456,
-                    Uln = 987654321,
-                    ProgrammeType = 20,
-                    FrameworkCode = 550,
-                    PathwayCode = 6,
-                    ActualStartDate = new DateTime(2017, 4, 1),
-                    PlannedEndDate = new DateTime(2018, 5, 1),
-                    TrainingPrice = 6000m,
-                    EndpointAssessorPrice = 1500m,
-                    NiNumber = "AB12345C",
-                    ApprenticeshipId = 9,
-                    AcademicYear = "1617",
-                    EmployerReferenceNumber = 123456,
-                    EPAOrgId = "EPACodeI",
-                    FamilyName = "Jones",
-                    GivenNames = "David",
-                    StandardCode = 12,
-                    CompStatus = 1
-                }
+                PageNumber = 1,
+                TotalNumberOfPages = 1,
+                Items = new SubmissionEvent[]
+                        {
+                            new SubmissionEvent
+                            {
+                                Id = 1,
+                                IlrFileName = "ILR-123456",
+                                FileDateTime = new DateTime(2017, 2, 10, 8, 55, 23),
+                                SubmittedDateTime = new DateTime(2017, 2, 10, 8, 59, 13),
+                                ComponentVersionNumber = 1,
+                                Ukprn = 123456,
+                                Uln = 987654321,
+                                StandardCode = 27,
+                                ActualStartDate = new DateTime(2017, 4, 1),
+                                PlannedEndDate =  new DateTime(2018, 5, 1),
+                                TrainingPrice = 12000m,
+                                EndpointAssessorPrice = 3000m,
+                                NiNumber = "AB12345C",
+                                ApprenticeshipId = 1,
+                                AcademicYear = "1617",
+                                EmployerReferenceNumber = 123456,
+                                EPAOrgId = "EPACodeI",
+                                FamilyName = "Jones",
+                                GivenNames = "David",
+                                CompStatus = 1
+                            },
+                            new SubmissionEvent
+                            {
+                                Id = 1,
+                                IlrFileName = "ILR-123456",
+                                FileDateTime = new DateTime(2017, 2, 10, 8, 55, 23),
+                                SubmittedDateTime = new DateTime(2017, 2, 10, 8, 59, 13),
+                                ComponentVersionNumber = 1,
+                                Ukprn = 123456,
+                                Uln = 987654321,
+                                ProgrammeType = 20,
+                                FrameworkCode = 550,
+                                PathwayCode = 6,
+                                ActualStartDate = new DateTime(2017, 4, 1),
+                                PlannedEndDate = new DateTime(2018, 5, 1),
+                                TrainingPrice = 6000m,
+                                EndpointAssessorPrice = 1500m,
+                                NiNumber = "AB12345C",
+                                ApprenticeshipId = 9,
+                                AcademicYear = "1617",
+                                EmployerReferenceNumber = 123456,
+                                EPAOrgId = "EPACodeI",
+                                FamilyName = "Jones",
+                                GivenNames = "David",
+                                StandardCode = 12,
+                                CompStatus = 1
+                            }
+                        }
             };
             _httpClient = new Mock<SecureHttpClient>();
             _httpClient.Setup(c => c.GetAsync(It.IsAny<string>()))
@@ -84,36 +89,56 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
         }
 
         [Test]
-        public async Task ThenItShouldCallTheCorrectUrlForSinceEventIdFilter()
+        public async Task ThenItShouldCallTheCorrectUrlForUlnAndSinceEventIdFilter()
         {
             // Act
-            await _client.GetLatestLearnerEventForStandards(1111111111, 12345);
+            await _client.GetLatestLearnerEventForStandardsByUln(1111111111, 12345);
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("some-url/api/learners?uln=1111111111&sinceEventId=12345"), Times.Once);
+            _httpClient.Verify(c => c.GetAsync("some-url/api/learners/1111111111&sinceEventId=12345"), Times.Once);
         }
 
         [Test]
         public async Task ThenItShouldCallTheCorrectUrlForUlnFilter()
         {
             // Act
-            await _client.GetLatestLearnerEventForStandards(1111111111);
+            await _client.GetLatestLearnerEventForStandardsByUln(1111111111);
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("some-url/api/learners?uln=1111111111"), Times.Once);
+            _httpClient.Verify(c => c.GetAsync("some-url/api/learners/1111111111"), Times.Once);
+        }
+
+        [Test]
+        public async Task ThenItShouldCallTheCorrectUrlForSinceEventIdFilter()
+        {
+            // Act
+            await _client.GetLatestLearnerEventForStandards(12345);
+
+            // Assert
+            _httpClient.Verify(c => c.GetAsync("some-url/api/learners&sinceEventId=12345"), Times.Once);
+        }
+
+        [Test]
+        public async Task ThenItShouldCallTheCorrectUrl()
+        {
+            // Act
+            await _client.GetLatestLearnerEventForStandards();
+
+            // Assert
+            _httpClient.Verify(c => c.GetAsync("some-url/api/learners"), Times.Once);
         }
 
         [Test]
         public async Task ThenItShouldReturnResultFromApi()
         {
             // Act
-            var actual = await _client.GetLatestLearnerEventForStandards(1111111111, 12345);
+            var actual = await _client.GetLatestLearnerEventForStandardsByUln(1111111111, 12345);
 
             // Assert
             //todo: should really clone the input data before using it as expected, in case the code under test mutates it
             Assert.IsNotNull(actual);
-            Assert.IsTrue(EventsMatch(_submissionEvents[0], actual[0]));
-            Assert.IsTrue(EventsMatch(_submissionEvents[1], actual[1]));
+            Assert.IsTrue(EventsMatch(_submissionEvents.Items[0], actual.Items[0]));
+            Assert.IsTrue(EventsMatch(_submissionEvents.Items[1], actual.Items[1]));
         }
 
         private bool EventsMatch(SubmissionEvent original, SubmissionEvent client)

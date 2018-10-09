@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web.Http.Results;
-using FluentAssertions;
+﻿using FluentAssertions;
 using MediatR;
 using Moq;
 using NLog;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.Types;
-using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventByStandardQuery;
-using SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Http.Results;
 
 namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsController
 {
@@ -30,15 +27,20 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
                 .ReturnsAsync(new GetLatestLearnerEventForStandardsQueryResponse
                 {
                     IsValid = true,
-                    Result = new List<SubmissionEvent>
+                    Result = new PageOfResults<SubmissionEvent>
                     {
-                        new SubmissionEvent
-                        {
-                            Id = 123
-                        },
-                        new SubmissionEvent
-                        {
-                            Id = 987
+                        PageNumber = 1,
+                        TotalNumberOfPages = 1,
+                        Items = new SubmissionEvent[]
+                                {
+                                new SubmissionEvent
+                                {
+                                    Id = 123
+                                },
+                                new SubmissionEvent
+                                {
+                                    Id = 987
+                                }
                         }
                     }
                 });
@@ -52,24 +54,24 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
         public async Task ThenItShouldReturnAnOkResult()
         {
             // Act
-            var actual = await _controller.GetLatestLearnerEventForStandards(1111111111);
+            var actual = await _controller.GetLatestLearnerEventForStandardsByUln(1111111111);
 
             // Assert
             actual.Should().NotBeNull();
-            actual.Should().BeOfType<OkNegotiatedContentResult<List<SubmissionEvent>>>();
+            actual.Should().BeOfType<OkNegotiatedContentResult<PageOfResults<SubmissionEvent>>>();
         }
 
         [Test]
         public async Task ThenItShouldReturnCorrectListOfEvents()
         {
             // Act
-            var actual = ((OkNegotiatedContentResult<List<SubmissionEvent>>)await _controller.GetLatestLearnerEventForStandards(1111111111)).Content;
+            var actual = ((OkNegotiatedContentResult<PageOfResults<SubmissionEvent>>)await _controller.GetLatestLearnerEventForStandardsByUln(1111111111)).Content;
 
             // Assert
             actual.Should().NotBeNull();
-            actual.Count.Should().Be(2);
-            actual[0].Id.Should().Be(123);
-            actual[1].Id.Should().Be(987);
+            actual.Items.Count().Should().Be(2);
+            actual.Items[0].Id.Should().Be(123);
+            actual.Items[1].Id.Should().Be(987);
             
         }
 
@@ -77,7 +79,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
         public async Task ThenItShouldQueryWithTheRequestedFilters(long uln, long sinceEventId)
         {
             // Act
-            await _controller.GetLatestLearnerEventForStandards(uln, sinceEventId);
+            await _controller.GetLatestLearnerEventForStandardsByUln(uln, sinceEventId);
 
             // Assert
             _mediator.Verify(
@@ -98,7 +100,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
                 });
 
             // Act
-            var actual = await _controller.GetLatestLearnerEventForStandards(1111111111);
+            var actual = await _controller.GetLatestLearnerEventForStandardsByUln(1111111111);
 
             // Assert
             actual.Should().NotBeNull();
@@ -114,7 +116,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
                 .ThrowsAsync(new Exception("Something really bad happened"));
 
             // Act
-            var actual = await _controller.GetLatestLearnerEventForStandards(3);
+            var actual = await _controller.GetLatestLearnerEventForStandardsByUln(3);
 
             // Assert
             actual.Should().NotBeNull();

@@ -17,7 +17,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetLatestLea
     {
         private Mock<IValidator<GetLatestLearnerEventForStandardsQueryRequest>> _validator;
         private Mock<ISubmissionEventsRepository> _submissionEventsRepository;
-        private Application.Submissions.GetLatestLearnerEventByStandardQuery.GetLatestLearnerEventForStandardsQueryHandler _handler;
+        private GetLatestLearnerEventForStandardsQueryHandler _handler;
         private GetLatestLearnerEventForStandardsQueryRequest _request;
 
         [SetUp]
@@ -29,18 +29,20 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetLatestLea
 
             _submissionEventsRepository = new Mock<ISubmissionEventsRepository>();
             var _mapper = new Mock<IMapper>();
-            _mapper.Setup(m => m.Map<List<SubmissionEvent>>(It.IsAny<IEnumerable<SubmissionEventEntity>>()))
-                .Returns((IEnumerable<SubmissionEventEntity> source) =>
+            _mapper.Setup(m => m.Map<PageOfResults<SubmissionEvent>>(It.IsAny<PageOfResults<SubmissionEventEntity>>()))
+                .Returns((PageOfResults<SubmissionEventEntity> source) =>
                 {
-                    return source.ToList().Select(e => new SubmissionEvent
+                    return new PageOfResults<SubmissionEvent>
                     {
-                        Id = e.Id
-                    }).ToList();
+                        PageNumber = 1,
+                        TotalNumberOfPages = 1,
+                        Items = source.Items.Select(e => new SubmissionEvent { Id = e.Id }).ToArray()
+                    };
                 });
-            _handler = new Application.Submissions.GetLatestLearnerEventByStandardQuery.GetLatestLearnerEventForStandardsQueryHandler(
+            _handler = new GetLatestLearnerEventForStandardsQueryHandler(
                 _validator.Object, _submissionEventsRepository.Object, _mapper.Object);
 
-            _request = new GetLatestLearnerEventForStandardsQueryRequest(){SinceEventId = 22, Uln = 12345678};
+            _request = new GetLatestLearnerEventForStandardsQueryRequest(){ Uln = 12345678, SinceEventId = 22, PageNumber = 1, PageSize = 10};
         }
 
         [Test]
@@ -64,11 +66,16 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetLatestLea
         [Test]
         public void ThenItShouldReturnValidResults()
         {
-            _submissionEventsRepository.Setup(r => r.GetLatestLearnerEventByStandard(22, 12345678))
-                .ReturnsAsync(new List<SubmissionEventEntity>
+            _submissionEventsRepository.Setup(r => r.GetLatestLearnerEventByStandard(12345678, 22, 1, 10))
+                .ReturnsAsync(new PageOfResults<SubmissionEventEntity>
                 {
-                    new SubmissionEventEntity() {Id = 1},
-                    new SubmissionEventEntity() {Id = 2}
+                    PageNumber = 1,
+                    TotalNumberOfPages = 1,
+                    Items = new SubmissionEventEntity[] 
+                            {
+                                new SubmissionEventEntity{Id = 1},
+                                new SubmissionEventEntity{Id = 2}
+                            }
                 });
 
             // Act
@@ -77,7 +84,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetLatestLea
             // Assert
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual.IsValid);
-            Assert.AreEqual(2, actual.Result.Count());
+            Assert.AreEqual(2, actual.Result.Items.Count());
         }
     }
 }

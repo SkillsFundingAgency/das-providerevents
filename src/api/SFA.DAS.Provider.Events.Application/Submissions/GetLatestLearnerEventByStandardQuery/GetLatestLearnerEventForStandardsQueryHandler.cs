@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Repositories;
 using SFA.DAS.Provider.Events.Application.Validation;
+using System;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventByStandardQuery
 {
@@ -26,25 +26,34 @@ namespace SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventB
 
         public async Task<GetLatestLearnerEventForStandardsQueryResponse> Handle(GetLatestLearnerEventForStandardsQueryRequest message)
         {
-            var validationResult = await _validator.Validate(message);
-            if (!validationResult.IsValid)
+            try
+            {
+                var validationResult = await _validator.Validate(message);
+                if (!validationResult.IsValid)
+                {
+                    return new GetLatestLearnerEventForStandardsQueryResponse
+                    {
+                        IsValid = false,
+                        Exception = new ValidationException(validationResult.ValidationMessages)
+                    };
+                }
+
+                var pageOfEntities = await _submissionEventsRepository.GetLatestLearnerEventByStandard(message.Uln, message.SinceEventId, message.PageNumber, message.PageSize);
+
+                return new GetLatestLearnerEventForStandardsQueryResponse
+                {
+                    IsValid = true,
+                    Result = _mapper.Map<PageOfResults<SubmissionEvent>>(pageOfEntities)
+                };
+            }
+            catch (Exception ex)
             {
                 return new GetLatestLearnerEventForStandardsQueryResponse
                 {
                     IsValid = false,
-                    Exception = new ValidationException(validationResult.ValidationMessages)
+                    Exception = ex
                 };
             }
-
-            var eventEntity = await _submissionEventsRepository.GetLatestLearnerEventByStandard(message.SinceEventId, message.Uln);
-
-            var submissionEvents = _mapper.Map<List<SubmissionEvent>>(eventEntity);
-
-            return new GetLatestLearnerEventForStandardsQueryResponse
-            {
-                IsValid = true,
-                Result = submissionEvents
-            };
         }
     }
 }

@@ -5,6 +5,8 @@ namespace SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventB
     public class GetLatestLearnerEventForStandardsQueryRequest : IAsyncRequest<GetLatestLearnerEventForStandardsQueryResponse>
     {
         public long SinceEventId { get; set; }
-        public long Uln { get; set; }
+        public long? Uln { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
     }
 }
