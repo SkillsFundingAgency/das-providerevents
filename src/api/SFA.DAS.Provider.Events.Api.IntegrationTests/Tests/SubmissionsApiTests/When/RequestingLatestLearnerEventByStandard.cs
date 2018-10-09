@@ -12,10 +12,10 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.SubmissionsApiTests.When
     public class RequestingLatestLearnerEventByStandard
     {
         [Test]
-        public async Task AndWithUlnFilter_ThenTheEventDataIsCorrect()
+        public async Task WithUlnFilter_ThenTheEventDataIsCorrect()
         {
             var uln = 1002105691;
-            var results = await IntegrationTestServer.Client.GetAsync($"/api/learners/{uln}").ConfigureAwait(false);
+            var results = await IntegrationTestServer.Client.GetAsync($"/api/learners?uln={uln}").ConfigureAwait(false);
 
             var resultsAsString = await results.Content.ReadAsStringAsync();
             var events = JsonConvert.DeserializeObject<PageOfResults<SubmissionEvent>>(resultsAsString);
@@ -26,7 +26,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.SubmissionsApiTests.When
         }
 
         [Test]
-        public async Task ThenTheEventDataIsCorrect()
+        public async Task WithoutUlnFilter_ThenTheEventDataIsCorrect()
         {
             var results = await IntegrationTestServer.Client.GetAsync("/api/learners").ConfigureAwait(false);
 

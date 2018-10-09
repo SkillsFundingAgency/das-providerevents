@@ -88,27 +88,17 @@ namespace SFA.DAS.Provider.Events.Api.Client
             return JsonConvert.DeserializeObject<PageOfResults<SubmissionEvent>>(response);
         }
 
-        public async Task<PageOfResults<SubmissionEvent>> GetLatestLearnerEventForStandards(long sinceEventId = 0)
+        public async Task<PageOfResults<SubmissionEvent>> GetLatestLearnerEventForStandards(long? uln = null, long sinceEventId = 0)
         {
-            var url = $"{BaseUrl}api/learners";
+            var parameters = new List<string> { };
+
+            if (uln.HasValue)
+                parameters.Add($"uln={uln}");
+
             if (sinceEventId > 0)
-            {
-                url += $"&sinceEventId={sinceEventId}";
-            }
+                parameters.Add($"sinceEventId={sinceEventId}");
 
-            var response = await _httpClient.GetAsync(url);
-            return JsonConvert.DeserializeObject<PageOfResults<SubmissionEvent>>(response);
-        }
-
-        public async Task<PageOfResults<SubmissionEvent>> GetLatestLearnerEventForStandardsByUln(long uln, long sinceEventId = 0)
-        {
-            var url = $"{BaseUrl}api/learners/{uln}";
-            if (sinceEventId > 0)
-            {
-                url += $"&sinceEventId={sinceEventId}";
-            }
-
-            var response = await _httpClient.GetAsync(url);
+            var response = await _httpClient.GetAsync($"{BaseUrl}api/learners?" + string.Join("&", parameters));
             return JsonConvert.DeserializeObject<PageOfResults<SubmissionEvent>>(response);
         }
 

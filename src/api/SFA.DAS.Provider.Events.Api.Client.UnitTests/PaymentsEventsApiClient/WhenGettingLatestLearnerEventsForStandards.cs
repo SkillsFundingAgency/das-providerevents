@@ -92,30 +92,30 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
         public async Task ThenItShouldCallTheCorrectUrlForUlnAndSinceEventIdFilter()
         {
             // Act
-            await _client.GetLatestLearnerEventForStandardsByUln(1111111111, 12345);
+            await _client.GetLatestLearnerEventForStandards(1111111111, 12345);
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("some-url/api/learners/1111111111&sinceEventId=12345"), Times.Once);
+            _httpClient.Verify(c => c.GetAsync("some-url/api/learners?uln=1111111111&sinceEventId=12345"), Times.Once);
         }
 
         [Test]
         public async Task ThenItShouldCallTheCorrectUrlForUlnFilter()
         {
             // Act
-            await _client.GetLatestLearnerEventForStandardsByUln(1111111111);
+            await _client.GetLatestLearnerEventForStandards(uln: 1111111111);
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("some-url/api/learners/1111111111"), Times.Once);
+            _httpClient.Verify(c => c.GetAsync("some-url/api/learners?uln=1111111111"), Times.Once);
         }
 
         [Test]
         public async Task ThenItShouldCallTheCorrectUrlForSinceEventIdFilter()
         {
             // Act
-            await _client.GetLatestLearnerEventForStandards(12345);
+            await _client.GetLatestLearnerEventForStandards(sinceEventId: 12345);
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("some-url/api/learners&sinceEventId=12345"), Times.Once);
+            _httpClient.Verify(c => c.GetAsync("some-url/api/learners?sinceEventId=12345"), Times.Once);
         }
 
         [Test]
@@ -125,14 +125,14 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             await _client.GetLatestLearnerEventForStandards();
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("some-url/api/learners"), Times.Once);
+            _httpClient.Verify(c => c.GetAsync("some-url/api/learners?"), Times.Once);
         }
 
         [Test]
         public async Task ThenItShouldReturnResultFromApi()
         {
             // Act
-            var actual = await _client.GetLatestLearnerEventForStandardsByUln(1111111111, 12345);
+            var actual = await _client.GetLatestLearnerEventForStandards(1111111111, 12345);
 
             // Assert
             //todo: should really clone the input data before using it as expected, in case the code under test mutates it

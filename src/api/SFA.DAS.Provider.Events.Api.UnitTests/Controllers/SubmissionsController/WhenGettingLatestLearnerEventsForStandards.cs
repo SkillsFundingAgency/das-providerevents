@@ -54,7 +54,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
         public async Task ThenItShouldReturnAnOkResult()
         {
             // Act
-            var actual = await _controller.GetLatestLearnerEventForStandardsByUln(1111111111);
+            var actual = await _controller.GetLatestLearnerEventForStandards(1111111111);
 
             // Assert
             actual.Should().NotBeNull();
@@ -65,7 +65,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
         public async Task ThenItShouldReturnCorrectListOfEvents()
         {
             // Act
-            var actual = ((OkNegotiatedContentResult<PageOfResults<SubmissionEvent>>)await _controller.GetLatestLearnerEventForStandardsByUln(1111111111)).Content;
+            var actual = ((OkNegotiatedContentResult<PageOfResults<SubmissionEvent>>)await _controller.GetLatestLearnerEventForStandards(1111111111)).Content;
 
             // Assert
             actual.Should().NotBeNull();
@@ -79,7 +79,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
         public async Task ThenItShouldQueryWithTheRequestedFilters(long uln, long sinceEventId)
         {
             // Act
-            await _controller.GetLatestLearnerEventForStandardsByUln(uln, sinceEventId);
+            await _controller.GetLatestLearnerEventForStandards(uln, sinceEventId);
 
             // Assert
             _mediator.Verify(
@@ -100,7 +100,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
                 });
 
             // Act
-            var actual = await _controller.GetLatestLearnerEventForStandardsByUln(1111111111);
+            var actual = await _controller.GetLatestLearnerEventForStandards(1111111111);
 
             // Assert
             actual.Should().NotBeNull();
@@ -116,7 +116,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
                 .ThrowsAsync(new Exception("Something really bad happened"));
 
             // Act
-            var actual = await _controller.GetLatestLearnerEventForStandardsByUln(3);
+            var actual = await _controller.GetLatestLearnerEventForStandards(3);
 
             // Assert
             actual.Should().NotBeNull();

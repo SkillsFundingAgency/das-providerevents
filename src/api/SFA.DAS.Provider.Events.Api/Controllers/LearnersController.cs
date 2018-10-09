@@ -22,52 +22,18 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         }
 
 
-        [Route("api/learners/{uln}", Name = "GetLatestLearnerEventForStandardsByUln")]
+        [Route("api/learners", Name = "GetLatestLearnerEventForStandards")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetLatestLearnerEventForStandardsByUln(long uln, long sinceEventId = 0, int pageNumber = 1)
+        public async Task<IHttpActionResult> GetLatestLearnerEventForStandards(long? uln = null, long sinceEventId = 0, int pageNumber = 1)
         {
             try
             {
-                _logger.Debug($"Processing GetLatestLearnerEventForStandardsByUln, uln={uln}, sinceEventId={sinceEventId}, pageNumber={pageNumber}");
+                _logger.Debug($"Processing GetLatestLearnerEventForStandards, uln={uln ?? int.MinValue}, sinceEventId={sinceEventId}, pageNumber={pageNumber}");
 
                 var queryResponse = await _mediator.SendAsync(new GetLatestLearnerEventForStandardsQueryRequest
                 {
                     SinceEventId = sinceEventId,
                     Uln = uln,
-                    PageNumber = pageNumber,
-                    PageSize = PageSize
-                }).ConfigureAwait(false);
-
-                if (!queryResponse.IsValid)
-                {
-                    throw queryResponse.Exception;
-                }
-
-                return Ok(queryResponse.Result);
-            }
-            catch (ValidationException ex)
-            {
-                _logger.Info($"Bad request received to GetLatestLearnerEventForStandardsByUln - {ex.Message}");
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, $"Unexpected error processing GetLatestLearnerEventForStandards - {ex.Message}");
-                return InternalServerError();
-            }
-        }
-
-        [Route("api/learners", Name = "GetLatestLearnerEventForStandards")]
-        [HttpGet]
-        public async Task<IHttpActionResult> GetLatestLearnerEventForStandards(long sinceEventId = 0, int pageNumber = 1)
-        {
-            try
-            {
-                _logger.Debug($"Processing GetLatestLearnerEventForStandards, sinceEventId={sinceEventId}, pageNumber={pageNumber}");
-
-                var queryResponse = await _mediator.SendAsync(new GetLatestLearnerEventForStandardsQueryRequest
-                {
-                    SinceEventId = sinceEventId,
                     PageNumber = pageNumber,
                     PageSize = PageSize
                 }).ConfigureAwait(false);
