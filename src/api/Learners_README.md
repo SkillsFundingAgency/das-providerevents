@@ -11,56 +11,62 @@ Getting learner details can be done by consuming the following URI:
 Where:
 * uln = (Optional) The learner's ULN to filter on.
 * since_event_id = (Optional) The event id that you want to read from. This is non-inclusive.
-* page_number = (Optional) page number to display, i.e. 10. Default is 1
+* page_number = (Optional) Page number to display, i.e. 10. Default is 1.
+* Note that each page contains 1000 entries.
 
 Response:
 ```json
-[
-  {
-    "Id": 1,
-    "IlrFileName": "ILR-80810436-1617-20170202-075857-01.xml",
-    "FileDateTime": "2017-02-02T00:00:00",
-    "SubmittedDateTime": "2017-02-02T08:02:57.577",
-    "AcademicYear": "1617",
-    "ComponentVersionNumber": 1,
-    "Ukprn": 80810436,
-    "Uln": 321,
-    "EmployerReferenceNumber": 123456,
-    "StandardCode": 27,
-    "ActualStartDate": "2017-05-01T00:00:00",
-    "PlannedEndDate": "2018-06-15T00:00:00",
-    "TrainingPrice": 12000,
-    "EndpointAssessorPrice": 3000,
-    "NiNumber": "AB123456A",
-    "ApprenticeshipId": 78,
-    "EPAOrgId": "EPAO0001",
-    "GivenNames":"John",
-    "FamilyName":"Jones",
-    "CompStatus":1
-  },
-  {
-    "Id": 1,
-    "IlrFileName": "ILR-80810436-1617-20170202-075857-01.xml",
-    "FileDateTime": "2017-02-02T00:00:00",
-    "SubmittedDateTime": "2017-02-02T08:02:57.577",
-    "AcademicYear": "1617",
-    "ComponentVersionNumber": 1,
-    "Ukprn": 80810436,
-    "Uln": 321,
-    "EmployerReferenceNumber": 123456,
-    "StandardCode": 104,
-    "ActualStartDate": "2017-05-01T00:00:00",
-    "PlannedEndDate": "2018-06-15T00:00:00",
-    "TrainingPrice": 12000,
-    "EndpointAssessorPrice": 3000,
-    "NiNumber": "AB123456A",
-    "ApprenticeshipId": 78,
-    "EPAOrgId": "EPAO0001",
-    "GivenNames":"John",
-    "FamilyName":"Jones",
-    "CompStatus":1
-  }
-]
+{
+  "PageNumber": 1,
+  "TotalNumberOfPages": 1,
+  "Items":
+    [
+      {
+		"Id": 1,
+		"IlrFileName": "ILR-80810436-1617-20170202-075857-01.xml",
+		"FileDateTime": "2017-02-02T00:00:00",
+		"SubmittedDateTime": "2017-02-02T08:02:57.577",
+		"AcademicYear": "1617",
+		"ComponentVersionNumber": 1,
+		"Ukprn": 80810436,
+		"Uln": 321,
+		"EmployerReferenceNumber": 123456,
+		"StandardCode": 27,
+		"ActualStartDate": "2017-05-01T00:00:00",
+		"PlannedEndDate": "2018-06-15T00:00:00",
+		"TrainingPrice": 12000,
+		"EndpointAssessorPrice": 3000,
+		"NiNumber": "AB123456A",
+		"ApprenticeshipId": 78,
+		"EPAOrgId": "EPAO0001",
+		"GivenNames":"John",
+		"FamilyName":"Jones",
+		"CompStatus":1
+	  },
+	  {
+		"Id": 1,
+		"IlrFileName": "ILR-80810436-1617-20170202-075857-01.xml",
+		"FileDateTime": "2017-02-02T00:00:00",
+		"SubmittedDateTime": "2017-02-02T08:02:57.577",
+		"AcademicYear": "1617",
+		"ComponentVersionNumber": 1,
+		"Ukprn": 80810436,
+		"Uln": 321,
+		"EmployerReferenceNumber": 123456,
+		"StandardCode": 104,
+		"ActualStartDate": "2017-05-01T00:00:00",
+		"PlannedEndDate": "2018-06-15T00:00:00",
+		"TrainingPrice": 12000,
+		"EndpointAssessorPrice": 3000,
+		"NiNumber": "AB123456A",
+		"ApprenticeshipId": 78,
+		"EPAOrgId": "EPAO0001",
+		"GivenNames":"John",
+		"FamilyName":"Jones",
+		"CompStatus":1
+      }
+    ]
+}
 ```
 
 Response **Items** structure:
