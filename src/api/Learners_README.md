@@ -1,16 +1,17 @@
 # Learners API
 
-Learners is an endpoint to allow retrieval of learner information based on their ULN. A learner object will be returned for each Standard that the learner is associated with.
+Learners is an endpoint to allow retrieval of learner information. A learner object will be returned for each Standard that the learner is associated with.
 
 ## Gettings submissions
 
 Getting learner details can be done by consuming the following URI:
 
-    GET https://host:port/api/learners?uln={uln}&sinceEventId={since_event_id}
+    GET https://host:port/api/learners?uln={uln}&sinceEventId={since_event_id}&page_number={page_number}
     
 Where:
-* uln = The learner's uln.
+* uln = (Optional) The learner's ULN to filter on.
 * since_event_id = (Optional) The event id that you want to read from. This is non-inclusive.
+* page_number = (Optional) page number to display, i.e. 10. Default is 1
 
 Response:
 ```json
