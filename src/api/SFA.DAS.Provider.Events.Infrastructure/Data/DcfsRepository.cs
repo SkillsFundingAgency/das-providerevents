@@ -35,7 +35,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         {
             using (var connection = await GetOpenConnection().ConfigureAwait(false))
             {
-                return (await connection.QueryAsync<T>(command, param).ConfigureAwait(false)).ToArray();
+                return (await connection.QueryAsync<T>(command, param, commandTimeout : 300).ConfigureAwait(false)).ToArray();
             }
         }
 
