@@ -77,15 +77,15 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 
         public async Task<PageOfResults<SubmissionEventEntity>> GetLatestLearnerEventByStandard(long? uln, long eventId, int page, int pageSize)
         {
-            var eventIdFilterClause = eventId > 0 ? $"se.Id > @eventId" : "se.Id = se.Id";
-            var ulnFilterClause = uln.HasValue ? $"se.ULN = @uln" : "se.ULN > 0";
+            var eventIdFilterClause = eventId > 0 ? $"AND se.Id > @eventId" : "";
+            var ulnFilterClause = uln.HasValue ? $"AND se.ULN = @uln" : "";
 
-            var source =    $"( SELECT ROW_NUMBER() OVER(PARTITION BY se.StandardCode ORDER BY se.Id DESC) rownumber, se.*"
+            var source =    $"( SELECT ROW_NUMBER() OVER(PARTITION BY se.ULN, se.StandardCode ORDER BY se.Id DESC) rownumber, se.*"
                             + $" FROM Submissions.SubmissionEvents se"
-                            + $" WHERE { eventIdFilterClause} AND {ulnFilterClause} ) subEvents";
+                            + $" WHERE 1 = 1 {eventIdFilterClause} {ulnFilterClause} ) subEvents";
 
             var whereClause = "WHERE rownumber = 1";
-            var pagination = "ORDER BY Id OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY";
+            var pagination = eventId > 0 || uln.HasValue ? "ORDER BY Id OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY" : "";
 
             var pagesCommand = $"SELECT COUNT(Id) FROM {source} {whereClause}";
             var count = await QuerySingle<int>(pagesCommand, new { uln, eventId }).ConfigureAwait(false);
