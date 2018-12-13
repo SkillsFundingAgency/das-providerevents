@@ -3,10 +3,12 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using MediatR;
 using NLog;
+using SFA.DAS.Provider.Events.Api.Plumbing.WebApi;
 using SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventByStandardQuery;
 
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
+    [AuthorizeRemoteOnly(Roles = "ReadLearners")]
     public class LearnersController : ApiController
     {
         private IMediator _mediator;
