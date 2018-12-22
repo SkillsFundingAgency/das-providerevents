@@ -16,7 +16,7 @@ namespace SFA.DAS.Provider.Events.Api.Client
         public PaymentsEventsApiClient(IPaymentsEventsApiConfiguration configuration)
         {
             _configuration = configuration;
-            _httpClient = new SecureHttpClient(configuration.ClientToken);
+            _httpClient = new SecureHttpClient(_configuration);
         }
 
         internal PaymentsEventsApiClient(IPaymentsEventsApiConfiguration configuration, SecureHttpClient httpClient)

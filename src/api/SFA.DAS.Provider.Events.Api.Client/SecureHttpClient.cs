@@ -3,16 +3,17 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace SFA.DAS.Provider.Events.Api.Client
 {
     internal class SecureHttpClient
     {
-        private readonly string _clientToken;
+        private readonly IPaymentsEventsApiConfiguration _clientConfiguration;
 
-        public SecureHttpClient(string clientToken)
+        public SecureHttpClient(IPaymentsEventsApiConfiguration clientConfiguration)
         {
-            _clientToken = clientToken;
+            _clientConfiguration = clientConfiguration;
         }
         protected SecureHttpClient()
         {
@@ -25,10 +26,11 @@ namespace SFA.DAS.Provider.Events.Api.Client
             {
                 using (var client = new HttpClient())
                 {
-                    if (!string.IsNullOrEmpty(_clientToken))
+                    if (_clientConfiguration != null)
                     {
+                        var authenticationResult = await GetAuthenticationResult(_clientConfiguration);
                         client.DefaultRequestHeaders.Authorization =
-                            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _clientToken);
+                            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authenticationResult.AccessToken);
                     }
                     client.DefaultRequestHeaders.Add("api-version", "2");
 
@@ -60,6 +62,15 @@ namespace SFA.DAS.Provider.Events.Api.Client
             {
                 throw new ApiException("Unexpected error in API - " + ex.Message, ex);
             }
+        }
+
+        private async Task<AuthenticationResult> GetAuthenticationResult(IPaymentsEventsApiConfiguration configuration)
+        {
+            var authority = $"https://login.microsoftonline.com/{configuration.Tenant}";
+            var clientCredential = new ClientCredential(configuration.ClientId, configuration.ClientSecret);
+            var context = new AuthenticationContext(authority, true);
+            var result = await context.AcquireTokenAsync(configuration.IdentifierUri, clientCredential);
+            return result;
         }
     }
 }

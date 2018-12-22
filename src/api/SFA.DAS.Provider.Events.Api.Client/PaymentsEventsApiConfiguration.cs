@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Provider.Events.Api.Client
+﻿using System;
+
+namespace SFA.DAS.Provider.Events.Api.Client
 {
     /// <summary>
     /// Api configuration
@@ -8,6 +10,7 @@
         /// <summary>
         /// The JWT token issued to your service for access to the API
         /// </summary>
+        [Obsolete("Jwt token usage is obsolete. Use Azure AD authentication.")]
         public string ClientToken { get; set; }
 
         /// <summary>
@@ -15,5 +18,10 @@
         /// </summary>
         /// <example>https://some-server/</example>
         public string ApiBaseUrl { get; set; }
+
+        public string ClientId { get; }
+        public string ClientSecret { get; }
+        public string IdentifierUri { get; }
+        public string Tenant { get; }
     }
 }
