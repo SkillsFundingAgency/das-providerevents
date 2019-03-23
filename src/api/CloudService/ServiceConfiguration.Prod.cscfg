@@ -20,7 +20,7 @@
       <Setting name="InstrumentationKey" value="__InstrumentationKey__" />
     </ConfigurationSettings>
     <Certificates>
-      <Certificate name="WebSslCert" thumbprint="8C545C6E0B4837A5878482EFFDE4EB81D8CB179A" thumbprintAlgorithm="sha1" />
+      <Certificate name="WebSslCert" thumbprint="5CA7A529F58D126D54A31E94E7048F64A43B3408" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
   <NetworkConfiguration>
