@@ -20,7 +20,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                                        + "UKPRN, "
                                        + "ULN, "
                                        // no need to fetch these, as SubmissionEventEntity doesn't contain them
-                                       // + "LearnRefNumber, "
+                                       + "LearnRefNumber, "
                                        // + "AimSeqNumber, "
                                        // + "PriceEpisodeIdentifier, "
                                        + "StandardCode, "
@@ -36,9 +36,19 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                                        + "CommitmentId AS ApprenticeshipId, "
                                        + "AcademicYear, "
                                        + "EmployerReferenceNumber, "
-                                       + "EPAOrgId";
+                                       + "EPAOrgId, "
+                                       + "FundingModel, "
+                                       + "DelLocPostCode ,"
+                                       + "LearnActEndDate ,"
+                                       + "WithdrawReason ,"
+                                       + "Outcome ,"
+                                       + "AimType";
+
         private const string CountColumn = "COUNT(se.Id)";
         private const string Pagination = "ORDER BY se.Id OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY";
+
+       
+        public int? AimType { get; set; }
 
         public DcfsSubmissionEventsRepository()
             : base("EventsConnectionString")

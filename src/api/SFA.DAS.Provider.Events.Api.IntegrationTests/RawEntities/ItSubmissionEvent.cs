@@ -15,7 +15,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.RawEntities
         [Range(1000000000, 1000001000)]
         public long Uln { get; set; }
         [StringLength(12)] // 100 in db table
-        public string LearnRefNumber { get; set; } // not in SubmissionEvent
+        public string LearnRefNumber { get; set; } 
         public long AimSeqNumber { get; set; } // not in SubmissionEvent
         [StringLength(25)]
         public string PriceEpisodeIdentifier { get; set; } // not in SubmissionEvent
@@ -42,5 +42,12 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.RawEntities
         [StringLength(100)]
         public string FamilyName { get; set; }
         public int? CompStatus { get; set; }
+        public int? FundingModel { get; set; }
+        [StringLength(50)]
+        public string DelLocPostCode { get; set; }
+        public DateTime? LearnActEndDate { get; set; }
+        public int? WithdrawReason { get; set; }
+        public int? Outcome { get; set; }
+        public int? AimType { get; set; }
     }
 }

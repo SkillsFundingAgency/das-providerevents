@@ -42,8 +42,15 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 ApprenticeshipId = 1,
                 AcademicYear = "1617",
                 EmployerReferenceNumber = 123456,
-                EPAOrgId = "EPACodeI"
-            };
+                EPAOrgId = "EPACodeI",
+                FundingModel = 39,
+                DelLocPostCode = "B1 1HT",
+                LearnActEndDate = new DateTime(2019, 9, 15),
+                WithdrawReason = 97,
+                Outcome = 1,
+                AimType = 1,
+                LearnRefNumber="1234567890"
+             };
 
             _submissionFrameworkEvent = new SubmissionEvent
             {
@@ -65,7 +72,14 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 ApprenticeshipId = 9,
                 AcademicYear = "1617",
                 EmployerReferenceNumber = 123456,
-                EPAOrgId = "EPACodeI"
+                EPAOrgId = "EPACodeI",
+                FundingModel = 39,
+                DelLocPostCode = "B1 1HT",
+                LearnActEndDate = new DateTime(2019, 9, 15),
+                WithdrawReason = 97,
+                Outcome = 1,
+                AimType = 1,
+                LearnRefNumber = "1234567890"
             };
 
             _httpClient = new Mock<SecureHttpClient>();
@@ -149,7 +163,14 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                    && original.ApprenticeshipId == client.ApprenticeshipId
                    && original.AcademicYear == client.AcademicYear
                    && original.EmployerReferenceNumber == client.EmployerReferenceNumber
-                   && original.EPAOrgId == client.EPAOrgId;
+                   && original.EPAOrgId == client.EPAOrgId
+                   && original.FundingModel == client.FundingModel
+                   && original.DelLocPostCode == client.DelLocPostCode
+                   && original.LearnActEndDate == client.LearnActEndDate
+                   && original.WithdrawReason == client.WithdrawReason
+                   && original.Outcome == client.Outcome
+                   && original.AimType == client.AimType
+                   && original.LearnRefNumber == client.LearnRefNumber;
         }
     }
 }

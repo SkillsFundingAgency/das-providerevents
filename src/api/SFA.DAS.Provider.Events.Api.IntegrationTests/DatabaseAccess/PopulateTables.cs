@@ -125,7 +125,9 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess
                     "OnProgrammeTotalPrice",
                     "CompletionTotalPrice", "NiNumber",
                     "CommitmentId", "AcademicYear",
-                    "EmployerReferenceNumber", "EPAOrgId", "GivenNames", "FamilyName", "CompStatus"))
+                    "EmployerReferenceNumber", "EPAOrgId", "GivenNames", "FamilyName", "CompStatus",
+                    "FundingModel", "DelLocPostCode", "LearnActEndDate", "WithdrawReason", "Outcome",
+                    "AimType"))
                 {
                     bcp.DestinationTableName = "[Submissions].[SubmissionEvents]";
                     await bcp.WriteToServerAsync(reader);

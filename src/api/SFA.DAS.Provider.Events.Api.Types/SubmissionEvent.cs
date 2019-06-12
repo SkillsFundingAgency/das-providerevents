@@ -28,5 +28,12 @@ namespace SFA.DAS.Provider.Events.Api.Types
         public string GivenNames { get; set; }
         public string FamilyName { get; set; }
         public int? CompStatus { get; set; }
+        public int? FundingModel { get; set; }
+        public string DelLocPostCode { get; set; }
+        public DateTime? LearnActEndDate { get; set; }
+        public int? WithdrawReason { get; set; }
+        public int? Outcome { get; set; }
+        public int? AimType { get; set; }
+        public string LearnRefNumber { get; set; }
     }
 }

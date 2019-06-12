@@ -43,6 +43,12 @@ CREATE TABLE [Submissions].[SubmissionEvents](
 	[GivenNames] [varchar](100) NOT NULL,
 	[FamilyName] [varchar](100) NOT NULL,
 	[CompStatus] [int] NULL,
+	[FundingModel] [int] NULL,
+    [DelLocPostCode] [VARCHAR(50)] NULL,
+    [LearnActEndDate] [Date] NULL,
+    [WithdrawReason] [int] NULL,
+    [Outcome] [int]	NULL,
+    [AimType] [int]	NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

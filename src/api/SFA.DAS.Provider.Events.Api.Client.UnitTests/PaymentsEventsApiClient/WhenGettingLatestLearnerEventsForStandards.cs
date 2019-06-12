@@ -47,7 +47,14 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                     EPAOrgId = "EPACodeI",
                     FamilyName = "Jones",
                     GivenNames = "David",
-                    CompStatus = 1
+                    CompStatus = 1,
+                    FundingModel = 39,
+                    DelLocPostCode = "B1 1HT",
+                    LearnActEndDate = new DateTime(2019, 9, 15),
+                    WithdrawReason = 97,
+                    Outcome = 1,
+                    AimType = 1,
+                    LearnRefNumber="1234567890"
                 },
                 new SubmissionEvent
                 {
@@ -73,7 +80,14 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                     FamilyName = "Jones",
                     GivenNames = "David",
                     StandardCode = 12,
-                    CompStatus = 1
+                    CompStatus = 1,
+                    FundingModel = 39,
+                    DelLocPostCode = "B1 1HT",
+                    LearnActEndDate = new DateTime(2019, 9, 15),
+                    WithdrawReason = 97,
+                    Outcome = 1,
+                    AimType = 1,
+                    LearnRefNumber="1234567890"
                 }
             };
             _httpClient = new Mock<SecureHttpClient>();
@@ -139,9 +153,16 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                    && original.AcademicYear == client.AcademicYear
                    && original.EmployerReferenceNumber == client.EmployerReferenceNumber
                    && original.EPAOrgId == client.EPAOrgId
-                    && original.FamilyName == client.FamilyName
-                    && original.GivenNames == client.GivenNames
-                    && original.CompStatus == client.CompStatus;
+                   && original.FamilyName == client.FamilyName
+                   && original.GivenNames == client.GivenNames
+                   && original.CompStatus == client.CompStatus
+                   && original.FundingModel == client.FundingModel
+                   && original.DelLocPostCode == client.DelLocPostCode
+                   && original.LearnActEndDate == client.LearnActEndDate
+                   && original.WithdrawReason == client.WithdrawReason
+                   && original.Outcome == client.Outcome
+                   && original.AimType == client.AimType
+                   && original.LearnRefNumber == client.LearnRefNumber;
         }
     }
 }
