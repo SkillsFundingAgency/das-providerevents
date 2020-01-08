@@ -10,8 +10,9 @@
       <Setting name="MonthEndConnectionString" value="server=.;database=PaymentsEventApi;trusted_connection=true;" />
       <Setting name="EventsConnectionString" value="server=.;database=PaymentsEventApi;trusted_connection=true;" />
       <Setting name="ApiTokenSecret" value="dodge duck dip dive dodge" />
-      <Setting name="ApiIssuer" value="http://localhost:57968/" />
+      <Setting name="ApiIssuers" value="http://localhost:57968/" />
       <Setting name="ApiAudiences" value="http://localhost" />
+	  <Setting name="MetadataEndpoint" value="https://login.microsoftonline.com/citizenazuresfabisgov.onmicrosoft.com/v2.0/.well-known/openid-configuration" />
       <Setting name="LoggingRedisConnectionString" value="" />
       <Setting name="LoggingRedisKey" value="" />
       <Setting name="InstrumentationKey" value="" />

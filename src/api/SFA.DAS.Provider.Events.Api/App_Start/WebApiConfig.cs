@@ -17,7 +17,7 @@ namespace SFA.DAS.Provider.Events.Api
             GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
             GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.Converters.Add(new StrictEnumConverter());
 
-            ConfigureJwtSecurity(config);
+            //ConfigureJwtSecurity(config);
 
             // Web API routes
             config.MapHttpAttributeRoutes();
@@ -44,7 +44,7 @@ namespace SFA.DAS.Provider.Events.Api
         private static void ConfigureJwtSecurity(HttpConfiguration config)
         {
             var apiKeySecret = CloudConfigurationManager.GetSetting("ApiTokenSecret");
-            var apiIssuer = CloudConfigurationManager.GetSetting("ApiIssuer");
+            var apiIssuer = CloudConfigurationManager.GetSetting("ApiIssuers");
             var apiAudiences = CloudConfigurationManager.GetSetting("ApiAudiences").Split(' ');
 
             config.MessageHandlers.Add(new ApiKeyHandler("Authorization", apiKeySecret, apiIssuer, apiAudiences));
