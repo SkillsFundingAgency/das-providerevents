@@ -1,7 +1,5 @@
 ﻿using System.Web.Http;
-using Microsoft.Azure;
 using Newtonsoft.Json;
-using SFA.DAS.ApiTokens.Client;
 using SFA.DAS.Provider.Events.Api.Plumbing.DependencyResolution;
 using SFA.DAS.Provider.Events.Api.Plumbing.DependencyResolution.Policies;
 using SFA.DAS.Provider.Events.Api.Plumbing.Json;
@@ -16,8 +14,6 @@ namespace SFA.DAS.Provider.Events.Api
             // Web API configuration and services
             GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
             GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.Converters.Add(new StrictEnumConverter());
-
-            //ConfigureJwtSecurity(config);
 
             // Web API routes
             config.MapHttpAttributeRoutes();
@@ -39,15 +35,6 @@ namespace SFA.DAS.Provider.Events.Api
                 x.Policies.Add<LoggingPolicy>();
                 x.AddRegistry<DefaultRegistry>();
             });
-        }
-
-        private static void ConfigureJwtSecurity(HttpConfiguration config)
-        {
-            var apiKeySecret = CloudConfigurationManager.GetSetting("ApiTokenSecret");
-            var apiIssuer = CloudConfigurationManager.GetSetting("ApiIssuers");
-            var apiAudiences = CloudConfigurationManager.GetSetting("ApiAudiences").Split(' ');
-
-            config.MessageHandlers.Add(new ApiKeyHandler("Authorization", apiKeySecret, apiIssuer, apiAudiences));
         }
     }
 }

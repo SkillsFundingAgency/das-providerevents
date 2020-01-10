@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using SFA.DAS.Provider.Events.Api.Client.Configuration;
 using SFA.DAS.Provider.Events.Api.Types;
 
 namespace SFA.DAS.Provider.Events.Api.Client
 {
-    public class PaymentsEventsApiClient : IPaymentsEventsApiClient
+    public class PaymentsEventsApiClient :  IPaymentsEventsApiClient
     {
         private readonly IPaymentsEventsApiConfiguration _configuration;
         private readonly SecureHttpClient _httpClient;

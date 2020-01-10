@@ -2,7 +2,7 @@
 using Owin;
 using SFA.DAS.Authentication.Extensions;
 
-namespace SFA.DAS.Provider.Events.Api.App_Start
+namespace SFA.DAS.Provider.Events.Api
 {
     public partial class Startup
     {
