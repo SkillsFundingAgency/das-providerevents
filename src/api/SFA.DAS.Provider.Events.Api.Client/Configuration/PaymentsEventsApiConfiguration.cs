@@ -11,6 +11,5 @@
         public string ClientSecret { get; }
         public string IdentifierUri { get; }
         public string ClientToken { get; }
-        public string BaseUrl { get; set; }
     }
 }
