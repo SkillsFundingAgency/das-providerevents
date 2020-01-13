@@ -3,13 +3,16 @@ using System.Threading.Tasks;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using SFA.DAS.Provider.Events.Api.Client.Configuration;
 using SFA.DAS.Provider.Events.Api.Types;
 
 namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 {
     public class WhenGettingPeriodEnds
     {
-        private PaymentsEventsApiConfiguration _configuration;
+        private const string ExpectedApiBaseUrl = "http://test.local.url/";
+        private const string ClientToken = "super_secure_token";
+        private Mock<IPaymentsEventsApiConfiguration> _configuration;
         private PeriodEnd _periodEnd1;
         private Client.PaymentsEventsApiClient _client;
         private Mock<SecureHttpClient> _httpClient;
@@ -17,11 +20,9 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
         [SetUp]
         public void Arrange()
         {
-            _configuration = new PaymentsEventsApiConfiguration
-            {
-                ApiBaseUrl = "some-url/",
-                ClientToken = "super_secure_token"
-            };
+            _configuration = new Mock<IPaymentsEventsApiConfiguration>();
+            _configuration.Setup(m => m.ApiBaseUrl).Returns(ExpectedApiBaseUrl);
+            _configuration.Setup(m => m.ClientToken).Returns(ClientToken);
 
             _periodEnd1 = new PeriodEnd
             {
@@ -50,7 +51,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                     _periodEnd1
                 })));
 
-            _client = new Client.PaymentsEventsApiClient(_configuration, _httpClient.Object);
+            _client = new Client.PaymentsEventsApiClient(_configuration.Object, _httpClient.Object);
         }
 
         [Test]
@@ -60,7 +61,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             await _client.GetPeriodEnds();
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("some-url/api/periodends"), Times.Once);
+            _httpClient.Verify(c => c.GetAsync("http://test.local.url/api/periodends"), Times.Once);
         }
 
         [Test]
