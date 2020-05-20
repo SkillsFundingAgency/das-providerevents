@@ -3,13 +3,16 @@ using System.Threading.Tasks;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using SFA.DAS.Provider.Events.Api.Client.Configuration;
 using SFA.DAS.Provider.Events.Api.Types;
 
 namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 {
     public class WhenGettingSubmissionEvents
     {
-        private PaymentsEventsApiConfiguration _configuration;
+        private const string ExpectedApiBaseUrl = "http://test.local.url/";
+        private const string ClientToken = "super_secure_token";
+        private Mock<IPaymentsEventsApiConfiguration> _configuration;
         private SubmissionEvent _submissionStandardEvent;
         private SubmissionEvent _submissionFrameworkEvent;
         private Client.PaymentsEventsApiClient _client;
@@ -18,11 +21,9 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
         [SetUp]
         public void Arrange()
         {
-            _configuration = new PaymentsEventsApiConfiguration
-            {
-                ApiBaseUrl = "some-url/",
-                ClientToken = "super_secure_token"
-            };
+            _configuration = new Mock<IPaymentsEventsApiConfiguration>();
+            _configuration.Setup(m => m.ApiBaseUrl).Returns(ExpectedApiBaseUrl);
+            _configuration.Setup(m => m.ClientToken).Returns(ClientToken);
 
             _submissionStandardEvent = new SubmissionEvent
             {
@@ -81,7 +82,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                     }
                 })));
 
-            _client = new Client.PaymentsEventsApiClient(_configuration, _httpClient.Object);
+            _client = new Client.PaymentsEventsApiClient(_configuration.Object, _httpClient.Object);
         }
 
         [Test]
@@ -91,7 +92,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             await _client.GetSubmissionEvents(0, new DateTime(2017, 2, 8, 12, 10, 45), 0, 7);
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("some-url/api/submissions?page=7&sinceTime=2017-02-08T12:10:45"), Times.Once);
+            _httpClient.Verify(c => c.GetAsync("http://test.local.url/api/submissions?page=7&sinceTime=2017-02-08T12:10:45"), Times.Once);
         }
 
         [Test]
@@ -101,7 +102,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             await _client.GetSubmissionEvents(9, null, 0, 7);
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("some-url/api/submissions?page=7&sinceEventId=9"), Times.Once);
+            _httpClient.Verify(c => c.GetAsync("http://test.local.url/api/submissions?page=7&sinceEventId=9"), Times.Once);
         }
 
         [Test]
@@ -111,7 +112,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             await _client.GetSubmissionEvents(0, null, 123, 7);
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("some-url/api/submissions?page=7&ukprn=123"), Times.Once);
+            _httpClient.Verify(c => c.GetAsync("http://test.local.url/api/submissions?page=7&ukprn=123"), Times.Once);
         }
 
         [Test]
