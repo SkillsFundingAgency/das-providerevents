@@ -96,6 +96,9 @@
     <Reference Include="Ploeh.AutoFixture.NUnit3, Version=3.51.0.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoFixture.NUnit3.3.51.0\lib\net40\Ploeh.AutoFixture.NUnit3.dll</HintPath>
     </Reference>
+    <Reference Include="SFA.DAS.Authentication.Extensions.Legacy, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Authentication.Extensions.Legacy.1.0.29\lib\netstandard2.0\SFA.DAS.Authentication.Extensions.Legacy.dll</HintPath>
+    </Reference>
     <Reference Include="SFA.DAS.Http, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.Http.3.2.28\lib\netstandard2.0\SFA.DAS.Http.dll</HintPath>
     </Reference>
@@ -157,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoFixture\AutoMoqDataAttribute.cs" />
+    <Compile Include="ClientUnitTestBase.cs" />
     <Compile Include="PaymentsEventsApiClient\WhenGettingDataLockEvents.cs" />
     <Compile Include="PaymentsEventsApiClient\WhenGettingLatestLearnerEventsForStandards.cs" />
     <Compile Include="PaymentsEventsApiClient\WhenGettingTransfers.cs" />

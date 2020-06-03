@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Moq;
 using Newtonsoft.Json;
@@ -8,7 +9,7 @@ using SFA.DAS.Provider.Events.Api.Types;
 
 namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 {
-    public class WhenGettingSubmissionEvents
+    public class WhenGettingSubmissionEvents : ClientUnitTestBase
     {
         private const string ExpectedApiBaseUrl = "http://test.local.url/";
         private const string ClientToken = "super_secure_token";
@@ -16,7 +17,6 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
         private SubmissionEvent _submissionStandardEvent;
         private SubmissionEvent _submissionFrameworkEvent;
         private Client.PaymentsEventsApiClient _client;
-        private Mock<SecureHttpClient> _httpClient;
 
         [SetUp]
         public void Arrange()
@@ -36,7 +36,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 Uln = 987654,
                 StandardCode = 27,
                 ActualStartDate = new DateTime(2017, 4, 1),
-                PlannedEndDate =  new DateTime(2018, 5, 1),
+                PlannedEndDate = new DateTime(2018, 5, 1),
                 TrainingPrice = 12000m,
                 EndpointAssessorPrice = 3000m,
                 NiNumber = "AB12345C",
@@ -69,20 +69,22 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 EPAOrgId = "EPACodeI"
             };
 
-            _httpClient = new Mock<SecureHttpClient>();
-            _httpClient.Setup(c => c.GetAsync(It.IsAny<string>()))
-                .Returns(Task.FromResult(JsonConvert.SerializeObject(new PageOfResults<SubmissionEvent>
+            _httpMessageHandlerMock = SetupHttpMessageHandler(JsonConvert.SerializeObject(
+                new PageOfResults<SubmissionEvent>
                 {
                     PageNumber = 1,
                     TotalNumberOfPages = 2,
                     Items = new[]
-                    {
-                        _submissionStandardEvent,
-                        _submissionFrameworkEvent
-                    }
-                })));
+                {
+                    _submissionStandardEvent,
+                    _submissionFrameworkEvent
+                }
+                }));
 
-            _client = new Client.PaymentsEventsApiClient(_configuration.Object, _httpClient.Object);
+            // use real http client with mocked handler
+            var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+
+            _client = new Client.PaymentsEventsApiClient(_configuration.Object, httpClient);
         }
 
         [Test]
@@ -92,7 +94,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             await _client.GetSubmissionEvents(0, new DateTime(2017, 2, 8, 12, 10, 45), 0, 7);
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("http://test.local.url/api/submissions?page=7&sinceTime=2017-02-08T12:10:45"), Times.Once);
+            VerifyExpectedUrlCalled("http://test.local.url/api/submissions?page=7&sinceTime=2017-02-08T12:10:45");
         }
 
         [Test]
@@ -102,7 +104,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             await _client.GetSubmissionEvents(9, null, 0, 7);
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("http://test.local.url/api/submissions?page=7&sinceEventId=9"), Times.Once);
+            VerifyExpectedUrlCalled("http://test.local.url/api/submissions?page=7&sinceEventId=9");
         }
 
         [Test]
@@ -112,7 +114,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             await _client.GetSubmissionEvents(0, null, 123, 7);
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("http://test.local.url/api/submissions?page=7&ukprn=123"), Times.Once);
+            VerifyExpectedUrlCalled("http://test.local.url/api/submissions?page=7&ukprn=123");
         }
 
         [Test]

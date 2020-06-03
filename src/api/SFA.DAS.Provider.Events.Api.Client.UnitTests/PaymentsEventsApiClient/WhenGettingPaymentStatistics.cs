@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net.Http;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
@@ -8,13 +9,12 @@ using SFA.DAS.Provider.Events.Api.Types;
 
 namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 {
-    public class WhenGettingPaymentStatistics
+    public class WhenGettingPaymentStatistics : ClientUnitTestBase
     {
         private const string ExpectedApiBaseUrl = "http://test.local.url/";
         private const string ClientToken = "super_secure_token";
         private Mock<IPaymentsEventsApiConfiguration> _configuration;
         private Client.PaymentsEventsApiClient _client;
-        private Mock<SecureHttpClient> _httpClient;
 
         [SetUp]
         public void Arrange()
@@ -23,19 +23,20 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             _configuration.Setup(m => m.ApiBaseUrl).Returns(ExpectedApiBaseUrl);
             _configuration.Setup(m => m.ClientToken).Returns(ClientToken);
 
-
-            _httpClient = new Mock<SecureHttpClient>();
-            _httpClient.Setup(c => c.GetAsync("http://test.local.url/api/v2/payments/statistics"))
-                .ReturnsAsync(JsonConvert.SerializeObject(new PaymentStatistics()
+            _httpMessageHandlerMock = SetupHttpMessageHandler(JsonConvert.SerializeObject(
+                new PaymentStatistics()
                 {
                     TotalNumberOfPayments = 500,
                     TotalNumberOfPaymentsWithRequiredPayment = 470
                 }));
 
-            _client = new Client.PaymentsEventsApiClient(_configuration.Object, _httpClient.Object);
+            // use real http client with mocked handler
+            var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+
+            _client = new Client.PaymentsEventsApiClient(_configuration.Object, httpClient);
         }
 
-        
+
         [Test]
         public async Task ThenItShouldReturnResultFromApi()
         {
@@ -48,6 +49,6 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             actual.TotalNumberOfPaymentsWithRequiredPayment.Should().Be(470);
         }
 
-    
+
     }
 }
