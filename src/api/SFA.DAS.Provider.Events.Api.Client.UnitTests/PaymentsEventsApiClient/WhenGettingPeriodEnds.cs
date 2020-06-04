@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Moq;
 using Newtonsoft.Json;
@@ -8,14 +9,13 @@ using SFA.DAS.Provider.Events.Api.Types;
 
 namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 {
-    public class WhenGettingPeriodEnds
+    public class WhenGettingPeriodEnds : ClientUnitTestBase
     {
         private const string ExpectedApiBaseUrl = "http://test.local.url/";
         private const string ClientToken = "super_secure_token";
         private Mock<IPaymentsEventsApiConfiguration> _configuration;
         private PeriodEnd _periodEnd1;
         private Client.PaymentsEventsApiClient _client;
-        private Mock<SecureHttpClient> _httpClient;
 
         [SetUp]
         public void Arrange()
@@ -44,14 +44,16 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 }
             };
 
-            _httpClient = new Mock<SecureHttpClient>();
-            _httpClient.Setup(c => c.GetAsync(It.IsAny<string>()))
-                .Returns(Task.FromResult(JsonConvert.SerializeObject(new[]
+            _httpMessageHandlerMock = SetupHttpMessageHandler(JsonConvert.SerializeObject(
+                new[]
                 {
                     _periodEnd1
-                })));
+                }));
 
-            _client = new Client.PaymentsEventsApiClient(_configuration.Object, _httpClient.Object);
+            // use real http client with mocked handler
+            var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+
+            _client = new Client.PaymentsEventsApiClient(_configuration.Object, httpClient);
         }
 
         [Test]
@@ -61,7 +63,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             await _client.GetPeriodEnds();
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("http://test.local.url/api/periodends"), Times.Once);
+            VerifyExpectedUrlCalled("http://test.local.url/api/periodends");
         }
 
         [Test]

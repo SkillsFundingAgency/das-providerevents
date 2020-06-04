@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Moq;
 using Newtonsoft.Json;
@@ -8,7 +9,7 @@ using SFA.DAS.Provider.Events.Api.Types;
 
 namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 {
-    public class WhenGettingPayments
+    public class WhenGettingPayments : ClientUnitTestBase
     {
         private const string ExpectedApiBaseUrl = "http://test.local.url/";
         private const string ClientToken = "super_secure_token";
@@ -16,7 +17,6 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
         private Payment _dasPayment;
         private Payment _nonDasPayment;
         private Client.PaymentsEventsApiClient _client;
-        private Mock<SecureHttpClient> _httpClient;
 
         [SetUp]
         public void Arrange()
@@ -78,9 +78,8 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 ContractType = ContractType.ContractWithSfa
             };
 
-            _httpClient = new Mock<SecureHttpClient>();
-            _httpClient.Setup(c => c.GetAsync(It.IsAny<string>()))
-                .Returns(Task.FromResult(JsonConvert.SerializeObject(new PageOfResults<Payment>
+            _httpMessageHandlerMock = SetupHttpMessageHandler(JsonConvert.SerializeObject(
+                new PageOfResults<Payment>
                 {
                     PageNumber = 1,
                     TotalNumberOfPages = 2,
@@ -89,9 +88,12 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                         _dasPayment,
                         _nonDasPayment
                     }
-                })));
+                }));
 
-            _client = new Client.PaymentsEventsApiClient(_configuration.Object, _httpClient.Object);
+            // use real http client with mocked handler
+            var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+
+            _client = new Client.PaymentsEventsApiClient(_configuration.Object, httpClient);
         }
 
         [Test]
@@ -101,17 +103,17 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             await _client.GetPayments("XXX", "YYY", 2);
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("http://test.local.url/api/payments?page=2&periodId=XXX&employerAccountId=YYY&ukprn="), Times.Once);
+            VerifyExpectedUrlCalled("http://test.local.url/api/payments?page=2&periodId=XXX&employerAccountId=YYY&ukprn=");
         }
 
         [Test]
         public async Task ThenItShouldCallTheCorrectUrlForUkprnFilter()
         {
             // Act
-            await _client.GetPayments("XXX", "YYY", 2,100);
+            await _client.GetPayments("XXX", "YYY", 2, 100);
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("http://test.local.url/api/payments?page=2&periodId=XXX&employerAccountId=YYY&ukprn=100"), Times.Once);
+            VerifyExpectedUrlCalled("http://test.local.url/api/payments?page=2&periodId=XXX&employerAccountId=YYY&ukprn=100");
         }
 
 

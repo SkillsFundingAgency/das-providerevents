@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Moq;
 using Newtonsoft.Json;
@@ -8,14 +9,13 @@ using SFA.DAS.Provider.Events.Api.Types;
 
 namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 {
-    public class WhenGettingDataLockEvents
+    public class WhenGettingDataLockEvents : ClientUnitTestBase
     {
         private const string ExpectedApiBaseUrl = "http://test.local.url/";
         private const string ClientToken = "super_secure_token";
         private Mock<IPaymentsEventsApiConfiguration> _configuration;
         private DataLockEvent _dataLockEvent;
         private Client.PaymentsEventsApiClient _client;
-        private Mock<SecureHttpClient> _httpClient;
 
         [SetUp]
         public void Arrange()
@@ -41,7 +41,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 IlrStandardCode = 27,
                 IlrTrainingPrice = 12000m,
                 IlrEndpointAssessorPrice = 3000m,
-                Errors = new []
+                Errors = new[]
                 {
                     new DataLockEventError
                     {
@@ -49,7 +49,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                         SystemDescription = "Mismatch on price."
                     }
                 },
-                Periods = new []
+                Periods = new[]
                 {
                     new DataLockEventPeriod
                     {
@@ -75,7 +75,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                         IsPayable = false
                     }
                 },
-                Apprenticeships = new []
+                Apprenticeships = new[]
                 {
                     new DataLockEventApprenticeship
                     {
@@ -88,9 +88,8 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                 }
             };
 
-            _httpClient = new Mock<SecureHttpClient>();
-            _httpClient.Setup(c => c.GetAsync(It.IsAny<string>()))
-                .Returns(Task.FromResult(JsonConvert.SerializeObject(new PageOfResults<DataLockEvent>
+            _httpMessageHandlerMock = SetupHttpMessageHandler(JsonConvert.SerializeObject(
+                new PageOfResults<DataLockEvent>
                 {
                     PageNumber = 1,
                     TotalNumberOfPages = 2,
@@ -98,9 +97,12 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                     {
                         _dataLockEvent
                     }
-                })));
+                }));
 
-            _client = new Client.PaymentsEventsApiClient(_configuration.Object, _httpClient.Object);
+            // use real http client with mocked handler
+            var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+
+            _client = new Client.PaymentsEventsApiClient(_configuration.Object, httpClient);
         }
 
         [Test]
@@ -110,7 +112,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             await _client.GetDataLockEvents(0, new DateTime(2017, 2, 8, 12, 10, 45), "123", 456, 7);
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("http://test.local.url/api/datalock?page=7&sinceTime=2017-02-08T12:10:45&employerAccountId=123&ukprn=456"), Times.Once);
+            VerifyExpectedUrlCalled("http://test.local.url/api/datalock?page=7&sinceTime=2017-02-08T12:10:45&employerAccountId=123&ukprn=456");
         }
 
         [Test]
@@ -120,7 +122,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             await _client.GetDataLockEvents(9, null, "123", 456, 7);
 
             // Assert
-            _httpClient.Verify(c => c.GetAsync("http://test.local.url/api/datalock?page=7&sinceEventId=9&employerAccountId=123&ukprn=456"), Times.Once);
+            VerifyExpectedUrlCalled("http://test.local.url/api/datalock?page=7&sinceEventId=9&employerAccountId=123&ukprn=456");
         }
 
         [Test]
