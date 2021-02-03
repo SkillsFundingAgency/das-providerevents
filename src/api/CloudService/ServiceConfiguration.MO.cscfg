@@ -8,6 +8,7 @@
       <Setting name="EnvironmentName" value="__EnvironmentName__" />
       <Setting name="LoggingConnectionString" value="__LoggingConnectionString__" />
       <Setting name="MonthEndConnectionString" value="__MonthEndConnectionString__" />
+      <Setting name="PaymentsV2ConnectionString" value="__PaymentsV2ConnectionString__" />
       <Setting name="EventsConnectionString" value="__EventsConnectionString__" />
       <Setting name="ApiTokenSecret" value="__ApiTokenSecret__" />
       <Setting name="ApiIssuers" value="__ApiIssuers__" />
