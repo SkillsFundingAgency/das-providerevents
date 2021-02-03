@@ -8,6 +8,9 @@ namespace SFA.DAS.Provider.Events.Api
     {
         public void ConfigureAuth(IAppBuilder app)
         {
+            if (CloudConfigurationManager.GetSetting("EnvironmentName") == "LOCAL")
+                return;
+
             app.UseMixedModeAuthentication(new MixedModeAuthenticationOptions
             {
                 ValidIssuers = CloudConfigurationManager.GetSetting("ApiIssuers").Split(' '),
