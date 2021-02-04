@@ -60,7 +60,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             FROM Payments 
             CROSS APPLY _count
 
-            ORDER BY [RequiredPaymentId], Id
+            ORDER BY Id
             OFFSET (@PageIndex - 1) * @PageSize ROWS
             FETCH NEXT @PageSize ROWS ONLY";
 
