@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.Provider.Events.Application.Data.Entities
 {
+    //todo update this to match result set of new query, ditching public List<PaymentsDueEarningEntity> PaymentsDueEarningEntities { get; set; }
     public class PaymentEntity : IAmAPageableEntity
     {
         public string Id { get; set; }
@@ -33,7 +34,7 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
         public int? PathwayCode { get; set; }
 
         public int ContractType { get; set; }
-        public List<PaymentsDueEarningEntity> PaymentsDueEarningEntities { get; set; }
+
         public int TotalCount { get; set; }
     }
 }

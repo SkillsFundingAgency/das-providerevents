@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using SFA.DAS.Provider.Events.Api.Types;
@@ -12,73 +13,75 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 {
     public class DcfsPaymentRepository : DcfsRepository, IPaymentRepository
     {
+        public DcfsPaymentRepository()
+            : base("PaymentsV2ConnectionString")
+        {
+        }
+
         // Using CTE for 2 reasons:
         //  Get the column count at the same time as the query
         //  Restrict the query to PageSize rows for the main query before joining the earnings data
+        
         private const string SqlTemplate = @"
-            WITH _data AS (
-                SELECT 
-                    CAST(p.PaymentId as varchar(36)) [Id], 
-                    rp.Id [DataRequiredPaymentId], 
-                    rp.CommitmentId [ApprenticeshipId], 
-                    rp.CommitmentVersionId [ApprenticeshipVersion], 
-                    rp.Ukprn, 
-                    rp.Uln, 
-                    rp.AccountId [EmployerAccountId], 
-                    rp.AccountVersionId [EmployerAccountVersion], 
-                    p.DeliveryMonth [DeliveryPeriodMonth], 
-                    p.DeliveryYear [DeliveryPeriodYear], 
-                    p.CollectionPeriodName [CollectionPeriodId], 
-                    p.CollectionPeriodMonth, 
-                    p.CollectionPeriodYear, 
-                    rp.IlrSubmissionDateTime [EvidenceSubmittedOn], 
-                    p.FundingSource, 
-                    NULL AS FundingAccountId, 
-                    p.TransactionType, 
-                    p.Amount, 
-                    rp.StandardCode, 
-                    rp.FrameworkCode, 
-                    rp.ProgrammeType, 
-                    rp.PathwayCode, 
-                    rp.ApprenticeshipContractType [ContractType]
-                FROM 
-                    Payments.Payments p 
-                    INNER JOIN PaymentsDue.RequiredPayments rp ON p.RequiredPaymentId = rp.Id 
-                /**where**/ -- Do not remove. Essential for SqlBuilder
-            ),
-            _count AS (
-                SELECT COUNT(1) AS TotalCount FROM _data
-            ) 
-            SELECT * FROM 
-            (
-                SELECT * FROM _data CROSS APPLY _count 
-                ORDER BY Id 
-                OFFSET (@PageIndex - 1) * @PageSize ROWS FETCH NEXT @PageSize ROWS ONLY 
-            ) AS DATA 
-            LEFT OUTER JOIN PaymentsDue.Earnings e 
-                ON e.RequiredPaymentId = DATA.DataRequiredPaymentId ";
+            WITH Payments AS (
+	            SELECT 
+		            CAST(P.Id as varchar(36)) [Id],
+		            P.RequiredPaymentEventId [RequiredPaymentId],
+		            P.ApprenticeshipId [ApprenticeshipId], 
+		            '' [ApprenticeshipVersion], 
+		            P.Ukprn, 
+		            P.LearnerUln [ULN], 
+		            P.AccountId [EmployerAccountId], 
+		            '' [EmployerAccountVersion], 
+		            CASE WHEN DeliveryPeriod > 5 THEN DeliveryPeriod - 5 ELSE DeliveryPeriod + 7 END [DeliveryPeriodMonth], 
+		            CAST(CASE WHEN DeliveryPeriod > 5 THEN 2000 + SUBSTRING(CAST(P.AcademicYear AS NVARCHAR), 3, 2) ELSE 2000 + SUBSTRING(CAST(P.AcademicYear AS NVARCHAR), 1, 2) END AS INT) [DeliveryPeriodYear], 
+		            CONCAT(CAST(P.AcademicYear AS NVARCHAR), '-R', CASE WHEN P.CollectionPeriod < 10 THEN '0' END, CAST(P.CollectionPeriod AS NVARCHAR)) [CollectionPeriodId], 
+		            CASE WHEN P.CollectionPeriod > 12 THEN P.CollectionPeriod - 4 WHEN P.CollectionPeriod > 5 THEN P.CollectionPeriod - 5 ELSE P.CollectionPeriod + 7 END [CollectionPeriodMonth], 
+		            CAST(CASE WHEN P.CollectionPeriod > 5 THEN 2000 + SUBSTRING(CAST(P.AcademicYear AS NVARCHAR), 3, 2) ELSE 2000 + SUBSTRING(CAST(P.AcademicYear AS NVARCHAR), 1, 2) END AS INT) [CollectionPeriodYear], 
+		            P.IlrSubmissionDateTime [EvidenceSubmittedOn], 
+		            P.FundingSource, 
+		            NULL AS FundingAccountId, 
+		            P.TransactionType, 
+		            P.Amount, 
+		            P.LearningAimStandardCode [StandardCode], 
+		            P.LearningAimFrameworkCode [FrameworkCode], 
+		            P.LearningAimProgrammeType [ProgrammeType], 
+		            P.LearningAimPathwayCode [PathwayCode], 
+		            P.ContractType [ContractType]
 
-        public async Task<PageOfResults<PaymentEntity>> GetPayments(int page, int pageSize, string employerAccountId, int? collectionPeriodYear, int? collectionPeriodMonth, long? ukprn)
+	            FROM [Payments2].[Payment] P
+                /**where**/ -- Do not remove. Essential for SqlBuilder
+            )
+            , _count AS (
+	            SELECT COUNT(1) [TotalCount] FROM Payments
+            )
+
+            SELECT *
+            FROM Payments 
+            CROSS APPLY _count
+
+            ORDER BY [RequiredPaymentId], Id
+            OFFSET (@PageIndex - 1) * @PageSize ROWS
+            FETCH NEXT @PageSize ROWS ONLY";
+
+        public async Task<PageOfResults<PaymentEntity>> GetPayments(int page, int pageSize, string employerAccountId, int? academicYear, int? collectionPeriod, long? ukprn)
         {
             var sqlBuilder = new SqlBuilder();
             var query = sqlBuilder.AddTemplate(SqlTemplate);
 
-            BuildQueryParameters(employerAccountId, collectionPeriodYear, collectionPeriodMonth, ukprn, sqlBuilder);
+            BuildQueryParameters(employerAccountId, academicYear, collectionPeriod, ukprn, sqlBuilder);
 
             // TODO: Consider putting this in a decorator??
             AddPagingInformation(page, pageSize, sqlBuilder);
 
             using (var connection = await GetOpenConnection().ConfigureAwait(false))
             {
-                var result = await connection.MappedQueryAsync<PaymentEntity, PaymentsDueEarningEntity>(
-                    query.RawSql,
-                    query.Parameters,
-                    splitOn: c => c.RequiredPaymentId,
-                    parentIdentifier: p => p.Id,
-                    childCollection: p => p.PaymentsDueEarningEntities
-                ).ConfigureAwait(false);
+                var result = await connection.QueryAsync<PaymentEntity>(
+                        query.RawSql,
+                        query.Parameters
+                    ).ConfigureAwait(false);
 
-                var pagedResults = PageResults(result, page, pageSize);
+                var pagedResults = PageResults(result.ToList(), page, pageSize);
                 return pagedResults;
             }
         }
@@ -100,19 +103,19 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             sqlBuilder.AddParameters(new { PageIndex = page, PageSize = pageSize });
         }
 
-        private static void BuildQueryParameters(string employerAccountId, int? collectionPeriodYear, int? collectionPeriodMonth, long? ukprn, SqlBuilder sqlBuilder)
+        private static void BuildQueryParameters(string employerAccountId, int? academicYear, int? collectionPeriod, long? ukprn, SqlBuilder sqlBuilder)
         {
             sqlBuilder.Where(
-                "p.CollectionPeriodYear = @CollectionPeriodYear AND p.CollectionPeriodMonth = @CollectionPeriodMonth",
-                new { CollectionPeriodYear = collectionPeriodYear, CollectionPeriodMonth = collectionPeriodMonth },
-                includeIf: collectionPeriodYear.HasValue && collectionPeriodMonth.HasValue);
+                "p.AcademicYear = @AcademicYear AND p.CollectionPeriod = @CollectionPeriod",
+                new { AcademicYear = academicYear, CollectionPeriod = collectionPeriod },
+                includeIf: academicYear.HasValue && collectionPeriod.HasValue);
 
             sqlBuilder.Where(
-                "rp.AccountId = @EmployerAccountId",
+                "p.AccountId = @EmployerAccountId",
                 new { EmployerAccountId = employerAccountId?.Replace("'", "''") },
                 includeIf: !string.IsNullOrEmpty(employerAccountId));
 
-            sqlBuilder.Where("rp.Ukprn = @UkPrn", new { UkPrn = ukprn }, includeIf: ukprn.HasValue);
+            sqlBuilder.Where("p.Ukprn = @UkPrn", new { UkPrn = ukprn }, includeIf: ukprn.HasValue);
         }
     }
 }

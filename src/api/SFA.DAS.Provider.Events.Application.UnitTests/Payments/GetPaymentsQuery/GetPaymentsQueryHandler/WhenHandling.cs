@@ -24,8 +24,15 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Payments.GetPaymentsQuer
         )
         {
             // Arrange
-            repository.Setup(x => x.GetPayments(request.PageNumber, request.PageSize, request.EmployerAccountId, request.Period.CalendarYear,
-                request.Period.CalendarMonth, request.Ukprn)).ReturnsAsync(paymentEntities);
+            request.Period = new Data.Period
+            {
+                Id = "1920-R12",
+                CalendarYear = 2020,
+                CalendarMonth = 7
+            };
+
+            repository.Setup(x => x.GetPayments(request.PageNumber, request.PageSize, request.EmployerAccountId, 1920,
+                12, request.Ukprn)).ReturnsAsync(paymentEntities);
 
             autoMapper.Setup(x => x.Map<Api.Types.PageOfResults<Payment>>(paymentEntities)).Returns(expectedResults);
 
@@ -48,6 +55,13 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Payments.GetPaymentsQuer
             var ex = new Exception();
             repository.Setup(r => r.GetPayments(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<long?>()))
                 .Throws(ex);
+
+            request.Period = new Data.Period
+            {
+                Id = "1920-R12",
+                CalendarYear = 2020,
+                CalendarMonth = 7
+            };
 
             // Act
             var actual = await sut.Handle(request).ConfigureAwait(false);
