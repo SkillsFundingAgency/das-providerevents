@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
@@ -13,7 +14,6 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
 
             cfg.CreateMap<PaymentsDueEarningEntity, Earning>();
 
-            //todo update this based on new PaymentEntity
             cfg.CreateMap<PaymentEntity, Payment>()
                 .ForMember(dst => dst.CollectionPeriod, opt => opt.Ignore())
                 .ForMember(dst => dst.DeliveryPeriod, opt => opt.Ignore())
@@ -34,6 +34,20 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
                     };
                     dst.FundingSource = (FundingSource)src.FundingSource;
                     dst.TransactionType = (TransactionType)src.TransactionType;
+                    dst.EarningDetails = new List<Earning>
+                    {
+                        new Earning
+                        {
+                            StartDate = src.EarningsStartDate,
+                            PlannedEndDate = src.EarningsPlannedEndDate.GetValueOrDefault(),
+                            ActualEndDate = src.EarningsActualEndDate.GetValueOrDefault(),
+                            CompletionStatus = src.EarningsCompletionStatus.GetValueOrDefault(),
+                            CompletionAmount = src.EarningsCompletionAmount.GetValueOrDefault(),
+                            MonthlyInstallment = src.EarningsInstalmentAmount.GetValueOrDefault(),
+                            TotalInstallments = src.EarningsNumberOfInstalments.GetValueOrDefault(),
+                            RequiredPaymentId = src.RequiredPaymentId
+                        }
+                    };
                 });
 
             cfg.CreateMap<PeriodEntity, Period>();

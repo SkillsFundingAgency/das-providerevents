@@ -25,7 +25,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         private const string SqlTemplate = @"
             WITH Payments AS (
 	            SELECT 
-		            CAST(P.Id as varchar(36)) [Id],
+		            CAST(P.EventId as varchar(36)) [Id],
 		            P.RequiredPaymentEventId [RequiredPaymentId],
 		            P.ApprenticeshipId [ApprenticeshipId], 
 		            '' [ApprenticeshipVersion], 
@@ -47,7 +47,14 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 		            P.LearningAimFrameworkCode [FrameworkCode], 
 		            P.LearningAimProgrammeType [ProgrammeType], 
 		            P.LearningAimPathwayCode [PathwayCode], 
-		            P.ContractType [ContractType]
+		            P.ContractType [ContractType],
+                    P.EarningsStartDate,
+					P.EarningsPlannedEndDate,
+					P.EarningsActualEndDate,
+					P.EarningsCompletionStatus,
+					P.EarningsCompletionAmount,
+					P.EarningsInstalmentAmount,
+					P.EarningsNumberOfInstalments
 
 	            FROM [Payments2].[Payment] P
                 /**where**/ -- Do not remove. Essential for SqlBuilder
