@@ -5,6 +5,7 @@
       <Site name="Web">
         <Bindings>
           <Binding name="Https" endpointName="https" />
+          <Binding name="Http" endpointName="http" />
         </Bindings>
       </Site>
     </Sites>
@@ -25,6 +26,7 @@
     </ConfigurationSettings>
     <Endpoints>
       <InputEndpoint name="https" protocol="https" port="443" certificate="WebSslCert" />
+      <InputEndpoint name="http" protocol="http" port="80" />
     </Endpoints>
     <Certificates>
       <Certificate name="WebSslCert" storeLocation="LocalMachine" storeName="My" />
