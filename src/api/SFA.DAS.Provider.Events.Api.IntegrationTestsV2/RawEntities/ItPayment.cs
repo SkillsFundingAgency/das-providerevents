@@ -120,7 +120,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.RawEntities
         [StringLength(120)]
         public string ReportingAimFundingLineType { get; set; }
         public byte NonPaymentReason { get; set; }
-        public DateTime CreationDate { get; set; }
+        public DateTimeOffset CreationDate { get; set; }
         public int? DuplicateNumber { get; set; }
     }
 

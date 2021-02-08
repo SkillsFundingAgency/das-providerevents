@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using NUnit.Framework;
+using SFA.DAS.Provider.Events.Api.IntegrationTests.ApiHost;
 using SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess;
 using SFA.DAS.Provider.Events.Api.IntegrationTests.Setup;
 
@@ -32,6 +33,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests
 
             var setup = new DatabaseSetup(populate);
             await setup.PopulateTestData().ConfigureAwait(false);
+            var forceInstantiation = IntegrationTestServer.Client;
         }
     }
 }

@@ -25,20 +25,20 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
             items.TotalNumberOfPayments.Should().Be(paymentCount);
         }
 
-        [Test]
-        public async Task ThenTheCountOfPaymentsWithRequiredRecordsIsCorrect()
-        {
+        //[Test]
+        //public async Task ThenTheCountOfPaymentsWithRequiredRecordsIsCorrect()
+        //{
 
-            var requiredPaymentList = TestData.RequiredPayments.Select(x => x.Id).ToList();
-            var receivedPaymentCount = TestData.Payments.Count(x => requiredPaymentList.Contains(x.RequiredPaymentEventId.GetValueOrDefault()));
+        //    var requiredPaymentList = TestData.RequiredPayments.Select(x => x.Id).ToList();
+        //    var receivedPaymentCount = TestData.Payments.Count(x => requiredPaymentList.Contains(x.RequiredPaymentEventId.GetValueOrDefault()));
    
 
-            var results = await IntegrationTestServer.Client.GetAsync($"/api/v2/payments/statistics").ConfigureAwait(false);
+        //    var results = await IntegrationTestServer.Client.GetAsync($"/api/v2/payments/statistics").ConfigureAwait(false);
 
-            var resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
-            var items = JsonConvert.DeserializeObject<PaymentStatistics>(resultsAsString);
+        //    var resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
+        //    var items = JsonConvert.DeserializeObject<PaymentStatistics>(resultsAsString);
             
-            items.TotalNumberOfPaymentsWithRequiredPayment.Should().Be(receivedPaymentCount);
-        }
+        //    items.TotalNumberOfPaymentsWithRequiredPayment.Should().Be(receivedPaymentCount);
+        //}
     }
 }
