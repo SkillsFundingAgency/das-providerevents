@@ -67,10 +67,10 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
             var result = JsonConvert.DeserializeObject<PageOfResults<Payment>>(resultsAsString);
 
             var randomItem = result.Items[new Random().Next(10000)];
-            var matchingPayment = TestData.Payments.First(x => x.PaymentId == Guid.Parse(randomItem.Id));
+            var matchingPayment = TestData.Payments.First(x => x.EventId == Guid.Parse(randomItem.Id));
 
             var matchingEarnings = TestData.Earnings
-                .Where(x => x.RequiredPaymentId == matchingPayment.RequiredPaymentId)
+                .Where(x => x.RequiredPaymentId == matchingPayment.RequiredPaymentEventId)
                 .Select(x => new Earning
                 {
                     ActualEndDate = x.ActualEndDate,

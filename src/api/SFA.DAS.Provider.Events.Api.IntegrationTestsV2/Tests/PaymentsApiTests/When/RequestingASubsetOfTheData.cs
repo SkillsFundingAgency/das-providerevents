@@ -17,7 +17,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
             var firstPayment = TestData.RequiredPayments.First();
             var ukprn = firstPayment.Ukprn;
             var requiredPaymentList = TestData.RequiredPayments.Where(y => y.Ukprn == ukprn).Select(x => x.Id).ToList();
-            var paymentCount = TestData.Payments.Count(x => requiredPaymentList.Contains(x.RequiredPaymentId));
+            var paymentCount = TestData.Payments.Count(x => requiredPaymentList.Contains(x.RequiredPaymentEventId.GetValueOrDefault()));
 
             var results = await IntegrationTestServer.Client.GetAsync($"/api/payments?ukprn={ukprn}").ConfigureAwait(false);
 

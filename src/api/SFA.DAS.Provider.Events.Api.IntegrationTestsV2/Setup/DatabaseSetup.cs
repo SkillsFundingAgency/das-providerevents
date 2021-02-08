@@ -88,7 +88,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Setup
 
             TestData.RequiredPayments = requiredPayments.SelectMany(p => p).ToList();
             TestData.Payments = TestData.RequiredPayments.SelectMany(x => x.Payments).ToList();
-            TestData.Earnings = TestData.Payments.SelectMany(x => x.Earnings).ToList();
+            //TestData.Earnings = TestData.Payments.SelectMany(x => x.Earnings).ToList();
             TestData.Transfers = TestData.RequiredPayments.SelectMany(x => x.Transfers).ToList();
 
             for (int i = 0; i < TestData.Transfers.Count; i++)
@@ -125,7 +125,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Setup
 
         private async Task ReadAllData()
         {
-            var paymentsSql = "SELECT * FROM [Payments].[Payments]";
+            var paymentsSql = "SELECT * FROM [Payments2].[Payment]";
             var earningsSql = "SELECT * FROM [PaymentsDue].[Earnings]";
             var requiredPaymentsSql = "SELECT * FROM [PaymentsDue].[RequiredPayments]";
 

@@ -30,7 +30,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
         {
 
             var requiredPaymentList = TestData.RequiredPayments.Select(x => x.Id).ToList();
-            var receivedPaymentCount = TestData.Payments.Count(x => requiredPaymentList.Contains(x.RequiredPaymentId));
+            var receivedPaymentCount = TestData.Payments.Count(x => requiredPaymentList.Contains(x.RequiredPaymentEventId.GetValueOrDefault()));
    
 
             var results = await IntegrationTestServer.Client.GetAsync($"/api/v2/payments/statistics").ConfigureAwait(false);

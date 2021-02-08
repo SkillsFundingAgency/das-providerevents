@@ -14,11 +14,11 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.EntityBuilders
                     .Create();
                 foreach (var payment in requiredPayment.Payments)
                 {
-                    payment.RequiredPaymentId = requiredPayment.Id;
-                    foreach (var earning in payment.Earnings)
-                    {
-                        earning.RequiredPaymentId = payment.RequiredPaymentId;
-                    }
+                    payment.RequiredPaymentEventId = requiredPayment.Id;
+                    //foreach (var earning in payment.Earnings)
+                    //{
+                    //    earning.RequiredPaymentId = payment.RequiredPaymentId;
+                    //}
                 }
 
                 foreach (var transfer in requiredPayment.Transfers)
