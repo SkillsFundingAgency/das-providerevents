@@ -73,7 +73,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
             for (var i = 0; i < 250; i++)
             {
                 var randomReturnedPayment = result.Items[new Random().Next(10000)];
-                var matchingPayment = TestData.Payments.First(x => x.EventId == Guid.Parse(randomReturnedPayment.Id));
+                var matchingPayment = TestData.Payments.Single(x => x.EventId == Guid.Parse(randomReturnedPayment.Id));
 
                 randomReturnedPayment.Amount.Should().Be(matchingPayment.Amount);
                 randomReturnedPayment.ApprenticeshipId.Should().Be(matchingPayment.ApprenticeshipId);
