@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -60,33 +62,54 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
         /// (which would be too slow because the tests populate a large amount of data into the db),
         /// we could have a table that contains the schema version and check that before each run.
         /// </remarks>
-        //[Test]
-        //public async Task ThenTheDataIsCorrect()
-        //{
-        //    var results = await IntegrationTestServer.Client.GetAsync("/api/payments").ConfigureAwait(false);
+        [Test]
+        public async Task ThenTheDataIsCorrect()
+        {
+            var results = await IntegrationTestServer.GetInstance().Client.GetAsync("/api/payments").ConfigureAwait(false);
 
-        //    var resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
-        //    var result = JsonConvert.DeserializeObject<PageOfResults<Payment>>(resultsAsString);
+            var resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var result = JsonConvert.DeserializeObject<PageOfResults<Payment>>(resultsAsString);
 
-        //    var randomItem = result.Items[new Random().Next(10000)];
-        //    var matchingPayment = TestData.Payments.First(x => x.EventId == Guid.Parse(randomItem.Id));
+            for (var i = 0; i < 250; i++)
+            {
+                var randomReturnedPayment = result.Items[new Random().Next(10000)];
+                var matchingPayment = TestData.Payments.First(x => x.EventId == Guid.Parse(randomReturnedPayment.Id));
 
-        //    var matchingEarnings = TestData.Earnings
-        //        .Where(x => x.RequiredPaymentId == matchingPayment.RequiredPaymentEventId)
-        //        .Select(x => new Earning
-        //        {
-        //            ActualEndDate = x.ActualEndDate,
-        //            CompletionAmount = x.CompletionAmount,
-        //            CompletionStatus = x.CompletionStatus,
-        //            MonthlyInstallment = x.MonthlyInstallment,
-        //            PlannedEndDate = x.PlannedEndDate,
-        //            StartDate = x.StartDate,
-        //            TotalInstallments = x.TotalInstallments,
-        //            EndpointAssessorId = x.EndpointAssessorId,
-        //        });
+                randomReturnedPayment.Amount.Should().Be(matchingPayment.Amount);
+                randomReturnedPayment.ApprenticeshipId.Should().Be(matchingPayment.ApprenticeshipId);
+                randomReturnedPayment.CollectionPeriod.Month.Should().Be(matchingPayment.CollectionPeriod.ToCalendarMonth());
+                randomReturnedPayment.CollectionPeriod.Year.Should().Be(matchingPayment.GetCalendarYear());
+                randomReturnedPayment.CollectionPeriod.Id.Should().Be(matchingPayment.GetPeriodId());
+                ((byte)randomReturnedPayment.ContractType).Should().Be(matchingPayment.ContractType);
+                randomReturnedPayment.DeliveryPeriod.Month.Should().Be(matchingPayment.DeliveryPeriod.ToCalendarMonth());
+                randomReturnedPayment.DeliveryPeriod.Year.Should().Be(matchingPayment.GetDeliveryPeriodYear());
+                randomReturnedPayment.EarningDetails.Count.Should().Be(1);
 
-        //    randomItem.EarningDetails.ShouldAllBeEquivalentTo(matchingEarnings, 
-        //        options => options.Excluding(x => x.RequiredPaymentId));
-        //}
+                var earningDetails = randomReturnedPayment.EarningDetails.Single();
+                earningDetails.ActualEndDate.Should().Be(matchingPayment.EarningsActualEndDate.GetValueOrDefault());
+                earningDetails.CompletionAmount.Should().Be(matchingPayment.EarningsCompletionAmount);
+                earningDetails.CompletionStatus.Should().Be(matchingPayment.EarningsCompletionStatus);
+                earningDetails.EndpointAssessorId.Should().BeNull();
+                earningDetails.MonthlyInstallment.Should().Be(matchingPayment.EarningsInstalmentAmount);
+                earningDetails.PlannedEndDate.Should().Be(matchingPayment.EarningsPlannedEndDate.GetValueOrDefault());
+                earningDetails.RequiredPaymentId.Should().Be(matchingPayment.RequiredPaymentEventId.GetValueOrDefault());
+                earningDetails.StartDate.Should().Be(matchingPayment.EarningsStartDate);
+                earningDetails.TotalInstallments.Should().Be(matchingPayment.EarningsNumberOfInstalments);
+
+                randomReturnedPayment.EmployerAccountId.Should().Be(matchingPayment.AccountId.ToString());
+                randomReturnedPayment.EmployerAccountVersion.Should().BeNullOrEmpty();
+                randomReturnedPayment.EvidenceSubmittedOn.Should().Be(matchingPayment.IlrSubmissionDateTime);
+                randomReturnedPayment.FrameworkCode.Should().Be(matchingPayment.LearningAimFrameworkCode);
+                randomReturnedPayment.FundingAccountId.Should().BeNull();
+                ((byte)randomReturnedPayment.FundingSource).Should().Be(matchingPayment.FundingSource); //byte cast?
+                randomReturnedPayment.Id.ToLower().Should().Be(matchingPayment.EventId.ToString().ToLower());
+                randomReturnedPayment.PathwayCode.Should().Be(matchingPayment.LearningAimPathwayCode);
+                randomReturnedPayment.ProgrammeType.Should().Be(matchingPayment.LearningAimProgrammeType);
+                randomReturnedPayment.StandardCode.Should().Be(matchingPayment.LearningAimStandardCode);
+                ((byte)randomReturnedPayment.TransactionType).Should().Be(matchingPayment.TransactionType); //byte cast?
+                randomReturnedPayment.Ukprn.Should().Be(matchingPayment.Ukprn);
+                randomReturnedPayment.Uln.Should().Be(matchingPayment.LearnerUln);
+            }
+        }
     }
 }

@@ -73,6 +73,8 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.RawEntities
 
         [Range(1, 14)]
         public byte CollectionPeriod { get; set; }
+
+        [Range(1111, 9999)]
         public short AcademicYear { get; set; }
 
         [Range(1, 12)]
