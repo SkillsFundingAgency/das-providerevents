@@ -11,7 +11,6 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.EntityBuilders
             {
                 var payment = fixture
                     .Build<ItPayment>()
-                    .Without(x => x.RequiredPaymentEventId)
                     .Create();
                 
                 return payment;
