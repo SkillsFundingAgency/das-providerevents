@@ -105,6 +105,7 @@
     <Compile Include="DatabaseAccess\PopulateTables.cs" />
     <Compile Include="EntityBuilders\Customisations\IntegrationTestCustomisation.cs" />
     <Compile Include="EntityBuilders\PaymentCustomisation.cs" />
+    <Compile Include="HelperExtensions.cs" />
     <Compile Include="NUnitHooks\AfterAllTests.cs" />
     <Compile Include="NUnitHooks\BeforeAllTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
