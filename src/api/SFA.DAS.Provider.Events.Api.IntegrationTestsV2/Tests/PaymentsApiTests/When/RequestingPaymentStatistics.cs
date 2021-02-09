@@ -14,7 +14,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
         [Test]
         public async Task ThenTheCountOfPaymentRecordsIsCorrect()
         {
-            
+
             var paymentCount = TestData.Payments.Count();
 
             var results = await IntegrationTestServer.GetInstance().Client.GetAsync($"/api/v2/payments/statistics").ConfigureAwait(false);
@@ -23,22 +23,21 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
             var items = JsonConvert.DeserializeObject<PaymentStatistics>(resultsAsString);
 
             items.TotalNumberOfPayments.Should().Be(paymentCount);
+            items.TotalNumberOfPayments.Should().NotBe(0);
         }
 
-        //[Test]
-        //public async Task ThenTheCountOfPaymentsWithRequiredRecordsIsCorrect()
-        //{
+        [Test]
+        public async Task ThenTheCountOfPaymentsWithRequiredRecordsIsCorrect()
+        {
+            var requiredPaymentsCount = TestData.Payments.Count(x => x.RequiredPaymentEventId != null);
 
-        //    var requiredPaymentList = TestData.RequiredPayments.Select(x => x.Id).ToList();
-        //    var receivedPaymentCount = TestData.Payments.Count(x => requiredPaymentList.Contains(x.RequiredPaymentEventId.GetValueOrDefault()));
-   
+            var results = await IntegrationTestServer.GetInstance().Client.GetAsync($"/api/v2/payments/statistics").ConfigureAwait(false);
 
-        //    var results = await IntegrationTestServer.Client.GetAsync($"/api/v2/payments/statistics").ConfigureAwait(false);
+            var resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var items = JsonConvert.DeserializeObject<PaymentStatistics>(resultsAsString);
 
-        //    var resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
-        //    var items = JsonConvert.DeserializeObject<PaymentStatistics>(resultsAsString);
-            
-        //    items.TotalNumberOfPaymentsWithRequiredPayment.Should().Be(receivedPaymentCount);
-        //}
+            items.TotalNumberOfPaymentsWithRequiredPayment.Should().Be(requiredPaymentsCount);
+            items.TotalNumberOfPaymentsWithRequiredPayment.Should().NotBe(0);
+        }
     }
 }
