@@ -33,7 +33,6 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests
 
             var setup = new DatabaseSetup(populate);
             await setup.PopulateTestData().ConfigureAwait(false);
-            var forceInstantiation = IntegrationTestServer.Client;
         }
     }
 }

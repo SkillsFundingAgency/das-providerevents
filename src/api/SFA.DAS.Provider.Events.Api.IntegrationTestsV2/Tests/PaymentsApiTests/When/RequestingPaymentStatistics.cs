@@ -17,7 +17,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
             
             var paymentCount = TestData.Payments.Count();
 
-            var results = await IntegrationTestServer.Client.GetAsync($"/api/v2/payments/statistics").ConfigureAwait(false);
+            var results = await IntegrationTestServer.GetInstance().Client.GetAsync($"/api/v2/payments/statistics").ConfigureAwait(false);
 
             var resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
             var items = JsonConvert.DeserializeObject<PaymentStatistics>(resultsAsString);

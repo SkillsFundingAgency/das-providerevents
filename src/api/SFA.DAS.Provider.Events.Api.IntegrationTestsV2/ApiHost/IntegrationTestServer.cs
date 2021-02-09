@@ -10,19 +10,23 @@ using SFA.DAS.Provider.Events.Api.Controllers;
 
 namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.ApiHost
 {
-    class IntegrationTestServer 
+    public class IntegrationTestServer
     {
-        private static readonly IntegrationTestServer Instance = new IntegrationTestServer();
+        private static IntegrationTestServer _instance;
 
-        private HttpClient TestClient { get; }
+        public static IntegrationTestServer GetInstance()
+        {
+            return _instance ?? (_instance = new IntegrationTestServer());
+        }
 
-        public static HttpClient Client => Instance.TestClient;
-        private static TestServer _server;
+        private TestServer _server;
+
+        public HttpClient Client { get; set; }
 
         protected IntegrationTestServer()
         {
             StartServer();
-            TestClient = StartClient();
+            Client = StartClient();
         }
 
         void StartServer()
@@ -30,7 +34,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.ApiHost
             _server = TestServer.Create<Startup>();
         }
 
-        public static void Shutdown()
+        public void Shutdown()
         {
             _server.Dispose();
         }

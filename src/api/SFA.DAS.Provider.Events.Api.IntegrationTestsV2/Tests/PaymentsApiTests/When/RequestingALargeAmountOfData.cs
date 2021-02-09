@@ -15,25 +15,24 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
         [Test]
         public async Task ThenTheNumberOfPagesIsCorrect()
         {
-            //var expected = TestData.Payments.Count / 10000;
-            //var expected = Math.DivRem(TestData.Payments.Count, 10000, out int remainder);
-            //if (remainder > 0)
-            //    expected++;
+            var expected = Math.DivRem(TestData.Payments.Count, 10000, out int remainder);
+            if (remainder > 0)
+                expected++;
 
             // Assuming 10000 per page
-            var results = await IntegrationTestServer.Client.GetAsync("/api/payments").ConfigureAwait(false);
+            var results = await IntegrationTestServer.GetInstance().Client.GetAsync("/api/payments").ConfigureAwait(false);
 
             var resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
             var result = JsonConvert.DeserializeObject<PageOfResults<Payment>>(resultsAsString);
 
             
-            result.TotalNumberOfPages.Should().Be(25);
+            result.TotalNumberOfPages.Should().Be(expected);
         }
 
         [Test]
         public async Task ThenTheNumberOfResultsIs10000()
         {
-            var results = await IntegrationTestServer.Client.GetAsync("/api/payments").ConfigureAwait(false);
+            var results = await IntegrationTestServer.GetInstance().Client.GetAsync("/api/payments").ConfigureAwait(false);
 
             var resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
             var result = JsonConvert.DeserializeObject<PageOfResults<Payment>>(resultsAsString);
@@ -44,7 +43,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
         [Test]
         public async Task ThenTheResultsHaveEarningsInformation()
         {
-            var results = await IntegrationTestServer.Client.GetAsync("/api/payments").ConfigureAwait(false);
+            var results = await IntegrationTestServer.GetInstance().Client.GetAsync("/api/payments").ConfigureAwait(false);
 
             var resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
             var result = JsonConvert.DeserializeObject<PageOfResults<Payment>>(resultsAsString);
