@@ -8,10 +8,9 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2
     public class AfterAllTests
     {
         [OneTimeTearDown]
-        public Task TearDown()
+        public async Task TearDown()
         {
             IntegrationTestServer.GetInstance().Shutdown();
-            return Task.CompletedTask;
         }
     }
 }
