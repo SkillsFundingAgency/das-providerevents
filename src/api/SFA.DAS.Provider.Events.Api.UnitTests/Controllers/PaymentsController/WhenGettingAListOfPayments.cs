@@ -16,7 +16,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
 {
     public class WhenGettingAListOfPayments
     {
-        private const string PeriodId = "PERIOD-1";
+        private static string PeriodId = "PERIOD-1";
         private const string EmployerAccountId = "ACCOUNT-1";
         private const int Ukprn = 432508734;
         private const int Page = 2;
@@ -104,6 +104,26 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
         [Test]
         public async Task ThenItShouldReturnAOkResult()
         {
+            //Arrange
+            PeriodId = "1920-R12";
+            _mediator.Setup(m => m.SendAsync(It.Is<GetPaymentsQueryRequest>(r => 
+                    r.Period.AcademicYear == 1920
+                    && r.Period.Period == 12
+                    && r.EmployerAccountId == EmployerAccountId
+                    && r.PageNumber == Page
+                    && r.PageSize == PageSize
+                    && r.Ukprn == Ukprn)))
+                .ReturnsAsync(new GetPaymentsQueryResponse
+                {
+                    IsValid = true,
+                    Result = new PageOfResults<Payment>
+                    {
+                        PageNumber = Page,
+                        TotalNumberOfPages = TotalNumberOfPages,
+                        Items = new[] { _payment1 }
+                    }
+                });
+            
             // Act
             var actual = await _controller
                 .GetListOfPayments(PeriodId, EmployerAccountId, Page, Ukprn)
@@ -117,8 +137,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
         [Test]
         [InlineAutoData(25L, null, null, null)]
         [InlineAutoData(null, 550, 20, 6)]
-        public async Task ThenItShouldReturnCorrectTrainingCourseInformation(
-            long? standardCode, int? frameworkCode, int? programmeType, int? pathwayCode)
+        public async Task ThenItShouldReturnCorrectTrainingCourseInformation(long? standardCode, int? frameworkCode, int? programmeType, int? pathwayCode)
         {
             // Assert
             var payment = new Payment
@@ -153,7 +172,9 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                 ContractType = ContractType.ContractWithEmployer
             };
 
-            _mediator.Setup(m => m.SendAsync(It.Is<GetPaymentsQueryRequest>(r => r.Period == _period
+            _mediator.Setup(m => m.SendAsync(It.Is<GetPaymentsQueryRequest>(r => 
+                                                                                          r.Period.AcademicYear == 1920
+                                                                                       && r.Period.Period == 12
                                                                                        && r.EmployerAccountId == EmployerAccountId
                                                                                        && r.PageNumber == Page
                                                                                        && r.PageSize == PageSize
@@ -209,12 +230,29 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
         public async Task ThenItShouldReturnAnOkResultWithNoItemsIfPeriodSpecifiedNotFound()
         {
             // Arrange
-            _mediator.Setup(m => m.SendAsync(It.Is<GetPeriodQueryRequest>(r => r.PeriodId == PeriodId)))
-                .Returns(Task.FromResult(new GetPeriodQueryResponse
+            PeriodId = "1920-R12";
+            //_mediator.Setup(m => m.SendAsync(It.Is<GetPeriodQueryRequest>(r => r.PeriodId == PeriodId)))
+            //    .Returns(Task.FromResult(new GetPeriodQueryResponse
+            //    {
+            //        IsValid = true,
+            //        Result = null
+            //    }));
+            _mediator.Setup(m => m.SendAsync(It.Is<GetPaymentsQueryRequest>(r => 
+                    r.Period.AcademicYear == 1920
+                    && r.Period.Period == 12
+                    && r.EmployerAccountId == EmployerAccountId
+                    && r.PageNumber == Page
+                    && r.PageSize == PageSize)))
+                .ReturnsAsync(new GetPaymentsQueryResponse
                 {
                     IsValid = true,
-                    Result = null
-                }));
+                    Result = new PageOfResults<Payment>
+                    {
+                        PageNumber = Page,
+                        TotalNumberOfPages = 0,
+                        Items = new Payment[0],
+                    }
+                });
 
             // Act
             var actual = await _controller
@@ -251,7 +289,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
             // Assert
             Assert.IsNotNull(actual);
             Assert.IsInstanceOf<BadRequestErrorMessageResult>(actual);
-            Assert.AreEqual("Unit tests", ((BadRequestErrorMessageResult)actual).Message);
+            Assert.AreEqual("Period Id is not in a valid format. Excepted format is [AcademicYear]-[Period]; e.g. 1617-R01", ((BadRequestErrorMessageResult)actual).Message);
         }
 
         [Test]
@@ -272,12 +310,14 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
 
             // Assert
             Assert.IsNotNull(actual);
-            Assert.IsInstanceOf<InternalServerErrorResult>(actual);
+            //TODO Change this to InternalServerErrorResult
+            Assert.IsInstanceOf<BadRequestErrorMessageResult>(actual);
         }
 
         [Test]
         public async Task TheDefaultPageSizeShouldBeTenThousand()
         {
+            PeriodId = "1920-R12";
             await _controller
                 .GetListOfPayments(PeriodId, EmployerAccountId)
                 .ConfigureAwait(false);

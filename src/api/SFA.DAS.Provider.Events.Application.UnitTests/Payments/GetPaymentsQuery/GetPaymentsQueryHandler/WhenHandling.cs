@@ -27,14 +27,14 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Payments.GetPaymentsQuer
             request.Period = new Data.CollectionPeriod
             {
                 Id = "1920-R12",
-                CalendarYear = 2020,
-                CalendarMonth = 7
+                AcademicYear = 1920,
+                Period = 12
             };
 
             repository.Setup(x => x.GetPayments(request.PageNumber, request.PageSize, request.EmployerAccountId, 1920,
                 12, request.Ukprn)).ReturnsAsync(paymentEntities);
 
-            autoMapper.Setup(x => x.Map<Api.Types.PageOfResults<Payment>>(paymentEntities)).Returns(expectedResults);
+            autoMapper.Setup(x => x.Map<PageOfResults<Payment>>(paymentEntities)).Returns(expectedResults);
 
             // Act
             var actualResult = await sut.Handle(request).ConfigureAwait(false);
@@ -59,8 +59,8 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Payments.GetPaymentsQuer
             request.Period = new Data.CollectionPeriod
             {
                 Id = "1920-R12",
-                CalendarYear = 2020,
-                CalendarMonth = 7
+                AcademicYear = 1920,
+                Period = 12
             };
 
             // Act
