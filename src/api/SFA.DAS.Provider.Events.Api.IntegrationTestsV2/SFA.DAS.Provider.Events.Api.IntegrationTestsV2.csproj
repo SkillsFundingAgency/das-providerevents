@@ -99,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiHost\IntegrationTestServer.cs" />
+    <Compile Include="DatabaseAccess\ClearTables.cs" />
     <Compile Include="DatabaseAccess\CreateDatabase.cs" />
     <Compile Include="DatabaseAccess\DatabaseConnection.cs" />
     <Compile Include="DatabaseAccess\DeleteDatabase.cs" />
