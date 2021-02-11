@@ -86,19 +86,19 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
                 randomReturnedPayment.EarningDetails.Count.Should().Be(1);
 
                 var earningDetails = randomReturnedPayment.EarningDetails.Single();
-                earningDetails.ActualEndDate.Should().Be(matchingPayment.EarningsActualEndDate.GetValueOrDefault());
+                earningDetails.ActualEndDate.Should().BeCloseTo(matchingPayment.EarningsActualEndDate.GetValueOrDefault(), 1000);
                 earningDetails.CompletionAmount.Should().Be(matchingPayment.EarningsCompletionAmount);
                 earningDetails.CompletionStatus.Should().Be(matchingPayment.EarningsCompletionStatus);
                 earningDetails.EndpointAssessorId.Should().BeNull();
                 earningDetails.MonthlyInstallment.Should().Be(matchingPayment.EarningsInstalmentAmount);
-                earningDetails.PlannedEndDate.Should().Be(matchingPayment.EarningsPlannedEndDate.GetValueOrDefault());
+                earningDetails.PlannedEndDate.Should().BeCloseTo(matchingPayment.EarningsPlannedEndDate.GetValueOrDefault(), 1000);
                 earningDetails.RequiredPaymentId.Should().Be(matchingPayment.RequiredPaymentEventId.GetValueOrDefault());
-                earningDetails.StartDate.Should().Be(matchingPayment.EarningsStartDate);
+                earningDetails.StartDate.Should().BeCloseTo(matchingPayment.EarningsStartDate, 1000);
                 earningDetails.TotalInstallments.Should().Be(matchingPayment.EarningsNumberOfInstalments);
 
                 randomReturnedPayment.EmployerAccountId.Should().Be(matchingPayment.AccountId.ToString());
                 randomReturnedPayment.EmployerAccountVersion.Should().BeNullOrEmpty();
-                randomReturnedPayment.EvidenceSubmittedOn.Should().Be(matchingPayment.IlrSubmissionDateTime);
+                randomReturnedPayment.EvidenceSubmittedOn.Should().BeCloseTo(matchingPayment.IlrSubmissionDateTime, 1000);
                 randomReturnedPayment.FrameworkCode.Should().Be(matchingPayment.LearningAimFrameworkCode);
                 randomReturnedPayment.FundingAccountId.Should().BeNull();
                 ((byte)randomReturnedPayment.FundingSource).Should().Be(matchingPayment.FundingSource); //byte cast?
