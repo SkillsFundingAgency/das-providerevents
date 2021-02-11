@@ -24,7 +24,8 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         
         private const string SqlTemplate = @"
             WITH Payments AS (
-	            SELECT 
+	            SELECT
+                    p.Id,
 		            P.EventId,
 		            P.RequiredPaymentEventId,
 		            P.ApprenticeshipId, 

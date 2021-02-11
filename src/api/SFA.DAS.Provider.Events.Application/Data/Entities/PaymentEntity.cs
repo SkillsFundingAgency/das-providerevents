@@ -4,6 +4,7 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
 {
     public class PaymentEntity : IAmAPageableEntity
     {
+        public long Id { get; set; }
         public Guid EventId { get; set; }
         public long Ukprn { get; set; }
         public long LearnerUln { get; set; }
