@@ -21,10 +21,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Setup
 
         public async Task PopulateTestData()
         {
-            if (await _populate.AreTablesPopulated().ConfigureAwait(false))
-                await ReadAllData().ConfigureAwait(false);
-            else
-                await PopulateAllData().ConfigureAwait(false);
+            await PopulateAllData().ConfigureAwait(false);
         }
 
         private async Task PopulateAllData()
