@@ -27,6 +27,17 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             _logger = logger;
         }
 
+        //TODO THIS NEEDS TO BE REMOVED WHEN PV2-2308 IS DEVELOPED
+        private CollectionPeriod GetPeriodFromPeriodIdTEMP(string periodId)
+        {
+            return string.IsNullOrWhiteSpace(periodId) ? null : new CollectionPeriod()
+            {
+                Id = periodId,
+                Period = byte.Parse(periodId.Substring(6)),
+                AcademicYear = short.Parse(periodId.Substring(0, 4))
+            };
+        }
+
         [VersionedRoute("api/payments", 1, Name = "PaymentsList")]
         [VersionedRoute("api/payments", 2, Name = "PaymentsListV2H")]
         [Route("api/v2/payments", Name = "PaymentsListV2")]
@@ -42,7 +53,8 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
                 CollectionPeriod period = null;
                 if (PeriodHasBeenProvided(periodId))
                 {
-                    period = await GetPeriodAsync(periodId).ConfigureAwait(false);
+                    //period = await GetPeriodAsync(periodId).ConfigureAwait(false); TODO THIS NEEDS TO BE PUT BACK IN WHEN PV2-2308 IS DEVELOPED
+                    period = GetPeriodFromPeriodIdTEMP(periodId);
                     if (PeriodNotFound(period))
                     {
                         return Ok(new PageOfResults<Payment>
