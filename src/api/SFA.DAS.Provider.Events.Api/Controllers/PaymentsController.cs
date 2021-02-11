@@ -30,12 +30,26 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         //TODO THIS NEEDS TO BE REMOVED WHEN PV2-2308 IS DEVELOPED
         private CollectionPeriod GetPeriodFromPeriodIdTEMP(string periodId)
         {
-            return string.IsNullOrWhiteSpace(periodId) ? null : new CollectionPeriod
+            var validationException = new ValidationException(new[] { "Period Id is not in a valid format. Excepted format is [AcademicYear]-[Period]; e.g. 1617-R01" });
+            try
             {
-                Id = periodId,
-                Period = byte.Parse(periodId.Substring(6)),
-                AcademicYear = short.Parse(periodId.Substring(0, 4))
-            };
+
+                if (!string.IsNullOrWhiteSpace(periodId))
+                {
+                    return new CollectionPeriod
+                    {
+                        Id = periodId,
+                        Period = byte.Parse(periodId.Substring(6)),
+                        AcademicYear = short.Parse(periodId.Substring(0, 4))
+                    };
+                }
+            }
+            catch (Exception)
+            {
+                throw validationException;
+            }
+
+            throw validationException;
         }
 
         [VersionedRoute("api/payments", 1, Name = "PaymentsList")]
