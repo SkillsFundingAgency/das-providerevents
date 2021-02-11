@@ -36,7 +36,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.TransfersController
             var periodQueryResponse = new GetPeriodQueryResponse
             {
                 IsValid = true, 
-                Result = new Period()
+                Result = new CollectionPeriod()
             };
 
             var transfer = new AccountTransfer

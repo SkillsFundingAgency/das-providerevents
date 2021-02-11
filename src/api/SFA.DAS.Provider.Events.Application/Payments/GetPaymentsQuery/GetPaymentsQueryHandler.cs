@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Provider.Events.Api.Types;
-using SFA.DAS.Provider.Events.Application.Extensions;
 using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Repositories;
 
@@ -27,8 +26,8 @@ namespace SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery
                         message.PageNumber,
                         message.PageSize,
                         message.EmployerAccountId,
-                        message.Period?.GetAcademicYear(),
-                        message.Period?.GetCollectionPeriod(),
+                        message.Period?.AcademicYear,
+                        message.Period?.Period,
                         message.Ukprn)
                     .ConfigureAwait(false);
 

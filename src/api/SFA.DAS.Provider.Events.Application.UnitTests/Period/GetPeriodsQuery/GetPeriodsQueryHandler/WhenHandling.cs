@@ -48,10 +48,10 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodsQuery.G
                 .Returns(Task.FromResult(new[] { _periodEntity1, _periodEntity2 }));
 
             _mapper = new Mock<IMapper>();
-            _mapper.Setup(m => m.Map<Data.Period[]>(It.IsAny<PeriodEntity[]>()))
+            _mapper.Setup(m => m.Map<Data.CollectionPeriod[]>(It.IsAny<PeriodEntity[]>()))
                 .Returns((PeriodEntity[] source) =>
                 {
-                    return source.Select(e => new Data.Period
+                    return source.Select(e => new Data.CollectionPeriod
                     {
                         Id = e.Id,
                         CalendarMonth = e.CalendarMonth,
@@ -97,7 +97,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodsQuery.G
             Assert.AreSame(ex, actual.Exception);
         }
 
-        private void AssertPeriodForEntity(Data.Period period, PeriodEntity entity)
+        private void AssertPeriodForEntity(Data.CollectionPeriod period, PeriodEntity entity)
         {
             Assert.AreEqual(entity.Id, period.Id);
             Assert.AreEqual(entity.CalendarMonth, period.CalendarMonth);

@@ -48,7 +48,7 @@ namespace SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery
                 return new GetPeriodQueryResponse
                 {
                     IsValid = true,
-                    Result = new Data.Period
+                    Result = new Data.CollectionPeriod
                     {
                         Id = period.Id,
                         CalendarMonth = period.CalendarMonth,

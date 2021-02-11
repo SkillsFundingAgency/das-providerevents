@@ -25,7 +25,7 @@ namespace SFA.DAS.Provider.Events.Application.Period.GetPeriodsQuery
                 return new GetPeriodsQueryResponse
                 {
                     IsValid = true,
-                    Result = _mapper.Map<Data.Period[]>(periodEntities)
+                    Result = _mapper.Map<Data.CollectionPeriod[]>(periodEntities)
                 };
             }
             catch (Exception ex)

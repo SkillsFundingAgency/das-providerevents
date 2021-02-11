@@ -39,7 +39,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         {
             try
             {
-                Period period = null;
+                CollectionPeriod period = null;
                 if (PeriodHasBeenProvided(periodId))
                 {
                     period = await GetPeriodAsync(periodId).ConfigureAwait(false);
@@ -93,7 +93,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
               
         }
 
-        private static bool PeriodNotFound(Period period)
+        private static bool PeriodNotFound(CollectionPeriod period)
         {
             return period == null;
         }
@@ -103,7 +103,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             return !string.IsNullOrEmpty(periodId);
         }
 
-        private async Task<Period> GetPeriodAsync(string periodId)
+        private async Task<CollectionPeriod> GetPeriodAsync(string periodId)
         {
             var getPeriodResponse = await _mediator
                 .SendAsync(new GetPeriodQueryRequest { PeriodId = periodId })
@@ -115,7 +115,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             return getPeriodResponse.Result;
         }
 
-        private async Task<GetPaymentsQueryResponse> GetPaymentsAsync(string employerAccountId, int page, long? ukprn, Period period)
+        private async Task<GetPaymentsQueryResponse> GetPaymentsAsync(string employerAccountId, int page, long? ukprn, CollectionPeriod period)
         {
             var paymentsResponse = await _mediator
                 .SendAsync(new GetPaymentsQueryRequest

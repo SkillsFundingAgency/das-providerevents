@@ -50,7 +50,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
                     };
                 });
 
-            cfg.CreateMap<PeriodEntity, Period>();
+            cfg.CreateMap<PeriodEntity, CollectionPeriod>();
 
 
             cfg.CreateMap<PageOfResults<SubmissionEventEntity>, PageOfResults<SubmissionEvent>>();

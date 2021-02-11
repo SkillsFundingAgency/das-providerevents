@@ -24,7 +24,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
         private const int TotalNumberOfPages = 100;
 
         private Payment _payment1;
-        private Period _period;
+        private CollectionPeriod _period;
         private Mock<IMediator> _mediator;
         private Api.Controllers.PaymentsController _controller;
         private Mock<ILogger> _logger;
@@ -60,7 +60,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                 StandardCode = 25,
                 ContractType = ContractType.ContractWithEmployer
             };
-            _period = new Period
+            _period = new CollectionPeriod
             {
                 Id = PeriodId,
                 CalendarMonth = 9,

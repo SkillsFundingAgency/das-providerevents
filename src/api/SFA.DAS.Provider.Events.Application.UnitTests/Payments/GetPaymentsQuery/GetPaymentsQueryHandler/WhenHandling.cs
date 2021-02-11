@@ -24,7 +24,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Payments.GetPaymentsQuer
         )
         {
             // Arrange
-            request.Period = new Data.Period
+            request.Period = new Data.CollectionPeriod
             {
                 Id = "1920-R12",
                 CalendarYear = 2020,
@@ -56,7 +56,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Payments.GetPaymentsQuer
             repository.Setup(r => r.GetPayments(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<long?>()))
                 .Throws(ex);
 
-            request.Period = new Data.Period
+            request.Period = new Data.CollectionPeriod
             {
                 Id = "1920-R12",
                 CalendarYear = 2020,
