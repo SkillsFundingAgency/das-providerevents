@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.IntegrationTestsV2.ApiHost;
 using SFA.DAS.Provider.Events.Api.Types;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.When
 {
@@ -17,7 +15,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
         [Test]
         public async Task ThenTheNumberOfPagesIsCorrect()
         {
-            var expected = Math.DivRem(TestData.Payments.Count, 10000, out int remainder);
+            var expected = Math.DivRem(TestData.AllPayments.Count, 10000, out int remainder);
             if (remainder > 0)
                 expected++;
 
@@ -27,7 +25,6 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
             var resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
             var result = JsonConvert.DeserializeObject<PageOfResults<Payment>>(resultsAsString);
 
-            
             result.TotalNumberOfPages.Should().Be(expected);
         }
 
@@ -51,7 +48,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
             var result = JsonConvert.DeserializeObject<PageOfResults<Payment>>(resultsAsString);
 
             var randomItem = result.Items[new Random().Next(10000)];
-            
+
             randomItem.EarningDetails.Should().NotBeEmpty();
         }
 

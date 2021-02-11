@@ -15,7 +15,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
         public async Task ThenTheCountOfPaymentRecordsIsCorrect()
         {
 
-            var paymentCount = TestData.Payments.Count();
+            var paymentCount = TestData.AllPayments.Count();
 
             var results = await IntegrationTestServer.GetInstance().Client.GetAsync($"/api/v2/payments/statistics").ConfigureAwait(false);
 
@@ -29,7 +29,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
         [Test]
         public async Task ThenTheCountOfPaymentsWithRequiredRecordsIsCorrect()
         {
-            var requiredPaymentsCount = TestData.Payments.Count(x => x.RequiredPaymentEventId != null);
+            var requiredPaymentsCount = TestData.AllPayments.Count(x => x.RequiredPaymentEventId != null);
 
             var results = await IntegrationTestServer.GetInstance().Client.GetAsync($"/api/v2/payments/statistics").ConfigureAwait(false);
 
