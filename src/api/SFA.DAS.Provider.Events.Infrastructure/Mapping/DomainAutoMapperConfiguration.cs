@@ -15,48 +15,56 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
             cfg.CreateMap<PaymentsDueEarningEntity, Earning>();
 
             cfg.CreateMap<PaymentEntity, Payment>()
-                .ForMember(dst => dst.CollectionPeriod, opt => opt.Ignore())
-                .ForMember(dst => dst.DeliveryPeriod, opt => opt.Ignore())
-                .ForMember(dst => dst.FundingSource, opt => opt.Ignore())
-                .ForMember(dst => dst.TransactionType, opt => opt.Ignore())
-                .AfterMap((src, dst) =>
+                .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.EventId.ToString()))
+                .ForMember(dst => dst.Ukprn, opt => opt.MapFrom(src => src.Ukprn))
+                .ForMember(dst => dst.Uln, opt => opt.MapFrom(src => src.LearnerUln))
+                .ForMember(dst => dst.EmployerAccountId, opt => opt.MapFrom(src => src.AccountId))
+                .ForMember(dst => dst.ApprenticeshipId, opt => opt.MapFrom(src => src.ApprenticeshipId))
+                .ForMember(dst => dst.EvidenceSubmittedOn, opt => opt.MapFrom(src => src.IlrSubmissionDateTime))
+                .ForMember(dst => dst.EmployerAccountVersion, opt => opt.MapFrom(src => string.Empty))
+                .ForMember(dst => dst.ApprenticeshipVersion, opt => opt.MapFrom(src => string.Empty))
+                .ForMember(dst => dst.FundingSource, opt => opt.MapFrom(src => (FundingSource) src.FundingSource))
+                .ForMember(dst => dst.FundingAccountId, opt => opt.Ignore())
+                .ForMember(dst => dst.TransactionType, opt => opt.MapFrom(src => (TransactionType) src.TransactionType))
+                .ForMember(dst => dst.Amount, opt => opt.MapFrom(src => src.Amount))
+                .ForMember(dst => dst.StandardCode, opt => opt.MapFrom(src => src.LearningAimStandardCode))
+                .ForMember(dst => dst.FrameworkCode, opt => opt.MapFrom(src => src.LearningAimFrameworkCode))
+                .ForMember(dst => dst.ProgrammeType, opt => opt.MapFrom(src => src.LearningAimProgrammeType))
+                .ForMember(dst => dst.PathwayCode, opt => opt.MapFrom(src => src.LearningAimPathwayCode))
+                .ForMember(dst => dst.ContractType, opt => opt.MapFrom(src => (ContractType) src.ContractType))
+                .ForMember(dst => dst.CollectionPeriod, opt => opt.MapFrom(src =>
+                    new NamedCalendarPeriod
+                    {
+                        Id = $"{src.AcademicYear}-R{src.CollectionPeriod:D2}",
+                        Month = GetMonthFromPaymentEntity(src.CollectionPeriod),
+                        Year = GetYearFromPaymentEntity(src.AcademicYear, src.CollectionPeriod)
+                    }))
+                .ForMember(dst => dst.DeliveryPeriod, opt => opt.MapFrom(src =>
+                    new CalendarPeriod
+                    {
+                        Month = GetMonthFromPaymentEntity(src.CollectionPeriod),
+                        Year = GetYearFromPaymentEntity(src.AcademicYear, src.DeliveryPeriod)
+                    }))
+                .ForMember(dst => dst.EarningDetails, opt => opt.MapFrom(src => new List<Earning>
                 {
-                    dst.CollectionPeriod = new NamedCalendarPeriod
+                    new Earning
                     {
-                        Id = src.CollectionPeriodId.Trim(),
-                        Month = src.CollectionPeriodMonth,
-                        Year = src.CollectionPeriodYear
-                    };
-                    dst.DeliveryPeriod = new CalendarPeriod
-                    {
-                        Month = src.DeliveryPeriodMonth,
-                        Year = src.DeliveryPeriodYear
-                    };
-                    dst.FundingSource = (FundingSource)src.FundingSource;
-                    dst.TransactionType = (TransactionType)src.TransactionType;
-                    dst.EarningDetails = new List<Earning>
-                    {
-                        new Earning
-                        {
-                            StartDate = src.EarningsStartDate,
-                            PlannedEndDate = src.EarningsPlannedEndDate.GetValueOrDefault(),
-                            ActualEndDate = src.EarningsActualEndDate.GetValueOrDefault(),
-                            CompletionStatus = src.EarningsCompletionStatus.GetValueOrDefault(),
-                            CompletionAmount = src.EarningsCompletionAmount.GetValueOrDefault(),
-                            MonthlyInstallment = src.EarningsInstalmentAmount.GetValueOrDefault(),
-                            TotalInstallments = src.EarningsNumberOfInstalments.GetValueOrDefault(),
-                            RequiredPaymentId = src.RequiredPaymentId
-                        }
-                    };
-                });
+                        StartDate = src.EarningsStartDate,
+                        PlannedEndDate = src.EarningsPlannedEndDate.GetValueOrDefault(),
+                        ActualEndDate = src.EarningsActualEndDate.GetValueOrDefault(),
+                        CompletionStatus = src.EarningsCompletionStatus.GetValueOrDefault(),
+                        CompletionAmount = src.EarningsCompletionAmount.GetValueOrDefault(),
+                        MonthlyInstallment = src.EarningsInstalmentAmount.GetValueOrDefault(),
+                        TotalInstallments = src.EarningsNumberOfInstalments.GetValueOrDefault(),
+                        RequiredPaymentId = src.RequiredPaymentId
+                    }
+                }));
 
             cfg.CreateMap<PeriodEntity, CollectionPeriod>();
-
 
             cfg.CreateMap<PageOfResults<SubmissionEventEntity>, PageOfResults<SubmissionEvent>>();
 
             cfg.CreateMap<SubmissionEventEntity, SubmissionEvent>();
-
 
             cfg.CreateMap<PageOfResults<DataLockEventEntity>, PageOfResults<DataLockEvent>>();
             cfg.CreateMap<DataLockEventEntity, DataLockEvent>();
@@ -72,13 +80,41 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
                         Year = src.CollectionPeriodYear
                     };
                 });
+
             cfg.CreateMap<DataLockEventApprenticeshipEntity, DataLockEventApprenticeship>();
 
             cfg.CreateMap<TransferEntity, AccountTransfer>()
                 .ForMember(t => t.SenderAccountId, o => o.MapFrom(s => s.SendingAccountId))
                 .ForMember(t => t.ReceiverAccountId, o => o.MapFrom(s => s.ReceivingAccountId))
-                .AfterMap((s, t) => t.Type = (TransferType)s.TransferType);
+                .AfterMap((s, t) => t.Type = (TransferType) s.TransferType);
+
             cfg.CreateMap<PageOfResults<TransferEntity>, PageOfResults<AccountTransfer>>();
+        }
+
+        //NOTE: this logic has been copied from the V2 to V1 migration App
+        private static int GetYearFromPaymentEntity(short academicYear, byte period)
+        {
+            var year = (academicYear / 100) + 2000;
+
+            if (period > 5)
+            {
+                return year + 1;
+            }
+
+            return year;
+        }
+
+        private static int GetMonthFromPaymentEntity(byte period)
+        {
+            if (period <= 5)
+            {
+                return period + 7;
+            }
+
+            if (period > 12)
+                return period - 4;
+
+            return period - 5;
         }
     }
 }

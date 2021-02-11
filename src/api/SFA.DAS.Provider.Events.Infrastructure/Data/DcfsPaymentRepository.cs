@@ -25,29 +25,24 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         private const string SqlTemplate = @"
             WITH Payments AS (
 	            SELECT 
-		            CAST(P.EventId as varchar(36)) [Id],
-		            P.RequiredPaymentEventId [RequiredPaymentId],
-		            P.ApprenticeshipId [ApprenticeshipId], 
-		            '' [ApprenticeshipVersion], 
+		            P.EventId,
+		            P.RequiredPaymentEventId,
+		            P.ApprenticeshipId, 
 		            P.Ukprn, 
-		            P.LearnerUln [ULN], 
-		            P.AccountId [EmployerAccountId], 
-		            '' [EmployerAccountVersion], 
-		            CASE WHEN DeliveryPeriod > 5 THEN DeliveryPeriod - 5 ELSE DeliveryPeriod + 7 END [DeliveryPeriodMonth], 
-		            CAST(CASE WHEN DeliveryPeriod > 5 THEN 2000 + SUBSTRING(CAST(P.AcademicYear AS NVARCHAR), 3, 2) ELSE 2000 + SUBSTRING(CAST(P.AcademicYear AS NVARCHAR), 1, 2) END AS INT) [DeliveryPeriodYear], 
-		            CONCAT(CAST(P.AcademicYear AS NVARCHAR), '-R', CASE WHEN P.CollectionPeriod < 10 THEN '0' END, CAST(P.CollectionPeriod AS NVARCHAR)) [CollectionPeriodId], 
-		            CASE WHEN P.CollectionPeriod > 12 THEN P.CollectionPeriod - 4 WHEN P.CollectionPeriod > 5 THEN P.CollectionPeriod - 5 ELSE P.CollectionPeriod + 7 END [CollectionPeriodMonth], 
-		            CAST(CASE WHEN P.CollectionPeriod > 5 THEN 2000 + SUBSTRING(CAST(P.AcademicYear AS NVARCHAR), 3, 2) ELSE 2000 + SUBSTRING(CAST(P.AcademicYear AS NVARCHAR), 1, 2) END AS INT) [CollectionPeriodYear], 
-		            P.IlrSubmissionDateTime [EvidenceSubmittedOn], 
+		            P.LearnerUln, 
+		            P.AccountId, 
+		            P.DeliveryPeriod, 
+		            P.AcademicYear, 
+		            P.CollectionPeriod, 
+		            P.IlrSubmissionDateTime, 
 		            P.FundingSource, 
-		            NULL AS FundingAccountId, 
 		            P.TransactionType, 
 		            P.Amount, 
-		            P.LearningAimStandardCode [StandardCode], 
-		            P.LearningAimFrameworkCode [FrameworkCode], 
-		            P.LearningAimProgrammeType [ProgrammeType], 
-		            P.LearningAimPathwayCode [PathwayCode], 
-		            P.ContractType [ContractType],
+		            P.LearningAimStandardCode, 
+		            P.LearningAimFrameworkCode, 
+		            P.LearningAimProgrammeType, 
+		            P.LearningAimPathwayCode, 
+		            P.ContractType,
                     P.EarningsStartDate,
 					P.EarningsPlannedEndDate,
 					P.EarningsActualEndDate,
@@ -55,7 +50,6 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 					P.EarningsCompletionAmount,
 					P.EarningsInstalmentAmount,
 					P.EarningsNumberOfInstalments
-
 	            FROM [Payments2].[Payment] P
                 /**where**/ -- Do not remove. Essential for SqlBuilder
             )

@@ -30,7 +30,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         //TODO THIS NEEDS TO BE REMOVED WHEN PV2-2308 IS DEVELOPED
         private CollectionPeriod GetPeriodFromPeriodIdTEMP(string periodId)
         {
-            return string.IsNullOrWhiteSpace(periodId) ? null : new CollectionPeriod()
+            return string.IsNullOrWhiteSpace(periodId) ? null : new CollectionPeriod
             {
                 Id = periodId,
                 Period = byte.Parse(periodId.Substring(6)),
