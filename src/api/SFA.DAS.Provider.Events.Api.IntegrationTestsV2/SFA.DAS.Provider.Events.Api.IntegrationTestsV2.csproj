@@ -113,6 +113,7 @@
     <Compile Include="RawEntities\ItPayment.cs" />
     <Compile Include="Setup\DatabaseSetup.cs" />
     <Compile Include="TestData.cs" />
+    <Compile Include="TestHelper.cs" />
     <Compile Include="Tests\PaymentsApiTests\When\RequestingALargeAmountOfData.cs" />
     <Compile Include="Tests\PaymentsApiTests\When\RequestingASubsetOfTheData.cs" />
     <Compile Include="Tests\PaymentsApiTests\When\RequestingPaymentStatistics.cs" />
