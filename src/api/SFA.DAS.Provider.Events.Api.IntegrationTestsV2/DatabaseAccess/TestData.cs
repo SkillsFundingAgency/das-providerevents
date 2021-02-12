@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.Provider.Events.Api.IntegrationTestsV2.RawEntities;
 
-namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2
+namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess
 {
     internal class TestData
     {

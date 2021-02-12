@@ -4,11 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Ploeh.AutoFixture;
-using SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess;
 using SFA.DAS.Provider.Events.Api.IntegrationTestsV2.EntityBuilders.Customisations;
 using SFA.DAS.Provider.Events.Api.IntegrationTestsV2.RawEntities;
 
-namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Setup
+namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess
 {
     class DatabaseSetup
     {
@@ -19,12 +18,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Setup
             _populate = populate;
         }
 
-        public async Task PopulateTestData()
-        {
-            await PopulateAllData().ConfigureAwait(false);
-        }
-
-        private async Task PopulateAllData()
+        public async Task PopulateAllData()
         {
             Debug.WriteLine("Populating tables, this could take a while");
 
