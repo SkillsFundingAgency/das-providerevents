@@ -42,7 +42,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
                 .ForMember(dst => dst.DeliveryPeriod, opt => opt.MapFrom(src =>
                     new CalendarPeriod
                     {
-                        Month = GetMonthFromPaymentEntity(src.CollectionPeriod),
+                        Month = GetMonthFromPaymentEntity(src.DeliveryPeriod),
                         Year = GetYearFromPaymentEntity(src.AcademicYear, src.DeliveryPeriod)
                     }))
                 .ForMember(dst => dst.EarningDetails, opt => opt.MapFrom(src => new List<Earning>
@@ -91,29 +91,27 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
             cfg.CreateMap<PageOfResults<TransferEntity>, PageOfResults<AccountTransfer>>();
         }
 
-        //NOTE: this logic has been copied from the V2 to V1 migration App
         private static int GetYearFromPaymentEntity(short academicYear, byte period)
         {
-            var year = (academicYear / 100) + 2000;
-
-            if (period > 5)
+            if (period < 6)
             {
-                return year + 1;
+                return int.Parse("20" + academicYear.ToString().Substring(0, 2));
             }
-
-            return year;
+            else
+            {
+                return int.Parse("20" + academicYear.ToString().Substring(2, 2));
+            }
         }
 
         private static int GetMonthFromPaymentEntity(byte period)
         {
-            if (period <= 5)
-            {
+            if (period == 13)
+                return 9;
+            if (period == 14)
+                return 10;
+
+            if (period < 6)
                 return period + 7;
-            }
-
-            if (period > 12)
-                return period - 4;
-
             return period - 5;
         }
     }

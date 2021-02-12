@@ -103,7 +103,7 @@
     <Compile Include="DatabaseAccess\DatabaseConnection.cs" />
     <Compile Include="EntityBuilders\Customisations\IntegrationTestCustomisation.cs" />
     <Compile Include="EntityBuilders\PaymentCustomisation.cs" />
-    <Compile Include="HelperExtensions.cs" />
+    <Compile Include="PeriodExtensions.cs" />
     <Compile Include="AfterAllTests.cs" />
     <Compile Include="BeforeAllTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

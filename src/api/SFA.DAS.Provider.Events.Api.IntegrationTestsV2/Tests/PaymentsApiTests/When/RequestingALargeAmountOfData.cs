@@ -74,12 +74,12 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
 
                 randomReturnedPayment.Amount.Should().Be(matchingPayment.Amount);
                 randomReturnedPayment.ApprenticeshipId.Should().Be(matchingPayment.ApprenticeshipId);
-                randomReturnedPayment.CollectionPeriod.Month.Should().Be(matchingPayment.CollectionPeriod.ToCalendarMonth());
-                randomReturnedPayment.CollectionPeriod.Year.Should().Be(matchingPayment.GetCalendarYear());
+                randomReturnedPayment.CollectionPeriod.Month.Should().Be(PeriodExtensions.GetMonthFromPaymentEntity(matchingPayment.CollectionPeriod));
+                randomReturnedPayment.CollectionPeriod.Year.Should().Be(PeriodExtensions.GetYearFromPaymentEntity(matchingPayment.AcademicYear, matchingPayment.CollectionPeriod));
                 randomReturnedPayment.CollectionPeriod.Id.Should().Be(matchingPayment.GetPeriodId());
                 ((byte)randomReturnedPayment.ContractType).Should().Be(matchingPayment.ContractType);
-                randomReturnedPayment.DeliveryPeriod.Month.Should().Be(matchingPayment.DeliveryPeriod.ToCalendarMonth());
-                randomReturnedPayment.DeliveryPeriod.Year.Should().Be(matchingPayment.GetDeliveryPeriodYear());
+                randomReturnedPayment.DeliveryPeriod.Month.Should().Be(PeriodExtensions.GetMonthFromPaymentEntity(matchingPayment.DeliveryPeriod));
+                randomReturnedPayment.DeliveryPeriod.Year.Should().Be(PeriodExtensions.GetYearFromPaymentEntity(matchingPayment.AcademicYear, matchingPayment.DeliveryPeriod));
                 randomReturnedPayment.EarningDetails.Count.Should().Be(1);
 
                 var earningDetails = randomReturnedPayment.EarningDetails.Single();
