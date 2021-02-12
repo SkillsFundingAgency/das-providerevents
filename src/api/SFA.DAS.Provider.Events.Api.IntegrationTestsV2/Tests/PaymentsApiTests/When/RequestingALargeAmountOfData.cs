@@ -79,7 +79,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
                 randomReturnedPayment.CollectionPeriod.Id.Should().Be(matchingPayment.GetPeriodId());
                 ((byte)randomReturnedPayment.ContractType).Should().Be(matchingPayment.ContractType);
                 randomReturnedPayment.DeliveryPeriod.Month.Should().Be(matchingPayment.DeliveryPeriod.ToCalendarMonth());
-                randomReturnedPayment.DeliveryPeriod.Year.Should().Be(matchingPayment.GetDeliveryPeriodYear());
+                randomReturnedPayment.DeliveryPeriod.Year.Should().Be(matchingPayment.GetCalendarYear());
                 randomReturnedPayment.EarningDetails.Count.Should().Be(1);
 
                 var earningDetails = randomReturnedPayment.EarningDetails.Single();
