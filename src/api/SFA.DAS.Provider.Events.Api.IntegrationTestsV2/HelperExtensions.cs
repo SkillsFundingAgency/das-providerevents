@@ -27,5 +27,12 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2
         {
             return $"{payment.AcademicYear}-R{payment.CollectionPeriod.ToString().PadLeft(2, '0')}";
         }
+
+        public static int GetDeliveryPeriodYear(this ItPayment payment)
+        {
+            if (payment.DeliveryPeriod < 6)
+                return int.Parse("20" + payment.AcademicYear.ToString().Substring(0, 2));
+            return int.Parse("20" + payment.AcademicYear.ToString().Substring(2, 2));
+        }
     }
 }
