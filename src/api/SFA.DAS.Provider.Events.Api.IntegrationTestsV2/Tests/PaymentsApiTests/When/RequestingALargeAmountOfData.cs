@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess;
+using SFA.DAS.Provider.Events.Api.IntegrationTestsV2.RawEntities;
 
 namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.When
 {
@@ -59,10 +60,11 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
         /// <remarks>
         /// This test will fail unless you start with an empty [Payments2].[Payment] table.
         /// </remarks>
-        [Ignore("Does not pass when there are existing records in [Payments2].[Payment] table prior to test run.")]
+        //[Ignore("Does not pass when there are existing records in [Payments2].[Payment] table prior to test run.")]
+        [Test]
         public async Task ThenTheDataIsCorrect()
         {
-            var results = await IntegrationTestServer.GetInstance().Client.GetAsync("/api/payments").ConfigureAwait(false);
+            var results = await IntegrationTestServer.GetInstance().Client.GetAsync($"/api/payments?employerAccountId={TestData.EmployerAccountId}").ConfigureAwait(false);
 
             var resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
             var result = JsonConvert.DeserializeObject<PageOfResults<Payment>>(resultsAsString);

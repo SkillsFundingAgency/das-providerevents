@@ -8,6 +8,9 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess
 {
     internal class TestData
     {
+
+        public static long EmployerAccountId { get; set; }
+
         /// <summary>
         /// List of test payments inserted into the [Payments2].[Payment] table during this test run.
         /// </summary>
