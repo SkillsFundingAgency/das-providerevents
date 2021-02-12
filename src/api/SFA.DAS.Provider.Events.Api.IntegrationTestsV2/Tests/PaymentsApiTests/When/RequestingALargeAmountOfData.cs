@@ -9,15 +9,18 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.When
 {
-    [TestFixture()]
+    [TestFixture]
     public class RequestingALargeAmountOfData
     {
         [Test]
         public async Task ThenTheNumberOfPagesIsCorrect()
         {
-            var expected = Math.DivRem(TestData.AllPayments.Count, 10000, out int remainder);
+            var paymentCount = await TestHelper.GetPaymentCount();
+            var remainder = paymentCount % 10000;
+            var expectedPages = paymentCount / 10000;
+
             if (remainder > 0)
-                expected++;
+                expectedPages++;
 
             // Assuming 10000 per page
             var results = await IntegrationTestServer.GetInstance().Client.GetAsync("/api/payments").ConfigureAwait(false);
@@ -25,7 +28,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
             var resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
             var result = JsonConvert.DeserializeObject<PageOfResults<Payment>>(resultsAsString);
 
-            result.TotalNumberOfPages.Should().Be(expected);
+            result.TotalNumberOfPages.Should().Be(expectedPages);
         }
 
         [Test]

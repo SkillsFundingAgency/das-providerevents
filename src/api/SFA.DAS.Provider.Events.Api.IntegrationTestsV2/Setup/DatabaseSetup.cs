@@ -37,21 +37,6 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Setup
             TestData.Payments = payments.SelectMany(p => p).ToList();
             
             await data.BulkInsertPayments(TestData.Payments).ConfigureAwait(false);
-            await ReadAllData();
-        }
-
-        private async Task ReadAllData()
-        {
-            var paymentsSql = "SELECT * FROM [Payments2].[Payment]";
-
-            using (var conn = DatabaseConnection.Connection())
-            {
-                await conn.OpenAsync().ConfigureAwait(false);
-                var payments = await conn.QueryAsync<ItPayment>(paymentsSql)
-                    .ConfigureAwait(false);
-
-                TestData.AllPayments = payments.ToList();
-            }
         }
     }
 }
