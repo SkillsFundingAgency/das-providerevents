@@ -4,6 +4,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.IntegrationTestsV2.ApiHost;
+using SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess;
 using SFA.DAS.Provider.Events.Api.Types;
 
 namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.When

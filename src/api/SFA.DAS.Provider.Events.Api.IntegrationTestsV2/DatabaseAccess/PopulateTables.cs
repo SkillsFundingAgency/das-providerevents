@@ -1,24 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
-using Dapper;
 using FastMember;
 using SFA.DAS.Provider.Events.Api.IntegrationTestsV2.RawEntities;
 
 namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess
 {
-    class PopulateTables
+    public class PopulateTables
     {
-        public async Task<bool> AreTablesPopulated()
-        {
-            using (var conn = DatabaseConnection.Connection())
-            {
-                var sql = "SELECT Count(1) FROM [Payments2].[Payment]";
-                var result = await conn.ExecuteScalarAsync<int>(sql).ConfigureAwait(false);
-                return result >= 60000;
-            }
-        }
-
         public async Task BulkInsertPayments(List<ItPayment> payments)
         {
             using (var conn = DatabaseConnection.Connection())

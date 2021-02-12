@@ -6,6 +6,7 @@ using SFA.DAS.Provider.Events.Api.Types;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess;
 
 namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.When
 {

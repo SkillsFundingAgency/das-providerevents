@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess
 {
-    internal class ClearTables
+    public static class ClearTables
     {
-        internal async Task DeleteTestPaymentRecords()
+        public static async Task DeleteTestPaymentRecords()
         {
             var batches = new List<string>();
 
@@ -37,7 +37,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess
             await Task.WhenAll(batches.Select(ExecuteSqlAsync));
         }
 
-        private async Task ExecuteSqlAsync(string sql)
+        private static async Task ExecuteSqlAsync(string sql)
         {
             using (var connection = DatabaseConnection.Connection())
             {
