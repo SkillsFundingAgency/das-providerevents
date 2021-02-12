@@ -21,7 +21,7 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
         
         public decimal Amount { get; set; }
 
-        public Guid RequiredPaymentId { get; set; }
+        public Guid RequiredPaymentEventId { get; set; }
 
         public long? LearningAimStandardCode { get; set; }
         public int? LearningAimFrameworkCode { get; set; }

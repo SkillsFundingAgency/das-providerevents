@@ -56,7 +56,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
                         CompletionAmount = src.EarningsCompletionAmount.GetValueOrDefault(),
                         MonthlyInstallment = src.EarningsInstalmentAmount.GetValueOrDefault(),
                         TotalInstallments = src.EarningsNumberOfInstalments.GetValueOrDefault(),
-                        RequiredPaymentId = src.RequiredPaymentId
+                        RequiredPaymentId = src.RequiredPaymentEventId
                     }
                 }));
 
