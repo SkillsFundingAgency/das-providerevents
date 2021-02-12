@@ -100,9 +100,7 @@
   <ItemGroup>
     <Compile Include="ApiHost\IntegrationTestServer.cs" />
     <Compile Include="DatabaseAccess\ClearTables.cs" />
-    <Compile Include="DatabaseAccess\CreateDatabase.cs" />
     <Compile Include="DatabaseAccess\DatabaseConnection.cs" />
-    <Compile Include="DatabaseAccess\DeleteDatabase.cs" />
     <Compile Include="DatabaseAccess\PopulateTables.cs" />
     <Compile Include="EntityBuilders\Customisations\IntegrationTestCustomisation.cs" />
     <Compile Include="EntityBuilders\PaymentCustomisation.cs" />
@@ -137,19 +135,5 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Content Include="SetupScripts\DataSetup-Payments.Periods.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SetupScripts\SubmissionEventsTableCreate.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SetupScripts\TableSetup.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SetupScripts\TableTeardown.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
