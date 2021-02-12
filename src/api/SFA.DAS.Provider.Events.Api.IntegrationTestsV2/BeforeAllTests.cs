@@ -10,10 +10,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2
         [OneTimeSetUp]
         public async Task Setup()
         {
-            var populate = new PopulateTables();
-
-            var setup = new DatabaseSetup(populate);
-            await setup.PopulateAllData().ConfigureAwait(false);
+            await new DatabaseSetup().PopulateAllData().ConfigureAwait(false);
         }
     }
 }

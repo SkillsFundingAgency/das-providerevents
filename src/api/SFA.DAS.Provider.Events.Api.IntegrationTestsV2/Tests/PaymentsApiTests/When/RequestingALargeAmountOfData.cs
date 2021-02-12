@@ -16,7 +16,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
         [Test]
         public async Task ThenTheNumberOfPagesIsCorrect()
         {
-            var paymentCount = await TestHelper.GetPaymentCount();
+            var paymentCount = await TestData.GetPaymentCount();
             var remainder = paymentCount % 10000;
             var expectedPages = paymentCount / 10000;
 

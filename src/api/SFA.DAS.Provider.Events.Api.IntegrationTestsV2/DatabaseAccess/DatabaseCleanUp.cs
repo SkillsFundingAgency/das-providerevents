@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess
 {
-    public static class ClearTables
+    public static class DatabaseCleanUp
     {
         public static async Task DeleteTestPaymentRecords()
         {

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FluentAssertions;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -16,7 +15,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
         public async Task ThenTheCountOfPaymentRecordsIsCorrect()
         {
 
-            var paymentCount = await TestHelper.GetPaymentCount();
+            var paymentCount = await TestData.GetPaymentCount();
 
             var results = await IntegrationTestServer.GetInstance().Client.GetAsync($"/api/v2/payments/statistics").ConfigureAwait(false);
 
@@ -30,7 +29,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
         [Test]
         public async Task ThenTheCountOfPaymentsWithRequiredRecordsIsCorrect()
         {
-            var requiredPaymentsCount = await TestHelper.GetPaymentWithRequiredPaymentCount();
+            var requiredPaymentsCount = await TestData.GetPaymentWithRequiredPaymentCount();
 
             var results = await IntegrationTestServer.GetInstance().Client.GetAsync($"/api/v2/payments/statistics").ConfigureAwait(false);
 

@@ -12,7 +12,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2
         public async Task TearDown()
         {
             IntegrationTestServer.GetInstance().Shutdown();
-            await ClearTables.DeleteTestPaymentRecords();
+            await DatabaseCleanUp.DeleteTestPaymentRecords();
         }
     }
 }

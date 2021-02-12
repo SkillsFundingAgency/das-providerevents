@@ -99,9 +99,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiHost\IntegrationTestServer.cs" />
-    <Compile Include="DatabaseAccess\ClearTables.cs" />
+    <Compile Include="DatabaseAccess\DatabaseCleanUp.cs" />
     <Compile Include="DatabaseAccess\DatabaseConnection.cs" />
-    <Compile Include="DatabaseAccess\PopulateTables.cs" />
     <Compile Include="EntityBuilders\Customisations\IntegrationTestCustomisation.cs" />
     <Compile Include="EntityBuilders\PaymentCustomisation.cs" />
     <Compile Include="HelperExtensions.cs" />
@@ -111,7 +110,6 @@
     <Compile Include="RawEntities\ItPayment.cs" />
     <Compile Include="DatabaseAccess\DatabaseSetup.cs" />
     <Compile Include="DatabaseAccess\TestData.cs" />
-    <Compile Include="TestHelper.cs" />
     <Compile Include="Tests\PaymentsApiTests\When\RequestingALargeAmountOfData.cs" />
     <Compile Include="Tests\PaymentsApiTests\When\RequestingASubsetOfTheData.cs" />
     <Compile Include="Tests\PaymentsApiTests\When\RequestingPaymentStatistics.cs" />
