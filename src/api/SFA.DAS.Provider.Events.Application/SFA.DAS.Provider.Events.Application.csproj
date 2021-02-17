@@ -55,7 +55,6 @@
     <Compile Include="Data\Entities\DataLockEventPeriodEntity.cs" />
     <Compile Include="Data\Entities\TransferEntity.cs" />
     <Compile Include="Data\Entities\PaymentEntity.cs" />
-    <Compile Include="Data\Entities\PaymentsDueEarningEntity.cs" />
     <Compile Include="Data\Entities\PeriodEntity.cs" />
     <Compile Include="Data\Entities\SubmissionEventEntity.cs" />
     <Compile Include="Data\IAmAPageableEntity.cs" />

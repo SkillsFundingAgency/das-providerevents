@@ -12,8 +12,6 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
         {
             cfg.CreateMap<PageOfResults<PaymentEntity>, PageOfResults<Payment>>();
 
-            cfg.CreateMap<PaymentsDueEarningEntity, Earning>();
-
             cfg.CreateMap<PaymentEntity, Payment>()
                 .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.EventId.ToString()))
                 .ForMember(dst => dst.Ukprn, opt => opt.MapFrom(src => src.Ukprn))

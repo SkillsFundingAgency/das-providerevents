@@ -1,12 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
 using SFA.DAS.Provider.Events.Application.Repositories;
 using SFA.DAS.Provider.Events.Infrastructure.Extensions;
-using SFA.DAS.Sql.Dapper;
 
 
 namespace SFA.DAS.Provider.Events.Infrastructure.Data
