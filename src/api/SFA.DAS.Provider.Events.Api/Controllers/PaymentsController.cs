@@ -62,6 +62,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             }
             catch (ValidationException ex)
             {
+                _logger.Error(ex, ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
