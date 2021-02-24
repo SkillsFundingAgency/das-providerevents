@@ -2,10 +2,13 @@
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Provider.Events.Api.Plumbing.Mapping;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
+using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery;
 using SFA.DAS.Provider.Events.Application.Repositories;
 using SFA.DAS.Provider.Events.Application.Validation;
+using SFA.DAS.Provider.Events.Infrastructure.Mapping;
 
 namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodQuery.GetPeriodQueryHandler
 {
@@ -15,6 +18,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodQuery.Ge
         private Mock<IValidator<GetPeriodQueryRequest>> _requestValidator;
         private Mock<IPeriodRepository> _periodRepository;
         private Application.Period.GetPeriodQuery.GetPeriodQueryHandler _handler;
+        private IMapper _mapper;
 
         [SetUp]
         public void Arrange()
@@ -32,12 +36,14 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodQuery.Ge
             _periodRepository.Setup(r => r.GetPeriod(1617, 2))
                 .Returns(Task.FromResult(new PeriodEntity
                 {
-                    Id = "1617-R02",
-                    CalendarMonth = 9,
-                    CalendarYear = 2016
+                    //Id = "1617-R02",
+                    Period = 2,
+                    AcademicYear = 1617
                 }));
 
-            _handler = new Application.Period.GetPeriodQuery.GetPeriodQueryHandler(_requestValidator.Object, _periodRepository.Object);
+            _mapper = new AutoMapperMapper(AutoMapperConfigurationFactory.CreateMappingConfig());
+
+            _handler = new Application.Period.GetPeriodQuery.GetPeriodQueryHandler(_requestValidator.Object, _periodRepository.Object, _mapper);
         }
 
         [Test]
