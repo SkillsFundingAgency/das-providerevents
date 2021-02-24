@@ -10,8 +10,6 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         private const string Columns = "Id, "
                                       + "AcademicYear, "
                                       + "Period, "
-                                      + "CalendarMonth, "
-                                      + "CalendarYear, "
                                       + "ReferenceDataValidationDate, "
                                       + "CompletionDate";
 

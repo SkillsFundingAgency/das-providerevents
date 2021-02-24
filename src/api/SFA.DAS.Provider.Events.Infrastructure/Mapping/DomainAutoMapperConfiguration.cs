@@ -58,7 +58,17 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
                     }
                 }));
 
-            cfg.CreateMap<PeriodEntity, CollectionPeriod>();
+            cfg.CreateMap<PeriodEntity, CollectionPeriod>()
+                .ForMember(dst => dst.Id, opt => opt.MapFrom(src => $"{src.AcademicYear}-R{src.Period:D2}"))
+                .ForMember(dst => dst.PeriodName, opt => opt.MapFrom(src => $"{src.AcademicYear}-R{src.Period:D2}"))
+                .ForMember(dst => dst.AcademicYear, opt => opt.MapFrom(src => src.AcademicYear))
+                .ForMember(dst => dst.Period, opt => opt.MapFrom(src => src.Period))
+                .ForMember(dst => dst.AccountDataValidAt, opt => opt.MapFrom(src => src.ReferenceDataValidationDate))
+                .ForMember(dst => dst.CommitmentDataValidAt, opt => opt.MapFrom(src => src.ReferenceDataValidationDate))
+                .ForMember(dst => dst.CompletionDateTime, opt => opt.MapFrom(src => src.CompletionDate))
+                .ForMember(dst => dst.CalendarMonth, opt => opt.MapFrom(src => GetMonthFromPaymentEntity(src.Period)))
+                .ForMember(dst => dst.CalendarYear, opt => opt.MapFrom(src => GetYearFromPaymentEntity(src.AcademicYear, src.Period)))
+                ;
 
             cfg.CreateMap<PageOfResults<SubmissionEventEntity>, PageOfResults<SubmissionEvent>>();
 
