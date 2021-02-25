@@ -15,6 +15,8 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.EntityBuilders
                     .Build<ItPayment>()
                     .With(x => x.RequiredPaymentEventId, new Random().Next(0, 100) > 90 ? (Guid?)null : Guid.NewGuid())
                     .With(x => x.AccountId, TestData.EmployerAccountId)
+                    .With(x => x.CollectionPeriod, TestData.CollectionPeriod)
+                    .With(x => x.AcademicYear, TestData.AcademicYear)
                     .Create();
                 
                 return payment;

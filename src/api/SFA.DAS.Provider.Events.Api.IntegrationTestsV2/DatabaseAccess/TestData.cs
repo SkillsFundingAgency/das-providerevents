@@ -6,10 +6,11 @@ using SFA.DAS.Provider.Events.Api.IntegrationTestsV2.RawEntities;
 
 namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess
 {
-    internal class TestData
+    public static class TestData
     {
-
         public static long EmployerAccountId { get; set; }
+        public static byte CollectionPeriod { get; set; }
+        public static short AcademicYear { get; set; }
 
         /// <summary>
         /// List of test payments inserted into the [Payments2].[Payment] table during this test run.
@@ -30,7 +31,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess
             return result.First();
         }
 
-        public static async Task<IEnumerable<TReturnType>> ExecuteSqlAsync<TReturnType>(string sql)
+        private static async Task<IEnumerable<TReturnType>> ExecuteSqlAsync<TReturnType>(string sql)
         {
             using (var connection = DatabaseConnection.Connection())
             {
