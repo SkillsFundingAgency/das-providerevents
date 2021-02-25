@@ -19,6 +19,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodQuery.Ge
         private Mock<IPeriodRepository> _periodRepository;
         private Application.Period.GetPeriodQuery.GetPeriodQueryHandler _handler;
         private IMapper _mapper;
+        private readonly DateTime _expectedDate = new DateTime(2021, 02, 25);
 
         [SetUp]
         public void Arrange()
@@ -38,7 +39,9 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodQuery.Ge
                 {
                     //Id = "1617-R02",
                     Period = 2,
-                    AcademicYear = 1617
+                    AcademicYear = 1617,
+                    ReferenceDataValidationDate = _expectedDate,
+                    CompletionDate = _expectedDate
                 }));
 
             _mapper = new AutoMapperMapper(AutoMapperConfigurationFactory.CreateMappingConfig());
@@ -59,6 +62,11 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodQuery.Ge
             Assert.AreEqual("1617-R02", actual.Result.Id);
             Assert.AreEqual(9, actual.Result.CalendarMonth);
             Assert.AreEqual(2016, actual.Result.CalendarYear);
+            Assert.AreEqual(2, actual.Result.Period);
+            Assert.AreEqual(1617, actual.Result.AcademicYear);
+            Assert.AreEqual(_expectedDate, actual.Result.CommitmentDataValidAt);
+            Assert.AreEqual(_expectedDate, actual.Result.AccountDataValidAt);
+            Assert.AreEqual(_expectedDate, actual.Result.CompletionDateTime);
         }
 
         [Test]
