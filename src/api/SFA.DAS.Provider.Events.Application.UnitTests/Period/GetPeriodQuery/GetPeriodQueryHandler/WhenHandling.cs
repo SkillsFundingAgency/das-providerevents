@@ -37,7 +37,6 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodQuery.Ge
             _periodRepository.Setup(r => r.GetPeriod(1617, 2))
                 .Returns(Task.FromResult(new PeriodEntity
                 {
-                    //Id = "1617-R02",
                     Period = 2,
                     AcademicYear = 1617,
                     ReferenceDataValidationDate = _expectedDate,

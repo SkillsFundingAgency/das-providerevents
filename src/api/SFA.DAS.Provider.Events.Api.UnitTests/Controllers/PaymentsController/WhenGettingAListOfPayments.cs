@@ -309,7 +309,6 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
 
             // Assert
             Assert.IsNotNull(actual);
-            //TODO Change this to InternalServerErrorResult
             Assert.IsInstanceOf<InternalServerErrorResult>(actual);
         }
 

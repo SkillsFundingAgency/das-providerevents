@@ -5,15 +5,9 @@ using FluentAssertions;
 using MediatR;
 using Moq;
 using NLog;
-using NLog.Time;
 using NUnit.Framework;
-using Ploeh.AutoFixture.NUnit3;
 using SFA.DAS.Provider.Events.Api.Types;
-using SFA.DAS.Provider.Events.Application.Data;
-using SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery;
 using SFA.DAS.Provider.Events.Application.Payments.GetPaymentsStatistics;
-using SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery;
-using SFA.DAS.Provider.Events.Application.Validation;
 
 namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
 {
@@ -71,7 +65,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
         }
 
         [Test]
-        public async Task AndAnExceptionReturnedThenItShouldthrowError()
+        public void AndAnExceptionReturnedThenItShouldthrowError()
         {
             // Arrange
             _mediator.Setup(m => m.SendAsync(It.IsAny<GetPaymentsStatisticsRequest>()))

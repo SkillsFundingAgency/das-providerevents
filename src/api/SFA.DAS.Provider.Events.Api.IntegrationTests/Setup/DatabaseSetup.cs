@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Castle.Components.DictionaryAdapter;
 using Dapper;
 using Ploeh.AutoFixture;
 using SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess;

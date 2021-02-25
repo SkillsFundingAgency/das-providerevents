@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using Moq;
@@ -17,7 +16,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetLatestLea
     {
         private Mock<IValidator<GetLatestLearnerEventForStandardsQueryRequest>> _validator;
         private Mock<ISubmissionEventsRepository> _submissionEventsRepository;
-        private Application.Submissions.GetLatestLearnerEventByStandardQuery.GetLatestLearnerEventForStandardsQueryHandler _handler;
+        private GetLatestLearnerEventForStandardsQueryHandler _handler;
         private GetLatestLearnerEventForStandardsQueryRequest _request;
 
         [SetUp]
@@ -37,7 +36,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Submissions.GetLatestLea
                         Id = e.Id
                     }).ToList();
                 });
-            _handler = new Application.Submissions.GetLatestLearnerEventByStandardQuery.GetLatestLearnerEventForStandardsQueryHandler(
+            _handler = new GetLatestLearnerEventForStandardsQueryHandler(
                 _validator.Object, _submissionEventsRepository.Object, _mapper.Object);
 
             _request = new GetLatestLearnerEventForStandardsQueryRequest(){SinceEventId = 22, Uln = 12345678};

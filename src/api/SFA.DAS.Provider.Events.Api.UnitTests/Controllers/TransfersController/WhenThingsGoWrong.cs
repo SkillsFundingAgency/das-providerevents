@@ -4,7 +4,6 @@ using System.Web.Http.Results;
 using MediatR;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Provider.Events.Api.Controllers;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery;

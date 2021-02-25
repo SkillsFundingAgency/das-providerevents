@@ -60,7 +60,7 @@ namespace SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsQue
                 return new GetSubmissionEventsQueryResponse
                 {
                     IsValid = true,
-                    Result = _mapper.Map<Api.Types.PageOfResults<SubmissionEvent>>(pageOfEntities)
+                    Result = _mapper.Map<PageOfResults<SubmissionEvent>>(pageOfEntities)
                 };
             }
             catch (Exception ex)

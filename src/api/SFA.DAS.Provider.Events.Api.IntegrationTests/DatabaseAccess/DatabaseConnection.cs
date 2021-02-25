@@ -17,7 +17,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess
         }
 
         public static string BaseDirectory =>
-            System.IO.Path.GetDirectoryName(typeof(DatabaseConnection).Assembly.Location);
+            Path.GetDirectoryName(typeof(DatabaseConnection).Assembly.Location);
 
         public async Task RunScriptfile(string relativePath)
         {

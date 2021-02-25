@@ -3,7 +3,6 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using FastMember;
 using Ploeh.AutoFixture;
 using SFA.DAS.Provider.Events.Api.IntegrationTestsV2.EntityBuilders.Customisations;

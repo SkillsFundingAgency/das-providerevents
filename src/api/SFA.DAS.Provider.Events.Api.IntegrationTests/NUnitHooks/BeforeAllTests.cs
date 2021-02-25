@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using NUnit.Framework;
-using SFA.DAS.Provider.Events.Api.IntegrationTests.ApiHost;
 using SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess;
 using SFA.DAS.Provider.Events.Api.IntegrationTests.Setup;
 

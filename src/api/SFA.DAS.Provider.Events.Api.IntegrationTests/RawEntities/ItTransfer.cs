@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SFA.DAS.Provider.Events.Api.IntegrationTests.RawEntities
