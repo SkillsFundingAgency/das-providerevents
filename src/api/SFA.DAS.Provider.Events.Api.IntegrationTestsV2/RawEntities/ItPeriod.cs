@@ -4,6 +4,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.RawEntities
 {
     public class ItPeriod
     {
+        [Dapper.Contrib.Extensions.Key]
         public long Id { get; set; }
         public short AcademicYear { get; set; }
         public byte Period { get; set; }

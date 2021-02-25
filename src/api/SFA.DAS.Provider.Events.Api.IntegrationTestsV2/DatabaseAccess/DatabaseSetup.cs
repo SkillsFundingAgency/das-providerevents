@@ -32,7 +32,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess
             {
                 new ItPeriod
                 {
-                    Period = TestData.CollectionPeriod, AcademicYear = TestData.AcademicYear, CompletionDate = DateTime.Now, ReferenceDataValidationDate = DateTime.Now
+                   Id = new Random().Next(1, int.MaxValue), Period = (byte)TestData.CollectionPeriod, AcademicYear = (short)TestData.AcademicYear, CompletionDate = DateTime.Now, ReferenceDataValidationDate = DateTime.Now
                 }
             };
 
@@ -40,7 +40,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess
             {
                 await conn.OpenAsync().ConfigureAwait(false);
                 using (var bcp = new SqlBulkCopy(conn))
-                using (var reader = ObjectReader.Create(period, "Id", "Period", "AcademicYear", "ReferenceDataValidationDate", "CompletionDate"))
+                using (var reader = ObjectReader.Create(period, "Id", "AcademicYear", "Period", "ReferenceDataValidationDate", "CompletionDate"))
                 {
                     bcp.DestinationTableName = "[Payments2].[CollectionPeriod]";
                     await bcp.WriteToServerAsync(reader).ConfigureAwait(false);
