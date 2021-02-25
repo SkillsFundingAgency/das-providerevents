@@ -19,7 +19,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         
         public async Task<PeriodEntity[]> GetPeriods()
         {
-            var command = $"SELECT {Columns} FROM {Source} ORDER BY CompletionDateTime";
+            var command = $"SELECT {Columns} FROM {Source} ORDER BY CompletionDate";
             return await Query<PeriodEntity>(command).ConfigureAwait(false);
         }
         
