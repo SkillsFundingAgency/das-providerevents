@@ -106,9 +106,8 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
 
         private async Task<CollectionPeriod> GetPeriodAsync(string periodId)
         {
-            var getPeriodResponse = await _mediator
-                .SendAsync(new GetPeriodQueryRequest { PeriodId = periodId })
-                .ConfigureAwait(false);
+            var getPeriodResponse = await _mediator.SendAsync(new GetPeriodQueryRequest { PeriodId = periodId }).ConfigureAwait(false);
+
             if (!getPeriodResponse.IsValid)
             {
                 throw getPeriodResponse.Exception;
