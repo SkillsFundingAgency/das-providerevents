@@ -4,7 +4,7 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
 {
     public class PeriodEntity
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public short AcademicYear { get; set; }
         public byte Period { get; set; }
         public DateTime? ReferenceDataValidationDate { get; set; }
