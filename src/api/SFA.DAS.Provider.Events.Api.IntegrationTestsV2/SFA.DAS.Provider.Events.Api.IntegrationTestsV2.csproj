@@ -114,6 +114,7 @@
     <Compile Include="Tests\PaymentsApiTests\When\RequestingALargeAmountOfData.cs" />
     <Compile Include="Tests\PaymentsApiTests\When\RequestingASubsetOfTheData.cs" />
     <Compile Include="Tests\PaymentsApiTests\When\RequestingPaymentStatistics.cs" />
+    <Compile Include="Tests\PeriodApiTests\When\RequestingPeriodData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -133,8 +134,6 @@
       <Name>SFA.DAS.Provider.Events.Application</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Tests\PeriodApiTests\When\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

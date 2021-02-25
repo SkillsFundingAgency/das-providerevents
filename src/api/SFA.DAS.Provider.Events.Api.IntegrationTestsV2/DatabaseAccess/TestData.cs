@@ -19,14 +19,21 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess
 
         public static async Task<int?> GetPaymentCount()
         {
-            var sql = "SELECT Count(*)  FROM [Payments2].[Payment];";
+            var sql = "SELECT Count(1) FROM [Payments2].[Payment];";
+            var result = await ExecuteSqlAsync<int?>(sql);
+            return result.First();
+        }
+
+        public static async Task<int?> GetPeriodCount()
+        {
+            var sql = "SELECT Count(1) FROM [Payments2].[CollectionPeriod];";
             var result = await ExecuteSqlAsync<int?>(sql);
             return result.First();
         }
 
         public static async Task<int?> GetPaymentWithRequiredPaymentCount()
         {
-            var sql = "SELECT Count(*)  FROM [Payments2].[Payment] WHERE RequiredPaymentEventId IS NOT NUll;";
+            var sql = "SELECT Count(1) FROM [Payments2].[Payment] WHERE RequiredPaymentEventId IS NOT NUll;";
             var result = await ExecuteSqlAsync<int?>(sql);
             return result.First();
         }
