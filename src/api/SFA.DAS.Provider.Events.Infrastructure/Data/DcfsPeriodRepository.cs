@@ -25,7 +25,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         
         public async Task<PeriodEntity> GetPeriod(short academicYear, byte collectionPeriod)
         {
-            var command = $"SELECT {Columns} FROM {Source} WHERE AcademicYear = @AcademicYear AND p.CollectionPeriod = @CollectionPeriod";
+            var command = $"SELECT {Columns} FROM {Source} WHERE AcademicYear = @AcademicYear AND Period = @CollectionPeriod";
             return await QuerySingle<PeriodEntity>(command, new {academicYear, collectionPeriod})
                 .ConfigureAwait(false);
         }
