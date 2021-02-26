@@ -32,7 +32,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess
             {
                 new ItPeriod
                 {
-                   Id = new Random().Next(1, int.MaxValue), Period = (byte)TestData.CollectionPeriod, AcademicYear = (short)TestData.AcademicYear, CompletionDate = DateTime.Now, ReferenceDataValidationDate = DateTime.Now
+                   Period = TestData.CollectionPeriod, AcademicYear = TestData.AcademicYear, CompletionDate = DateTime.Now, ReferenceDataValidationDate = DateTime.Now
                 }
             };
 
