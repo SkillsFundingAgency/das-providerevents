@@ -27,10 +27,10 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         {
             var academicYear = short.Parse(periodId.Substring(0, 4));
 
-            var period = byte.Parse(periodId.Substring(6));
+            var collectionPeriod = byte.Parse(periodId.Substring(6));
 
             var command = $"SELECT {Columns} FROM {Source} WHERE AcademicYear = @AcademicYear AND Period = @CollectionPeriod";
-            return await QuerySingle<PeriodEntity>(command, new { academicYear, period })
+            return await QuerySingle<PeriodEntity>(command, new { academicYear, collectionPeriod })
                 .ConfigureAwait(false);
         }
     }
