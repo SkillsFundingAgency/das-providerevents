@@ -34,7 +34,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodQuery.Ge
                 .Returns(Task.FromResult(new ValidationResult()));
 
             _periodRepository = new Mock<IPeriodRepository>();
-            _periodRepository.Setup(r => r.GetPeriod(1617, 2))
+            _periodRepository.Setup(r => r.GetPeriod("1617-R02"))
                 .Returns(Task.FromResult(new PeriodEntity
                 {
                     Period = 2,
@@ -100,7 +100,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodQuery.Ge
         {
             // Arrange
             var ex = new Exception("Test");
-            _periodRepository.Setup(r => r.GetPeriod(1617, 2))
+            _periodRepository.Setup(r => r.GetPeriod("1617-R02"))
                 .Throws(ex);
 
             // Act
@@ -117,7 +117,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodQuery.Ge
         public async Task ThenItShouldReturnAnValidResponseWithNoResultIfNoPeriodInRepo()
         {
             // Arrange
-            _periodRepository.Setup(r => r.GetPeriod(1617, 2))
+            _periodRepository.Setup(r => r.GetPeriod("1617-R02"))
                 .Returns(Task.FromResult<PeriodEntity>(null));
 
             // Act
