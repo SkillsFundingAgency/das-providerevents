@@ -35,7 +35,7 @@ namespace SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery
                     };
                 }
 
-                var period = await _periodRepository.GetPeriod(message.AcademicYear, message.Period).ConfigureAwait(false);
+                var period = await _periodRepository.GetPeriod(message.PeriodId).ConfigureAwait(false);
 
                 if (period == null)
                 {

@@ -16,17 +16,21 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         public DcfsPeriodRepository() : base("PaymentsV2ConnectionString")
         {
         }
-        
+
         public async Task<PeriodEntity[]> GetPeriods()
         {
             var command = $"SELECT {Columns} FROM {Source} ORDER BY CompletionDate";
             return await Query<PeriodEntity>(command).ConfigureAwait(false);
         }
-        
-        public async Task<PeriodEntity> GetPeriod(short academicYear, byte collectionPeriod)
+
+        public async Task<PeriodEntity> GetPeriod(string periodId)
         {
+            var academicYear = short.Parse(periodId.Substring(0, 4));
+
+            var period = byte.Parse(periodId.Substring(6));
+
             var command = $"SELECT {Columns} FROM {Source} WHERE AcademicYear = @AcademicYear AND Period = @CollectionPeriod";
-            return await QuerySingle<PeriodEntity>(command, new {academicYear, collectionPeriod})
+            return await QuerySingle<PeriodEntity>(command, new { academicYear, period })
                 .ConfigureAwait(false);
         }
     }
