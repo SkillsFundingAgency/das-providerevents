@@ -7,7 +7,7 @@ namespace SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventB
 {
     public class GetLatestLearnerEventByStandardQueryRequestValidator : IValidator<GetLatestLearnerEventForStandardsQueryRequest>
     {
-        public async Task<ValidationResult> Validate(GetLatestLearnerEventForStandardsQueryRequest item)
+        public Task<ValidationResult> Validate(GetLatestLearnerEventForStandardsQueryRequest item)
         {
             var validationErrors = new List<string>();
 
@@ -20,7 +20,7 @@ namespace SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventB
                 validationErrors.Add("Uln is not valid. Check digit incorrect");
             }
 
-            return await Task.FromResult(new ValidationResult
+            return Task.FromResult(new ValidationResult
             {
                 ValidationMessages = validationErrors.Where(e => !string.IsNullOrEmpty(e)).ToArray()
             });
