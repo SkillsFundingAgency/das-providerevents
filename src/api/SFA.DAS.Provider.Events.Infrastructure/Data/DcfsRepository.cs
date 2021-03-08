@@ -15,7 +15,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         private readonly string _connectionStringName;
 
         protected DcfsRepository() 
-            : this("MonthEndConnectionString")
+            : this("PaymentsV2ConnectionString")
         {
         }
 
