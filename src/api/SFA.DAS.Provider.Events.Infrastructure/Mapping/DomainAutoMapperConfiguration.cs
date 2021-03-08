@@ -95,7 +95,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
                 .ForMember(t => t.TransferId, o => o.MapFrom(s => s.Id))
                 .ForMember(t => t.SenderAccountId, o => o.MapFrom(s => s.TransferSenderAccountId))
                 .ForMember(t => t.ReceiverAccountId, o => o.MapFrom(s => s.AccountId))
-                .ForMember(t => t.RequiredPaymentId, o => o.MapFrom(s => s.RequiredPaymentId))
+                .ForMember(t => t.RequiredPaymentId, o => o.MapFrom(s => s.RequiredPaymentEventId))
                 .ForMember(t => t.CommitmentId, o => o.MapFrom(s => s.ApprenticeshipId))
                 .ForMember(t => t.Amount, o => o.MapFrom(s => s.Amount))
                 .ForMember(t => t.CollectionPeriodName, o => o.MapFrom(s => GetCollectionPeriodName(s.AcademicYear, s.CollectionPeriod)))

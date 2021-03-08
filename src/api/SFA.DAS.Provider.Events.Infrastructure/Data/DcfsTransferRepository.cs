@@ -19,9 +19,9 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                 SELECT [Id]
                       ,[TransferSenderAccountId]
                       ,[AccountId]
-                      ,[RequiredPaymentId]
+                      ,[RequiredPaymentEventId]
                       ,[ApprenticeshipId]
-                      ,[Amount],
+                      ,[Amount]
                       ,[AcademicYear]
                       ,[CollectionPeriod]
                   FROM [Payments2].[Payment]
