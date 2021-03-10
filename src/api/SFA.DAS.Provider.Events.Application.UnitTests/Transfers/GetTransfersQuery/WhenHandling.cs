@@ -41,7 +41,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Transfers.GetTransfersQu
 
             var entities = new PageOfResults<TransferEntity>();
 
-            _mockTransferRepository.Setup(x => x.GetTransfers(request.PageNumber, request.PageSize, request.SenderAccountId, null, null)).ReturnsAsync(entities);
+            _mockTransferRepository.Setup(x => x.GetTransfers(request.PageNumber, request.PageSize, request.SenderAccountId, null, null, null)).ReturnsAsync(entities);
             _mockMapper.Setup(x => x.Map<PageOfResults<AccountTransfer>>(entities)).Returns(response.Result);
 
             // Act
@@ -63,7 +63,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Transfers.GetTransfersQu
                 Exception = new ApplicationException()
             };
 
-            _mockTransferRepository.Setup(x => x.GetTransfers(request.PageNumber, request.PageSize, request.SenderAccountId, null, null)).Throws(response.Exception);
+            _mockTransferRepository.Setup(x => x.GetTransfers(request.PageNumber, request.PageSize, request.SenderAccountId, null, null, null)).Throws(response.Exception);
 
             // Act
             var actualResult = await _getTransfersQueryHandler.Handle(request).ConfigureAwait(false);

@@ -7,7 +7,7 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
         public long Id {get; set; }
         public long TransferSenderAccountId {get; set; }
         public long AccountId {get; set; }
-        public Guid RequiredPaymentId {get; set; }
+        public Guid RequiredPaymentEventId {get; set; }
         public decimal Amount {get; set; }
         public string ApprenticeshipId {get; set; }
         public short AcademicYear { get; set; }
