@@ -17,6 +17,9 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.EntityBuilders
                     .With(x => x.AccountId, TestData.EmployerAccountId)
                     .With(x => x.CollectionPeriod, TestData.CollectionPeriod)
                     .With(x => x.AcademicYear, TestData.AcademicYear)
+                    //.With(x => x.CollectionPeriod, AcademicYearHelper.GetRandomCollectionPeriod())
+                    //.With(x => x.AcademicYear, AcademicYearHelper.GetRandomAcademicYear())
+                    .With(x => x.TransferSenderAccountId, new Random().Next(0, 100) > 10 ? (long?)null : new Random().Next())
                     .Create();
                 
                 return payment;

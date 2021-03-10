@@ -28,19 +28,20 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess
 
         private static async Task InsertPeriod()
         {
-            var period = new[]
+            var periods = new List<ItPeriod>()
             {
                 new ItPeriod
                 {
                    Period = TestData.CollectionPeriod, AcademicYear = TestData.AcademicYear, CompletionDate = DateTime.Now, ReferenceDataValidationDate = DateTime.Now
                 }
             };
+            //TestData.Periods = AcademicYearHelper.GetAllValidTestPeriods();
 
             using (var conn = DatabaseConnection.Connection())
             {
                 await conn.OpenAsync().ConfigureAwait(false);
                 using (var bcp = new SqlBulkCopy(conn))
-                using (var reader = ObjectReader.Create(period, "Id", "AcademicYear", "Period", "ReferenceDataValidationDate", "CompletionDate"))
+                using (var reader = ObjectReader.Create(periods, "Id", "AcademicYear", "Period", "ReferenceDataValidationDate", "CompletionDate"))
                 {
                     bcp.DestinationTableName = "[Payments2].[CollectionPeriod]";
                     await bcp.WriteToServerAsync(reader).ConfigureAwait(false);

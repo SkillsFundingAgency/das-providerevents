@@ -19,9 +19,9 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                 SELECT [Id]
                       ,[TransferSenderAccountId]
                       ,[AccountId]
-                      ,[RequiredPaymentId]
+                      ,[RequiredPaymentEventId]
                       ,[ApprenticeshipId]
-                      ,[Amount],
+                      ,[Amount]
                       ,[AcademicYear]
                       ,[CollectionPeriod]
                   FROM [Payments2].[Payment]
@@ -45,7 +45,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             //paymentModel.AccountId.HasValue &&
             //paymentModel.FundingSource == 5)
             
-            sqlBuilder.Where("FundingSource == 5");
+            sqlBuilder.Where("FundingSource = 5");
 
             sqlBuilder.Where(
                 "p.AcademicYear = @AcademicYear AND p.CollectionPeriod = @CollectionPeriod",
@@ -53,12 +53,12 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                 includeIf: academicYear.HasValue && collectionPeriod.HasValue);
 
             sqlBuilder.Where(
-                "SendingAccountId = @senderAccountId",
+                "TransferSenderAccountId = @senderAccountId",
                 new {senderAccountId},
                 includeIf: senderAccountId.HasValue);
 
             sqlBuilder.Where(
-                "ReceivingAccountId = @receiverAccountId",
+                "AccountId = @receiverAccountId",
                 new {receiverAccountId},
                 includeIf: receiverAccountId.HasValue);
         }
