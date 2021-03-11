@@ -35,7 +35,6 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess
                    Period = TestData.CollectionPeriod, AcademicYear = TestData.AcademicYear, CompletionDate = DateTime.Now, ReferenceDataValidationDate = DateTime.Now
                 }
             };
-            //TestData.Periods = AcademicYearHelper.GetAllValidTestPeriods();
 
             using (var conn = DatabaseConnection.Connection())
             {

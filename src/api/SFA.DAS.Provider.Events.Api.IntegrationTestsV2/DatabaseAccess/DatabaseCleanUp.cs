@@ -40,19 +40,6 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess
             await Task.WhenAll(batches.Select(ExecuteSqlAsync));
         }
 
-        //public static async Task DeleteTestPeriodRecords()
-        //{
-        //    foreach (var completionDate in TestData.Periods.Select(x => x.CompletionDate))
-        //    {
-        //        using (var connection = DatabaseConnection.Connection())
-        //        {
-        //            await connection.ExecuteAsync(new CommandDefinition(
-        //                "DELETE FROM [Payments2].[CollectionPeriod] WHERE AcademicYear = ",
-        //                new {completionDate}));
-        //        }
-        //    }
-        //}
-
         private static async Task ExecuteSqlAsync(string sql)
         {
             using (var connection = DatabaseConnection.Connection())
