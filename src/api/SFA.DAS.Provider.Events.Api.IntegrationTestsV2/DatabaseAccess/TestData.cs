@@ -25,8 +25,6 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess
             }
         }
 
-        //public static List<ItPeriod> Periods { get; set; }
-
         public static async Task<int?> GetPaymentCount()
         {
             var sql = "SELECT Count(1) FROM [Payments2].[Payment];";
