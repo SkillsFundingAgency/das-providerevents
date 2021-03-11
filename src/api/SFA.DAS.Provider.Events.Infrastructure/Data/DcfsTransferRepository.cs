@@ -48,7 +48,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             sqlBuilder.Where("FundingSource = 5");
 
             sqlBuilder.Where(
-                "p.AcademicYear = @AcademicYear AND p.CollectionPeriod = @CollectionPeriod",
+                "AcademicYear = @AcademicYear AND CollectionPeriod = @CollectionPeriod",
                 new { AcademicYear = academicYear, CollectionPeriod = collectionPeriod },
                 includeIf: academicYear.HasValue && collectionPeriod.HasValue);
 
