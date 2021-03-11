@@ -136,7 +136,6 @@
     <Compile Include="RawEntities\ItSubmissionEvent.cs" />
     <Compile Include="Setup\DatabaseSetup.cs" />
     <Compile Include="TestData.cs" />
-    <Compile Include="Tests\TransfersApiTests\WhenRequestingTransfers.cs" />
     <Compile Include="Tests\SubmissionsApiTests\When\RequestingLatestLearnerEventByStandard.cs" />
     <Compile Include="Tests\SubmissionsApiTests\When\RequestingSubmissionEvents.cs" />
     <Content Include="SetupScripts\DataSetup-Payments.Periods.sql">
