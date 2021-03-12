@@ -39,13 +39,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 
         private static void BuildQueryParameters(long? senderAccountId, long? receiverAccountId, int? academicYear, int? collectionPeriod, SqlBuilder sqlBuilder)
         {
-            //Migration App has this filter for Transfer payments Do we need to add them here as well?
-            //if (paymentModel.TransferSenderAccountId.HasValue && 
-            //paymentModel.ApprenticeshipId.HasValue && 
-            //paymentModel.AccountId.HasValue &&
-            //paymentModel.FundingSource == 5)
-            
-            sqlBuilder.Where("FundingSource = 5");
+            sqlBuilder.Where("FundingSource = 5 AND TransferSenderAccountId IS NOT NULL AND ApprenticeshipId IS NOT NULL AND AccountId IS NOT NULL");
 
             sqlBuilder.Where(
                 "AcademicYear = @AcademicYear AND CollectionPeriod = @CollectionPeriod",
