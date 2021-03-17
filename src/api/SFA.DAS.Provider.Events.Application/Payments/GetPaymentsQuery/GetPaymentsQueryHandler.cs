@@ -26,8 +26,8 @@ namespace SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery
                         message.PageNumber,
                         message.PageSize,
                         message.EmployerAccountId,
-                        message.Period?.CalendarYear,
-                        message.Period?.CalendarMonth,
+                        message.Period?.AcademicYear,
+                        message.Period?.Period,
                         message.Ukprn)
                     .ConfigureAwait(false);
 

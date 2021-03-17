@@ -1,6 +1,6 @@
 ﻿using Ploeh.AutoFixture;
 
-namespace SFA.DAS.Provider.Events.Api.IntegrationTests.EntityBuilders.Customisations
+namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.EntityBuilders.Customisations
 {
     class IntegrationTestCustomisation : ICustomization
     {
@@ -9,10 +9,6 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.EntityBuilders.Customisat
             fixture.Customize(
                 new CompositeCustomization(
                     new PaymentCustomisation(),
-                    new EarningCustomisation(),
-                    new DataLockEventCustomisation(),
-                    new RequiredPaymentCustomisation(),
-                    new TransferCustomisation(),
                     new RandomRangedNumberCustomization()
                 ));
         }

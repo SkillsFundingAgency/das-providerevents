@@ -9,8 +9,8 @@ namespace SFA.DAS.Provider.Events.Application.Repositories
         Task<PageOfResults<PaymentEntity>> GetPayments(
             int page, int pageSize,
             string employerAccountId = null,
-            int? collectionPeriodYear = null,
-            int? collectionPeriodMonth = null,
+            int? academicYear = null,
+            int? collectionPeriod = null,
             long? ukprn = null);
 
         Task<PaymentStatistics> GetStatistics();

@@ -17,8 +17,8 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PeriodEndsController
 {
     public class WhenGettingListOfPeriodEnds
     {
-        private Period _period1;
-        private Period _period2;
+        private CollectionPeriod _period1;
+        private CollectionPeriod _period2;
         private Mock<IMediator> _mediator;
         private Mock<IMapper> _mapper;
         private Mock<ILogger> _logger;
@@ -28,7 +28,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PeriodEndsController
         [SetUp]
         public void Arrange()
         {
-            _period1 = new Period
+            _period1 = new CollectionPeriod
             {
                 Id= Guid.NewGuid().ToString(),
                 CalendarMonth = 9,
@@ -37,7 +37,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PeriodEndsController
                 CommitmentDataValidAt = new DateTime(2017, 9, 2),
                 CompletionDateTime = new DateTime(2017, 9, 3)
             };
-            _period2 = new Period
+            _period2 = new CollectionPeriod
             {
                 Id = Guid.NewGuid().ToString(),
                 CalendarMonth = 10,
@@ -56,8 +56,8 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PeriodEndsController
                 }));
 
             _mapper = new Mock<IMapper>();
-            _mapper.Setup(m => m.Map<PeriodEnd[]>(It.IsAny<Period[]>()))
-                .Returns((Period[] source) =>
+            _mapper.Setup(m => m.Map<PeriodEnd[]>(It.IsAny<CollectionPeriod[]>()))
+                .Returns((CollectionPeriod[] source) =>
                 {
                     return source.Select(p => new PeriodEnd
                     {
@@ -147,7 +147,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PeriodEndsController
             Assert.IsInstanceOf<InternalServerErrorResult>(actual);
         }
 
-        private void AssertPeriodForDomainObject(Period period, PeriodEnd periodEnd)
+        private void AssertPeriodForDomainObject(CollectionPeriod period, PeriodEnd periodEnd)
         {
             Assert.AreEqual(period.Id, period.Id);
             Assert.AreEqual(period.CalendarMonth, periodEnd.CalendarPeriod.Month);

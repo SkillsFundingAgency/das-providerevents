@@ -6,7 +6,6 @@ namespace SFA.DAS.Provider.Events.Api.Types
     public class Payment
     {
         public string Id { get; set; }
-        
         public long Ukprn { get; set; }
         public long Uln { get; set; }
         public string EmployerAccountId { get; set; }

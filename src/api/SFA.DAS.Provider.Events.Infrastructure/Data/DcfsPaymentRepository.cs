@@ -5,7 +5,6 @@ using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
 using SFA.DAS.Provider.Events.Application.Repositories;
 using SFA.DAS.Provider.Events.Infrastructure.Extensions;
-using SFA.DAS.Sql.Dapper;
 
 
 namespace SFA.DAS.Provider.Events.Infrastructure.Data
@@ -15,70 +14,69 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         // Using CTE for 2 reasons:
         //  Get the column count at the same time as the query
         //  Restrict the query to PageSize rows for the main query before joining the earnings data
+        
         private const string SqlTemplate = @"
-            WITH _data AS (
-                SELECT 
-                    CAST(p.PaymentId as varchar(36)) [Id], 
-                    rp.Id [DataRequiredPaymentId], 
-                    rp.CommitmentId [ApprenticeshipId], 
-                    rp.CommitmentVersionId [ApprenticeshipVersion], 
-                    rp.Ukprn, 
-                    rp.Uln, 
-                    rp.AccountId [EmployerAccountId], 
-                    rp.AccountVersionId [EmployerAccountVersion], 
-                    p.DeliveryMonth [DeliveryPeriodMonth], 
-                    p.DeliveryYear [DeliveryPeriodYear], 
-                    p.CollectionPeriodName [CollectionPeriodId], 
-                    p.CollectionPeriodMonth, 
-                    p.CollectionPeriodYear, 
-                    rp.IlrSubmissionDateTime [EvidenceSubmittedOn], 
-                    p.FundingSource, 
-                    NULL AS FundingAccountId, 
-                    p.TransactionType, 
-                    p.Amount, 
-                    rp.StandardCode, 
-                    rp.FrameworkCode, 
-                    rp.ProgrammeType, 
-                    rp.PathwayCode, 
-                    rp.ApprenticeshipContractType [ContractType]
-                FROM 
-                    Payments.Payments p 
-                    INNER JOIN PaymentsDue.RequiredPayments rp ON p.RequiredPaymentId = rp.Id 
+            WITH Payments AS (
+	            SELECT
+                    p.Id,
+		            P.EventId,
+		            P.RequiredPaymentEventId,
+		            P.ApprenticeshipId, 
+		            P.Ukprn, 
+		            P.LearnerUln, 
+		            P.AccountId, 
+		            P.DeliveryPeriod, 
+		            P.AcademicYear, 
+		            P.CollectionPeriod, 
+		            P.IlrSubmissionDateTime, 
+		            P.FundingSource, 
+		            P.TransactionType, 
+		            P.Amount, 
+		            P.LearningAimStandardCode, 
+		            P.LearningAimFrameworkCode, 
+		            P.LearningAimProgrammeType, 
+		            P.LearningAimPathwayCode, 
+		            P.ContractType,
+                    P.EarningsStartDate,
+					P.EarningsPlannedEndDate,
+					P.EarningsActualEndDate,
+					P.EarningsCompletionStatus,
+					P.EarningsCompletionAmount,
+					P.EarningsInstalmentAmount,
+					P.EarningsNumberOfInstalments
+	            FROM [Payments2].[Payment] P
                 /**where**/ -- Do not remove. Essential for SqlBuilder
-            ),
-            _count AS (
-                SELECT COUNT(1) AS TotalCount FROM _data
-            ) 
-            SELECT * FROM 
-            (
-                SELECT * FROM _data CROSS APPLY _count 
-                ORDER BY Id 
-                OFFSET (@PageIndex - 1) * @PageSize ROWS FETCH NEXT @PageSize ROWS ONLY 
-            ) AS DATA 
-            LEFT OUTER JOIN PaymentsDue.Earnings e 
-                ON e.RequiredPaymentId = DATA.DataRequiredPaymentId ";
+            )
+            , _count AS (
+	            SELECT COUNT(1) [TotalCount] FROM Payments
+            )
 
-        public async Task<PageOfResults<PaymentEntity>> GetPayments(int page, int pageSize, string employerAccountId, int? collectionPeriodYear, int? collectionPeriodMonth, long? ukprn)
+            SELECT *
+            FROM Payments 
+            CROSS APPLY _count
+
+            ORDER BY Id
+            OFFSET (@PageIndex - 1) * @PageSize ROWS
+            FETCH NEXT @PageSize ROWS ONLY";
+
+        public async Task<PageOfResults<PaymentEntity>> GetPayments(int page, int pageSize, string employerAccountId, int? academicYear, int? collectionPeriod, long? ukprn)
         {
             var sqlBuilder = new SqlBuilder();
             var query = sqlBuilder.AddTemplate(SqlTemplate);
 
-            BuildQueryParameters(employerAccountId, collectionPeriodYear, collectionPeriodMonth, ukprn, sqlBuilder);
+            BuildQueryParameters(employerAccountId, academicYear, collectionPeriod, ukprn, sqlBuilder);
 
             // TODO: Consider putting this in a decorator??
             AddPagingInformation(page, pageSize, sqlBuilder);
 
             using (var connection = await GetOpenConnection().ConfigureAwait(false))
             {
-                var result = await connection.MappedQueryAsync<PaymentEntity, PaymentsDueEarningEntity>(
-                    query.RawSql,
-                    query.Parameters,
-                    splitOn: c => c.RequiredPaymentId,
-                    parentIdentifier: p => p.Id,
-                    childCollection: p => p.PaymentsDueEarningEntities
-                ).ConfigureAwait(false);
+                var result = await connection.QueryAsync<PaymentEntity>(
+                        query.RawSql,
+                        query.Parameters
+                    ).ConfigureAwait(false);
 
-                var pagedResults = PageResults(result, page, pageSize);
+                var pagedResults = PageResults(result.ToList(), page, pageSize);
                 return pagedResults;
             }
         }
@@ -87,9 +85,8 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         {
             using (var connection = await GetOpenConnection().ConfigureAwait(false))
             {
-                var sql = "  SELECT count(PaymentId) as TotalNumberOfPayments, count(rp.Id) as TotalNumberOfPaymentsWithRequiredPayment " + 
-                            "FROM Payments.Payments p " +
-                            "LEFT JOIN PaymentsDue.RequiredPayments rp ON p.RequiredPaymentId = rp.Id";
+                var sql =
+                    "SELECT count(EventId) as TotalNumberOfPayments, count(RequiredPaymentEventId) as TotalNumberOfPaymentsWithRequiredPayment FROM Payments2.Payment";
 
                 return connection.Query<PaymentStatistics>(sql).FirstOrDefault();
             }
@@ -100,19 +97,19 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             sqlBuilder.AddParameters(new { PageIndex = page, PageSize = pageSize });
         }
 
-        private static void BuildQueryParameters(string employerAccountId, int? collectionPeriodYear, int? collectionPeriodMonth, long? ukprn, SqlBuilder sqlBuilder)
+        private static void BuildQueryParameters(string employerAccountId, int? academicYear, int? collectionPeriod, long? ukprn, SqlBuilder sqlBuilder)
         {
             sqlBuilder.Where(
-                "p.CollectionPeriodYear = @CollectionPeriodYear AND p.CollectionPeriodMonth = @CollectionPeriodMonth",
-                new { CollectionPeriodYear = collectionPeriodYear, CollectionPeriodMonth = collectionPeriodMonth },
-                includeIf: collectionPeriodYear.HasValue && collectionPeriodMonth.HasValue);
+                "p.AcademicYear = @AcademicYear AND p.CollectionPeriod = @CollectionPeriod",
+                new { AcademicYear = academicYear, CollectionPeriod = collectionPeriod },
+                includeIf: academicYear.HasValue && collectionPeriod.HasValue);
 
             sqlBuilder.Where(
-                "rp.AccountId = @EmployerAccountId",
+                "p.AccountId = @EmployerAccountId",
                 new { EmployerAccountId = employerAccountId?.Replace("'", "''") },
                 includeIf: !string.IsNullOrEmpty(employerAccountId));
 
-            sqlBuilder.Where("rp.Ukprn = @UkPrn", new { UkPrn = ukprn }, includeIf: ukprn.HasValue);
+            sqlBuilder.Where("p.Ukprn = @UkPrn", new { UkPrn = ukprn }, includeIf: ukprn.HasValue);
         }
     }
 }

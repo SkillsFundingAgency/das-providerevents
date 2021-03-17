@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Results;
 using MediatR;
@@ -7,7 +6,6 @@ using Moq;
 using NLog;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.Types;
-using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
 

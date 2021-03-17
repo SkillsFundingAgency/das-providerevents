@@ -13,7 +13,7 @@ namespace SFA.DAS.Provider.Events.Api.Plumbing.Mapping
             {
                 DomainAutoMapperConfiguration.AddDomainMappings(cfg);
 
-                cfg.CreateMap<Period, PeriodEnd>()
+                cfg.CreateMap<CollectionPeriod, PeriodEnd>()
                     .ForMember(dst => dst.CalendarPeriod, opt => opt.Ignore())
                     .ForMember(dst => dst.ReferenceData, opt => opt.Ignore())
                     .ForMember(dst => dst.Links, opt => opt.Ignore())
