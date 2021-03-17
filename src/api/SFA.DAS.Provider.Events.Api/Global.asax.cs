@@ -7,7 +7,7 @@ using Microsoft.ApplicationInsights.Extensibility;
 
 namespace SFA.DAS.Provider.Events.Api
 {
-    public class WebApiApplication : System.Web.HttpApplication
+    public class WebApiApplication : HttpApplication
     {
         protected void Application_Start()
         {

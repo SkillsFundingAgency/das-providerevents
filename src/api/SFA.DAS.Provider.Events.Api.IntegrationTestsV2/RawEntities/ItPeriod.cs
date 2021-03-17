@@ -1,9 +1,10 @@
 ﻿using System;
 
-namespace SFA.DAS.Provider.Events.Application.Data.Entities
+namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.RawEntities
 {
-    public class PeriodEntity
+    public class ItPeriod
     {
+        [Dapper.Contrib.Extensions.Key]
         public long Id { get; set; }
         public short AcademicYear { get; set; }
         public byte Period { get; set; }

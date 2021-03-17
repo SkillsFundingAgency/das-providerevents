@@ -16,10 +16,10 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTests.DatabaseAccess
             return connection;
         }
 
-        public static string BaseDirectory =>
-            System.IO.Path.GetDirectoryName(typeof(DatabaseConnection).Assembly.Location);
+        private static string BaseDirectory =>
+            Path.GetDirectoryName(typeof(DatabaseConnection).Assembly.Location);
 
-        public async Task RunScriptfile(string relativePath)
+        public static async Task RunScriptfile(string relativePath)
         {
             var path = Path.Combine(BaseDirectory, $"{relativePath}.sql");
             var file = File.ReadAllText(path);

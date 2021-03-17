@@ -33,7 +33,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
                 .ForMember(dst => dst.CollectionPeriod, opt => opt.MapFrom(src =>
                     new NamedCalendarPeriod
                     {
-                        Id = $"{src.AcademicYear}-R{src.CollectionPeriod:D2}",
+                        Id = GetCollectionPeriodName(src.AcademicYear, src.CollectionPeriod),
                         Month = GetMonthFromPaymentEntity(src.CollectionPeriod),
                         Year = GetYearFromPaymentEntity(src.AcademicYear, src.CollectionPeriod)
                     }))
@@ -58,7 +58,17 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
                     }
                 }));
 
-            cfg.CreateMap<PeriodEntity, CollectionPeriod>();
+            cfg.CreateMap<PeriodEntity, CollectionPeriod>()
+                .ForMember(dst => dst.Id, opt => opt.MapFrom(src => GetCollectionPeriodName(src.AcademicYear, src.Period)))
+                .ForMember(dst => dst.PeriodName, opt => opt.MapFrom(src => GetCollectionPeriodName(src.AcademicYear, src.Period)))
+                .ForMember(dst => dst.AcademicYear, opt => opt.MapFrom(src => src.AcademicYear))
+                .ForMember(dst => dst.Period, opt => opt.MapFrom(src => src.Period))
+                .ForMember(dst => dst.AccountDataValidAt, opt => opt.MapFrom(src => src.ReferenceDataValidationDate))
+                .ForMember(dst => dst.CommitmentDataValidAt, opt => opt.MapFrom(src => src.ReferenceDataValidationDate))
+                .ForMember(dst => dst.CompletionDateTime, opt => opt.MapFrom(src => src.CompletionDate))
+                .ForMember(dst => dst.CalendarMonth, opt => opt.MapFrom(src => GetMonthFromPaymentEntity(src.Period)))
+                .ForMember(dst => dst.CalendarYear, opt => opt.MapFrom(src => GetYearFromPaymentEntity(src.AcademicYear, src.Period)))
+                ;
 
             cfg.CreateMap<PageOfResults<SubmissionEventEntity>, PageOfResults<SubmissionEvent>>();
 
@@ -82,11 +92,21 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Mapping
             cfg.CreateMap<DataLockEventApprenticeshipEntity, DataLockEventApprenticeship>();
 
             cfg.CreateMap<TransferEntity, AccountTransfer>()
-                .ForMember(t => t.SenderAccountId, o => o.MapFrom(s => s.SendingAccountId))
-                .ForMember(t => t.ReceiverAccountId, o => o.MapFrom(s => s.ReceivingAccountId))
-                .AfterMap((s, t) => t.Type = (TransferType) s.TransferType);
+                .ForMember(t => t.TransferId, o => o.MapFrom(s => s.Id))
+                .ForMember(t => t.SenderAccountId, o => o.MapFrom(s => s.TransferSenderAccountId))
+                .ForMember(t => t.ReceiverAccountId, o => o.MapFrom(s => s.AccountId))
+                .ForMember(t => t.RequiredPaymentId, o => o.MapFrom(s => s.RequiredPaymentEventId))
+                .ForMember(t => t.CommitmentId, o => o.MapFrom(s => s.ApprenticeshipId))
+                .ForMember(t => t.Amount, o => o.MapFrom(s => s.Amount))
+                .ForMember(t => t.CollectionPeriodName, o => o.MapFrom(s => GetCollectionPeriodName(s.AcademicYear, s.CollectionPeriod)))
+                .AfterMap((s, t) => t.Type = TransferType.Levy);
 
             cfg.CreateMap<PageOfResults<TransferEntity>, PageOfResults<AccountTransfer>>();
+        }
+
+        private static string GetCollectionPeriodName(short academicYear, byte period)
+        {
+            return $"{academicYear}-R{period:D2}";
         }
 
         private static int GetYearFromPaymentEntity(short academicYear, byte period)

@@ -31,9 +31,10 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         {
             try
             {
+                CollectionPeriod period = null;
                 if (!string.IsNullOrEmpty(periodId))
                 {
-                    var period = await GetPeriodAsync(periodId).ConfigureAwait(false);
+                    period = await GetPeriodAsync(periodId).ConfigureAwait(false);
                     if (period == null)
                     {
                         return Ok(new PageOfResults<AccountTransfer>
@@ -45,7 +46,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
                     }
                 }
 
-                var transfersQueryResponse = await GetTransfersInternal(senderAccountId, receiverAccountId, page, periodId).ConfigureAwait(false);
+                var transfersQueryResponse = await GetTransfersInternal(senderAccountId, receiverAccountId, page, period).ConfigureAwait(false);
 
                 return Ok(transfersQueryResponse.Result);
             }
@@ -68,11 +69,11 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             return getPeriodResponse.Result;
         }
 
-        private async Task<GetTransfersQueryResponse> GetTransfersInternal(long? senderAccountId, long? receiverAccountId, int page, string collectionPeriodName)
+        private async Task<GetTransfersQueryResponse> GetTransfersInternal(long? senderAccountId, long? receiverAccountId, int page, CollectionPeriod period)
         {
             var transfersResponse = await _mediator.SendAsync(new GetTransfersQueryRequest
                 {
-                    CollectionPeriodName = collectionPeriodName,
+                    Period = period,
                     SenderAccountId = senderAccountId,
                     ReceiverAccountId = receiverAccountId,
                     PageNumber = page,

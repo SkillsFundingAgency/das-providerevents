@@ -27,31 +27,6 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             _logger = logger;
         }
 
-        //TODO THIS NEEDS TO BE REMOVED WHEN PV2-2308 IS DEVELOPED
-        private CollectionPeriod GetPeriodFromPeriodIdTEMP(string periodId)
-        {
-            var validationException = new ValidationException(new[] { "Period Id is not in a valid format. Excepted format is [AcademicYear]-[Period]; e.g. 1617-R01" });
-            try
-            {
-
-                if (!string.IsNullOrWhiteSpace(periodId))
-                {
-                    return new CollectionPeriod
-                    {
-                        Id = periodId,
-                        Period = byte.Parse(periodId.Substring(6)),
-                        AcademicYear = short.Parse(periodId.Substring(0, 4))
-                    };
-                }
-            }
-            catch (Exception)
-            {
-                throw validationException;
-            }
-
-            throw validationException;
-        }
-
         [VersionedRoute("api/payments", 1, Name = "PaymentsList")]
         [VersionedRoute("api/payments", 2, Name = "PaymentsListV2H")]
         [Route("api/v2/payments", Name = "PaymentsListV2")]
@@ -67,8 +42,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
                 CollectionPeriod period = null;
                 if (PeriodHasBeenProvided(periodId))
                 {
-                    //period = await GetPeriodAsync(periodId).ConfigureAwait(false); TODO THIS NEEDS TO BE PUT BACK IN WHEN PV2-2308 IS DEVELOPED
-                    period = GetPeriodFromPeriodIdTEMP(periodId);
+                    period = await GetPeriodAsync(periodId).ConfigureAwait(false);
                     if (PeriodNotFound(period))
                     {
                         return Ok(new PageOfResults<Payment>
@@ -132,9 +106,8 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
 
         private async Task<CollectionPeriod> GetPeriodAsync(string periodId)
         {
-            var getPeriodResponse = await _mediator
-                .SendAsync(new GetPeriodQueryRequest { PeriodId = periodId })
-                .ConfigureAwait(false);
+            var getPeriodResponse = await _mediator.SendAsync(new GetPeriodQueryRequest { PeriodId = periodId }).ConfigureAwait(false);
+
             if (!getPeriodResponse.IsValid)
             {
                 throw getPeriodResponse.Exception;

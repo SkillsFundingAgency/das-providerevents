@@ -98,6 +98,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AcademicYearHelper.cs" />
     <Compile Include="ApiHost\IntegrationTestServer.cs" />
     <Compile Include="DatabaseAccess\DatabaseCleanUp.cs" />
     <Compile Include="DatabaseAccess\DatabaseConnection.cs" />
@@ -110,9 +111,12 @@
     <Compile Include="RawEntities\ItPayment.cs" />
     <Compile Include="DatabaseAccess\DatabaseSetup.cs" />
     <Compile Include="DatabaseAccess\TestData.cs" />
+    <Compile Include="RawEntities\ItPeriod.cs" />
     <Compile Include="Tests\PaymentsApiTests\When\RequestingALargeAmountOfData.cs" />
     <Compile Include="Tests\PaymentsApiTests\When\RequestingASubsetOfTheData.cs" />
     <Compile Include="Tests\PaymentsApiTests\When\RequestingPaymentStatistics.cs" />
+    <Compile Include="Tests\PeriodApiTests\When\RequestingPeriodData.cs" />
+    <Compile Include="Tests\TransfersApiTests\WhenRequestingTransfers.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

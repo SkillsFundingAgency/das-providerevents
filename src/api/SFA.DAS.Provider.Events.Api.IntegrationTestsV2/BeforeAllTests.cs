@@ -12,6 +12,11 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2
         public async Task Setup()
         {
             TestData.EmployerAccountId = new Random().Next(100000000, 999999999);
+
+            TestData.CollectionPeriod = AcademicYearHelper.GetRandomCollectionPeriod();
+
+            TestData.AcademicYear = AcademicYearHelper.GetRandomAcademicYear();
+
             await new DatabaseSetup().PopulateAllData().ConfigureAwait(false);
         }
     }

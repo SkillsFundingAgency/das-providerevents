@@ -26,5 +26,17 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.Tests.PaymentsApiTests.
             items.Items.Should().HaveCount(paymentCount);
             items.Items.Length.Should().NotBe(0);
         }
+
+        [Test]
+        public async Task ThenTheNumberOfRecordsIsCorrectForCollectionPeriod()
+        {
+            var results = await IntegrationTestServer.GetInstance().Client.GetAsync($"/api/payments?PeriodId={TestData.AcademicYear}-R{TestData.CollectionPeriod:D2}").ConfigureAwait(false);
+
+            var resultsAsString = await results.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var items = JsonConvert.DeserializeObject<PageOfResults<Payment>>(resultsAsString);
+
+            items.Items.Length.Should().NotBe(0);
+            items.Items.Should().HaveCount(10000);
+        }
     }
 }

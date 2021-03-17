@@ -6,6 +6,6 @@ namespace SFA.DAS.Provider.Events.Application.Repositories
     public interface IPeriodRepository
     {
         Task<PeriodEntity[]> GetPeriods();
-        Task<PeriodEntity> GetPeriod(string academicYear, string periodName);
+        Task<PeriodEntity> GetPeriod(string periodId);
     }
 }

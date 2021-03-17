@@ -2,10 +2,13 @@
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Provider.Events.Api.Plumbing.Mapping;
 using SFA.DAS.Provider.Events.Application.Data.Entities;
+using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery;
 using SFA.DAS.Provider.Events.Application.Repositories;
 using SFA.DAS.Provider.Events.Application.Validation;
+using SFA.DAS.Provider.Events.Infrastructure.Mapping;
 
 namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodQuery.GetPeriodQueryHandler
 {
@@ -15,6 +18,8 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodQuery.Ge
         private Mock<IValidator<GetPeriodQueryRequest>> _requestValidator;
         private Mock<IPeriodRepository> _periodRepository;
         private Application.Period.GetPeriodQuery.GetPeriodQueryHandler _handler;
+        private IMapper _mapper;
+        private readonly DateTime _expectedDate = new DateTime(2021, 02, 25);
 
         [SetUp]
         public void Arrange()
@@ -29,15 +34,18 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodQuery.Ge
                 .Returns(Task.FromResult(new ValidationResult()));
 
             _periodRepository = new Mock<IPeriodRepository>();
-            _periodRepository.Setup(r => r.GetPeriod("1617", "R02"))
+            _periodRepository.Setup(r => r.GetPeriod("1617-R02"))
                 .Returns(Task.FromResult(new PeriodEntity
                 {
-                    Id = "1617-R02",
-                    CalendarMonth = 9,
-                    CalendarYear = 2016
+                    Period = 2,
+                    AcademicYear = 1617,
+                    ReferenceDataValidationDate = _expectedDate,
+                    CompletionDate = _expectedDate
                 }));
 
-            _handler = new Application.Period.GetPeriodQuery.GetPeriodQueryHandler(_requestValidator.Object, _periodRepository.Object);
+            _mapper = new AutoMapperMapper(AutoMapperConfigurationFactory.CreateMappingConfig());
+
+            _handler = new Application.Period.GetPeriodQuery.GetPeriodQueryHandler(_requestValidator.Object, _periodRepository.Object, _mapper);
         }
 
         [Test]
@@ -53,6 +61,11 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodQuery.Ge
             Assert.AreEqual("1617-R02", actual.Result.Id);
             Assert.AreEqual(9, actual.Result.CalendarMonth);
             Assert.AreEqual(2016, actual.Result.CalendarYear);
+            Assert.AreEqual(2, actual.Result.Period);
+            Assert.AreEqual(1617, actual.Result.AcademicYear);
+            Assert.AreEqual(_expectedDate, actual.Result.CommitmentDataValidAt);
+            Assert.AreEqual(_expectedDate, actual.Result.AccountDataValidAt);
+            Assert.AreEqual(_expectedDate, actual.Result.CompletionDateTime);
         }
 
         [Test]
@@ -87,7 +100,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodQuery.Ge
         {
             // Arrange
             var ex = new Exception("Test");
-            _periodRepository.Setup(r => r.GetPeriod("1617", "R02"))
+            _periodRepository.Setup(r => r.GetPeriod("1617-R02"))
                 .Throws(ex);
 
             // Act
@@ -104,7 +117,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Period.GetPeriodQuery.Ge
         public async Task ThenItShouldReturnAnValidResponseWithNoResultIfNoPeriodInRepo()
         {
             // Arrange
-            _periodRepository.Setup(r => r.GetPeriod("1617", "R02"))
+            _periodRepository.Setup(r => r.GetPeriod("1617-R02"))
                 .Returns(Task.FromResult<PeriodEntity>(null));
 
             // Act

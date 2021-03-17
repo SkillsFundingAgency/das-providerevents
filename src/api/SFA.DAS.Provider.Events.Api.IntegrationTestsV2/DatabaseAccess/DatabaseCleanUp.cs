@@ -19,7 +19,9 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess
             var remainder = totalGuidsToDelete.Length % batchSizeLimit;
             var totalNumberOfBatchesNeeded = totalGuidsToDelete.Length / batchSizeLimit + (remainder == 0 ? 0 : 1);
 
-            for (int i = 1; i <= totalNumberOfBatchesNeeded; i++)
+            await ExecuteSqlAsync($"DELETE FROM [Payments2].[CollectionPeriod] WHERE Period = {TestData.CollectionPeriod} AND AcademicYear = {TestData.AcademicYear}");
+
+            for (var i = 1; i <= totalNumberOfBatchesNeeded; i++)
             {
                 var recordsToSkip = (i - 1) * batchSizeLimit;
 

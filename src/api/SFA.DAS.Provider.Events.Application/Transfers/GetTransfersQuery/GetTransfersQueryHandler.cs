@@ -27,7 +27,8 @@ namespace SFA.DAS.Provider.Events.Application.Transfers.GetTransfersQuery
                         message.PageSize,
                         message.SenderAccountId,
                         message.ReceiverAccountId,
-                        message.CollectionPeriodName)
+                        message.Period?.AcademicYear,
+                        message.Period?.Period)
                     .ConfigureAwait(false);
 
                 var result = _mapper.Map<PageOfResults<AccountTransfer>>(transfers);

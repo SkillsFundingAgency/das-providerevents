@@ -22,6 +22,7 @@ namespace SFA.DAS.Provider.Events.Application.Period.GetPeriodsQuery
             try
             {
                 var periodEntities = await _periodRepository.GetPeriods().ConfigureAwait(false);
+                
                 return new GetPeriodsQueryResponse
                 {
                     IsValid = true,
