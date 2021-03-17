@@ -11,11 +11,6 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 {
     public class DcfsPaymentRepository : DcfsRepository, IPaymentRepository
     {
-        public DcfsPaymentRepository()
-            : base("PaymentsV2ConnectionString")
-        {
-        }
-
         // Using CTE for 2 reasons:
         //  Get the column count at the same time as the query
         //  Restrict the query to PageSize rows for the main query before joining the earnings data

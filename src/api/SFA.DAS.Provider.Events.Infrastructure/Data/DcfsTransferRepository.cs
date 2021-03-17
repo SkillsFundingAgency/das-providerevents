@@ -16,15 +16,15 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         //  Restrict the query to PageSize rows for the main query before joining the earnings data
         private const string SqlTemplate = @"
             WITH _data AS (
-                SELECT [TransferId]
-                      ,[SendingAccountId]
-                      ,[ReceivingAccountId]
-                      ,[RequiredPaymentId]
-                      ,[CommitmentId]
+                SELECT [Id]
+                      ,[TransferSenderAccountId]
+                      ,[AccountId]
+                      ,[RequiredPaymentEventId]
+                      ,[ApprenticeshipId]
                       ,[Amount]
-                      ,[TransferType]
-                      ,[CollectionPeriodName]
-                  FROM [TransferPayments].[AccountTransfers]
+                      ,[AcademicYear]
+                      ,[CollectionPeriod]
+                  FROM [Payments2].[Payment]
                 /**where**/ -- Do not remove. Essential for SqlBuilder
             ),
             _count AS (
@@ -33,24 +33,26 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             SELECT * FROM 
             (
                 SELECT * FROM _data CROSS APPLY _count 
-                ORDER BY [TransferId]
+                ORDER BY [Id]
                 OFFSET (@PageIndex - 1) * @PageSize ROWS FETCH NEXT @PageSize ROWS ONLY 
             ) AS DATA ";
 
-        private static void BuildQueryParameters(long? senderAccountId, long? receiverAccountId, string collectionPeriodName, SqlBuilder sqlBuilder)
+        private static void BuildQueryParameters(long? senderAccountId, long? receiverAccountId, int? academicYear, int? collectionPeriod, SqlBuilder sqlBuilder)
         {
-            sqlBuilder.Where(
-                "CollectionPeriodName = @collectionPeriodName",
-                new {collectionPeriodName},
-                includeIf: !string.IsNullOrEmpty(collectionPeriodName));
+            sqlBuilder.Where("FundingSource = 5 AND TransferSenderAccountId IS NOT NULL AND ApprenticeshipId IS NOT NULL AND AccountId IS NOT NULL");
 
             sqlBuilder.Where(
-                "SendingAccountId = @senderAccountId",
+                "AcademicYear = @AcademicYear AND CollectionPeriod = @CollectionPeriod",
+                new { AcademicYear = academicYear, CollectionPeriod = collectionPeriod },
+                includeIf: academicYear.HasValue && collectionPeriod.HasValue);
+
+            sqlBuilder.Where(
+                "TransferSenderAccountId = @senderAccountId",
                 new {senderAccountId},
                 includeIf: senderAccountId.HasValue);
 
             sqlBuilder.Where(
-                "ReceivingAccountId = @receiverAccountId",
+                "AccountId = @receiverAccountId",
                 new {receiverAccountId},
                 includeIf: receiverAccountId.HasValue);
         }
@@ -59,12 +61,13 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             int page, int pageSize,
             long? senderAccountId = null,
             long? receiverAccountId = null,
-            string collectionPeriodName = null)
+            int? academicYear = null, 
+            int? collectionPeriod = null)
         {
             var sqlBuilder = new SqlBuilder();
             var query = sqlBuilder.AddTemplate(SqlTemplate);
 
-            BuildQueryParameters(senderAccountId, receiverAccountId, collectionPeriodName, sqlBuilder);
+            BuildQueryParameters(senderAccountId, receiverAccountId, academicYear, collectionPeriod, sqlBuilder);
             sqlBuilder.AddParameters(new {PageIndex = page, PageSize = pageSize});
 
             var result = await Query<TransferEntity>(query.RawSql, query.Parameters).ConfigureAwait(false);

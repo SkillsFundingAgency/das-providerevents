@@ -13,11 +13,9 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2
         {
             TestData.EmployerAccountId = new Random().Next(100000000, 999999999);
 
-            TestData.CollectionPeriod = (byte)new Random().Next(1, 14);
+            TestData.CollectionPeriod = AcademicYearHelper.GetRandomCollectionPeriod();
 
-            var years = new short[] { 1617, 1718, 1819, 1920, 2021 };
-            var randomYear = new Random().Next(0, 4);
-            TestData.AcademicYear = years[randomYear];
+            TestData.AcademicYear = AcademicYearHelper.GetRandomAcademicYear();
 
             await new DatabaseSetup().PopulateAllData().ConfigureAwait(false);
         }

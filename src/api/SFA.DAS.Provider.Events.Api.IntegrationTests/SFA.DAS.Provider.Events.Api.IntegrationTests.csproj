@@ -118,37 +118,16 @@
     <Compile Include="ApiHost\IntegrationTestServer.cs" />
     <Compile Include="DatabaseAccess\CreateDatabase.cs" />
     <Compile Include="DatabaseAccess\DatabaseConnection.cs" />
-    <Compile Include="DatabaseAccess\DeleteDatabase.cs" />
     <Compile Include="DatabaseAccess\PopulateTables.cs" />
-    <Compile Include="EntityBuilders\Customisations\IntegrationTestCustomisation.cs" />
-    <Compile Include="EntityBuilders\DataLockEventCustomisation.cs" />
-    <Compile Include="EntityBuilders\EarningCustomisation.cs" />
-    <Compile Include="EntityBuilders\TransferCustomisation.cs" />
-    <Compile Include="EntityBuilders\PaymentCustomisation.cs" />
-    <Compile Include="EntityBuilders\RequiredPaymentCustomisation.cs" />
     <Compile Include="NUnitHooks\AfterAllTests.cs" />
     <Compile Include="NUnitHooks\BeforeAllTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RawEntities\ItEarning.cs" />
-    <Compile Include="RawEntities\ItPayment.cs" />
-    <Compile Include="RawEntities\ItTransfer.cs" />
-    <Compile Include="RawEntities\ItRequiredPayment.cs" />
     <Compile Include="RawEntities\ItSubmissionEvent.cs" />
     <Compile Include="Setup\DatabaseSetup.cs" />
     <Compile Include="TestData.cs" />
-    <Compile Include="Tests\TransfersApiTests\WhenRequestingTransfers.cs" />
     <Compile Include="Tests\SubmissionsApiTests\When\RequestingLatestLearnerEventByStandard.cs" />
     <Compile Include="Tests\SubmissionsApiTests\When\RequestingSubmissionEvents.cs" />
-    <Content Include="SetupScripts\DataSetup-Payments.Periods.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="SetupScripts\SubmissionEventsTableCreate.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SetupScripts\TableTeardown.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="SetupScripts\TableSetup.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -179,5 +158,6 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

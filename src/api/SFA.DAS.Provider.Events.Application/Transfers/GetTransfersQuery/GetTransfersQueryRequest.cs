@@ -1,10 +1,11 @@
 ﻿using MediatR;
+using SFA.DAS.Provider.Events.Application.Data;
 
 namespace SFA.DAS.Provider.Events.Application.Transfers.GetTransfersQuery
 {
     public class GetTransfersQueryRequest : IAsyncRequest<GetTransfersQueryResponse>
     {
-        public string CollectionPeriodName { get; set; }
+        public CollectionPeriod Period { get; set; }
         public long? SenderAccountId { get; set; }
         public long? ReceiverAccountId { get; set; }
         public int PageNumber { get; set; }

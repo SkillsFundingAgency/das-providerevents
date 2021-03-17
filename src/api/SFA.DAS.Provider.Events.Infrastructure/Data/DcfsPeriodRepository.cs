@@ -13,10 +13,6 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
                                       + "ReferenceDataValidationDate, "
                                       + "CompletionDate";
 
-        public DcfsPeriodRepository() : base("PaymentsV2ConnectionString")
-        {
-        }
-
         public async Task<PeriodEntity[]> GetPeriods()
         {
             var command = $"SELECT {Columns} FROM {Source} ORDER BY CompletionDate";

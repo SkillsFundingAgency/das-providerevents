@@ -17,6 +17,14 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.DatabaseAccess
         /// </summary>
         public static List<ItPayment> Payments { get; set; }
 
+        public static List<ItPayment> TransferPayments
+        {
+            get
+            {
+                return Payments.Where(x => x.TransferSenderAccountId.HasValue).ToList();
+            }
+        }
+
         public static async Task<int?> GetPaymentCount()
         {
             var sql = "SELECT Count(1) FROM [Payments2].[Payment];";

@@ -10,6 +10,7 @@ namespace SFA.DAS.Provider.Events.Application.Repositories
             int page, int pageSize,
             long? senderAccountId = null,
             long? receiverAccountId = null,
-            string collectionPeriodName = null);
+            int? academicYear = null, 
+            int? collectionPeriod = null);
     }
 }
