@@ -44,7 +44,7 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.RawEntities
         public string LearningAimFundingLineType { get; set; }
         [Range(1, 2)]
         public byte ContractType { get; set; }
-        [Range(1, 15)]
+        [Range(1, 16)]
         public byte TransactionType { get; set; }
         [Range(1, 5)]
         public byte FundingSource { get; set; }
