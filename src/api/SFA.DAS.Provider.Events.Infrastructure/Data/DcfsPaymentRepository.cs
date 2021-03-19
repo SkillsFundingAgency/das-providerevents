@@ -112,9 +112,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 
         private static void BuildQueryParameters(string accountId, int? academicYear, int? collectionPeriod, long? ukprn, SqlBuilder sqlBuilder)
         {
-            sqlBuilder.Where("p.ContractType = 1");
-
-			sqlBuilder.Where("p.AcademicYear = @AcademicYear AND p.CollectionPeriod = @CollectionPeriod",
+            sqlBuilder.Where("p.AcademicYear = @AcademicYear AND p.CollectionPeriod = @CollectionPeriod",
                 new { AcademicYear = academicYear, CollectionPeriod = collectionPeriod },
                 includeIf: academicYear.HasValue && collectionPeriod.HasValue);
 

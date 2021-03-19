@@ -18,7 +18,6 @@ namespace SFA.DAS.Provider.Events.Api.IntegrationTestsV2.EntityBuilders
                     .With(x => x.CollectionPeriod, TestData.CollectionPeriod)
                     .With(x => x.AcademicYear, TestData.AcademicYear)
                     .With(x => x.TransferSenderAccountId, new Random().Next(0, 100) > 90 ? (long?)null : new Random().Next())
-                    .With(x => x.ContractType, 1)
                     .Create();
 
                 //if the sender id is set, FundingSource must be set to 5. Else, if the FundingSource is 5 on other payments, set them back to 1, because we don't want non transfer payments with FundingSource 5 as that is invalid data
