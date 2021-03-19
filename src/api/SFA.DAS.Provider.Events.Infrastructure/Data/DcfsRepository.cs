@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Azure;
 using SFA.DAS.Provider.Events.Api.Types;
-using SFA.DAS.Provider.Events.Application.Data;
 
 namespace SFA.DAS.Provider.Events.Infrastructure.Data
 {
@@ -49,7 +48,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             return (int)Math.Ceiling(totalRows / (float)pageSize);
         }
 
-        protected PageOfResults<T> PageResults<T>(List<T> entities, int pageNumber, int pageSize) where T : IAmAPageableEntity
+        protected PageOfResults<T> PageResults<T>(List<T> entities, int pageNumber, int pageSize, int count)
         {
             var returnValue = new PageOfResults<T>
             {
@@ -60,8 +59,9 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 
             if (entities.Any())
             {
-                returnValue.TotalNumberOfPages = NumberOfPages(entities.First().TotalCount, pageSize);
+                returnValue.TotalNumberOfPages = NumberOfPages(count, pageSize);
             }
+
             return returnValue;
         }
     }

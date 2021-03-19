@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Provider.Events.Application.Data.Entities
 {
-    public class PaymentEntity : IAmAPageableEntity
+    public class PaymentEntity
     {
         public long Id { get; set; }
         public Guid EventId { get; set; }
@@ -29,8 +29,6 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
         public int? LearningAimPathwayCode { get; set; }
 
         public int ContractType { get; set; }
-
-        public int TotalCount { get; set; }
 
         public DateTime EarningsStartDate { get; set; }
         public DateTime? EarningsPlannedEndDate { get; set; }
