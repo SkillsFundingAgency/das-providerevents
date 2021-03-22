@@ -85,20 +85,20 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 
         private static void BuildQueryParameters(long? senderAccountId, long? receiverAccountId, int? academicYear, int? collectionPeriod, SqlBuilder sqlBuilder)
         {
-            sqlBuilder.Where("P.FundingSource = 5 AND P.TransferSenderAccountId IS NOT NULL AND P.ApprenticeshipId IS NOT NULL AND P.AccountId IS NOT NULL");
-
             sqlBuilder.Where(
                 "P.AcademicYear = @AcademicYear AND P.CollectionPeriod = @CollectionPeriod",
                 new { AcademicYear = academicYear, CollectionPeriod = collectionPeriod },
                 includeIf: academicYear.HasValue && collectionPeriod.HasValue);
 
             sqlBuilder.Where(
+                "P.AccountId = @receiverAccountId",
+                new {receiverAccountId}, includeIf: receiverAccountId.HasValue);
+
+            sqlBuilder.Where(
                 "P.TransferSenderAccountId = @senderAccountId",
                 new {senderAccountId}, includeIf: senderAccountId.HasValue);
 
-            sqlBuilder.Where(
-                "P.AccountId = @receiverAccountId",
-                new {receiverAccountId}, includeIf: receiverAccountId.HasValue);
+            sqlBuilder.Where("P.FundingSource = 5 AND P.TransferSenderAccountId IS NOT NULL AND P.ApprenticeshipId IS NOT NULL AND P.AccountId IS NOT NULL");
         }
     }
 }
