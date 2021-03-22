@@ -48,7 +48,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             return (int)Math.Ceiling(totalRows / (float)pageSize);
         }
 
-        protected PageOfResults<T> PageResults<T>(List<T> entities, int pageNumber, int pageSize, int count)
+        protected PageOfResults<T> AddPagingInformation<T>(List<T> entities, int pageNumber, int pageSize, int count)
         {
             var returnValue = new PageOfResults<T>
             {

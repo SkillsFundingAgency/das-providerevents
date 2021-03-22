@@ -39,17 +39,17 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
         {
             using (var connection = await GetOpenConnection().ConfigureAwait(false))
             {
-                var result = await GetUnPaginatedTransfers(page, pageSize, senderAccountId, receiverAccountId, academicYear, collectionPeriod, connection);
+                var result = await GetTransfers(page, pageSize, senderAccountId, receiverAccountId, academicYear, collectionPeriod, connection);
 
                 var count = await GetTransferCount(senderAccountId, receiverAccountId, academicYear, collectionPeriod, connection);
 
-                var pagedResults = PageResults(result.ToList(), page, pageSize, count);
+                var pagedResults = AddPagingInformation(result.ToList(), page, pageSize, count);
 
                 return pagedResults;
             }
         }
 
-        private async Task<IEnumerable<TransferEntity>> GetUnPaginatedTransfers(int page, int pageSize, long? senderAccountId, long? receiverAccountId, int? academicYear, int? collectionPeriod, SqlConnection connection)
+        private async Task<IEnumerable<TransferEntity>> GetTransfers(int page, int pageSize, long? senderAccountId, long? receiverAccountId, int? academicYear, int? collectionPeriod, SqlConnection connection)
         {
             var sqlBuilder = new SqlBuilder();
             var query = sqlBuilder.AddTemplate(SqlTemplate);
@@ -65,12 +65,12 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 
         private static async Task<int> GetTransferCount(long? senderAccountId, long? receiverAccountId, int? academicYear, int? collectionPeriod, SqlConnection connection)
         {
-            var countSQlBuilder = new SqlBuilder();
-            var countQuery = countSQlBuilder.AddTemplate(CountSqlTemplate);
+            var countSqlBuilder = new SqlBuilder();
+            var countQuery = countSqlBuilder.AddTemplate(CountSqlTemplate);
 
-            BuildQueryParameters(senderAccountId, receiverAccountId, academicYear, collectionPeriod, countSQlBuilder);
+            BuildQueryParameters(senderAccountId, receiverAccountId, academicYear, collectionPeriod, countSqlBuilder);
 
-            var count = await connection.QueryFirstOrDefaultAsync<int>(
+            var count = await connection.ExecuteScalarAsync<int>(
                 countQuery.RawSql,
                 countQuery.Parameters
             ).ConfigureAwait(false);
