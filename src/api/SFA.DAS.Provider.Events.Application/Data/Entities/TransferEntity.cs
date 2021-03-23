@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Provider.Events.Application.Data.Entities
 {
-    public class TransferEntity : IAmAPageableEntity
+    public class TransferEntity
     {
         public long Id {get; set; }
         public long TransferSenderAccountId {get; set; }
@@ -12,6 +12,5 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
         public string ApprenticeshipId {get; set; }
         public short AcademicYear { get; set; }
         public byte CollectionPeriod { get; set; }
-        public int TotalCount { get; }
     }
 }

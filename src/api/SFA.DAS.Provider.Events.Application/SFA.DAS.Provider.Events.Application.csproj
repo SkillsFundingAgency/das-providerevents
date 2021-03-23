@@ -57,7 +57,6 @@
     <Compile Include="Data\Entities\PaymentEntity.cs" />
     <Compile Include="Data\Entities\PeriodEntity.cs" />
     <Compile Include="Data\Entities\SubmissionEventEntity.cs" />
-    <Compile Include="Data\IAmAPageableEntity.cs" />
     <Compile Include="Data\CollectionPeriod.cs" />
     <Compile Include="Mapping\IMapper.cs" />
     <Compile Include="Payments\GetPaymentsStatistics\GetPaymentsStatisticsHandler.cs" />
