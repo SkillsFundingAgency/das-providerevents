@@ -1,0 +1,57 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - "*"
+
+variables:
+- name: SolutionBaseName
+  value: SFA.DAS.Provider.Events.Api
+- name: BuildConfiguration
+  value: release
+- name: BuildPlatform
+  value: any cpu
+
+pool:
+  name: DAS - Continuous Integration
+  workspace:
+    clean: all
+
+resources:
+  repositories:
+  - repository: self
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/0.3.31
+    endpoint: GitHub (SFA)
+  - repository: das-platform-automation
+    type: github
+    name: SkillsFundingAgency/das-platform-automation
+    ref: refs/tags/4.3.5
+    endpoint: GitHub (SFA)
+  pipelines:
+  - pipeline: das-employer-config
+    project: Digital Apprenticeship Service
+    source: das-employer-config
+    branch: master
+
+stages:
+- stage: Build
+  jobs:
+  - template: pipeline-templates/job/code-build.yml
+    parameters:
+      SolutionBaseName: $(SolutionBaseName)
+      BuildConfiguration: $(BuildConfiguration)
+
+- stage: Deploy_AT
+  dependsOn: Build
+  displayName: Deploy to AT
+  variables:
+  - group: DevTest Management Resources
+  - group: AT DevTest Shared Resources
+  jobs:
+  - template: pipeline-templates/job/deploy.yml
+    parameters:
+      Environment: AT
+      ServiceConnection: SFA-DAS-DevTest-ARM
