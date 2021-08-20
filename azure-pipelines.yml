@@ -13,8 +13,7 @@ variables:
   value: any cpu
 
 pool:
-  name: DAS - Continuous Integration
-  demands: Agent.OS -equals Windows_NT
+  vmImage: 'vs2017-win2016'
   workspace:
     clean: all
 
