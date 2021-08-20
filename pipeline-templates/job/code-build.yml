@@ -12,10 +12,10 @@ jobs:
     - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
 
     - task: DotNetCoreCLI@2
-        displayName: Restore
-        inputs:
-          command: restore
-          projects: "src/**/*.csproj"   
+      displayName: 'Restore'
+      inputs:
+        command: restore
+        projects: "src/**/*.csproj"   
 
     - task: VSBuild@1
       displayName: 'Build solution'
