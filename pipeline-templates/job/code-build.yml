@@ -9,9 +9,28 @@ jobs:
   steps:
     - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
 
-    - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
-
     - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
+
+    - task: DotNetCoreCLI@2
+        displayName: Restore
+        inputs:
+          command: restore
+          projects: "src/**/*.csproj"   
+
+    - task: VSBuild@1
+      displayName: 'Build solution'
+      inputs:
+        solution: 'src/SFA.DAS.Provider.Events.sln'
+        vsVersion: 15.0
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+        clean: true
+
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet test'
+      inputs:
+        command: test
+        projects: 'src/**/*.UnitTests.csproj'   
 
     - task: DotNetCoreCLI@2
       displayName: Publish - dotnet publish ${{ parameters.SolutionBaseName }}
