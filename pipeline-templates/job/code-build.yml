@@ -31,7 +31,7 @@ jobs:
       displayName: 'Build solution'
       inputs:
         solution: 'src/SFA.DAS.Provider.Events.sln'
-        vsVersion: 15.0
+        vsVersion: 16.0
         platform: '$(buildPlatform)'
         configuration: '$(buildConfiguration)'
         clean: true
