@@ -31,26 +31,20 @@ jobs:
       displayName: 'Build solution'
       inputs:
         solution: 'src/SFA.DAS.Provider.Events.sln'
-        vsVersion: 16.0
+        vsVersion: 15.0
         platform: '$(buildPlatform)'
         configuration: '$(buildConfiguration)'
         clean: true
 
-    - task: DotNetCoreCLI@2
-      displayName: 'dotnet test'
+    - task: VSBuild@1
+      displayName: 'Publish API'
       inputs:
-        command: test
-        projects: 'src/**/*.UnitTests.csproj'   
-
-    - task: DotNetCoreCLI@2
-      displayName: Publish - dotnet publish ${{ parameters.SolutionBaseName }}
-      inputs:
-        command: publish
-        publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
-        projects: src/${{ parameters.SolutionBaseName }}/${{ parameters.SolutionBaseName }}.csproj
-        arguments: -o $(build.artifactstagingdirectory)/publish -c ${{ parameters.BuildConfiguration }} --no-build
-        modifyOutputPath: true
-        zipAfterPublish: true
+        solution: 'src/SFA.DAS.Provider.Events.Api/SFA.DAS.Provider.Events.Api.csproj'
+        vsVersion: 15.0
+        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/publish"'
+        platform: 'anycpu'
+        configuration: '$(buildConfiguration)'
+        clean: true 
 
     - task: CopyFiles@2
       displayName: Copy Files to $(build.artifactstagingdirectory)/publish
