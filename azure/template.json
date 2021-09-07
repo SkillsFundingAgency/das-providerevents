@@ -65,9 +65,6 @@
         "metadataEndpoint": {
             "type": "string"
         },
-        "instrumentationKey": {
-            "type": "string"
-        },
         "pluginsDiagnosticsConnectionString": {
             "type": "string"
         }        
@@ -217,10 +214,6 @@
                                 {
                                     "name": "MetadataEndpoint",
                                     "value": "[parameters('metadataEndpoint')]"
-                                },
-                                {
-                                    "name": "InstrumentationKey",
-                                    "value": "[parameters('instrumentationKey')]"
                                 },
                                 {
                                     "name": "Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString",
