@@ -14,7 +14,7 @@ namespace SFA.DAS.Provider.Events.Api
         {
             LoggingConfig.ConfigureLogging();
 
-            TelemetryConfiguration.Active.APPINSIGHTS_INSTRUMENTATIONKEY = ConfigurationManager.AppSettings["InstrumentationKey"];
+            TelemetryConfiguration.Active.InstrumentationKey = ConfigurationManager.AppSettings["APPINSIGHTS_INSTRUMENTATIONKEY"];
 
             GlobalConfiguration.Configure(WebApiConfig.Register);
         }
