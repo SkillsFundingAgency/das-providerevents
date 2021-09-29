@@ -9,15 +9,15 @@ namespace SFA.DAS.Provider.Events.Api
     {
         public void ConfigureAuth(IAppBuilder app)
         {
-            if (CloudConfigurationManager.AppSettings["EnvironmentName"] == "LOCAL")
+            if (ConfigurationManager.AppSettings["EnvironmentName"] == "LOCAL")
                 return;
 
             app.UseMixedModeAuthentication(new MixedModeAuthenticationOptions
             {
-                ValidIssuers = CloudConfigurationManager.AppSettings["ApiIssuers"].Split(' '),
-                ValidAudiences = CloudConfigurationManager.AppSettings["ApiAudiences"].Split(' '),
-                ApiTokenSecret = CloudConfigurationManager.AppSettings["ApiTokenSecret"],
-                MetadataEndpoint = CloudConfigurationManager.AppSettings["MetadataEndpoint"]
+                ValidIssuers = ConfigurationManager.AppSettings["ApiIssuers"].Split(' '),
+                ValidAudiences = ConfigurationManager.AppSettings["ApiAudiences"].Split(' '),
+                ApiTokenSecret = ConfigurationManager.AppSettings["ApiTokenSecret"],
+                MetadataEndpoint = ConfigurationManager.AppSettings["MetadataEndpoint"]
             });
         }
     }
