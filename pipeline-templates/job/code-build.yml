@@ -19,18 +19,18 @@ jobs:
     - task: NuGetCommand@2
       displayName: 'NuGet restore'
       inputs:
-        restoreSolution: 'src/SFA.DAS.Provider.Events.sln'
+        restoreSolution: 'src/api/SFA.DAS.Provider.Events.sln'
 
     - task: DotNetCoreCLI@2
       displayName: 'Restore'
       inputs:
         command: restore
-        projects: "src/**/*.csproj"   
+        projects: "src/api/**/*.csproj"   
 
     - task: VSBuild@1
       displayName: 'Build solution'
       inputs:
-        solution: 'src/SFA.DAS.Provider.Events.sln'
+        solution: 'src/api/SFA.DAS.Provider.Events.sln'
         vsVersion: 15.0
         platform: '$(buildPlatform)'
         configuration: '$(buildConfiguration)'
@@ -39,7 +39,7 @@ jobs:
     - task: VSBuild@1
       displayName: 'Publish API'
       inputs:
-        solution: 'src/SFA.DAS.Provider.Events.Api/SFA.DAS.Provider.Events.Api.csproj'
+        solution: 'src/api/SFA.DAS.Provider.Events.Api/SFA.DAS.Provider.Events.Api.csproj'
         vsVersion: 15.0
         msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/publish"'
         platform: 'anycpu'
