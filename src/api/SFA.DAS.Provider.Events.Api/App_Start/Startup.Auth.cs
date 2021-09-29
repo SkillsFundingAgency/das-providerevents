@@ -1,6 +1,7 @@
 ﻿using Microsoft.Azure;
 using Owin;
 using SFA.DAS.Authentication.Extensions;
+using System.Configuration;
 
 namespace SFA.DAS.Provider.Events.Api
 {
@@ -8,15 +9,15 @@ namespace SFA.DAS.Provider.Events.Api
     {
         public void ConfigureAuth(IAppBuilder app)
         {
-            if (CloudConfigurationManager.GetSetting("EnvironmentName") == "LOCAL")
+            if (CloudConfigurationManager.AppSettings["EnvironmentName"] == "LOCAL")
                 return;
 
             app.UseMixedModeAuthentication(new MixedModeAuthenticationOptions
             {
-                ValidIssuers = CloudConfigurationManager.GetSetting("ApiIssuers").Split(' '),
-                ValidAudiences = CloudConfigurationManager.GetSetting("ApiAudiences").Split(' '),
-                ApiTokenSecret = CloudConfigurationManager.GetSetting("ApiTokenSecret"),
-                MetadataEndpoint = CloudConfigurationManager.GetSetting("MetadataEndpoint")
+                ValidIssuers = CloudConfigurationManager.AppSettings["ApiIssuers"].Split(' '),
+                ValidAudiences = CloudConfigurationManager.AppSettings["ApiAudiences"].Split(' '),
+                ApiTokenSecret = CloudConfigurationManager.AppSettings["ApiTokenSecret"],
+                MetadataEndpoint = CloudConfigurationManager.AppSettings["MetadataEndpoint"]
             });
         }
     }
