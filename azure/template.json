@@ -199,10 +199,6 @@
                                     "value": "[parameters('logLevel')]"
                                 },
                                 {
-                                    "name": "LoggingConnectionString",
-                                    "value": "[parameters('loggingRedisConnectionString')]"
-                                },
-                                {
                                     "name": "ApiTokenSecret",
                                     "value": "[parameters('apiTokenSecret')]"
                                 },

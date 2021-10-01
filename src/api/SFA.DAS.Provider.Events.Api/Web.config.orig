@@ -9,7 +9,6 @@
   </configSections>
   <appSettings>
     <add key="LogLevel" value="Debug"/>
-    <add key="LoggingConnectionString" value="server=.;database=PaymentsEventApi;trusted_connection=true;" />
 <<<<<<< HEAD
     <add key="MonthEndConnectionString" value="server=.;database=PaymentsEventApi;trusted_connection=true;" />
 =======

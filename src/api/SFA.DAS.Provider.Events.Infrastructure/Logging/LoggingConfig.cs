@@ -21,7 +21,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Logging
             var targets = LogManager.Configuration.AllTargets.Where(t => t is DatabaseTarget).Cast< DatabaseTarget>().ToArray();
             foreach (var target in targets)
             {
-                target.ConnectionString = ConfigurationManager.AppSettings["LoggingConnectionString"];
+                target.ConnectionString = ConfigurationManager.AppSettings["LoggingRedisConnectionString"];
             }
         }
 
