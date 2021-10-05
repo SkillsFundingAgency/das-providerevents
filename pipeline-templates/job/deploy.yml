@@ -30,7 +30,7 @@ jobs:
             ParametersPath: $(Pipeline.Workspace)/drop/azure/template.parameters.json
             IsMultiRepoCheckout: true
             TemplateSecrets:
-              LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+              LoggingRedisConnectionString: $(LoggingConnectionString)
               ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
               ApiTokenSecret: $(ApiTokenSecret)
               PaymentsV2ConnectionString: $(PaymentsV2ConnectionString)
