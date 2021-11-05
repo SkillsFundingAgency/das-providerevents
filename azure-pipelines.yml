@@ -14,11 +14,6 @@ variables:
 - group: RELEASE Management Resources
 - group: RELEASE das-providerevents
 
-pool:
-  vmImage: 'vs2017-win2016'
-  workspace:
-    clean: all
-
 resources:
   repositories:
   - repository: self
@@ -89,9 +84,9 @@ stages:
   dependsOn: Build
   displayName: Deploy to PP
   variables:
-  - group: PreProd Management Resources
-  - group: PreProd Shared Resources
-  - group: PreProd das-providerevents
+  - group: PREPROD Management Resources
+  - group: PREPROD Shared Resources
+  - group: PREPROD das-providerevents
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
