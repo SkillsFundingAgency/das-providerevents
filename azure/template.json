@@ -70,6 +70,9 @@
         },
         "paymentsV2ConnectionString": {
             "type": "securestring"
+        },
+        "eventsConnectionString": {
+            "type": "securestring"
         }
     },
     "variables": {
@@ -221,6 +224,10 @@
                                 {
                                     "name": "PaymentsV2ConnectionString",
                                     "value": "[parameters('paymentsV2ConnectionString')]"
+                                },
+                                {
+                                    "name": "EventsConnectionString",
+                                    "value": "[parameters('eventsConnectionString')]"
                                 }
                             ]
                         }
