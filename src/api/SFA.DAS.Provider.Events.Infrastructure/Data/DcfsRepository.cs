@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,7 +26,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 
         protected async Task<SqlConnection> GetOpenConnection()
         {
-            var connection = new SqlConnection(CloudConfigurationManager.GetSetting(_connectionStringName));
+            var connection = new SqlConnection(ConfigurationManager.AppSettings[_connectionStringName]);
             await connection.OpenAsync().ConfigureAwait(false);
             return connection;
         }

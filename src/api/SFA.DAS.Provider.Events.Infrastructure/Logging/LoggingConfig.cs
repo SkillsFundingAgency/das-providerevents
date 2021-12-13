@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Configuration;
+using System.Linq;
 using Microsoft.Azure;
 using NLog;
 using NLog.Targets;
@@ -20,7 +21,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Logging
             var targets = LogManager.Configuration.AllTargets.Where(t => t is DatabaseTarget).Cast< DatabaseTarget>().ToArray();
             foreach (var target in targets)
             {
-                target.ConnectionString = CloudConfigurationManager.GetSetting("LoggingConnectionString");
+                target.ConnectionString = ConfigurationManager.AppSettings["LoggingRedisConnectionString"];
             }
         }
 
@@ -49,7 +50,7 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Logging
         }
         private static LogLevel GetLogLevelFromConfigurationManager()
         {
-            var settingValue = CloudConfigurationManager.GetSetting("LogLevel");
+            var settingValue = ConfigurationManager.AppSettings["LogLevel"];
             return LogLevel.FromString(settingValue);
         }
     }

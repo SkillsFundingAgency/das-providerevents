@@ -1,0 +1,64 @@
+parameters:
+  SolutionBaseName:
+  BuildConfiguration:
+
+jobs:
+- job: CodeBuild
+  pool:
+    name: DAS - Continuous Integration
+    demands: Agent.OS -equals Windows_NT
+  variables:
+  - group: BUILD Management Resources
+  steps:
+    - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
+
+    - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
+
+    - task: NuGetToolInstaller@0
+      displayName: 'Use NuGet 4.3.0'
+      inputs:
+        versionSpec: 4.x
+
+    - task: NuGetCommand@2
+      displayName: 'NuGet restore'
+      inputs:
+        restoreSolution: 'src/api/SFA.DAS.Provider.Events.sln'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore'
+      inputs:
+        command: restore
+        projects: "src/api/**/*.csproj"   
+
+    - task: VSBuild@1
+      displayName: 'Build solution'
+      inputs:
+        solution: 'src/api/SFA.DAS.Provider.Events.sln'
+        vsVersion: 15.0
+        platform: '$(buildPlatform)'
+        configuration: '$(buildConfiguration)'
+        clean: true
+
+    - task: VSBuild@1
+      displayName: 'Publish API'
+      inputs:
+        solution: 'src/api/SFA.DAS.Provider.Events.Api/SFA.DAS.Provider.Events.Api.csproj'
+        vsVersion: 15.0
+        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/publish"'
+        platform: 'anycpu'
+        configuration: '$(buildConfiguration)'
+        clean: true 
+
+    - task: CopyFiles@2
+      displayName: Copy Files to $(build.artifactstagingdirectory)/publish
+      inputs:
+        Contents: |
+          azure/**
+        TargetFolder: $(build.artifactstagingdirectory)/publish
+        OverWrite: true
+
+    - task: PublishPipelineArtifact@1
+      displayName: Publish Artifact - PaymentsApi
+      inputs:
+        targetPath: $(build.artifactstagingdirectory)/publish
+        artifactName: drop

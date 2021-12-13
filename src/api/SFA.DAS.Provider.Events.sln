@@ -13,12 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6A018802
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.Api.UnitTests", "SFA.DAS.Provider.Events.Api.UnitTests\SFA.DAS.Provider.Events.Api.UnitTests.csproj", "{728ABBE1-C547-49E0-8560-1DEC6C94EE96}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{DAFC5414-B8A0-433A-B50E-367087ABD671}"
-	ProjectSection(SolutionItems) = preProject
-		Build.fsx = Build.fsx
-		RunBuild.bat = RunBuild.bat
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.Api.Types", "SFA.DAS.Provider.Events.Api.Types\SFA.DAS.Provider.Events.Api.Types.csproj", "{A557E17C-EB78-4F2E-AC2A-CCACDC2C3172}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.Application.UnitTests", "SFA.DAS.Provider.Events.Application.UnitTests\SFA.DAS.Provider.Events.Application.UnitTests.csproj", "{E0700D0C-C7CA-41EF-97C6-469134028D21}"
@@ -26,8 +20,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.Api.Client", "SFA.DAS.Provider.Events.Api.Client\SFA.DAS.Provider.Events.Api.Client.csproj", "{6D476BEC-D466-43D8-BAA9-683A68B41DCA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.Api.Client.UnitTests", "SFA.DAS.Provider.Events.Api.Client.UnitTests\SFA.DAS.Provider.Events.Api.Client.UnitTests.csproj", "{8471FD9B-3C0E-47BD-80EB-E5DB482C214B}"
-EndProject
-Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "CloudService", "CloudService\CloudService.ccproj", "{8C7F6755-FEE5-4644-A181-E4F860C762DF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.Api.IntegrationTests", "SFA.DAS.Provider.Events.Api.IntegrationTests\SFA.DAS.Provider.Events.Api.IntegrationTests.csproj", "{C719C1E6-6AE7-40E8-867D-94B760207057}"
 EndProject
@@ -71,10 +63,6 @@ Global
 		{8471FD9B-3C0E-47BD-80EB-E5DB482C214B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8471FD9B-3C0E-47BD-80EB-E5DB482C214B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8471FD9B-3C0E-47BD-80EB-E5DB482C214B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8C7F6755-FEE5-4644-A181-E4F860C762DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C7F6755-FEE5-4644-A181-E4F860C762DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C7F6755-FEE5-4644-A181-E4F860C762DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C7F6755-FEE5-4644-A181-E4F860C762DF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C719C1E6-6AE7-40E8-867D-94B760207057}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C719C1E6-6AE7-40E8-867D-94B760207057}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C719C1E6-6AE7-40E8-867D-94B760207057}.Release|Any CPU.ActiveCfg = Release|Any CPU

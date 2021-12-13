@@ -4,6 +4,7 @@ using System.Web.Http;
 using SFA.DAS.Provider.Events.Infrastructure.Logging;
 using Microsoft.Azure;
 using Microsoft.ApplicationInsights.Extensibility;
+using System.Configuration;
 
 namespace SFA.DAS.Provider.Events.Api
 {
@@ -13,7 +14,7 @@ namespace SFA.DAS.Provider.Events.Api
         {
             LoggingConfig.ConfigureLogging();
 
-            TelemetryConfiguration.Active.InstrumentationKey = CloudConfigurationManager.GetSetting("InstrumentationKey");
+            TelemetryConfiguration.Active.InstrumentationKey = ConfigurationManager.AppSettings["APPINSIGHTS_INSTRUMENTATIONKEY"];
 
             GlobalConfiguration.Configure(WebApiConfig.Register);
         }
