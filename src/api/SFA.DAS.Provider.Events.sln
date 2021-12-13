@@ -13,12 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6A018802
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.Api.UnitTests", "SFA.DAS.Provider.Events.Api.UnitTests\SFA.DAS.Provider.Events.Api.UnitTests.csproj", "{728ABBE1-C547-49E0-8560-1DEC6C94EE96}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{DAFC5414-B8A0-433A-B50E-367087ABD671}"
-	ProjectSection(SolutionItems) = preProject
-		Build.fsx = Build.fsx
-		RunBuild.bat = RunBuild.bat
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.Api.Types", "SFA.DAS.Provider.Events.Api.Types\SFA.DAS.Provider.Events.Api.Types.csproj", "{A557E17C-EB78-4F2E-AC2A-CCACDC2C3172}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.Application.UnitTests", "SFA.DAS.Provider.Events.Application.UnitTests\SFA.DAS.Provider.Events.Application.UnitTests.csproj", "{E0700D0C-C7CA-41EF-97C6-469134028D21}"
