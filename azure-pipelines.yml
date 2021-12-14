@@ -93,9 +93,9 @@ stages:
       Environment: PP
       ServiceConnection: SFA-DIG-PreProd-ARM
 
-- stage: Deploy_PRD
+- stage: Deploy_PROD
   dependsOn: Build
-  displayName: Deploy to PRD
+  displayName: Deploy to PROD
   variables:
   - group: PROD Management Resources
   - group: PROD Shared Resources
