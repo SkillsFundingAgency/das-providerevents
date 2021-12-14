@@ -103,7 +103,7 @@ stages:
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
-      Environment: PRD
+      Environment: PROD
       ServiceConnection: SFA-DIG-Prod-ARM
 
 - stage: Deploy_MO
