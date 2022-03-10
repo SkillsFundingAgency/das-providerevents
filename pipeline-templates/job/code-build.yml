@@ -14,6 +14,16 @@ jobs:
 
     - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
 
+    - task: SonarCloudPrepare@1
+      displayName: Prepare SonarCloud analysis configuration
+      condition: and(succeeded(), or(in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main'), eq(variables['Build.Reason'], 'PullRequest')))
+      inputs:
+        SonarCloud: ESFA - SonarCloud
+        organization: $(SonarCloudOrganisationKey)
+        scannerMode: MSBuild
+        projectName: "$(Build.DefinitionName)"
+        projectKey: SkillsFundingAgency_das-providerevents
+
     - task: NuGetToolInstaller@0
       displayName: 'Use NuGet 4.3.0'
       inputs:
@@ -47,7 +57,17 @@ jobs:
         msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/publish"'
         platform: 'anycpu'
         configuration: '$(buildConfiguration)'
-        clean: true 
+        clean: true
+
+    - task: SonarCloudAnalyze@1
+      displayName: Run SonarCloud analysis
+      condition: and(succeeded(), or(in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main'), eq(variables['Build.Reason'], 'PullRequest')))
+
+    - task: SonarCloudPublish@1
+      displayName: Publish SonarCloud analysis results on build summary
+      condition: and(succeeded(), or(in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/main'), eq(variables['Build.Reason'], 'PullRequest')))
+      inputs:
+        pollingTimeoutSec: '300' 
 
     - task: CopyFiles@2
       displayName: Copy Files to $(build.artifactstagingdirectory)/publish
