@@ -12,8 +12,6 @@ jobs:
   steps:
     - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
 
-    - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
-
     - task: NuGetToolInstaller@0
       displayName: 'Use NuGet 4.3.0'
       inputs:
@@ -44,10 +42,17 @@ jobs:
       inputs:
         solution: 'src/api/SFA.DAS.Provider.Events.Api/SFA.DAS.Provider.Events.Api.csproj'
         vsVersion: 15.0
-        msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)/publish"'
+        msbuildArgs: '/p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:SkipInvalidConfigurations=true /p:publishUrl="$(build.artifactstagingdirectory)/SFA.DAS.Provider.Events.Api"'
         platform: 'anycpu'
         configuration: '$(buildConfiguration)'
-        clean: true 
+        clean: true
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive Api App'
+      inputs:
+        includeRootFolder: false
+        rootFolderOrFile: '$(build.artifactstagingdirectory)/SFA.DAS.Provider.Events.Api'
+        archiveFile: '$(build.artifactstagingdirectory)/publish/SFA.DAS.Provider.Events.Api.zip'
 
     - task: CopyFiles@2
       displayName: Copy Files to $(build.artifactstagingdirectory)/publish
