@@ -97,7 +97,7 @@
         },
         {
             "apiVersion": "2021-04-01",
-            "name": "[concat('api-app-service-certificate-', parameters('utcValue'))]",
+            "name": "[concat(variables('appServiceName'), '-api-app-service-certificate-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
@@ -124,7 +124,7 @@
         },
         {
             "apiVersion": "2021-04-01",
-            "name": "[concat('api-application-insights-', parameters('utcValue'))]",
+            "name": "[concat(variables('appServiceName'), '-api-application-insights-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
             "properties": {
@@ -148,7 +148,7 @@
         },
         {
             "apiVersion": "2021-04-01",
-            "name": "[concat('api-app-service-', parameters('utcValue'))]",
+            "name": "[concat(variables('appServiceName'), '-api-app-service-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
             "properties": {
@@ -191,7 +191,7 @@
                                 },
                                 {
                                     "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                    "value": "[reference(concat('api-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
+                                    "value": "[reference(concat(variables('appServiceName'), '-api-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                                 },
                                 {
                                     "name": "LoggingRedisConnectionString",
@@ -240,7 +240,7 @@
                         "value": "[parameters('customHostname')]"
                     },
                     "certificateThumbprint": {
-                        "value": "[reference(concat('api-app-service-certificate-', parameters('utcValue'))).outputs.certificateThumbprint.value]"
+                        "value": "[reference(concat(variables('appServiceName'), '-api-app-service-certificate-', parameters('utcValue'))).outputs.certificateThumbprint.value]"
                     },
                     "ipSecurityRestrictions": {
                         "value": "[parameters('backEndAccessRestrictions')]"
