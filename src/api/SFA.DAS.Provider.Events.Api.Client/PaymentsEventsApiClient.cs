@@ -1,44 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using SFA.DAS.Authentication.Extensions.Legacy;
 using SFA.DAS.Provider.Events.Api.Client.Configuration;
 using SFA.DAS.Provider.Events.Api.Types;
 
 namespace SFA.DAS.Provider.Events.Api.Client
 {
-    public class PaymentsEventsApiClient : ApiClientBase,  IPaymentsEventsApiClient
+    public class PaymentsEventsApiClient : IPaymentsEventsApiClient
     {
-        private readonly IPaymentsEventsApiConfiguration _configuration;
+        private readonly IPaymentsEventsApiClientConfiguration _configuration;
+        private readonly ISecureHttpClient _client;
 
         [ExcludeFromCodeCoverage]
-        public PaymentsEventsApiClient(IPaymentsEventsApiConfiguration configuration, HttpClient httpClient) : base(httpClient)
+        internal PaymentsEventsApiClient(IPaymentsEventsApiClientConfiguration configuration, ISecureHttpClient client)
         {
             _configuration = configuration;
-        }
-
-        private string BaseUrl
-        {
-            get
-            {
-                return _configuration.ApiBaseUrl.EndsWith("/")
-                    ? _configuration.ApiBaseUrl
-                    : _configuration.ApiBaseUrl + "/";
-            }
+            _client = client;
         }
 
         public async Task<PeriodEnd[]> GetPeriodEnds()
         {
-            var response = await GetAsync($"{BaseUrl}api/periodends");
+            var response = await _client.GetAsync($"{BaseUrl}api/periodends");
             return JsonConvert.DeserializeObject<PeriodEnd[]>(response);
         }
 
         public async Task<PageOfResults<Payment>> GetPayments(string periodId = null, string employerAccountId = null, int page = 1, long? ukprn = null)
         {
-            var response = await GetAsync($"{BaseUrl}api/payments?page={page}&periodId={periodId}&employerAccountId={employerAccountId}&ukprn={ukprn}");
+            var response = await _client.GetAsync($"{BaseUrl}api/payments?page={page}&periodId={periodId}&employerAccountId={employerAccountId}&ukprn={ukprn}");
             return JsonConvert.DeserializeObject<PageOfResults<Payment>>(response);
         }
 
@@ -53,13 +43,13 @@ namespace SFA.DAS.Provider.Events.Api.Client
             if (receiverAccountId.HasValue)
                 parameters.Add($"receiverAccountId={receiverAccountId}");
 
-            var response = await GetAsync($"{BaseUrl}api/transfers?" + string.Join("&", parameters));
+            var response = await _client.GetAsync($"{BaseUrl}api/transfers?" + string.Join("&", parameters));
             return JsonConvert.DeserializeObject<PageOfResults<AccountTransfer>>(response);
         }
 
         public async Task<PaymentStatistics> GetPaymentStatistics()
         {
-            var response = await GetAsync($"{BaseUrl}api/v2/payments/statistics");
+            var response = await _client.GetAsync($"{BaseUrl}api/v2/payments/statistics");
             return JsonConvert.DeserializeObject<PaymentStatistics>(response);
         }
 
@@ -79,7 +69,7 @@ namespace SFA.DAS.Provider.Events.Api.Client
                 url += $"&ukprn={ukprn}";
             }
 
-            var response = await GetAsync(url);
+            var response = await _client.GetAsync(url);
             return JsonConvert.DeserializeObject<PageOfResults<SubmissionEvent>>(response);
         }
 
@@ -91,7 +81,7 @@ namespace SFA.DAS.Provider.Events.Api.Client
                 url += $"&sinceEventId={sinceEventId}";
             }
 
-            var response = await GetAsync(url);
+            var response = await _client.GetAsync(url);
             return JsonConvert.DeserializeObject<List<SubmissionEvent>>(response);
         }
 
@@ -115,9 +105,18 @@ namespace SFA.DAS.Provider.Events.Api.Client
                 url += $"&ukprn={ukprn}";
             }
 
-            var response = await GetAsync(url);
+            var response = await _client.GetAsync(url);
             return JsonConvert.DeserializeObject<PageOfResults<DataLockEvent>>(response);
         }
 
+        private string BaseUrl
+        {
+            get
+            {
+                return _configuration.ApiBaseUrl.EndsWith("/")
+                    ? _configuration.ApiBaseUrl
+                    : _configuration.ApiBaseUrl + "/";
+            }
+        }
     }
 }

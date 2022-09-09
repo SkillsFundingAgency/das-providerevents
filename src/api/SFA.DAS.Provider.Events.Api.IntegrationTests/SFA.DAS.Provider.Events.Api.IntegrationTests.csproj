@@ -139,7 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Provider.Events.Api.Types\SFA.DAS.Provider.Events.Api.Types.csproj">
-      <Project>{a557e17c-eb78-4f2e-ac2a-ccacdc2c3172}</Project>
+      <Project>{85facbd2-0ce8-4ea5-848c-af379b519a8c}</Project>
       <Name>SFA.DAS.Provider.Events.Api.Types</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Provider.Events.Api\SFA.DAS.Provider.Events.Api.csproj">
