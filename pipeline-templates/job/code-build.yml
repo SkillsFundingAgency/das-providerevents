@@ -70,5 +70,5 @@ jobs:
 
     - template: azure-pipelines-templates/build/step/nuget-pack.yml@das-platform-building-blocks
       parameters:
-        DotNetStandardPackagesToPack: |
+        DotNetFrameworkPackagesToPack: |
           src/api/SFA.DAS.Provider.Events.Api.Client/SFA.DAS.Provider.Events.Api.Client.csproj
