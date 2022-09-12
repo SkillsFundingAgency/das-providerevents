@@ -11,7 +11,7 @@
     <PackageReleaseNotes>Converted to .NetStandard 2.0</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/SkillsFundingAgency/das-providerevents</RepositoryUrl>
     <Version>3.0.0</Version>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
