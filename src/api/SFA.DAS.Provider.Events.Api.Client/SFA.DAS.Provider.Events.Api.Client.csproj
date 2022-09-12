@@ -11,18 +11,44 @@
     <PackageReleaseNotes>Converted to .NetStandard 2.0</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/SkillsFundingAgency/das-providerevents</RepositoryUrl>
     <Version>3.0.0</Version>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\AccountTransfer.cs" Link="Types\AccountTransfer.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\CalendarPeriod.cs" Link="Types\CalendarPeriod.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\ContractType.cs" Link="Types\ContractType.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\DataLockEvent.cs" Link="Types\DataLockEvent.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\DataLockEventApprenticeship.cs" Link="Types\DataLockEventApprenticeship.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\DataLockEventError.cs" Link="Types\DataLockEventError.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\DataLockEventPeriod.cs" Link="Types\DataLockEventPeriod.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\Earning.cs" Link="Types\Earning.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\EventSource.cs" Link="Types\EventSource.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\EventStatus.cs" Link="Types\EventStatus.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\FundingSource.cs" Link="Types\FundingSource.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\HealthStatus.cs" Link="Types\HealthStatus.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\NamedCalendarPeriod.cs" Link="Types\NamedCalendarPeriod.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\PageOfResults.cs" Link="Types\PageOfResults.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\Payment.cs" Link="Types\Payment.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\PaymentStatistics.cs" Link="Types\PaymentStatistics.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\PeriodEnd.cs" Link="Types\PeriodEnd.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\PeriodEndLinks.cs" Link="Types\PeriodEndLinks.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\ReferenceDataDetails.cs" Link="Types\ReferenceDataDetails.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\SubmissionEvent.cs" Link="Types\SubmissionEvent.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\TransactionType.cs" Link="Types\TransactionType.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\TransferType.cs" Link="Types\TransferType.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="3.19.8" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="StructureMap" Version="4.5.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Provider.Events.Api.Types\SFA.DAS.Provider.Events.Api.Types.csproj" />
+    <Folder Include="Types\" />
   </ItemGroup>
 
 </Project>

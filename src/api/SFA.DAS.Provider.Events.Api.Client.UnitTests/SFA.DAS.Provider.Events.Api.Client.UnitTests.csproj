@@ -187,10 +187,6 @@
       <Project>{5fc6467c-58d8-4191-b4c1-6a102f47bea2}</Project>
       <Name>SFA.DAS.Provider.Events.Api.Client</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Provider.Events.Api.Types\SFA.DAS.Provider.Events.Api.Types.csproj">
-      <Project>{85facbd2-0ce8-4ea5-848c-af379b519a8c}</Project>
-      <Name>SFA.DAS.Provider.Events.Api.Types</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.1\build\Microsoft.Azure.Services.AppAuthentication.targets" Condition="Exists('..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.1\build\Microsoft.Azure.Services.AppAuthentication.targets')" />
