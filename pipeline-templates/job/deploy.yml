@@ -41,17 +41,6 @@ jobs:
               ApiTokenSecret: $(ApiTokenSecret)
               PaymentsV2ConnectionString: $(PaymentsV2ConnectionString)
               EventsConnectionString: $(EventsConnectionString)
-        - template: azure-pipelines-templates/deploy/step/generate-config.yml@das-platform-building-blocks
-          parameters:
-            EnvironmentName: $(EnvironmentName)
-            ServiceConnection: ${{ parameters.ServiceConnection }}
-            SourcePath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-payments-api-client
-            StorageAccountName: $(ConfigurationStorageAccountName)
-            StorageAccountResourceGroup: $(SharedEnvResourceGroup)
-            TargetFileName: '*.schema.json'
-            TableName: Configuration
-            ConfigurationSecrets:
-              PaymentsClientToken: $(PaymentsClientToken)
         - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
