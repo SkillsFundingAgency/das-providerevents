@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SFA.DAS.Provider.Events.Api.Types;
 
@@ -41,6 +42,14 @@ namespace SFA.DAS.Provider.Events.Api.Client
         /// <param name="page">The page number to view. Default is 1</param>
         /// <returns>A task that yields a page of submission events</returns>
         Task<PageOfResults<SubmissionEvent>> GetSubmissionEvents(long sinceEventId = 0, DateTime? sinceTime = null, long ukprn = 0, int page = 1);
+
+        /// <summary>
+        /// Get the latest learner event for standards
+        /// </summary>
+        /// <param name="uln">The unique learner number for which to get events</param>
+        /// <param name="sinceEventId">The event id from which to search. Default is 0</param>
+        /// <returns></returns>
+        Task<List<SubmissionEvent>> GetLatestLearnerEventForStandards(long uln, long sinceEventId = 0);
 
         /// <summary>
         /// Get a page of data lock events
