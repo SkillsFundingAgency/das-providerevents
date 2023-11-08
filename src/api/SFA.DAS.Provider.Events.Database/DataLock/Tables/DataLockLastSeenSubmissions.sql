@@ -1,0 +1,9 @@
+﻿CREATE TABLE [DataLock].[DataLockLastSeenSubmissions](
+	[UKPRN] [bigint] NOT NULL,
+	[SubmittedDateTime] [datetime] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[UKPRN] ASC,
+	[SubmittedDateTime] ASC
+)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
