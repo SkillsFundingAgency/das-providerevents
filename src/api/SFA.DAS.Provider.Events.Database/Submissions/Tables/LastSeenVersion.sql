@@ -26,3 +26,11 @@
 	[FamilyName] [varchar](100) NULL,
 	[CompStatus] [int] NULL
 ) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IX_LastSeenVersion_UKPRN] ON [Submissions].[LastSeenVersion]
+(
+	[UKPRN] ASC,
+	[LearnRefNumber] ASC,
+	[PriceEpisodeIdentifier] ASC
+)WITH (STATISTICS_NORECOMPUTE = OFF, DROP_EXISTING = OFF, ONLINE = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO

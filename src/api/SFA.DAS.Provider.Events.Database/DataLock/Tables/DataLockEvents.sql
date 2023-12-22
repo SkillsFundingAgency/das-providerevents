@@ -24,13 +24,18 @@
 	[IlrPriceEffectiveFromDate] [date] NULL,
 	[IlrPriceEffectiveToDate] [date] NULL,
 	[Status] [int] NOT NULL,
-	[CreationDate] [datetimeoffset](7) NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+	[CreationDate] [datetimeoffset](7) NULL
 ) ON [PRIMARY]
 GO
-
-ALTER TABLE [DataLock].[DataLockEvents] ADD  CONSTRAINT [DF_DataLockEvents__CreationDate]  DEFAULT (sysdatetimeoffset()) FOR [CreationDate]
+ALTER TABLE [DataLock].[DataLockEvents] ADD PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IX_DataLockEvents_DataLockId] ON [DataLock].[DataLockEvents]
+(
+	[DataLockEventId] ASC
+)WITH (STATISTICS_NORECOMPUTE = OFF, DROP_EXISTING = OFF, ONLINE = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+ALTER TABLE [DataLock].[DataLockEvents] ADD  CONSTRAINT [DF_DataLockEvents__CreationDate]  DEFAULT (sysdatetimeoffset()) FOR [CreationDate]
 GO

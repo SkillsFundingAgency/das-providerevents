@@ -8,3 +8,9 @@
 	[TransactionType] [int] NOT NULL,
 	[TransactionTypesFlag] [int] NULL
 ) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IX_DataLockEventPeriods_DataLockId] ON [DataLock].[DataLockEventPeriods]
+(
+	[DataLockEventId] ASC
+)WITH (STATISTICS_NORECOMPUTE = OFF, DROP_EXISTING = OFF, ONLINE = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
