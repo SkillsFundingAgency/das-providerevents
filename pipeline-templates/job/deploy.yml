@@ -1,6 +1,10 @@
 parameters:  
   Environment:
+  SolutionBaseName:
   ServiceConnection:
+  OverrideBlockOnPossibleDataLoss:
+  
+
 
 jobs:
 - deployment: DeployAPI
