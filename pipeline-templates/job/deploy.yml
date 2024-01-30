@@ -56,11 +56,6 @@ jobs:
             TableName: Configuration
             ConfigurationSecrets:
               PaymentsClientToken: $(PaymentsClientToken)
-        - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-          parameters:
-            ServiceConnection: ${{ parameters.ServiceConnection }}
-            AppServiceName: $(AppServiceName)
-            DeploymentPackagePath: $(Pipeline.Workspace)/drop/SFA.DAS.Provider.Events.Api.zip
         - template: azure-pipelines-templates/deploy/step/sql-dacpac-deploy.yml@das-platform-building-blocks
           parameters:
             AzureSubscription: ${{ parameters.ServiceConnection }}
@@ -71,3 +66,8 @@ jobs:
             DatabaseName: $(EventsSQLDatabaseName)
             OverrideBlockOnPossibleDataLoss: ${{ parameters.OverrideBlockOnPossibleDataLoss }}
             Environment: ${{ parameters.Environment }}
+        - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            AppServiceName: $(AppServiceName)
+            DeploymentPackagePath: $(Pipeline.Workspace)/drop/SFA.DAS.Provider.Events.Api.zip
