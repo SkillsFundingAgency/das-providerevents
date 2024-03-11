@@ -14,7 +14,7 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests
 
         public Mock<HttpMessageHandler> SetupHttpMessageHandler(string responseJson)
         {
-            var httpMessageHandlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
+            var httpMessageHandlerMock = new Mock<HttpMessageHandler>();
 
             httpMessageHandlerMock
                .Protected()

@@ -14,16 +14,15 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
     {
         private const string ExpectedApiBaseUrl = "http://test.local.url/";
         private const string ClientToken = "super_secure_token";
-        private Mock<IPaymentsEventsApiConfiguration> _configuration;
+        private Mock<IPaymentsEventsApiClientConfiguration> _configuration;
         private List<SubmissionEvent> _submissionEvents;
-        private Client.PaymentsEventsApiClient _client;
+        private IPaymentsEventsApiClient _client;
 
         [SetUp]
         public void Arrange()
         {
-            _configuration = new Mock<IPaymentsEventsApiConfiguration>();
+            _configuration = new Mock<IPaymentsEventsApiClientConfiguration>();
             _configuration.Setup(m => m.ApiBaseUrl).Returns(ExpectedApiBaseUrl);
-            _configuration.Setup(m => m.ClientToken).Returns(ClientToken);
 
             _submissionEvents = new List<SubmissionEvent>
             {
@@ -81,9 +80,8 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             _httpMessageHandlerMock = SetupHttpMessageHandler(JsonConvert.SerializeObject(_submissionEvents));
 
             // use real http client with mocked handler
-            var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
-
-            _client = new Client.PaymentsEventsApiClient(_configuration.Object, httpClient);
+            var factory = new PaymentsEventsApiClientFactory(_configuration.Object);
+            _client = factory.CreateClient(_httpMessageHandlerMock.Object);
         }
 
         [Test]

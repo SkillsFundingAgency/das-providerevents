@@ -1,65 +1,79 @@
-﻿using System;
-using System.Net;
+﻿using Microsoft.Azure.Services.AppAuthentication;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using SFA.DAS.Provider.Events.Api.Client.Configuration;
 using System.Net.Http;
-using System.Net.Sockets;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Provider.Events.Api.Client
 {
-    internal class SecureHttpClient
+    internal class SecureHttpClient : ISecureHttpClient
     {
-        private readonly string _clientToken;
+        private readonly IPaymentsEventsApiClientConfiguration _configuration;
+        private readonly HttpMessageHandler _handler;
 
-        public SecureHttpClient(string clientToken)
+        public SecureHttpClient(IPaymentsEventsApiClientConfiguration configuration)
+            : this(configuration, null)
         {
-            _clientToken = clientToken;
+            _configuration = configuration;
         }
-        protected SecureHttpClient()
+
+        public SecureHttpClient(IPaymentsEventsApiClientConfiguration configuration, HttpMessageHandler handler)
         {
-            // So we can mock for testing
+            _configuration = configuration;
+            _handler = handler;
         }
 
         public virtual async Task<string> GetAsync(string url)
         {
-            try
+            var accessToken = IsClientCredentialConfiguration(_configuration.ClientId, _configuration.ClientSecret, _configuration.Tenant)
+                ? await GetClientCredentialAuthenticationResult(_configuration.ClientId, _configuration.ClientSecret, _configuration.IdentifierUri, _configuration.Tenant)
+                : await GetManagedIdentityAuthenticationResult(_configuration.IdentifierUri);
+                
+            using (var client = GetHttpClient())
             {
-                using (var client = new HttpClient())
-                {
-                    if (!string.IsNullOrEmpty(_clientToken))
-                    {
-                        client.DefaultRequestHeaders.Authorization =
-                            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _clientToken);
-                    }
-                    client.DefaultRequestHeaders.Add("api-version", "2");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-                    var response = await client.GetAsync(url);
-                    response.EnsureSuccessStatusCode();
+                var response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
 
-                    return await response.Content.ReadAsStringAsync();
-                }
-            }
-            catch (UriFormatException ex)
-            {
-                throw new BadRequestException("Url is malformed", ex);
-            }
-            catch (HttpRequestException ex)
-            {
-                if (ex.InnerException != null && ex.InnerException is WebException)
-                {
-                    var webEx = (WebException)ex.InnerException;
-                    if (webEx.InnerException != null && webEx.InnerException is SocketException)
-                    {
-                        var sockEx = (SocketException)webEx.InnerException;
-
-                        throw new ServerUnavailableException(ex, sockEx.SocketErrorCode);
-                    }
-                }
-                throw new ApiException("Protocol error with API - " + ex.Message, ex);
-            }
-            catch (Exception ex)
-            {
-                throw new ApiException("Unexpected error in API - " + ex.Message, ex);
+                return await response.Content.ReadAsStringAsync();
             }
         }
+
+        private HttpClient GetHttpClient()
+        {
+            return _handler != null ? new HttpClient(_handler) : new HttpClient();
+        }
+
+        private async Task<string> GetClientCredentialAuthenticationResult(string clientId, string clientSecret, string resource, string tenant)
+        {
+            var authority = $"https://login.microsoftonline.com/{tenant}";
+            var clientCredential = new ClientCredential(clientId, clientSecret);
+            var context = new AuthenticationContext(authority, true);
+            var result = await context.AcquireTokenAsync(resource, clientCredential);
+            return result.AccessToken;
+        }
+
+        private async Task<string> GetManagedIdentityAuthenticationResult(string resource)
+        {
+            if(!string.IsNullOrEmpty(resource))
+            {
+                var azureServiceTokenProvider = new AzureServiceTokenProvider();
+                return await azureServiceTokenProvider.GetAccessTokenAsync(resource);
+            }
+
+            return await Task.FromResult(string.Empty);
+        }
+
+        private bool IsClientCredentialConfiguration(string clientId, string clientSecret, string tenant)
+        {
+            return !string.IsNullOrEmpty(clientId) && !string.IsNullOrEmpty(clientSecret) && !string.IsNullOrEmpty(tenant);
+        }
+    }
+
+    internal interface ISecureHttpClient
+    {
+        Task<string> GetAsync(string url);
     }
 }
