@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30907.101
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Provider.Events.Api", "SFA.DAS.Provider.Events.Api\SFA.DAS.Provider.Events.Api.csproj", "{D1F5FBBB-3E25-44AA-9D4E-4F822EDFC767}"
 EndProject
@@ -24,6 +24,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Provider.Events.Api.Client", "SFA.DAS.Provider.Events.Api.Client\SFA.DAS.Provider.Events.Api.Client.csproj", "{5FC6467C-58D8-4191-B4C1-6A102F47BEA2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Provider.Events.Api.Types", "SFA.DAS.Provider.Events.Api.Types\SFA.DAS.Provider.Events.Api.Types.csproj", "{85FACBD2-0CE8-4EA5-848C-AF379B519A8C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{AC879889-31BD-45B1-8C55-7DB406B93315}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SFA.DAS.Provider.Events.Database", "SFA.DAS.Provider.Events.Database\SFA.DAS.Provider.Events.Database.sqlproj", "{90EB9C7C-00A1-4C52-A6C1-CB0FA082C5B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +75,12 @@ Global
 		{85FACBD2-0CE8-4EA5-848C-AF379B519A8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85FACBD2-0CE8-4EA5-848C-AF379B519A8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85FACBD2-0CE8-4EA5-848C-AF379B519A8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90EB9C7C-00A1-4C52-A6C1-CB0FA082C5B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90EB9C7C-00A1-4C52-A6C1-CB0FA082C5B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90EB9C7C-00A1-4C52-A6C1-CB0FA082C5B5}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{90EB9C7C-00A1-4C52-A6C1-CB0FA082C5B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90EB9C7C-00A1-4C52-A6C1-CB0FA082C5B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90EB9C7C-00A1-4C52-A6C1-CB0FA082C5B5}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,6 +91,7 @@ Global
 		{8471FD9B-3C0E-47BD-80EB-E5DB482C214B} = {6A018802-06F9-444D-8D38-B71E58F77766}
 		{C719C1E6-6AE7-40E8-867D-94B760207057} = {6A018802-06F9-444D-8D38-B71E58F77766}
 		{90B672AA-B958-4A1E-9FCB-148E05FC3779} = {6A018802-06F9-444D-8D38-B71E58F77766}
+		{90EB9C7C-00A1-4C52-A6C1-CB0FA082C5B5} = {AC879889-31BD-45B1-8C55-7DB406B93315}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F85067DF-9EC5-4760-9F4D-18CE1A19E68F}
