@@ -71,7 +71,6 @@
     <Compile Include="Data\DcfsRepository.cs" />
     <Compile Include="Data\DcfsSubmissionEventsRepository.cs" />
     <Compile Include="Extensions\SqlBuilderTemplateExtensions.cs" />
-    <Compile Include="Logging\LoggingConfig.cs" />
     <Compile Include="Mapping\AutoMapperMapper.cs" />
     <Compile Include="Mapping\DomainAutoMapperConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -87,12 +86,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Include="NLog.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

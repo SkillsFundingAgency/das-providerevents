@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Web;
 using System.Web.Http;
-using SFA.DAS.Provider.Events.Infrastructure.Logging;
 using Microsoft.Azure;
 using Microsoft.ApplicationInsights.Extensibility;
 using System.Configuration;
@@ -14,8 +13,6 @@ namespace SFA.DAS.Provider.Events.Api
         protected void Application_Start()
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3; // only allow TLSV1.2 and SSL3
-
-            LoggingConfig.ConfigureLogging();
 
             TelemetryConfiguration.Active.InstrumentationKey = ConfigurationManager.AppSettings["APPINSIGHTS_INSTRUMENTATIONKEY"];
 
