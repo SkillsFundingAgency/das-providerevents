@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
 using MediatR;
-using NLog;
 using SFA.DAS.Provider.Events.Api.ObsoleteModels;
 using SFA.DAS.Provider.Events.Api.Plumbing.WebApi;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.DataLock.GetDataLockEventsQuery;
 using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Validation;
+using Microsoft.ApplicationInsights;
 
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
@@ -21,13 +22,13 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
 
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        private readonly ILogger _logger;
+        private readonly TelemetryClient _telemetryClient;
 
-        public DataLockController(IMediator mediator, IMapper mapper, ILogger logger)
+        public DataLockController(IMediator mediator, IMapper mapper, TelemetryClient telemetryClient)
         {
             _mediator = mediator;
             _mapper = mapper;
-            _logger = logger;
+            _telemetryClient = telemetryClient;
         }
 
         [VersionedRoute("api/datalock", 1, Name = "DataLockEventsList")]
@@ -63,7 +64,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         {
             try
             {
-                _logger.Debug($"Processing GetDataLockEvents, sinceEventId={sinceEventId}, " +
+                _telemetryClient.TrackTrace($"Processing GetDataLockEvents, sinceEventId={sinceEventId}, " +
                               $"sinceTime={sinceTime}, employerAccountId={employerAccountId}, " +
                               $"ukprn={ukprn}, pageNumber={pageNumber}");
 
@@ -86,12 +87,18 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             }
             catch (ValidationException ex)
             {
-                _logger.Info($"Bad request received to GetDataLockEvents - {ex.Message}");
+                _telemetryClient.TrackException(ex, new Dictionary<string, string> {{"Message", $"Bad request received to GetDataLockEvents - {ex.Message}"}});
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, $"Unexpected error processing GetDataLockEvents - {ex.Message}");
+                _telemetryClient.TrackException(ex, new Dictionary<string, string>
+                {
+                    {
+                        "Message", $"Unexpected error processing GetDataLockEvents - {ex.Message}"
+                    }
+                });
+                    
                 return InternalServerError();
             }
         }

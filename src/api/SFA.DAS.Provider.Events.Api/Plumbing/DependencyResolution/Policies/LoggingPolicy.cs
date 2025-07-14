@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
-using NLog;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Extensibility;
 using StructureMap;
 using StructureMap.Pipeline;
 
@@ -10,13 +11,15 @@ namespace SFA.DAS.Provider.Events.Api.Plumbing.DependencyResolution.Policies
     {
         protected override void apply(Type pluginType, IConfiguredInstance instance)
         {
-            var logger = instance?.Constructor?.GetParameters().FirstOrDefault(x => x.ParameterType == typeof(ILogger));
+            var telemetryClientParam = instance?.Constructor?.GetParameters()
+                .FirstOrDefault(x => x.ParameterType == typeof(TelemetryClient));
 
-            if (logger != null)
+            if (telemetryClientParam != null)
             {
-                instance.Dependencies.AddForConstructorParameter(logger, LogManager.GetLogger(pluginType.FullName));
+                // You may want to use a singleton TelemetryClient, or resolve it from your IoC container
+                var telemetryClient = new TelemetryClient(TelemetryConfiguration.Active);
+                instance.Dependencies.AddForConstructorParameter(telemetryClientParam, telemetryClient);
             }
-
         }
     }
 }

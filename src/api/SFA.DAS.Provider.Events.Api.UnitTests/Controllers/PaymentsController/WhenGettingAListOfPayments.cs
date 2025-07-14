@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http.Results;
 using MediatR;
 using Moq;
-using NLog;
+using Microsoft.ApplicationInsights;
 using NUnit.Framework;
 using Ploeh.AutoFixture.NUnit3;
 using SFA.DAS.Provider.Events.Api.Types;
@@ -27,7 +28,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
         private CollectionPeriod _period;
         private Mock<IMediator> _mediator;
         private Api.Controllers.PaymentsController _controller;
-        private Mock<ILogger> _logger;
+        private Mock<TelemetryClient> _telemetryClient;
 
         [SetUp]
         public void Arrange()
@@ -91,14 +92,14 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PaymentsController
                     }
                 });
 
-            _logger = new Mock<ILogger>();
-            _logger.Setup(l => l.Error(It.IsAny<Exception>(), It.IsAny<string>(), It.IsAny<object[]>()))
+            _telemetryClient = new Mock<TelemetryClient>();
+            _telemetryClient.Setup(l => l.TrackException(It.IsAny<Exception>(), It.IsAny<Dictionary<string,string>>(), It.IsAny<Dictionary<string,double>>()))
                 .Callback<Exception, string, object[]>((ex, msg, args) =>
                 {
                     Console.WriteLine($"Error Logged\n{msg}\n{ex}");
                 });
 
-            _controller = new Api.Controllers.PaymentsController(_mediator.Object, _logger.Object);
+            _controller = new Api.Controllers.PaymentsController(_mediator.Object, _telemetryClient.Object);
         }
 
         [Test]

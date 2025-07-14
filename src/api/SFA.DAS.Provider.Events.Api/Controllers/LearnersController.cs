@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 using MediatR;
-using NLog;
+using Microsoft.ApplicationInsights;
 using SFA.DAS.Provider.Events.Api.Plumbing.WebApi;
 using SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventByStandardQuery;
 
@@ -12,12 +13,12 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
     public class LearnersController : ApiController
     {
         private IMediator _mediator;
-        private ILogger _logger;
+        private TelemetryClient _telemetryClient;
 
-        public LearnersController(IMediator mediator, ILogger logger)
+        public LearnersController(IMediator mediator, TelemetryClient telemetryClient)
         {
             _mediator = mediator;
-            _logger = logger;
+            _telemetryClient = telemetryClient;
         }
 
 
@@ -27,7 +28,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         {
             try
             {
-                _logger.Debug($"Processing GetLatestLearnerEventForStandards, uln={uln}, sinceEventId={sinceEventId}");
+                _telemetryClient.TrackTrace($"Processing GetLatestLearnerEventForStandards, uln={uln}, sinceEventId={sinceEventId}");
 
                 var queryResponse = await _mediator.SendAsync(new GetLatestLearnerEventForStandardsQueryRequest
                     {
@@ -38,12 +39,16 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
 
                 if (queryResponse.IsValid) return Ok(queryResponse.Result);
 
-                _logger.Info($"Bad request received to GetLatestLearnerEventForStandards - {queryResponse.Exception.Message}");
+                _telemetryClient.TrackException(queryResponse.Exception, new Dictionary<string, string> { {"Message", $"Bad request received to GetLatestLearnerEventForStandards - {queryResponse.Exception.Message}"}});
                 return BadRequest(queryResponse.Exception.Message);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, $"Unexpected error processing GetLatestLearnerEventForStandards - {ex.Message}");
+                _telemetryClient.TrackException(ex, new Dictionary<string, string> {
+                    {
+                        "Message", $"Unexpected error processing GetLatestLearnerEventForStandards - {ex.Message}"
+                    }
+                });
                 return InternalServerError();
             }
         }

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Web.Http.Results;
 using MediatR;
+using Microsoft.ApplicationInsights;
 using Moq;
 using NLog;
 using NUnit.Framework;
@@ -16,16 +17,16 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.TransfersController
     public class WhenTransfersRequested
     {
         private Api.Controllers.TransfersController _controller;
-        private Mock<ILogger> _mockLogger;
+        private Mock<TelemetryClient> _mockTelemetryClient;
         private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockMediator = new Mock<IMediator>(MockBehavior.Strict);
-            _mockLogger = new Mock<ILogger>();
+            _mockTelemetryClient = new Mock<TelemetryClient>();
 
-            _controller = new Api.Controllers.TransfersController(_mockLogger.Object, _mockMediator.Object);
+            _controller = new Api.Controllers.TransfersController(_mockTelemetryClient.Object, _mockMediator.Object);
         }
 
         [Test]

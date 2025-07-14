@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Web.Http.Results;
 using MediatR;
+using Microsoft.ApplicationInsights;
 using Moq;
 using NLog;
 using NUnit.Framework;
@@ -14,7 +15,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
     public class WhenGettingListOfSubmissionEvents
     {
         private Mock<IMediator> _mediator;
-        private Mock<ILogger> _logger;
+        private Mock<TelemetryClient> _telemetryClient;
         private Api.Controllers.SubmissionsController _controller;
 
         [SetUp]
@@ -39,9 +40,9 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
                     }
                 });
 
-            _logger = new Mock<ILogger>();
+            _telemetryClient = new Mock<TelemetryClient>();
 
-            _controller = new Api.Controllers.SubmissionsController(_mediator.Object, _logger.Object);
+            _controller = new Api.Controllers.SubmissionsController(_mediator.Object, _telemetryClient.Object);
         }
 
         [Test]

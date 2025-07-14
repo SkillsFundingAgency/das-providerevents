@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Results;
 using MediatR;
+using Microsoft.ApplicationInsights;
 using Moq;
 using NLog;
 using NUnit.Framework;
@@ -17,7 +18,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController.V
     {
         private Mock<IMediator> _mediator;
         private Mock<IMapper> _mapper;
-        private Mock<ILogger> _logger;
+        private Mock<TelemetryClient> _telemetryClient;
         private Api.Controllers.DataLockController _controller;
 
         [SetUp]
@@ -127,9 +128,9 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController.V
                     };
                 });
 
-            _logger = new Mock<ILogger>();
+            _telemetryClient = new Mock<TelemetryClient>();
 
-            _controller = new Api.Controllers.DataLockController(_mediator.Object, _mapper.Object, _logger.Object);
+            _controller = new Api.Controllers.DataLockController(_mediator.Object, _mapper.Object, _telemetryClient.Object);
         }
 
         [Test]

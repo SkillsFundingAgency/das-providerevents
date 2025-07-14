@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http.Results;
 using System.Web.Http.Routing;
 using MediatR;
+using Microsoft.ApplicationInsights;
 using Moq;
-using NLog;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data;
@@ -21,7 +22,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PeriodEndsController
         private CollectionPeriod _period2;
         private Mock<IMediator> _mediator;
         private Mock<IMapper> _mapper;
-        private Mock<ILogger> _logger;
+        private Mock<TelemetryClient> _telemetryClient;
         private Api.Controllers.PeriodEndsController _controller;
         private Mock<UrlHelper> _urlHelper;
 
@@ -30,9 +31,9 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PeriodEndsController
         {
             _period1 = new CollectionPeriod
             {
-                Id= Guid.NewGuid().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 CalendarMonth = 9,
-                CalendarYear =  2017,
+                CalendarYear = 2017,
                 AccountDataValidAt = new DateTime(2017, 9, 1),
                 CommitmentDataValidAt = new DateTime(2017, 9, 2),
                 CompletionDateTime = new DateTime(2017, 9, 3)
@@ -76,8 +77,8 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PeriodEndsController
                     }).ToArray();
                 });
 
-            _logger = new Mock<ILogger>();
-            _logger.Setup(l => l.Error(It.IsAny<Exception>(), It.IsAny<string>(), It.IsAny<object[]>()))
+            _telemetryClient = new Mock<TelemetryClient>();
+            _telemetryClient.Setup(l => l.TrackException(It.IsAny<Exception>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, double>>()))
                 .Callback<Exception, string, object[]>((ex, msg, args) =>
                 {
                     Console.WriteLine($"Error Logged\n{msg}\n{ex}");
@@ -87,7 +88,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PeriodEndsController
             _urlHelper.Setup(h => h.Link(It.IsAny<string>(), It.IsAny<object>()))
                 .Returns("payments-url");
 
-            _controller = new Api.Controllers.PeriodEndsController(_mediator.Object, _mapper.Object, _logger.Object);
+            _controller = new Api.Controllers.PeriodEndsController(_mediator.Object, _mapper.Object, _telemetryClient.Object);
             _controller.Url = _urlHelper.Object;
         }
 
@@ -101,7 +102,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PeriodEndsController
             Assert.IsNotNull(actual);
             Assert.IsInstanceOf<OkNegotiatedContentResult<PeriodEnd[]>>(actual);
 
-            var periods = ((OkNegotiatedContentResult<PeriodEnd[]>) actual).Content;
+            var periods = ((OkNegotiatedContentResult<PeriodEnd[]>)actual).Content;
             Assert.IsNotNull(periods);
             Assert.AreEqual(2, periods.Length);
             AssertPeriodForDomainObject(_period1, periods[0]);

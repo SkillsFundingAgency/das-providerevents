@@ -1,14 +1,15 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Web.Http;
-using MediatR;
-using NLog;
+﻿using MediatR;
+using Microsoft.ApplicationInsights;
 using SFA.DAS.Provider.Events.Api.Plumbing.WebApi;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery;
 using SFA.DAS.Provider.Events.Application.Transfers.GetTransfersQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
@@ -16,12 +17,12 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
     public class TransfersController : ApiController
     {
         private const int PageSize = 10000;
-        private readonly ILogger _logger;
+        private readonly TelemetryClient _telemetryClient;
         private readonly IMediator _mediator;
 
-        public TransfersController(ILogger logger, IMediator mediator)
+        public TransfersController(TelemetryClient telemetryClient, IMediator mediator)
         {
-            _logger = logger;
+            _telemetryClient = telemetryClient;
             _mediator = mediator;
         }
 
@@ -52,11 +53,12 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             }
             catch (ValidationException ex)
             {
+                _telemetryClient.TrackTrace(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, ex.Message);
+                _telemetryClient.TrackException(ex, new Dictionary<string, string> { { "Message", ex.Message } });
                 return InternalServerError();
             }
         }

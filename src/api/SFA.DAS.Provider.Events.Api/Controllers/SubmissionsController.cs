@@ -1,11 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Web.Http;
-using MediatR;
-using NLog;
+﻿using MediatR;
+using Microsoft.ApplicationInsights;
 using SFA.DAS.Provider.Events.Api.Plumbing.WebApi;
 using SFA.DAS.Provider.Events.Application.Submissions.GetSubmissionEventsQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
@@ -15,12 +16,12 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         private const int PageSize = 1000;
 
         private readonly IMediator _mediator;
-        private readonly ILogger _logger;
+        private readonly TelemetryClient _telemetryClient;
 
-        public SubmissionsController(IMediator mediator, ILogger logger)
+        public SubmissionsController(IMediator mediator, TelemetryClient telemetryClient)
         {
             _mediator = mediator;
-            _logger = logger;
+            _telemetryClient = telemetryClient;
         }
 
         [VersionedRoute("api/submissions", 1, Name = "SubmissionEventsList")]
@@ -31,7 +32,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         {
             try
             {
-                _logger.Debug($"Processing GetSubmissionEvents, sinceEventId={sinceEventId}, sinceTime={sinceTime}, pageNumber={pageNumber}");
+                _telemetryClient.TrackTrace($"Processing GetSubmissionEvents, sinceEventId={sinceEventId}, sinceTime={sinceTime}, pageNumber={pageNumber}");
 
                 var queryResponse = await _mediator.SendAsync(new GetSubmissionEventsQueryRequest
                 {
@@ -50,12 +51,12 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             }
             catch (ValidationException ex)
             {
-                _logger.Info($"Bad request received to GetSubmissionEvents - {ex.Message}");
+                _telemetryClient.TrackTrace(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, $"Unexpected error processing GetSubmissionEvents - {ex.Message}");
+                _telemetryClient.TrackException(ex, new Dictionary<string, string> { { "Message", $"Unexpected error processing GetSubmissionEvents - {ex.Message}" } });
                 return InternalServerError();
             }
         }

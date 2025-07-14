@@ -5,7 +5,7 @@ using System.Web.Http.Results;
 using FluentAssertions;
 using MediatR;
 using Moq;
-using NLog;
+using Microsoft.ApplicationInsights;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Submissions.GetLatestLearnerEventByStandardQuery;
@@ -16,7 +16,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
     public class WhenGettingLatestLearnerEventsForStandards
     {
         private Mock<IMediator> _mediator;
-        private Mock<ILogger> _logger;
+        private Mock<TelemetryClient> _telemetryClient;
         private Api.Controllers.LearnersController _controller;
 
         [SetUp]
@@ -40,9 +40,9 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
                     }
                 });
 
-            _logger = new Mock<ILogger>();
+            _telemetryClient = new Mock<TelemetryClient>();
 
-            _controller = new Api.Controllers.LearnersController(_mediator.Object, _logger.Object);
+            _controller = new Api.Controllers.LearnersController(_mediator.Object, _telemetryClient.Object);
         }
 
         [Test]

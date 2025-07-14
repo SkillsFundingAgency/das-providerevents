@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 using MediatR;
-using NLog;
+using Microsoft.ApplicationInsights;
 using SFA.DAS.Provider.Events.Api.Plumbing.WebApi;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data;
@@ -19,12 +20,12 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         private const int PageSize = 10000;
 
         private readonly IMediator _mediator;
-        private readonly ILogger _logger;
+        private readonly TelemetryClient _telemetryClient;
 
-        public PaymentsController(IMediator mediator, ILogger logger)
+        public PaymentsController(IMediator mediator, TelemetryClient telemetryClient)
         {
             _mediator = mediator;
-            _logger = logger;
+            _telemetryClient = telemetryClient;
         }
 
         [VersionedRoute("api/payments", 1, Name = "PaymentsList")]
@@ -62,12 +63,12 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             }
             catch (ValidationException ex)
             {
-                _logger.Error(ex, ex.Message);
+                _telemetryClient.TrackTrace(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, ex.Message);
+                _telemetryClient.TrackException(ex, new Dictionary<string, string> { { "Message", ex.Message } });
                 return InternalServerError();
             }
         }
@@ -88,7 +89,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, ex.Message);
+                _telemetryClient.TrackException(ex, new Dictionary<string, string> { { "Message", ex.Message } });
                 throw;
             }
               
