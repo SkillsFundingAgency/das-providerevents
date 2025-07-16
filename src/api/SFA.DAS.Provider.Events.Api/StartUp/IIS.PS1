@@ -40,12 +40,6 @@ Import-Module -Name "..\..\approot\bin\Newtonsoft.Json.dll"
 Import-Module -Name "..\..\approot\bin\Microsoft.WindowsAzure.Configuration.dll"
 Import-Module -Name "..\..\approot\bin\Microsoft.WindowsAzure.Storage.dll"
 
-$fe = New-Object NLog.Config.XmlLoggingConfiguration("$config")
-
-([NLog.LogManager]::Configuration) = $fe
-$logger = [NLog.LogManager]::GetCurrentClassLogger()
-
-
 
 $Azure="Azure"
 

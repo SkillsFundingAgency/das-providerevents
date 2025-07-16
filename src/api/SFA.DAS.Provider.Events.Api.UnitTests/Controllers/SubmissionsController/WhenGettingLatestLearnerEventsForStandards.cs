@@ -13,10 +13,9 @@ using SFA.DAS.Provider.Events.Application.Validation;
 
 namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsController
 {
-    public class WhenGettingLatestLearnerEventsForStandards
+    public class WhenGettingLatestLearnerEventsForStandards : BaseMockController
     {
-        private Mock<IMediator> _mediator;
-        private Mock<TelemetryClient> _telemetryClient;
+        private Mock<IMediator> _mediator; 
         private Api.Controllers.LearnersController _controller;
 
         [SetUp]
@@ -40,9 +39,8 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
                     }
                 });
 
-            _telemetryClient = new Mock<TelemetryClient>();
 
-            _controller = new Api.Controllers.LearnersController(_mediator.Object, _telemetryClient.Object);
+            _controller = new Api.Controllers.LearnersController(_mediator.Object, telemetryClient);
         }
 
         [Test]

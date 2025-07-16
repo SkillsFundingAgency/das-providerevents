@@ -1,24 +1,25 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web.Http.Results;
-using MediatR;
+﻿using MediatR;
 using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Extensibility;
 using Moq;
 using NLog;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Api.UnitTests.Mocks;
 using SFA.DAS.Provider.Events.Application.DataLock.GetDataLockEventsQuery;
 using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Validation;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Http.Results;
 
 namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController.V2
 {
-    public class WhenGettingListOfDataLockEvents
+    public class WhenGettingListOfDataLockEvents : BaseMockController
     {
         private Mock<IMediator> _mediator;
         private Mock<IMapper> _mapper;
-        private Mock<TelemetryClient> _telemetryClient;
         private Api.Controllers.DataLockController _controller;
 
         [SetUp]
@@ -128,9 +129,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController.V
                     };
                 });
 
-            _telemetryClient = new Mock<TelemetryClient>();
-
-            _controller = new Api.Controllers.DataLockController(_mediator.Object, _mapper.Object, _telemetryClient.Object);
+            _controller = new Api.Controllers.DataLockController(_mediator.Object, _mapper.Object, telemetryClient);
         }
 
         [Test]

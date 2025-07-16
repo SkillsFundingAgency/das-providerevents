@@ -1,16 +1,18 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web.Http.Results;
-using MediatR;
+﻿using MediatR;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Extensibility;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.ObsoleteModels;
 using SFA.DAS.Provider.Events.Api.Types;
+using SFA.DAS.Provider.Events.Api.UnitTests.Mocks;
 using SFA.DAS.Provider.Events.Application.DataLock.GetDataLockEventsQuery;
 using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Validation;
-using Microsoft.ApplicationInsights;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Http.Results;
 
 namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController.V1
 {
@@ -18,8 +20,21 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController.V
     {
         private Mock<IMediator> _mediator;
         private Mock<IMapper> _mapper;
-        private Mock<TelemetryClient> _telemetryClient;
         private Api.Controllers.DataLockController _controller;
+        private TelemetryClient InitializeMockTelemetryChannel()
+        {
+            // Application Insights TelemetryClient doesn't have an interface (and is sealed)
+            // Spin -up our own homebrew mock object
+            MockTelemetryChannel mockTelemetryChannel = new MockTelemetryChannel();
+            TelemetryConfiguration mockTelemetryConfig = new TelemetryConfiguration
+            {
+                TelemetryChannel = mockTelemetryChannel,
+                InstrumentationKey = Guid.NewGuid().ToString(),
+            };
+
+            TelemetryClient mockTelemetryClient = new TelemetryClient(mockTelemetryConfig);
+            return mockTelemetryClient;
+        }
 
         [SetUp]
         public void Arrange()
@@ -48,9 +63,9 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController.V
             _mapper.Setup(m => m.Map<DataLockEventV1[]>(It.IsAny<DataLockEvent[]>()))
                 .Returns((DataLockEvent[] source) => CreateV1Event(source));
 
-            _telemetryClient = new Mock<TelemetryClient>();
+            var telemetryClient = InitializeMockTelemetryChannel();
 
-            _controller = new Api.Controllers.DataLockController(_mediator.Object, _mapper.Object, _telemetryClient.Object);
+            _controller = new Api.Controllers.DataLockController(_mediator.Object, _mapper.Object, telemetryClient);
         }
 
         [Test]
@@ -153,7 +168,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController.V
             {
                 Id = 123,
                 Status = status,
-                Errors = new []
+                Errors = new[]
                 {
                     new DataLockEventError
                     {
@@ -161,7 +176,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController.V
                         SystemDescription = "Error 1"
                     }
                 },
-                Periods = new []
+                Periods = new[]
                 {
                     new DataLockEventPeriod
                     {
@@ -176,7 +191,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.DataLockController.V
                         TransactionType = TransactionType.Learning
                     }
                 },
-                Apprenticeships = new []
+                Apprenticeships = new[]
                 {
                     new DataLockEventApprenticeship
                     {

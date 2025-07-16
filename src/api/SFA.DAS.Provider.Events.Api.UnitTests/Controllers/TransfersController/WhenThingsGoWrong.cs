@@ -15,19 +15,17 @@ using ILogger = NLog.ILogger;
 namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.TransfersController
 {
     [TestFixture]
-    public class WhenThingsGoWrong
+    public class WhenThingsGoWrong : BaseMockController
     {
         private Api.Controllers.TransfersController _controller;
-        private Mock<TelemetryClient> _mockTelemetryClient;
         private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockMediator = new Mock<IMediator>(MockBehavior.Strict);
-            _mockTelemetryClient = new Mock<TelemetryClient>();
 
-            _controller = new Api.Controllers.TransfersController(_mockTelemetryClient.Object, _mockMediator.Object);
+            _controller = new Api.Controllers.TransfersController(telemetryClient, _mockMediator.Object);
         }
 
         [Test]

@@ -16,13 +16,12 @@ using SFA.DAS.Provider.Events.Application.Validation;
 
 namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PeriodEndsController
 {
-    public class WhenGettingListOfPeriodEnds
+    public class WhenGettingListOfPeriodEnds : BaseMockController
     {
         private CollectionPeriod _period1;
         private CollectionPeriod _period2;
         private Mock<IMediator> _mediator;
         private Mock<IMapper> _mapper;
-        private Mock<TelemetryClient> _telemetryClient;
         private Api.Controllers.PeriodEndsController _controller;
         private Mock<UrlHelper> _urlHelper;
 
@@ -77,18 +76,18 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.PeriodEndsController
                     }).ToArray();
                 });
 
-            _telemetryClient = new Mock<TelemetryClient>();
-            _telemetryClient.Setup(l => l.TrackException(It.IsAny<Exception>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, double>>()))
-                .Callback<Exception, string, object[]>((ex, msg, args) =>
-                {
-                    Console.WriteLine($"Error Logged\n{msg}\n{ex}");
-                });
+            //_telemetryClient = new Mock<TelemetryClient>();
+            //_telemetryClient.Setup(l => l.TrackException(It.IsAny<Exception>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, double>>()))
+            //    .Callback<Exception, string, object[]>((ex, msg, args) =>
+            //    {
+            //        Console.WriteLine($"Error Logged\n{msg}\n{ex}");
+            //    });
 
             _urlHelper = new Mock<UrlHelper>();
             _urlHelper.Setup(h => h.Link(It.IsAny<string>(), It.IsAny<object>()))
                 .Returns("payments-url");
 
-            _controller = new Api.Controllers.PeriodEndsController(_mediator.Object, _mapper.Object, _telemetryClient.Object);
+            _controller = new Api.Controllers.PeriodEndsController(_mediator.Object, _mapper.Object, telemetryClient);
             _controller.Url = _urlHelper.Object;
         }
 

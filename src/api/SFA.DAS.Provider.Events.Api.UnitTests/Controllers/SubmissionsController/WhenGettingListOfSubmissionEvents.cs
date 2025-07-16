@@ -12,10 +12,9 @@ using SFA.DAS.Provider.Events.Application.Validation;
 
 namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsController
 {
-    public class WhenGettingListOfSubmissionEvents
+    public class WhenGettingListOfSubmissionEvents : BaseMockController
     {
         private Mock<IMediator> _mediator;
-        private Mock<TelemetryClient> _telemetryClient;
         private Api.Controllers.SubmissionsController _controller;
 
         [SetUp]
@@ -40,9 +39,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.SubmissionsControlle
                     }
                 });
 
-            _telemetryClient = new Mock<TelemetryClient>();
-
-            _controller = new Api.Controllers.SubmissionsController(_mediator.Object, _telemetryClient.Object);
+            _controller = new Api.Controllers.SubmissionsController(_mediator.Object, telemetryClient);
         }
 
         [Test]

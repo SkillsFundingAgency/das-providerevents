@@ -16,6 +16,8 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using MediatR;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Extensibility;
 using StructureMap;
 
 namespace SFA.DAS.Provider.Events.Api.Plumbing.DependencyResolution
@@ -34,6 +36,13 @@ namespace SFA.DAS.Provider.Events.Api.Plumbing.DependencyResolution
                 });
 
             For<AutoMapper.MapperConfiguration>().Use(Mapping.AutoMapperConfigurationFactory.CreateMappingConfig());
+
+
+            //Registering the TelemetryClient with the active configuration for Dependency Injection
+            For<TelemetryClient>().Use(() => new TelemetryClient(TelemetryConfiguration.Active));
+            // Registering the TelemetryClient for logging purposes
+            For<TelemetryConfiguration>().Use(TelemetryConfiguration.Active).Singleton();
+
 
             RegisterMediator();
         }

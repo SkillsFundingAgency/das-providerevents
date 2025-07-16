@@ -14,19 +14,17 @@ using SFA.DAS.Provider.Events.Application.Transfers.GetTransfersQuery;
 namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.TransfersController
 {
     [TestFixture]
-    public class WhenTransfersRequested
+    public class WhenTransfersRequested : BaseMockController
     {
         private Api.Controllers.TransfersController _controller;
-        private Mock<TelemetryClient> _mockTelemetryClient;
         private Mock<IMediator> _mockMediator;
 
         [SetUp]
         public void SetUp()
         {
             _mockMediator = new Mock<IMediator>(MockBehavior.Strict);
-            _mockTelemetryClient = new Mock<TelemetryClient>();
 
-            _controller = new Api.Controllers.TransfersController(_mockTelemetryClient.Object, _mockMediator.Object);
+            _controller = new Api.Controllers.TransfersController(telemetryClient, _mockMediator.Object);
         }
 
         [Test]
@@ -36,7 +34,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.TransfersController
 
             var periodQueryResponse = new GetPeriodQueryResponse
             {
-                IsValid = true, 
+                IsValid = true,
                 Result = new CollectionPeriod()
             };
 
@@ -54,7 +52,7 @@ namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.TransfersController
             _mockMediator.Setup(m => m.SendAsync(It.IsAny<GetTransfersQueryRequest>())).ReturnsAsync(new GetTransfersQueryResponse
             {
                 IsValid = true,
-                Result = new PageOfResults<AccountTransfer> {Items = new[] {transfer}}
+                Result = new PageOfResults<AccountTransfer> { Items = new[] { transfer } }
             }).Verifiable("GetTransfersQuery was never called");
 
             // Act
