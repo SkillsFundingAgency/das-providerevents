@@ -4,7 +4,6 @@ using System.Web.Http.Results;
 using MediatR;
 using Microsoft.ApplicationInsights;
 using Moq;
-using NLog;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Data;

@@ -10,7 +10,6 @@ using SFA.DAS.Provider.Events.Application.Data;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodQuery;
 using SFA.DAS.Provider.Events.Application.Transfers.GetTransfersQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
-using ILogger = NLog.ILogger;
 
 namespace SFA.DAS.Provider.Events.Api.UnitTests.Controllers.TransfersController
 {
