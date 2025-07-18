@@ -35,7 +35,6 @@ else {
 }
 
 #Logging in the first instance#
-Import-Module -Name "..\..\approot\bin\NLog.dll"
 Import-Module -Name "..\..\approot\bin\Newtonsoft.Json.dll"
 Import-Module -Name "..\..\approot\bin\Microsoft.WindowsAzure.Configuration.dll"
 Import-Module -Name "..\..\approot\bin\Microsoft.WindowsAzure.Storage.dll"

@@ -2,7 +2,6 @@
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
 using Moq;
-using NLog;
 using NUnit.Framework;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Api.UnitTests.Mocks;
