@@ -35,17 +35,11 @@ else {
 }
 
 #Logging in the first instance#
-Import-Module -Name "..\..\approot\bin\SFA.DAS.NLog.Targets.Redis.dll"
 Import-Module -Name "..\..\approot\bin\StackExchange.Redis.dll"
 Import-Module -Name "..\..\approot\bin\NLog.dll"
 Import-Module -Name "..\..\approot\bin\Newtonsoft.Json.dll"
 Import-Module -Name "..\..\approot\bin\Microsoft.WindowsAzure.Configuration.dll"
 Import-Module -Name "..\..\approot\bin\Microsoft.WindowsAzure.Storage.dll"
-
-#Redis Logging 
-$drive=(Get-Location).Drive.Root
-$config1="approot\web.config"
-$config= "$drive$config1"
 
 $fe = New-Object NLog.Config.XmlLoggingConfiguration("$config")
 
