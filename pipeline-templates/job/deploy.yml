@@ -1,13 +1,8 @@
 parameters:
-- name: Environment
-  type: string
-- name: SolutionBaseName
-  type: string
-- name: ServiceConnection
-  type: string
-- name: OverrideBlockOnPossibleDataLoss
-  type: boolean
-  default: false
+  Environment:
+  SolutionBaseName:
+  ServiceConnection:
+  OverrideBlockOnPossibleDataLoss:
 
 
 

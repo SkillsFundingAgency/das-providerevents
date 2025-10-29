@@ -52,7 +52,7 @@ stages:
       SolutionBaseName: $(SolutionBaseName)
       SqlProjectPath: src/api/$(SolutionBaseName).Database/$(SolutionBaseName).Database.sqlproj
 
-- template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks      
+- template: azure-pipelines-templates/deploy/stage/nuget-publish.yml@das-platform-building-blocks
 
 #- stage: Deploy_AT
 #  dependsOn: Build
@@ -142,7 +142,7 @@ stages:
       Environment: MO
       SolutionBaseName: $(SolutionBaseName)
       ServiceConnection: SFA-ASM-ModelOffice-ARM
-      OverrideBlockOnPossibleDataLoss: ${{ parameters.OverrideBlockOnPossibleDataLoss  }}      
+      OverrideBlockOnPossibleDataLoss: ${{ parameters.OverrideBlockOnPossibleDataLoss  }}
 
 - stage: Deploy_DEMO
   dependsOn: Build
@@ -155,4 +155,6 @@ stages:
   - template: pipeline-templates/job/deploy.yml
     parameters:
       Environment: DEMO
+      SolutionBaseName: $(SolutionBaseName)
       ServiceConnection: SFA-DAS-DevTest-ARM
+      OverrideBlockOnPossibleDataLoss: ${{ parameters.OverrideBlockOnPossibleDataLoss  }}
