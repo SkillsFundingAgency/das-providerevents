@@ -1,9 +1,14 @@
-parameters:  
-  Environment:
-  SolutionBaseName:
-  ServiceConnection:
-  OverrideBlockOnPossibleDataLoss:
-  
+parameters:
+- name: Environment
+  type: string
+- name: SolutionBaseName
+  type: string
+- name: ServiceConnection
+  type: string
+- name: OverrideBlockOnPossibleDataLoss
+  type: boolean
+  default: false
+
 
 
 jobs:
@@ -60,7 +65,7 @@ jobs:
           parameters:
             AzureSubscription: ${{ parameters.ServiceConnection }}
             ServerName: $(EventsSQLServerFQDN)
-            SqlUsername: $(EventsSQLDeploymentUser)            
+            SqlUsername: $(EventsSQLDeploymentUser)
             DacpacFile: $(Pipeline.Workspace)/DacpacArtifact/src/api/${{ parameters.SolutionBaseName }}.Database/bin/Output/${{ parameters.SolutionBaseName }}.Database.dacpac
             DatabaseName: $(EventsSQLDatabaseName)
             OverrideBlockOnPossibleDataLoss: ${{ parameters.OverrideBlockOnPossibleDataLoss }}
