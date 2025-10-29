@@ -1,2 +1,1 @@
-﻿CREATE SCHEMA [DataLock]
-    AUTHORIZATION [dbo];
+﻿CREATE SCHEMA [DataLock]    

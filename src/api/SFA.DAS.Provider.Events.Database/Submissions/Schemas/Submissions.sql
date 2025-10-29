@@ -1,2 +1,1 @@
-﻿CREATE SCHEMA [Submissions]
-    AUTHORIZATION [dbo];
+﻿CREATE SCHEMA [Submissions]    
