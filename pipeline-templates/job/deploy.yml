@@ -60,8 +60,7 @@ jobs:
           parameters:
             AzureSubscription: ${{ parameters.ServiceConnection }}
             ServerName: $(EventsSQLServerFQDN)
-            SqlUsername: $(EventsSQLDeploymentUser)
-            SqlPassword: $(EventsSQLDeploymentPassword)
+            SqlUsername: $(EventsSQLDeploymentUser)            
             DacpacFile: $(Pipeline.Workspace)/DacpacArtifact/src/api/${{ parameters.SolutionBaseName }}.Database/bin/Output/${{ parameters.SolutionBaseName }}.Database.dacpac
             DatabaseName: $(EventsSQLDatabaseName)
             OverrideBlockOnPossibleDataLoss: ${{ parameters.OverrideBlockOnPossibleDataLoss }}
