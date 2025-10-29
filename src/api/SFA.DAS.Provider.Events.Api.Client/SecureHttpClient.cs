@@ -1,9 +1,11 @@
-﻿using Microsoft.Azure.Services.AppAuthentication;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using SFA.DAS.Provider.Events.Api.Client.Configuration;
+﻿using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Azure.Core;
+using Azure.Identity;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using SFA.DAS.Provider.Events.Api.Client.Configuration;
 
 namespace SFA.DAS.Provider.Events.Api.Client
 {
@@ -57,13 +59,35 @@ namespace SFA.DAS.Provider.Events.Api.Client
 
         private async Task<string> GetManagedIdentityAuthenticationResult(string resource)
         {
-            if(!string.IsNullOrEmpty(resource))
-            {
-                var azureServiceTokenProvider = new AzureServiceTokenProvider();
-                return await azureServiceTokenProvider.GetAccessTokenAsync(resource);
-            }
+         const int MaxRetries = 2;
+         var networkTimeout = TimeSpan.FromMilliseconds(500);
+         var delay = TimeSpan.FromMilliseconds(100);
 
-            return await Task.FromResult(string.Empty);
+         if (!string.IsNullOrEmpty(resource))
+         {
+             var azureServiceTokenProvider = new ChainedTokenCredential(
+                 new ManagedIdentityCredential(options: new TokenCredentialOptions
+                 {
+                     Retry = { NetworkTimeout = networkTimeout, MaxRetries = MaxRetries, Delay = delay, Mode = RetryMode.Fixed }
+                 }),
+                 new AzureCliCredential(options: new AzureCliCredentialOptions
+                 {
+                     Retry = { NetworkTimeout = networkTimeout, MaxRetries = MaxRetries, Delay = delay, Mode = RetryMode.Fixed }
+                 }),
+                 new VisualStudioCredential(options: new VisualStudioCredentialOptions
+                 {
+                     Retry = { NetworkTimeout = networkTimeout, MaxRetries = MaxRetries, Delay = delay, Mode = RetryMode.Fixed }
+                 }),
+                 new VisualStudioCodeCredential(options: new VisualStudioCodeCredentialOptions
+                 {
+                     Retry = { NetworkTimeout = networkTimeout, MaxRetries = MaxRetries, Delay = delay, Mode = RetryMode.Fixed }
+                 }));
+
+             return (await azureServiceTokenProvider.GetTokenAsync(new TokenRequestContext(scopes: new[] { resource })))
+                 .Token;
+         }
+
+         return await Task.FromResult(string.Empty);
         }
 
         private bool IsClientCredentialConfiguration(string clientId, string clientSecret, string tenant)

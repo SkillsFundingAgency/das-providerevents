@@ -27,7 +27,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/2.1.0
+    ref: refs/tags/3.0.14
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
@@ -142,4 +142,17 @@ stages:
       Environment: MO
       SolutionBaseName: $(SolutionBaseName)
       ServiceConnection: SFA-ASM-ModelOffice-ARM
-      OverrideBlockOnPossibleDataLoss: ${{ parameters.OverrideBlockOnPossibleDataLoss  }}
+      OverrideBlockOnPossibleDataLoss: ${{ parameters.OverrideBlockOnPossibleDataLoss  }}      
+
+- stage: Deploy_DEMO
+  dependsOn: Build
+  displayName: Deploy to DEMO
+  variables:
+  - group: DevTest Management Resources
+  - group: DEMO DevTest Shared Resources
+  - group: DEMO das-providerevents
+  jobs:
+  - template: pipeline-templates/job/deploy.yml
+    parameters:
+      Environment: DEMO
+      ServiceConnection: SFA-DAS-DevTest-ARM
