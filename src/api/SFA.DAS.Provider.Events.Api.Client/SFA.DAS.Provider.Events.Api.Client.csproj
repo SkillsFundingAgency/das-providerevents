@@ -37,6 +37,8 @@
     <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\SubmissionEvent.cs" Link="Types\SubmissionEvent.cs" />
     <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\TransactionType.cs" Link="Types\TransactionType.cs" />
     <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\TransferType.cs" Link="Types\TransferType.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\CourseType.cs" Link="Types\CourseType.cs" />
+    <Compile Include="..\SFA.DAS.Provider.Events.Api.Types\LearningType.cs" Link="Types\LearningType.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -41,6 +41,9 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                     Month = 9,
                     Year = 2017
                 },
+                CourseCode = "123456",
+                CourseType = CourseType.Apprenticeship,
+                LearningType = LearningType.Apprenticeship,
                 EvidenceSubmittedOn = new DateTime(2017, 10, 1),
                 EmployerAccountVersion = "A",
                 ApprenticeshipVersion = "B",
@@ -67,6 +70,9 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                     Month = 9,
                     Year = 2017
                 },
+                CourseCode = "123456",
+                CourseType = CourseType.Apprenticeship,
+                LearningType = LearningType.Apprenticeship,
                 EvidenceSubmittedOn = new DateTime(2017, 10, 1),
                 FundingSource = FundingSource.CoInvestedSfa,
                 TransactionType = TransactionType.Learning,
@@ -138,6 +144,9 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
                    && original.DeliveryPeriod.Year == client.DeliveryPeriod.Year
                    && original.CollectionPeriod.Month == client.CollectionPeriod.Month
                    && original.CollectionPeriod.Year == client.CollectionPeriod.Year
+                   && original.CourseCode == client.CourseCode
+                   && original.CourseType == client.CourseType
+                   && original.LearningType == client.LearningType
                    && original.EvidenceSubmittedOn == client.EvidenceSubmittedOn
                    && original.EmployerAccountVersion == client.EmployerAccountVersion
                    && original.ApprenticeshipVersion == client.ApprenticeshipVersion

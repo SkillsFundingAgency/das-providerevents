@@ -14,6 +14,10 @@ namespace SFA.DAS.Provider.Events.Api.Types
         public CalendarPeriod DeliveryPeriod { get; set; }
         public NamedCalendarPeriod CollectionPeriod { get; set; }
 
+        public string CourseCode { get; set; }
+        public CourseType? CourseType { get; set; }
+        public LearningType? LearningType { get; set; }
+
         public DateTime EvidenceSubmittedOn { get; set; }
         public string EmployerAccountVersion { get; set; }
         public string ApprenticeshipVersion { get; set; }
