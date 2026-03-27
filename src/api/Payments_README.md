@@ -35,6 +35,9 @@ Response:
         "Month": 4,
         "Year": 2017
       },
+      "CourseCode": "123456",
+      "CourseType": 1,
+      "LearningType": 1,
       "EvidenceSubmittedOn": "2017-01-09T10:40:11.68",
       "FundingSource": "CoInvestedEmployer",
       "TransactionType": "Learning",
@@ -69,6 +72,9 @@ Response:
         "Month": 4,
         "Year": 2017
       },
+      "CourseCode": "123456",
+      "CourseType": 1,
+      "LearningType": 1,
       "EvidenceSubmittedOn": "2017-01-09T10:40:11.68",
       "FundingSource": "CoInvestedSfa",
       "TransactionType": "Learning",
@@ -105,6 +111,9 @@ Response:
         "Month": 4,
         "Year": 2017
       },
+      "CourseCode": "123456",
+      "CourseType": 1,
+      "LearningType": 1,
       "EvidenceSubmittedOn": "2017-01-09T10:40:11.68",
       "EmployerAccountVersion": "20170104115139",
       "ApprenticeshipVersion": "1",
@@ -130,6 +139,10 @@ Response:
 }
 ```
 
+      "CourseCode": "123456",
+      "CourseType": 1,
+      "LearningType": 1,
+
 Response **Items** structure:
 
 | Attribute | Data type | Optional | Description |
@@ -143,6 +156,9 @@ Response **Items** structure:
 | EmployerAccountVersion | string | yes | employer account version |
 | DeliveryPeriod | CalendarPeriod | no | ilr learning period containing calendar month and calcndar year |
 | CollectionPeriod | NamedCalendarPeriod | no | ilr collection period containing an id, calendar month and calcndar year |
+| CourseCode | String | 
+| CourseType | CourseType |
+| CourseType | LearningType |
 | EvidenceSubmittedOn | DateTime | no | ilr file submission date and time |
 | FundingSource | FundingSource | no | funding source of the payment, see following tables for all possible values |
 | TransactionType | TransactionType | no | transaction of the payment, see following tables for all possible values |
@@ -194,6 +210,8 @@ Response **Items** structure:
 | OnProgrammeMathsAndEnglish | maths or english on programme payment |
 | BalancingMathsAndEnglish | maths or english balancing payment |
 | LearningSupport | learning support payment |
+| CareLeaverApprenticePayment | |
+| Milestone1 | |
 
 **ContractType** properties:
 
