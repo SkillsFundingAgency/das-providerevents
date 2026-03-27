@@ -139,10 +139,6 @@ Response:
 }
 ```
 
-      "CourseCode": "123456",
-      "CourseType": 1,
-      "LearningType": 1,
-
 Response **Items** structure:
 
 | Attribute | Data type | Optional | Description |
@@ -210,8 +206,8 @@ Response **Items** structure:
 | OnProgrammeMathsAndEnglish | maths or english on programme payment |
 | BalancingMathsAndEnglish | maths or english balancing payment |
 | LearningSupport | learning support payment |
-| CareLeaverApprenticePayment | |
-| Milestone1 | |
+| CareLeaverApprenticePayment | care leaver apprentice payment|
+| Milestone1 | milestone payment|
 
 **ContractType** properties:
 
