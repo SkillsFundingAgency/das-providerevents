@@ -1,6 +1,6 @@
-# Period Ends API
+#ï¿½Period Ends API
 
-Period ends are a slow moving feed of items signifying a successful completion of a period end.
+Period ends are a slow moving feed of items signifying a successful completion of a period end. With said feed only containing collection periods that have a status of completed or null.
 
 ## Get period ends
 
