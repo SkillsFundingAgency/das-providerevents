@@ -32,7 +32,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Payments.GetPaymentsQuer
             };
 
             repository.Setup(x => x.GetPayments(request.PageNumber, request.PageSize, request.EmployerAccountId, 1920,
-                12, request.Ukprn)).ReturnsAsync(paymentEntities);
+                12, request.Ukprn, request.CourseType)).ReturnsAsync(paymentEntities);
 
             autoMapper.Setup(x => x.Map<PageOfResults<Payment>>(paymentEntities)).Returns(expectedResults);
 
@@ -53,7 +53,7 @@ namespace SFA.DAS.Provider.Events.Application.UnitTests.Payments.GetPaymentsQuer
         {
             // Arrange
             var ex = new Exception();
-            repository.Setup(r => r.GetPayments(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<long?>()))
+            repository.Setup(r => r.GetPayments(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<long?>(), It.IsAny<int?>()))
                 .Throws(ex);
 
             request.Period = new Data.CollectionPeriod

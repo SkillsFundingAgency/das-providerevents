@@ -47,6 +47,26 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
             actual.TotalNumberOfPaymentsWithRequiredPayment.Should().Be(470);
         }
 
+        [Test]
+        public async Task ThenItShouldCallTheCorrectUrlWhenThereIsNotACourseTypeFilter()
+        {
+            // Act
+            await _client.GetPaymentStatistics();
+
+            // Assert
+            VerifyExpectedUrlCalled($"{ExpectedApiBaseUrl}api/v2/payments/statistics");
+        }
+
+        [Test]
+        public async Task ThenItShouldCallTheCorrectUrlWhenACourseTypeFilterIsApplied()
+        {
+            // Act
+            await _client.GetPaymentStatistics(1);
+
+            // Assert
+            VerifyExpectedUrlCalled($"{ExpectedApiBaseUrl}api/v2/payments/statistics?courseType=1");
+        }
+
 
     }
 }

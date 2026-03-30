@@ -28,7 +28,8 @@ namespace SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery
                         message.EmployerAccountId,
                         message.Period?.AcademicYear,
                         message.Period?.Period,
-                        message.Ukprn)
+                        message.Ukprn,
+                        message.CourseType)
                     .ConfigureAwait(false);
 
                 var result = _mapper.Map<PageOfResults<Payment>>(payments);

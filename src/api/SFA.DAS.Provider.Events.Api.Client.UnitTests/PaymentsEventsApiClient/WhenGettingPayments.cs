@@ -122,6 +122,17 @@ namespace SFA.DAS.Provider.Events.Api.Client.UnitTests.PaymentsEventsApiClient
 
 
         [Test]
+        public async Task ThenItShouldCallTheCorrectUrlForCourseTypeFilter()
+        {
+            // Act
+            await _client.GetPayments("XXX", "YYY", 2, null, 1);
+
+            // Assert
+            VerifyExpectedUrlCalled("http://test.local.url/api/payments?page=2&periodId=XXX&employerAccountId=YYY&ukprn=&courseType=1");
+        }
+
+
+        [Test]
         public async Task ThenItShouldReturnResultFromApi()
         {
             // Act

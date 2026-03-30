@@ -11,8 +11,9 @@ namespace SFA.DAS.Provider.Events.Application.Repositories
             string employerAccountId = null,
             int? academicYear = null,
             int? collectionPeriod = null,
-            long? ukprn = null);
+            long? ukprn = null,
+            int? courseType = null);
 
-        Task<PaymentStatistics> GetStatistics();
+        Task<PaymentStatistics> GetStatistics(int? courseType = null);
     }
 }

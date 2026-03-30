@@ -10,5 +10,6 @@ namespace SFA.DAS.Provider.Events.Application.Payments.GetPaymentsQuery
         public int PageSize { get; set; }
 
         public long? Ukprn { get; set; }
+        public int? CourseType { get; set; }
     }
 }
