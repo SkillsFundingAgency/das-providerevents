@@ -37,7 +37,8 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
                     .ConfigureAwait(false);
                 if (!periodsResponse.IsValid)
                 {
-                    throw periodsResponse.Exception;
+                    _logger.Error(periodsResponse.Exception, "GetPeriodsQuery failed");
+                    return InternalServerError(periodsResponse.Exception);
                 }
 
                 var periodEnds = _mapper.Map<PeriodEnd[]>(periodsResponse.Result);
