@@ -67,6 +67,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             }
             catch (Exception ex)
             {
+                telemetryClient.TrackException(ex);
                 _logger.Error(ex, ex.Message);
                 return InternalServerError();
             }
