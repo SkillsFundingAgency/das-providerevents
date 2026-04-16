@@ -27,7 +27,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             _mediator = mediator;
             _mapper = mapper;
             _logger = logger;
-            _telemetry = telemetry
+            _telemetry = telemetry;
         }
 
         [VersionedRoute("api/periodends", 1, Name = "PeriodEndList")]
