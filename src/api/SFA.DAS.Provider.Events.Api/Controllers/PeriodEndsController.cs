@@ -8,8 +8,6 @@ using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodsQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
-using Microsoft.ApplicationInsights;
-
 
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
@@ -19,15 +17,12 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
-        private readonly TelemetryClient _telemetry;
 
-
-        public PeriodEndsController(IMediator mediator, IMapper mapper, ILogger logger, TelemetryClient telemetry)
+        public PeriodEndsController(IMediator mediator, IMapper mapper, ILogger logger)
         {
             _mediator = mediator;
             _mapper = mapper;
             _logger = logger;
-            _telemetry = telemetry;
         }
 
         [VersionedRoute("api/periodends", 1, Name = "PeriodEndList")]
@@ -72,7 +67,6 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             }
             catch (Exception ex)
             {
-                _telemetry.TrackException(ex);
                 _logger.Error(ex, ex.Message);
                 return InternalServerError();
             }
