@@ -17,6 +17,7 @@ namespace SFA.DAS.Provider.Events.Api
 
             // Web API routes
             config.MapHttpAttributeRoutes();
+            config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.Always;
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
