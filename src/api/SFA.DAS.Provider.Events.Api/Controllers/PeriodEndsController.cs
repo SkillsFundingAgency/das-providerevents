@@ -1,14 +1,15 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using System.Web.Http;
 using MediatR;
 using NLog;
-using Microsoft.ApplicationInsights;
 using SFA.DAS.Provider.Events.Api.Plumbing.WebApi;
 using SFA.DAS.Provider.Events.Api.Types;
 using SFA.DAS.Provider.Events.Application.Mapping;
 using SFA.DAS.Provider.Events.Application.Period.GetPeriodsQuery;
 using SFA.DAS.Provider.Events.Application.Validation;
+using Microsoft.ApplicationInsights;
+
 
 namespace SFA.DAS.Provider.Events.Api.Controllers
 {
@@ -20,11 +21,8 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         private readonly ILogger _logger;
         private readonly TelemetryClient _telemetry;
 
-        public PeriodEndsController(
-            IMediator mediator,
-            IMapper mapper,
-            ILogger logger,
-            TelemetryClient telemetry)
+
+        public PeriodEndsController(IMediator mediator, IMapper mapper, ILogger logger, TelemetryClient telemetry)
         {
             _mediator = mediator;
             _mapper = mapper;
@@ -40,51 +38,32 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         {
             try
             {
-                var periodsResponse = await _mediator.SendAsync(
-                        new GetPeriodsQueryRequest())
+                var periodsResponse = await _mediator.SendAsync(new GetPeriodsQueryRequest())
                     .ConfigureAwait(false);
-
                 if (!periodsResponse.IsValid)
                 {
-                    _telemetry.TrackException(periodsResponse.Exception);
                     _logger.Error(periodsResponse.Exception, "GetPeriodsQuery failed");
                     return InternalServerError(periodsResponse.Exception);
                 }
 
                 var periodEnds = _mapper.Map<PeriodEnd[]>(periodsResponse.Result);
-
                 foreach (var periodEnd in periodEnds)
                 {
                     periodEnd.Links = new PeriodEndLinks
                     {
-                        PaymentsForPeriod = Url.Link(
-                            "PaymentsList",
-                            new { periodId = periodEnd.Id })
+                        PaymentsForPeriod = Url.Link("PaymentsList", new { periodId = periodEnd.Id })
                     };
 
-                    // Defensive null handling for new periods
-                    if (periodEnd.ReferenceData == null)
+                    //TODO: Remove this once bug in collection fixed & EAS can handle null
+                    if (!periodEnd.ReferenceData.AccountDataValidAt.HasValue)
                     {
-                        periodEnd.ReferenceData = new ReferenceData
-                        {
-                            AccountDataValidAt = DateTime.MinValue,
-                            CommitmentDataValidAt = DateTime.MinValue
-                        };
+                        periodEnd.ReferenceData.AccountDataValidAt = DateTime.MinValue;
                     }
-                    else
+                    if (!periodEnd.ReferenceData.CommitmentDataValidAt.HasValue)
                     {
-                        if (!periodEnd.ReferenceData.AccountDataValidAt.HasValue)
-                        {
-                            periodEnd.ReferenceData.AccountDataValidAt = DateTime.MinValue;
-                        }
-
-                        if (!periodEnd.ReferenceData.CommitmentDataValidAt.HasValue)
-                        {
-                            periodEnd.ReferenceData.CommitmentDataValidAt = DateTime.MinValue;
-                        }
+                        periodEnd.ReferenceData.CommitmentDataValidAt = DateTime.MinValue;
                     }
                 }
-
                 return Ok(periodEnds);
             }
             catch (ValidationException ex)
@@ -94,8 +73,8 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             catch (Exception ex)
             {
                 _telemetry.TrackException(ex);
-                _logger.Error(ex, "Unhandled exception in ListPeriodEnds");
-                return InternalServerError(ex);
+                _logger.Error(ex, ex.Message);
+                return InternalServerError();
             }
         }
     }
