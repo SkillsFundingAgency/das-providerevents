@@ -7,7 +7,7 @@ Payments is a feed of low level payments made by the system. They can optionally
 Getting payments can be done by consuming the following URI:
 
 ```
-GET https://host:port/api/payments?periodId={period_id}&employerAccountId={employer_account_id}&page={page_number}&ukprn={ukprn}
+GET https://host:port/api/payments?periodId={period_id}&employerAccountId={employer_account_id}&page={page_number}&ukprn={ukprn}&courseType={courseType}
 ```
 
 Where:
@@ -15,6 +15,7 @@ Where:
 * employer_account_id = (Optional) employer account identifier to filter by, i.e. 12345. Default is null / no filter
 * page_number = (Optional) page number to display, i.e. 10. Default is 1
 * ukprn = (Optional) the ukprn to filter by
+* courseType = (Optional) the courseType to filter by 
 
 Response:
 ```json
@@ -35,6 +36,9 @@ Response:
         "Month": 4,
         "Year": 2017
       },
+      "CourseCode": "123456",
+      "CourseType": 1,
+      "LearningType": 1,
       "EvidenceSubmittedOn": "2017-01-09T10:40:11.68",
       "FundingSource": "CoInvestedEmployer",
       "TransactionType": "Learning",
@@ -69,6 +73,9 @@ Response:
         "Month": 4,
         "Year": 2017
       },
+      "CourseCode": "123456",
+      "CourseType": 1,
+      "LearningType": 1,
       "EvidenceSubmittedOn": "2017-01-09T10:40:11.68",
       "FundingSource": "CoInvestedSfa",
       "TransactionType": "Learning",
@@ -105,6 +112,9 @@ Response:
         "Month": 4,
         "Year": 2017
       },
+      "CourseCode": "123456",
+      "CourseType": 1,
+      "LearningType": 1,
       "EvidenceSubmittedOn": "2017-01-09T10:40:11.68",
       "EmployerAccountVersion": "20170104115139",
       "ApprenticeshipVersion": "1",
@@ -143,6 +153,9 @@ Response **Items** structure:
 | EmployerAccountVersion | string | yes | employer account version |
 | DeliveryPeriod | CalendarPeriod | no | ilr learning period containing calendar month and calcndar year |
 | CollectionPeriod | NamedCalendarPeriod | no | ilr collection period containing an id, calendar month and calcndar year |
+| CourseCode | String | 
+| CourseType | CourseType |
+| CourseType | LearningType |
 | EvidenceSubmittedOn | DateTime | no | ilr file submission date and time |
 | FundingSource | FundingSource | no | funding source of the payment, see following tables for all possible values |
 | TransactionType | TransactionType | no | transaction of the payment, see following tables for all possible values |
@@ -194,6 +207,8 @@ Response **Items** structure:
 | OnProgrammeMathsAndEnglish | maths or english on programme payment |
 | BalancingMathsAndEnglish | maths or english balancing payment |
 | LearningSupport | learning support payment |
+| CareLeaverApprenticePayment | care leaver apprentice payment|
+| Milestone1 | milestone payment|
 
 **ContractType** properties:
 
@@ -207,8 +222,10 @@ Response **Items** structure:
 Getting payment statistics can be done by consuming the following URI:
 
 ```
-GET https://host:port/api/payments/statistics
+GET https://host:port/api/payments/statistics?courseType={courseType}
 ```
+Where:
+* courseType = (Optional) the courseType to filter by 
 
 Response:
 ```json

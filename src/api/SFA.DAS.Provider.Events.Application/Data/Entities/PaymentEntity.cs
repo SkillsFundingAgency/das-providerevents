@@ -14,7 +14,11 @@ namespace SFA.DAS.Provider.Events.Application.Data.Entities
         public byte DeliveryPeriod { get; set; }
         public short AcademicYear { get; set; }
         public byte CollectionPeriod { get; set; }
-        
+
+        public string CourseCode { get; set; }
+        public byte? CourseType { get; set; }
+        public byte? LearningType { get; set; }
+
         public DateTime IlrSubmissionDateTime { get; set; }
         public int FundingSource { get; set; }
         public int TransactionType { get; set; }

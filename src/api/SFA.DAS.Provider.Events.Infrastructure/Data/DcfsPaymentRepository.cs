@@ -24,7 +24,10 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 		            P.AccountId, 
 		            P.DeliveryPeriod, 
 		            P.AcademicYear, 
-		            P.CollectionPeriod, 
+		            P.CollectionPeriod,
+                    P.CourseCode,
+                    P.CourseType,
+                    P.LearningType,
 		            P.IlrSubmissionDateTime, 
 		            P.FundingSource, 
 		            P.TransactionType, 
@@ -49,23 +52,28 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 
         private const string CountSqlTemplate = @"SELECT COUNT(1) [TotalCount] FROM [Payments2].[Payment] P /**where**/";
 
-        public async Task<PaymentStatistics> GetStatistics()
-        {
-	        using (var connection = await GetOpenConnection().ConfigureAwait(false))
-	        {
-		        const string sql = "SELECT count(EventId) as TotalNumberOfPayments, count(RequiredPaymentEventId) as TotalNumberOfPaymentsWithRequiredPayment FROM Payments2.Payment";
+		public async Task<PaymentStatistics> GetStatistics(int? courseType = null)
+		{
+			using (var connection = await GetOpenConnection().ConfigureAwait(false))
+			{
+				string sql = "SELECT count(EventId) as TotalNumberOfPayments, count(RequiredPaymentEventId) as TotalNumberOfPaymentsWithRequiredPayment FROM Payments2.Payment";
 
-		        return connection.Query<PaymentStatistics>(sql).FirstOrDefault();
-	        }
-        }
+				if (courseType.HasValue)
+				{
+					sql += " WHERE CourseType = @CourseType";
+				}
 
-        public async Task<PageOfResults<PaymentEntity>> GetPayments(int page, int pageSize, string employerAccountId, int? academicYear, int? collectionPeriod, long? ukprn)
-        {
-            using (var connection = await GetOpenConnection().ConfigureAwait(false))
-            {
-	            var unPaginatedPayments = await GetPayments(page, pageSize, employerAccountId, academicYear, collectionPeriod, ukprn, connection);
+				return connection.Query<PaymentStatistics>(sql, new { CourseType = courseType }).FirstOrDefault();
+			}
+		}
 
-	            var count = await GetPaymentCount(employerAccountId, academicYear, collectionPeriod, ukprn, connection);
+		public async Task<PageOfResults<PaymentEntity>> GetPayments(int page, int pageSize, string employerAccountId, int? academicYear, int? collectionPeriod, long? ukprn, int? courseType)
+		{
+			using (var connection = await GetOpenConnection().ConfigureAwait(false))
+			{
+				var unPaginatedPayments = await GetPayments(page, pageSize, employerAccountId, academicYear, collectionPeriod, ukprn, courseType, connection);
+
+				var count = await GetPaymentCount(employerAccountId, academicYear, collectionPeriod, ukprn, courseType, connection);
 
 	            var pagedResults = AddPagingInformation(unPaginatedPayments.ToList(), page, pageSize, count);
 
@@ -73,12 +81,12 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             }
         }
 
-        private static async Task<IEnumerable<PaymentEntity>> GetPayments(int page, int pageSize, string employerAccountId, int? academicYear, int? collectionPeriod, long? ukprn, SqlConnection connection)
-        {
-	        var sqlBuilder = new SqlBuilder();
-	        var query = sqlBuilder.AddTemplate(SqlTemplate);
+		private static async Task<IEnumerable<PaymentEntity>> GetPayments(int page, int pageSize, string employerAccountId, int? academicYear, int? collectionPeriod, long? ukprn, int? courseType, SqlConnection connection)
+		{
+			var sqlBuilder = new SqlBuilder();
+			var query = sqlBuilder.AddTemplate(SqlTemplate);
 
-	        BuildQueryParameters(employerAccountId, academicYear, collectionPeriod, ukprn, sqlBuilder);
+			BuildQueryParameters(employerAccountId, academicYear, collectionPeriod, ukprn, courseType, sqlBuilder);
 
 	        AddPagingQueryParameters(page, pageSize, sqlBuilder);
 
@@ -90,12 +98,12 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
 	        return result;
         }
 
-        private static async Task<int> GetPaymentCount(string employerAccountId, int? academicYear, int? collectionPeriod, long? ukprn, SqlConnection connection)
-        {
-	        var countSqlBuilder = new SqlBuilder();
-	        var countQuery = countSqlBuilder.AddTemplate(CountSqlTemplate);
+		private static async Task<int> GetPaymentCount(string employerAccountId, int? academicYear, int? collectionPeriod, long? ukprn, int? courseType, SqlConnection connection)
+		{
+			var countSqlBuilder = new SqlBuilder();
+			var countQuery = countSqlBuilder.AddTemplate(CountSqlTemplate);
 
-	        BuildQueryParameters(employerAccountId, academicYear, collectionPeriod, ukprn, countSqlBuilder);
+			BuildQueryParameters(employerAccountId, academicYear, collectionPeriod, ukprn, courseType, countSqlBuilder);
 
 	        var count = await connection.ExecuteScalarAsync<int>(
 		        countQuery.RawSql,
@@ -110,19 +118,23 @@ namespace SFA.DAS.Provider.Events.Infrastructure.Data
             sqlBuilder.AddParameters(new { PageIndex = page, PageSize = pageSize });
         }
 
-        private static void BuildQueryParameters(string accountId, int? academicYear, int? collectionPeriod, long? ukprn, SqlBuilder sqlBuilder)
-        {
-            sqlBuilder.Where("p.AcademicYear = @AcademicYear AND p.CollectionPeriod = @CollectionPeriod",
-                new { AcademicYear = academicYear, CollectionPeriod = collectionPeriod },
-                includeIf: academicYear.HasValue && collectionPeriod.HasValue);
+		private static void BuildQueryParameters(string accountId, int? academicYear, int? collectionPeriod, long? ukprn, int? courseType, SqlBuilder sqlBuilder)
+		{
+			sqlBuilder.Where("p.AcademicYear = @AcademicYear AND p.CollectionPeriod = @CollectionPeriod",
+				new { AcademicYear = academicYear, CollectionPeriod = collectionPeriod },
+				includeIf: academicYear.HasValue && collectionPeriod.HasValue);
 
-            sqlBuilder.Where("p.AccountId = @accountId", 
+			sqlBuilder.Where("p.AccountId = @accountId", 
 				new { accountId = accountId?.Replace("'", "''") }, 
 				includeIf: !string.IsNullOrEmpty(accountId));
 
-            sqlBuilder.Where("p.Ukprn = @UkPrn", 
-	            new { UkPrn = ukprn }, 
-	            includeIf: ukprn.HasValue);
-        }
+			sqlBuilder.Where("p.Ukprn = @UkPrn", 
+				new { UkPrn = ukprn }, 
+				includeIf: ukprn.HasValue);
+
+			sqlBuilder.Where("p.CourseType = @CourseType", 
+				new { CourseType = courseType }, 
+				includeIf: courseType.HasValue);
+		}
     }
 }
