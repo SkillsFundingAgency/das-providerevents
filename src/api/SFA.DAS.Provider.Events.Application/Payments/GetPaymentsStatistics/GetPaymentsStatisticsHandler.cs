@@ -15,7 +15,7 @@ namespace SFA.DAS.Provider.Events.Application.Payments.GetPaymentsStatistics
 
         public async Task<GetPaymentsStatisticsResponse> Handle(GetPaymentsStatisticsRequest message)
         {
-                var payments = await _paymentRepository.GetStatistics()
+                var payments = await _paymentRepository.GetStatistics(message.CourseType)
                     .ConfigureAwait(false);
                 
                 return new GetPaymentsStatisticsResponse

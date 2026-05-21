@@ -26,9 +26,14 @@ namespace SFA.DAS.Provider.Events.Api.Client
             return JsonConvert.DeserializeObject<PeriodEnd[]>(response);
         }
 
-        public async Task<PageOfResults<Payment>> GetPayments(string periodId = null, string employerAccountId = null, int page = 1, long? ukprn = null)
+        public async Task<PageOfResults<Payment>> GetPayments(string periodId = null, string employerAccountId = null, int page = 1, long? ukprn = null, int? courseType = null)
         {
-            var response = await _client.GetAsync($"{BaseUrl}api/payments?page={page}&periodId={periodId}&employerAccountId={employerAccountId}&ukprn={ukprn}");
+            var url = $"{BaseUrl}api/payments?page={page}&periodId={periodId}&employerAccountId={employerAccountId}&ukprn={ukprn}";
+            if (courseType.HasValue)
+            {
+                url += $"&courseType={courseType}";
+            }
+            var response = await _client.GetAsync(url);
             return JsonConvert.DeserializeObject<PageOfResults<Payment>>(response);
         }
 
@@ -47,9 +52,16 @@ namespace SFA.DAS.Provider.Events.Api.Client
             return JsonConvert.DeserializeObject<PageOfResults<AccountTransfer>>(response);
         }
 
-        public async Task<PaymentStatistics> GetPaymentStatistics()
+
+        public async Task<PaymentStatistics> GetPaymentStatistics(int? courseType = null)
         {
-            var response = await _client.GetAsync($"{BaseUrl}api/v2/payments/statistics");
+            var url = $"{BaseUrl}api/v2/payments/statistics";
+            if (courseType.HasValue)
+            {
+                url += $"?courseType={courseType}";
+            }
+
+            var response = await _client.GetAsync(url);
             return JsonConvert.DeserializeObject<PaymentStatistics>(response);
         }
 

@@ -18,4 +18,4 @@ The api has a number of streams:
 * [Learners](src/api/Learners_README.md) - endpoint to allow retrieval of learner information.
 * [Data lock events](src/api/DataLock_README.md) - notification that data lock status has changed.
 
-More information about the API can be viewed in the [README](src/api/README.md).
+More information about the API can be viewed in the [README](src/api/README.md). 

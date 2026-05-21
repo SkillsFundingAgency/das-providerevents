@@ -7,7 +7,7 @@ Payments is a feed of low level payments made by the system. They can optionally
 Getting payments can be done by consuming the following URI:
 
 ```
-GET https://host:port/api/payments?periodId={period_id}&employerAccountId={employer_account_id}&page={page_number}&ukprn={ukprn}
+GET https://host:port/api/payments?periodId={period_id}&employerAccountId={employer_account_id}&page={page_number}&ukprn={ukprn}&courseType={courseType}
 ```
 
 Where:
@@ -15,6 +15,7 @@ Where:
 * employer_account_id = (Optional) employer account identifier to filter by, i.e. 12345. Default is null / no filter
 * page_number = (Optional) page number to display, i.e. 10. Default is 1
 * ukprn = (Optional) the ukprn to filter by
+* courseType = (Optional) the courseType to filter by 
 
 Response:
 ```json
@@ -221,8 +222,10 @@ Response **Items** structure:
 Getting payment statistics can be done by consuming the following URI:
 
 ```
-GET https://host:port/api/payments/statistics
+GET https://host:port/api/payments/statistics?courseType={courseType}
 ```
+Where:
+* courseType = (Optional) the courseType to filter by 
 
 Response:
 ```json

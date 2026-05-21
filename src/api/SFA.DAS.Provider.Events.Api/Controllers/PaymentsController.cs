@@ -35,7 +35,8 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             string periodId = null, 
             string employerAccountId = null, 
             int page = 1, long? 
-            ukprn = null)
+            ukprn = null, 
+            int? courseType = null)
         {
             try
             {
@@ -55,7 +56,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
                 }
 
                 var paymentsResponse = await 
-                    GetPaymentsAsync(employerAccountId, page, ukprn, period)
+                    GetPaymentsAsync(employerAccountId, page, ukprn, period, courseType)
                     .ConfigureAwait(false);
 
                 return Ok(paymentsResponse.Result);
@@ -76,12 +77,12 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
         [VersionedRoute("api/payments/statistics", 1, Name = "PaymentsStatistics")]
         [VersionedRoute("api/payments/statistics", 2, Name = "PaymentsStatisticsV2H")]
         [Route("api/v2/payments/statistics", Name = "PaymentsStatisticsV2")]
-        public async Task<IHttpActionResult> GetPaymentStatistics()
+        public async Task<IHttpActionResult> GetPaymentStatistics(int? courseType = null)
         {
             try
             {
                 var paymentsResponse = await _mediator
-                    .SendAsync(new GetPaymentsStatisticsRequest()
+                    .SendAsync(new GetPaymentsStatisticsRequest {CourseType = courseType}
                     ).ConfigureAwait(false);
 
                 return Ok(paymentsResponse.Result);
@@ -115,7 +116,7 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
             return getPeriodResponse.Result;
         }
 
-        private async Task<GetPaymentsQueryResponse> GetPaymentsAsync(string employerAccountId, int page, long? ukprn, CollectionPeriod period)
+        private async Task<GetPaymentsQueryResponse> GetPaymentsAsync(string employerAccountId, int page, long? ukprn, CollectionPeriod period, int? courseType)
         {
             var paymentsResponse = await _mediator
                 .SendAsync(new GetPaymentsQueryRequest
@@ -124,7 +125,8 @@ namespace SFA.DAS.Provider.Events.Api.Controllers
                 EmployerAccountId = employerAccountId,
                 PageNumber = page,
                 PageSize = PageSize,
-                Ukprn = ukprn
+                Ukprn = ukprn,
+                CourseType = courseType
             }).ConfigureAwait(false);
 
             if (!paymentsResponse.IsValid)
