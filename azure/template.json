@@ -142,7 +142,7 @@
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
         "appServiceName": "[concat(variables('resourceNamePrefix'), '-as')]",
         "privateLinkScopeName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-shared-ampls'))]",
-        "paymentsLogicAppName": "[concat(variables('resourceNamePrefix'), '-la')]",
+        "paymentsLogicAppName": "[concat(variables('resourceNamePrefix'), '-lga')]",
         "paymentsAlertActionGroupName": "[concat(variables('resourceNamePrefix'), '-algr')]",
         "paymentsAlertActionGroupShortName": "[concat(parameters('serviceName'), 'algr')]"
     },
