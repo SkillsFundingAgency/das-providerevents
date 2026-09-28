@@ -144,7 +144,7 @@
         "privateLinkScopeName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-shared-ampls'))]",
         "paymentsLogicAppName": "[concat(variables('resourceNamePrefix'), '-la')]",
         "paymentsAlertActionGroupName": "[concat(variables('resourceNamePrefix'), '-algr')]",
-        "paymentsAlertActionGroupShortName": "[toLower(concat(parameters('serviceName'), 'algr'))]"
+        "paymentsAlertActionGroupShortName": "[concat(parameters('serviceName'), 'algr')]"
     },
     "resources": [
         {
