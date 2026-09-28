@@ -120,6 +120,20 @@
             "metadata": {
                 "description": "Resource id of the action group that notifies the AS Production alerts Teams channel."
             }
+        },
+        "paymentsAlertRuleName": {
+            "type": "string",
+            "defaultValue": "DAS - Payments API 401 spike",
+            "metadata": {
+                "description": "Name of the 401 alert rule. The restart Logic App only acts on alerts with this name."
+            }
+        },
+        "paymentsAlertQuery": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "KQL query run against paymentsAlertScopeResourceId. Each row returned counts as one 401."
+            }
         }
     },
     "variables": {
@@ -130,9 +144,7 @@
         "privateLinkScopeName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-shared-ampls'))]",
         "paymentsLogicAppName": "[concat(variables('resourceNamePrefix'), '-la')]",
         "paymentsAlertActionGroupName": "[concat(variables('resourceNamePrefix'), '-algr')]",
-        "paymentsAlertActionGroupShortName": "papialgr",
-        "paymentsAlertRuleName": "DAS - Payments API 401 spike",
-        "paymentsAlertQuery": "[concat('dependencies | where cloud_RoleName has \"comtwkr\" | where target has \"', parameters('customHostName'), '\" | where name has \"/api/v2/datalock\" | where resultCode == \"401\"')]"
+        "paymentsAlertActionGroupShortName": "[toLower(concat(parameters('serviceName'), 'algr'))]"
     },
     "resources": [
         {
@@ -327,15 +339,11 @@
             ]
         },
         {
-            "comments": "Restart Logic App, deployed via the shared logic-app.json building block. Validates the alert is a genuine, fired production alert, logs the request, then restarts the Payments API app service.",
             "condition": "[parameters('deployPapiRestartAutomation')]",
             "apiVersion": "2021-04-01",
             "name": "[concat(variables('appServiceName'), '-logic-app-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
-            "dependsOn": [
-                "[concat(variables('appServiceName'), '-api-app-service-', parameters('utcValue'))]"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -361,7 +369,7 @@
                                 "value": "[resourceId(variables('resourceGroupName'), 'Microsoft.Web/sites', variables('appServiceName'))]"
                             },
                             "alertRuleName": {
-                                "value": "[variables('paymentsAlertRuleName')]"
+                                "value": "[parameters('paymentsAlertRuleName')]"
                             }
                         }
                     },
@@ -477,18 +485,17 @@
                         }
                     }
                 }
-            }
+            },
+            "dependsOn": [
+                "[concat(variables('appServiceName'), '-api-app-service-', parameters('utcValue'))]"
+            ]
         },
         {
-            "comments": "Restart-only action group for the DAS - Payments API 401 spike alert. Kept inline as no building block supports Logic App receivers. Deployed after the Logic App so it can reference the trigger callback URL. The Logic App identity's restart permission is granted centrally in das-infrastructure-config, not here.",
             "condition": "[parameters('deployPapiRestartAutomation')]",
             "apiVersion": "2021-04-01",
             "name": "[concat(variables('appServiceName'), '-action-group-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
-            "dependsOn": [
-                "[concat(variables('appServiceName'), '-logic-app-', parameters('utcValue'))]"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "expressionEvaluationOptions": {
@@ -542,18 +549,17 @@
                         }
                     ]
                 }
-            }
+            },
+            "dependsOn": [
+                "[concat(variables('appServiceName'), '-logic-app-', parameters('utcValue'))]"
+            ]
         },
         {
-            "comments": "Dynamic threshold log search alert on callers' 401s from the Payments API. alertResourceName must match the alertRuleName checked by the restart Logic App. Dynamic thresholds need 3 days and 30 samples of data before they can fire.",
             "condition": "[parameters('deployPapiRestartAutomation')]",
             "apiVersion": "2021-04-01",
             "name": "[concat(variables('appServiceName'), '-401-alert-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
-            "dependsOn": [
-                "[concat(variables('appServiceName'), '-action-group-', parameters('utcValue'))]"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -562,7 +568,7 @@
                 },
                 "parameters": {
                     "alertResourceName": {
-                        "value": "[variables('paymentsAlertRuleName')]"
+                        "value": "[parameters('paymentsAlertRuleName')]"
                     },
                     "alertDescription": {
                         "value": "Sustained increase in 401 responses from the Payments API. Triggers an automatic restart of the app service."
@@ -579,7 +585,7 @@
                         ]
                     },
                     "kustoQuery": {
-                        "value": "[variables('paymentsAlertQuery')]"
+                        "value": "[parameters('paymentsAlertQuery')]"
                     },
                     "evaluationFrequency": {
                         "value": "PT5M"
@@ -617,7 +623,10 @@
                         "value": true
                     }
                 }
-            }
+            },
+            "dependsOn": [
+                "[concat(variables('appServiceName'), '-action-group-', parameters('utcValue'))]"
+            ]
         }
     ],
     "outputs": {
