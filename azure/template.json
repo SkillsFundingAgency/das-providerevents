@@ -366,7 +366,7 @@
                     "workflowParameters": {
                         "value": {
                             "appServiceResourceId": {
-                                "value": "[resourceId(variables('resourceGroupName'), 'Microsoft.Web/sites', variables('appServiceName'))]"
+                                "value": "[resourceId(subscription().subscriptionId, variables('resourceGroupName'), 'Microsoft.Web/sites', variables('appServiceName'))]"
                             },
                             "alertRuleName": {
                                 "value": "[parameters('paymentsAlertRuleName')]"
@@ -616,7 +616,7 @@
                     },
                     "additionalActionGroupIds": {
                         "value": [
-                            "[resourceId(variables('resourceGroupName'), 'Microsoft.Insights/actionGroups', variables('paymentsAlertActionGroupName'))]"
+                            "[resourceId(subscription().subscriptionId, variables('resourceGroupName'), 'Microsoft.Insights/actionGroups', variables('paymentsAlertActionGroupName'))]"
                         ]
                     },
                     "autoMitigate": {
