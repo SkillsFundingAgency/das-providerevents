@@ -627,6 +627,34 @@
             "dependsOn": [
                 "[concat(variables('appServiceName'), '-action-group-', parameters('utcValue'))]"
             ]
+        },
+        {
+            "condition": "[parameters('deployPapiRestartAutomation')]",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('appServiceName'), '-logic-app-role-assignment-', parameters('utcValue'))]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'role-assignments/role-assignment-app-service.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "assignmentType": {
+                        "value": "DAS PRD Restart WebApp/WebJobs"
+                    },
+                    "principalId": {
+                        "value": "[reference(concat(variables('appServiceName'), '-logic-app-', parameters('utcValue'))).outputs.principalId.value]"
+                    },
+                    "resourceName": {
+                        "value": "[variables('appServiceName')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('appServiceName'), '-logic-app-', parameters('utcValue'))]"
+            ]
         }
     ],
     "outputs": {
