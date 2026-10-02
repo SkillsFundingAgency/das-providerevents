@@ -91,6 +91,49 @@
         "vnetRouteAllEnabled": {
             "type": "bool",
             "defaultValue": false
+        },
+        "deployPapiRestartAutomation": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Deploys the Payments API 401 spike alert and restart automation. Only set to true in PROD."
+            }
+        },
+        "paymentsRestartLogicAppState": {
+            "type": "string",
+            "defaultValue": "Enabled",
+            "allowedValues": [
+                "Enabled",
+                "Disabled"
+            ]
+        },
+        "paymentsAlertScopeResourceId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Resource id of the Application Insights component that records callers' requests to the Payments API, e.g. das-prd-shared-ea-ai."
+            }
+        },
+        "paymentsAlertNotificationActionGroupId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Resource id of the action group that notifies the AS Production alerts Teams channel."
+            }
+        },
+        "paymentsAlertRuleName": {
+            "type": "string",
+            "defaultValue": "DAS - Payments API 401 spike",
+            "metadata": {
+                "description": "Name of the 401 alert rule. The restart Logic App only acts on alerts with this name."
+            }
+        },
+        "paymentsAlertQuery": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "KQL query run against paymentsAlertScopeResourceId. Each row returned counts as one 401."
+            }
         }
     },
     "variables": {
@@ -98,7 +141,10 @@
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
         "appServiceName": "[concat(variables('resourceNamePrefix'), '-as')]",
-        "privateLinkScopeName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-shared-ampls'))]"
+        "privateLinkScopeName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-shared-ampls'))]",
+        "paymentsLogicAppName": "[concat(variables('resourceNamePrefix'), '-lga')]",
+        "paymentsAlertActionGroupName": "[concat(variables('resourceNamePrefix'), '-algr')]",
+        "paymentsAlertActionGroupShortName": "[concat(parameters('serviceName'), 'algr')]"
     },
     "resources": [
         {
@@ -290,6 +336,324 @@
             },
             "dependsOn": [
                 "[variables('resourceGroupName')]"
+            ]
+        },
+        {
+            "condition": "[parameters('deployPapiRestartAutomation')]",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('appServiceName'), '-logic-app-', parameters('utcValue'))]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'logic-app.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "logicAppName": {
+                        "value": "[variables('paymentsLogicAppName')]"
+                    },
+                    "location": {
+                        "value": "[parameters('resourceGroupLocation')]"
+                    },
+                    "identityType": {
+                        "value": "SystemAssigned"
+                    },
+                    "state": {
+                        "value": "[parameters('paymentsRestartLogicAppState')]"
+                    },
+                    "workflowParameters": {
+                        "value": {
+                            "appServiceResourceId": {
+                                "value": "[resourceId(subscription().subscriptionId, variables('resourceGroupName'), 'Microsoft.Web/sites', variables('appServiceName'))]"
+                            },
+                            "alertRuleName": {
+                                "value": "[parameters('paymentsAlertRuleName')]"
+                            }
+                        }
+                    },
+                    "workflowDefinition": {
+                        "value": {
+                            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                            "contentVersion": "1.0.0.0",
+                            "parameters": {
+                                "appServiceResourceId": {
+                                    "type": "String",
+                                    "defaultValue": ""
+                                },
+                                "alertRuleName": {
+                                    "type": "String",
+                                    "defaultValue": ""
+                                }
+                            },
+                            "triggers": {
+                                "When_an_Azure_Monitor_alert_is_fired": {
+                                    "type": "Request",
+                                    "kind": "Http",
+                                    "inputs": {
+                                        "schema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "essentials": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "alertId": {
+                                                                    "type": "string"
+                                                                },
+                                                                "alertRule": {
+                                                                    "type": "string"
+                                                                },
+                                                                "monitorCondition": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "actions": {
+                                "Validate_alert_is_a_fired_production_alert": {
+                                    "type": "If",
+                                    "expression": {
+                                        "and": [
+                                            {
+                                                "equals": [
+                                                    "@triggerBody()?['data']?['essentials']?['monitorCondition']",
+                                                    "Fired"
+                                                ]
+                                            },
+                                            {
+                                                "equals": [
+                                                    "@triggerBody()?['data']?['essentials']?['alertRule']",
+                                                    "@parameters('alertRuleName')"
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "actions": {
+                                        "Log_restart_request": {
+                                            "type": "Compose",
+                                            "runAfter": {},
+                                            "inputs": {
+                                                "message": "Payments API 401 spike alert fired - restarting app service.",
+                                                "alertId": "@triggerBody()?['data']?['essentials']?['alertId']",
+                                                "alertRule": "@triggerBody()?['data']?['essentials']?['alertRule']",
+                                                "monitorCondition": "@triggerBody()?['data']?['essentials']?['monitorCondition']",
+                                                "appServiceResourceId": "@parameters('appServiceResourceId')",
+                                                "timestampUtc": "@utcNow()"
+                                            }
+                                        },
+                                        "Restart_Payments_API": {
+                                            "type": "Http",
+                                            "runAfter": {
+                                                "Log_restart_request": [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "inputs": {
+                                                "method": "POST",
+                                                "uri": "https://management.azure.com@{parameters('appServiceResourceId')}/restart?api-version=2022-03-01",
+                                                "authentication": {
+                                                    "type": "ManagedServiceIdentity",
+                                                    "audience": "https://management.azure.com/"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "else": {
+                                        "actions": {
+                                            "Ignore_non_actionable_alert": {
+                                                "type": "Terminate",
+                                                "inputs": {
+                                                    "runStatus": "Cancelled"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "runAfter": {}
+                                }
+                            },
+                            "outputs": {}
+                        }
+                    }
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('appServiceName'), '-api-app-service-', parameters('utcValue'))]"
+            ]
+        },
+        {
+            "condition": "[parameters('deployPapiRestartAutomation')]",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('appServiceName'), '-action-group-', parameters('utcValue'))]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "expressionEvaluationOptions": {
+                    "scope": "inner"
+                },
+                "parameters": {
+                    "logicAppName": {
+                        "value": "[variables('paymentsLogicAppName')]"
+                    },
+                    "actionGroupName": {
+                        "value": "[variables('paymentsAlertActionGroupName')]"
+                    },
+                    "actionGroupShortName": {
+                        "value": "[variables('paymentsAlertActionGroupShortName')]"
+                    }
+                },
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "logicAppName": {
+                            "type": "string"
+                        },
+                        "actionGroupName": {
+                            "type": "string"
+                        },
+                        "actionGroupShortName": {
+                            "type": "string"
+                        }
+                    },
+                    "variables": {},
+                    "resources": [
+                        {
+                            "comments": "Restart-only action group for the DAS - Payments API 401 spike log search alert. Holds only the Logic App receiver; notification to the AS Production alerts channel is handled by the shared alerts action group the alert also references.",
+                            "type": "microsoft.insights/actionGroups",
+                            "apiVersion": "2023-01-01",
+                            "name": "[parameters('actionGroupName')]",
+                            "location": "Global",
+                            "properties": {
+                                "groupShortName": "[parameters('actionGroupShortName')]",
+                                "enabled": true,
+                                "logicAppReceivers": [
+                                    {
+                                        "name": "RestartPaymentsApi",
+                                        "resourceId": "[resourceId('Microsoft.Logic/workflows', parameters('logicAppName'))]",
+                                        "callbackUrl": "[listCallbackUrl(resourceId('Microsoft.Logic/workflows/triggers', parameters('logicAppName'), 'When_an_Azure_Monitor_alert_is_fired'), '2019-05-01').value]",
+                                        "useCommonAlertSchema": true
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('appServiceName'), '-logic-app-', parameters('utcValue'))]"
+            ]
+        },
+        {
+            "condition": "[parameters('deployPapiRestartAutomation')]",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('appServiceName'), '-401-alert-', parameters('utcValue'))]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'scheduled-query-alert.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "alertResourceName": {
+                        "value": "[parameters('paymentsAlertRuleName')]"
+                    },
+                    "alertDescription": {
+                        "value": "Sustained increase in 401 responses from the Payments API. Triggers an automatic restart of the app service."
+                    },
+                    "location": {
+                        "value": "[parameters('resourceGroupLocation')]"
+                    },
+                    "severity": {
+                        "value": 1
+                    },
+                    "scopes": {
+                        "value": [
+                            "[parameters('paymentsAlertScopeResourceId')]"
+                        ]
+                    },
+                    "kustoQuery": {
+                        "value": "[parameters('paymentsAlertQuery')]"
+                    },
+                    "evaluationFrequency": {
+                        "value": "PT5M"
+                    },
+                    "windowSize": {
+                        "value": "PT5M"
+                    },
+                    "timeAggregation": {
+                        "value": "Count"
+                    },
+                    "thresholdType": {
+                        "value": "Dynamic"
+                    },
+                    "operator": {
+                        "value": "GreaterThan"
+                    },
+                    "alertSensitivity": {
+                        "value": "Medium"
+                    },
+                    "numberOfEvaluationPeriods": {
+                        "value": 3
+                    },
+                    "minFailingPeriodsToAlert": {
+                        "value": 2
+                    },
+                    "actionGroupId": {
+                        "value": "[parameters('paymentsAlertNotificationActionGroupId')]"
+                    },
+                    "additionalActionGroupIds": {
+                        "value": [
+                            "[resourceId(subscription().subscriptionId, variables('resourceGroupName'), 'Microsoft.Insights/actionGroups', variables('paymentsAlertActionGroupName'))]"
+                        ]
+                    },
+                    "autoMitigate": {
+                        "value": true
+                    }
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('appServiceName'), '-action-group-', parameters('utcValue'))]"
+            ]
+        },
+        {
+            "condition": "[parameters('deployPapiRestartAutomation')]",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(variables('appServiceName'), '-logic-app-role-assignment-', parameters('utcValue'))]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'role-assignments/role-assignment-app-service.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "assignmentType": {
+                        "value": "DAS PRD Restart WebApp/WebJobs"
+                    },
+                    "principalId": {
+                        "value": "[reference(concat(variables('appServiceName'), '-logic-app-', parameters('utcValue'))).outputs.principalId.value]"
+                    },
+                    "resourceName": {
+                        "value": "[variables('appServiceName')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('appServiceName'), '-logic-app-', parameters('utcValue'))]"
             ]
         }
     ],
